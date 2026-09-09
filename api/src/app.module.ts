@@ -5,9 +5,10 @@ import { CatalogModule } from "./catalog/catalog.module";
 import { CoursesModule } from "./courses/courses.module";
 import { TermsModule } from "./terms/terms.module";
 import { PlanningModule } from "./planning/planning.module";
+import { BootstrapController } from "./bootstrap.controller";
 
 @Module({
   imports: [PrismaModule, CatalogModule, CoursesModule, TermsModule, PlanningModule],
-  controllers: [HealthController],
+  controllers: [HealthController, BootstrapController],
 })
 export class AppModule {}

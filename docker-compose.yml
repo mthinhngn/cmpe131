@@ -15,5 +15,19 @@ services:
       timeout: 5s
       retries: 10
 
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://course_radar:course_radar@postgres:5432/course_radar?schema=public
+      PORT: 3001
+      WEB_ORIGIN: http://localhost:5173
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   course_radar_pgdata:

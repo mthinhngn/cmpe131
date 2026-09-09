@@ -1,12 +1,3 @@
-export type Availability = "open" | "closed" | "waitlist" | "unknown";
-
-export type Meeting = {
-  days: string[];
-  startTime: string | null;
-  endTime: string | null;
-  location: string | null;
-};
-
 export type Course = {
   id: string;
   code: string;
@@ -18,35 +9,30 @@ export type Course = {
   sourceUrl: string;
 };
 
-export type Section = {
+export type RequirementItem = {
   id: string;
-  courseId: string;
-  term: "Fall 2026";
-  sectionNumber: string;
-  instructor: string | null;
-  meetings: Meeting[];
-  availability: Availability;
-  openSeats: number | null;
+  type: "course" | "placeholder";
+  courseId?: string;
+  label?: string;
+  description?: string;
+  recommendedSemester?: number;
+};
+
+export type RequirementGroup = {
+  id: string;
+  title: string;
+  description: string;
+  items: RequirementItem[];
+};
+
+export type ProgramCatalog = {
+  name: "Computer Engineering";
+  abbreviation: "BSCMPE";
+  catalogYear: string;
+  dataVersion: string;
+  dataStatus: "draft-unverified" | "reviewed";
   sourceUrl: string;
-};
-
-export type StudentPlan = {
-  schemaVersion: 1;
-  major: string;
-  catalog: string;
-  completedCourseIds: string[];
-  selectedSectionIds: string[];
-  updatedAt: string;
-};
-
-export type PrerequisiteResult = {
-  courseId: string;
-  status: "met" | "unmet";
-  missingCourseIds: string[];
-};
-
-export type ScheduleConflict = {
-  firstSectionId: string;
-  secondSectionId: string;
-  day: string;
+  programUrl: string;
+  courses: Course[];
+  requirementGroups: RequirementGroup[];
 };

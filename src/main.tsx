@@ -4,11 +4,12 @@ import { BrowserRouter } from "react-router-dom";
 import "./styles.css";
 import App from "./App";
 import { StudentPlanProvider } from "./StudentPlanContext";
+import { CatalogProvider } from "./CatalogContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <StudentPlanProvider><App /></StudentPlanProvider>
+      <CatalogProvider><StudentPlanProvider><App /></StudentPlanProvider></CatalogProvider>
     </BrowserRouter>
   </StrictMode>,
 );

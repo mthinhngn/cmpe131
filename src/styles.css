@@ -126,7 +126,8 @@ main { max-width: 1400px; margin: 0 auto; }
 .plan-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; padding-bottom: 28px; }
 .plan-header .eyebrow { color: var(--accent-dark); margin-bottom: 10px; }
 .plan-header h1 { margin: 0; font-size: 42px; letter-spacing: -.045em; }
-.plan-header > div:first-child > p:last-child { max-width: 650px; margin: 10px 0 0; color: var(--muted); line-height: 1.5; }
+.plan-header .plan-description { max-width: 650px; margin: 10px 0 0; color: var(--muted); line-height: 1.5; }
+.plan-header .plan-version { margin-top: 8px; color: var(--accent-dark); font-size: 12px; font-weight: 700; }
 .plan-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 9px; }
 .plan-actions .secondary-button, .import-button, .danger-button { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; white-space: nowrap; }
 .import-button { cursor: pointer; }
@@ -137,6 +138,7 @@ main { max-width: 1400px; margin: 0 auto; }
 .plan-summary strong { color: var(--accent-dark); font-size: 29px; letter-spacing: -.04em; }
 .plan-summary span { color: var(--muted); font-size: 12px; }
 .plan-warnings { margin-top: 18px; padding: 18px 20px; border: 1px solid #e0bbb6; border-radius: var(--radius); color: #73342e; background: #fff8f7; }
+.import-error { margin: 18px 0 0; padding: 12px 14px; border: 1px solid #e0bbb6; border-radius: 10px; display: flex; align-items: center; gap: 8px; color: #73342e; background: #fff8f7; font-size: 13px; font-weight: 650; }
 .warning-title { display: flex; align-items: center; gap: 9px; }
 .warning-title h2 { margin: 0; font-size: 16px; }
 .plan-warnings p { margin: 10px 0 0 30px; font-size: 13px; line-height: 1.45; }
