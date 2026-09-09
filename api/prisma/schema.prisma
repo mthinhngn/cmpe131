@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RuleOperator {
+  AND
+  OR
+}
+
+enum Availability {
+  OPEN
+  CLOSED
+  WAITLIST
+  UNKNOWN
+}
+
+model Program {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  name            String
+  abbreviation    String
+  catalogVersions CatalogVersion[]
+}
+
+model CatalogVersion {
+  id              String          @id @default(cuid())
+  programId       String
+  catalogYear     String
+  dataVersion     String
+  sourceUrl       String
+  lastVerifiedAt  DateTime?
+  semesterCount   Int
+  program         Program         @relation(fields: [programId], references: [id], onDelete: Cascade)
+  courseVersions  CourseVersion[]
+  sourceSnapshots SourceSnapshot[]
+
+  @@unique([programId, catalogYear])
+}
+
+model Course {
+  id                 String             @id
+  code               String
+  versions           CourseVersion[]
+  requiredByRules    PrerequisiteRule[] @relation("RequiredCourse")
+  sections           Section[]
+
+  @@unique([code, id])
+}
+
+model CourseVersion {
+  id                    String             @id @default(cuid())
+  courseId              String
+  catalogVersionId      String
+  title                 String
+  description           String
+  units                 Int
+  course                Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  catalogVersion        CatalogVersion     @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
+  prerequisiteRules     PrerequisiteRule[]
+  roadmapItem           RoadmapItem?
+
+  @@unique([courseId, catalogVersionId])
+}
+
+model PrerequisiteRule {
+  id                   String         @id @default(cuid())
+  courseVersionId      String
+  requiredCourseId     String
+  groupKey             String         @default("default")
+  operator             RuleOperator   @default(AND)
+  minimumGrade         String?
+  isCorequisite        Boolean        @default(false)
+  requiresManualReview Boolean        @default(false)
+  courseVersion        CourseVersion  @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+  requiredCourse       Course         @relation("RequiredCourse", fields: [requiredCourseId], references: [id])
+}
+
+model RoadmapItem {
+  id                  String        @id @default(cuid())
+  courseVersionId     String        @unique
+  recommendedSemester Int
+  courseVersion       CourseVersion @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+}
+
+model Term {
+  id          String    @id
+  label       String    @unique
+  sourceUrl   String
+  dataVersion String
+  verifiedAt  DateTime?
+  sections    Section[]
+}
+
+model Instructor {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  sections Section[]
+}
+
+model Section {
+  id           String       @id
+  courseId     String
+  termId       String
+  instructorId String?
+  sectionNumber String
+  availability Availability @default(UNKNOWN)
+  openSeats    Int?
+  sourceUrl    String
+  course       Course       @relation(fields: [courseId], references: [id])
+  term         Term         @relation(fields: [termId], references: [id])
+  instructor   Instructor?  @relation(fields: [instructorId], references: [id])
+  meetings     Meeting[]
+
+  @@unique([courseId, termId, sectionNumber])
+}
+
+model Meeting {
+  id        String   @id @default(cuid())
+  sectionId String
+  days      String[]
+  startTime String?
+  endTime   String?
+  location  String?
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model SourceSnapshot {
+  id               String         @id @default(cuid())
+  catalogVersionId String
+  sourceUrl        String
+  fetchedAt        DateTime
+  status           String
+  checksum         String?
+  catalogVersion   CatalogVersion @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
+}

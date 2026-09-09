@@ -29,3 +29,24 @@ export type Section = {
   openSeats: number | null;
   sourceUrl: string;
 };
+
+export type StudentPlan = {
+  schemaVersion: 1;
+  major: string;
+  catalog: string;
+  completedCourseIds: string[];
+  selectedSectionIds: string[];
+  updatedAt: string;
+};
+
+export type PrerequisiteResult = {
+  courseId: string;
+  status: "met" | "unmet";
+  missingCourseIds: string[];
+};
+
+export type ScheduleConflict = {
+  firstSectionId: string;
+  secondSectionId: string;
+  day: string;
+};

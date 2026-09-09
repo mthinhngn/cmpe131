@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: course_radar
+      POSTGRES_PASSWORD: course_radar
+      POSTGRES_DB: course_radar
+    ports:
+      - "5432:5432"
+    volumes:
+      - course_radar_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U course_radar -d course_radar"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  course_radar_pgdata:

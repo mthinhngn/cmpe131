@@ -3,11 +3,12 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./styles.css";
 import App from "./App";
+import { StudentPlanProvider } from "./StudentPlanContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <StudentPlanProvider><App /></StudentPlanProvider>
     </BrowserRouter>
   </StrictMode>,
 );

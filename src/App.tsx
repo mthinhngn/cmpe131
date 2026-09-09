@@ -5,19 +5,27 @@ import {
   ArrowSquareOut,
   BookOpen,
   CalendarBlank,
+  Check,
+  CheckCircle,
   CaretRight,
   Clock,
+  DownloadSimple,
   FunnelSimple,
   GitBranch,
   GraduationCap,
   Info,
   MagnifyingGlass,
   MapPin,
+  Trash,
+  UploadSimple,
+  WarningCircle,
   X,
 } from "@phosphor-icons/react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { MAJOR, TERM, allCourseById, getCourseSections, majors, roadmaps, scheduleSource, type MajorName } from "./data";
+import { MAJOR, TERM, allCourseById, getCourseSections, majors, roadmaps, scheduleSource, sections, type MajorName } from "./data";
 import type { Availability, Course, Section } from "./types";
+import { useStudentPlan } from "./StudentPlanContext";
+import { decodeStudentPlan, evaluatePrerequisites, findScheduleConflicts } from "./planner";
 
 const days = ["All days", "Mon", "Tue", "Wed", "Thu"];
 const statusLabel: Record<Availability, string> = {
@@ -83,6 +91,7 @@ function Header() {
         <nav aria-label="Primary navigation">
           <Link className={location.pathname === "/" ? "nav-link active" : "nav-link"} to="/">Courses</Link>
           <Link className={location.pathname === "/roadmap" ? "nav-link active" : "nav-link"} to="/roadmap">Roadmap</Link>
+          <Link className={location.pathname === "/plan" ? "nav-link active" : "nav-link"} to="/plan">My Plan</Link>
         </nav>
         <a className="source-link header-source" href={scheduleSource} target="_blank" rel="noreferrer">
           SJSU source <ArrowSquareOut size={15} />
@@ -147,8 +156,11 @@ function CourseCard({ course, courseSections, onOpen }: { course: Course; course
 
 function CourseDetail({ course, plannedTerm, onClose }: { course: Course; plannedTerm: string; onClose: () => void }) {
   const navigate = useNavigate();
+  const { plan, toggleCompleted, toggleSection } = useStudentPlan();
   const courseSections = getCourseSections(course.id);
   const prerequisites = course.prerequisiteCourseIds.map((id) => allCourseById.get(id)).filter(Boolean) as Course[];
+  const prerequisiteResult = evaluatePrerequisites(course, plan.completedCourseIds);
+  const isCompleted = plan.completedCourseIds.includes(course.id);
 
   return (
     <div className="drawer-layer" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
@@ -174,6 +186,10 @@ function CourseDetail({ course, plannedTerm, onClose }: { course: Course; planne
                 {prerequisites.map((prereq) => <span key={prereq.id}>{prereq.code}</span>)}
               </div>
             ) : <p className="muted">No course prerequisite shown in this demo map.</p>}
+            <p className={`eligibility eligibility-${prerequisiteResult.status}`}>
+              {prerequisiteResult.status === "met" ? <CheckCircle size={17} weight="fill" /> : <WarningCircle size={17} weight="fill" />}
+              {prerequisiteResult.status === "met" ? "Prerequisites satisfied" : `${prerequisiteResult.missingCourseIds.length} prerequisite(s) still missing`}
+            </p>
           </section>
 
           <section className="detail-section">
@@ -195,6 +211,13 @@ function CourseDetail({ course, plannedTerm, onClose }: { course: Course; planne
                   </div>
                 ))}
                 <div className="section-actions">
+                  <button
+                    className={plan.selectedSectionIds.includes(section.id) ? "section-select selected" : "section-select"}
+                    onClick={() => toggleSection(section.id, courseSections.map((item) => item.id))}
+                  >
+                    {plan.selectedSectionIds.includes(section.id) ? <Check size={14} weight="bold" /> : null}
+                    {plan.selectedSectionIds.includes(section.id) ? "In my plan" : "Add to plan"}
+                  </button>
                   {section.instructor && (
                     <a href={`https://www.google.com/search?q=${encodeURIComponent(`${section.instructor} SJSU professor reviews`)}`} target="_blank" rel="noreferrer">
                       Find reviews <ArrowSquareOut size={14} />
@@ -209,6 +232,9 @@ function CourseDetail({ course, plannedTerm, onClose }: { course: Course; planne
           </section>
         </div>
         <div className="drawer-footer">
+          <button className={isCompleted ? "completion-button completed" : "completion-button"} onClick={() => toggleCompleted(course.id)}>
+            <CheckCircle size={17} weight={isCompleted ? "fill" : "regular"} /> {isCompleted ? "Completed" : "Mark complete"}
+          </button>
           <button className="primary-button" onClick={() => navigate(`/roadmap?course=${course.id}`)}>
             View on roadmap <ArrowRight size={17} weight="bold" />
           </button>
@@ -216,6 +242,99 @@ function CourseDetail({ course, plannedTerm, onClose }: { course: Course; planne
         </div>
       </aside>
     </div>
+  );
+}
+
+function MyPlanPage() {
+  const { plan, toggleCompleted, toggleSection, replacePlan, clearPlan } = useStudentPlan();
+  const fileInputId = "student-plan-import";
+  const selectedSections = sections.filter((section) => plan.selectedSectionIds.includes(section.id));
+  const conflicts = findScheduleConflicts(selectedSections);
+  const selectedCourses = selectedSections
+    .map((section) => allCourseById.get(section.courseId))
+    .filter((course): course is Course => Boolean(course));
+  const warnings = selectedCourses
+    .map((course) => evaluatePrerequisites(course, plan.completedCourseIds))
+    .filter((result) => result.status === "unmet");
+
+  const exportPlan = () => {
+    const href = URL.createObjectURL(new Blob([JSON.stringify(plan, null, 2)], { type: "application/json" }));
+    const anchor = document.createElement("a");
+    anchor.href = href;
+    anchor.download = "course-radar-plan.json";
+    anchor.click();
+    URL.revokeObjectURL(href);
+  };
+
+  const importPlan = async (file: File | undefined) => {
+    if (!file) return;
+    const imported = decodeStudentPlan(await file.text(), plan.major, plan.catalog);
+    if (imported) replacePlan(imported);
+  };
+
+  return (
+    <AppShell>
+      <main className="plan-page">
+        <section className="plan-header">
+          <div>
+            <p className="eyebrow">LOCAL BROWSER PLAN</p>
+            <h1>My Plan</h1>
+            <p>Your selections stay on this device. Course Radar does not create an account or send this plan to the server.</p>
+          </div>
+          <div className="plan-actions">
+            <button className="secondary-button" onClick={exportPlan}><DownloadSimple size={17} /> Export JSON</button>
+            <label className="secondary-button import-button" htmlFor={fileInputId}><UploadSimple size={17} /> Import JSON</label>
+            <input id={fileInputId} className="sr-only" type="file" accept="application/json" onChange={(event) => void importPlan(event.target.files?.[0])} />
+            <button className="danger-button" onClick={clearPlan}><Trash size={17} /> Clear</button>
+          </div>
+        </section>
+
+        <section className="plan-summary" aria-label="Plan summary">
+          <div><strong>{plan.completedCourseIds.length}</strong><span>Completed courses</span></div>
+          <div><strong>{selectedSections.length}</strong><span>Selected sections</span></div>
+          <div><strong>{warnings.length + conflicts.length}</strong><span>Warnings to review</span></div>
+        </section>
+
+        {(warnings.length > 0 || conflicts.length > 0) && (
+          <section className="plan-warnings" aria-labelledby="plan-warning-title">
+            <div className="warning-title"><WarningCircle size={21} weight="fill" /><h2 id="plan-warning-title">Review before enrollment</h2></div>
+            {warnings.map((warning) => {
+              const course = allCourseById.get(warning.courseId);
+              const missing = warning.missingCourseIds.map((id) => allCourseById.get(id)?.code ?? id).join(", ");
+              return <p key={warning.courseId}><strong>{course?.code}</strong> requires: {missing}.</p>;
+            })}
+            {conflicts.map((conflict) => {
+              const first = sections.find((section) => section.id === conflict.firstSectionId);
+              const second = sections.find((section) => section.id === conflict.secondSectionId);
+              return <p key={`${conflict.firstSectionId}-${conflict.secondSectionId}-${conflict.day}`}><strong>Time conflict on {conflict.day}:</strong> section {first?.sectionNumber} and section {second?.sectionNumber} overlap.</p>;
+            })}
+          </section>
+        )}
+
+        <section className="plan-content">
+          <div className="plan-column">
+            <div className="plan-section-heading"><div><h2>{TERM} schedule</h2><p>One section per course can be selected.</p></div><Link to="/">Browse courses</Link></div>
+            {selectedSections.length ? selectedSections.map((section) => {
+              const course = allCourseById.get(section.courseId);
+              return (
+                <article className="planned-section" key={section.id}>
+                  <div><span className="course-code">{course?.code}</span><h3>{course?.title}</h3><p>{sectionSummary(section)} · {section.instructor ?? "Instructor TBA"}</p></div>
+                  <button className="icon-button" aria-label={`Remove ${course?.code} section`} onClick={() => toggleSection(section.id)}><X size={18} /></button>
+                </article>
+              );
+            }) : <div className="empty-state compact"><CalendarBlank size={28} /><h3>No sections selected</h3><p>Open a course and add a Fall 2026 section.</p><Link className="secondary-button" to="/">Browse courses</Link></div>}
+          </div>
+
+          <div className="plan-column">
+            <div className="plan-section-heading"><div><h2>Completed courses</h2><p>Used to evaluate prerequisites.</p></div><Link to="/roadmap">Open roadmap</Link></div>
+            {plan.completedCourseIds.length ? plan.completedCourseIds.map((courseId) => {
+              const course = allCourseById.get(courseId);
+              return course ? <article className="completed-row" key={courseId}><CheckCircle size={20} weight="fill" /><div><strong>{course.code}</strong><span>{course.title}</span></div><button onClick={() => toggleCompleted(courseId)}>Undo</button></article> : null;
+            }) : <div className="empty-state compact"><CheckCircle size={28} /><h3>No completed courses</h3><p>Open a course detail and mark it complete.</p></div>}
+          </div>
+        </section>
+      </main>
+    </AppShell>
   );
 }
 
@@ -447,6 +566,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<ExplorerPage />} />
       <Route path="/roadmap" element={<RoadmapPage />} />
+      <Route path="/plan" element={<MyPlanPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
