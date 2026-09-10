@@ -6,6 +6,8 @@ DROP TABLE "Term";
 DROP TABLE "RoadmapItem";
 DROP TYPE "Availability";
 
+ALTER TABLE "CourseVersion" ADD COLUMN "prerequisiteText" TEXT;
+
 CREATE TYPE "RequirementItemType" AS ENUM ('COURSE', 'PLACEHOLDER');
 
 CREATE TABLE "RequirementGroup" (

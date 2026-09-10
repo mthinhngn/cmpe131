@@ -1,24 +1,29 @@
 import { PrismaClient, RequirementItemType, RuleOperator } from "@prisma/client";
 import { computerEngineeringCatalog } from "../../src/data";
+import { softwareEngineeringCatalog } from "../../src/softwareEngineeringData";
+import { FALL_2026_FETCHED_AT, FALL_2026_SCHEDULE_SOURCE, fall2026Offerings } from "../../src/fall2026Offerings.generated";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const catalog = computerEngineeringCatalog;
+  const catalogs = [computerEngineeringCatalog, softwareEngineeringCatalog];
+  for (const catalog of catalogs) {
+  const slug = catalog.abbreviation === "BSSE" ? "software-engineering" : "computer-engineering";
   const program = await prisma.program.upsert({
-    where: { slug: "computer-engineering" },
+    where: { slug },
     update: { name: catalog.name, abbreviation: catalog.abbreviation },
-    create: { slug: "computer-engineering", name: catalog.name, abbreviation: catalog.abbreviation },
+    create: { slug, name: catalog.name, abbreviation: catalog.abbreviation },
   });
   const catalogVersion = await prisma.catalogVersion.upsert({
     where: { programId_catalogYear: { programId: program.id, catalogYear: catalog.catalogYear } },
-    update: { dataVersion: catalog.dataVersion, sourceUrl: catalog.sourceUrl, semesterCount: 10 },
+    update: { dataVersion: catalog.dataVersion, sourceUrl: catalog.sourceUrl, lastVerifiedAt: new Date(catalog.lastVerifiedAt), semesterCount: 8 },
     create: {
       programId: program.id,
       catalogYear: catalog.catalogYear,
       dataVersion: catalog.dataVersion,
       sourceUrl: catalog.sourceUrl,
-      semesterCount: 10,
+      lastVerifiedAt: new Date(catalog.lastVerifiedAt),
+      semesterCount: 8,
     },
   });
 
@@ -27,8 +32,8 @@ async function main() {
     await prisma.course.upsert({ where: { id: item.id }, update: { code: item.code }, create: { id: item.id, code: item.code } });
     const version = await prisma.courseVersion.upsert({
       where: { courseId_catalogVersionId: { courseId: item.id, catalogVersionId: catalogVersion.id } },
-      update: { title: item.title, description: item.description, units: item.units },
-      create: { courseId: item.id, catalogVersionId: catalogVersion.id, title: item.title, description: item.description, units: item.units },
+      update: { title: item.title, description: item.description, prerequisiteText: item.prerequisiteText, units: item.units },
+      create: { courseId: item.id, catalogVersionId: catalogVersion.id, title: item.title, description: item.description, prerequisiteText: item.prerequisiteText, units: item.units },
     });
     versionIdByCourseId.set(item.id, version.id);
   }
@@ -43,6 +48,17 @@ async function main() {
           requiredCourseId,
           groupKey: "all-required",
           operator: RuleOperator.AND,
+        })),
+      });
+    }
+    if (item.corequisiteCourseIds.length) {
+      await prisma.prerequisiteRule.createMany({
+        data: item.corequisiteCourseIds.map((requiredCourseId) => ({
+          courseVersionId,
+          requiredCourseId,
+          groupKey: "all-corequired",
+          operator: RuleOperator.AND,
+          isCorequisite: true,
         })),
       });
     }
@@ -73,6 +89,31 @@ async function main() {
       },
     });
   }
+
+  }
+  const term = await prisma.term.upsert({
+    where: { id: "fall-2026" },
+    update: { name: "Fall 2026", sourceUrl: FALL_2026_SCHEDULE_SOURCE, fetchedAt: new Date(FALL_2026_FETCHED_AT) },
+    create: { id: "fall-2026", name: "Fall 2026", sourceUrl: FALL_2026_SCHEDULE_SOURCE, fetchedAt: new Date(FALL_2026_FETCHED_AT) },
+  });
+  await prisma.section.deleteMany({ where: { termId: term.id } });
+  const courseIdByCode = new Map(catalogs.flatMap((catalog) => catalog.courses).map((item) => [item.code, item.id]));
+  await prisma.section.createMany({
+    data: fall2026Offerings.map((offering) => ({
+      termId: term.id,
+      courseId: courseIdByCode.get(offering.courseCode)!,
+      classNumber: offering.classNumber,
+      sectionNumber: offering.sectionNumber,
+      mode: offering.mode,
+      component: offering.component,
+      days: offering.days,
+      times: offering.times,
+      location: offering.location,
+      dates: offering.dates,
+      openSeats: offering.openSeats,
+      instructors: offering.instructors,
+    })),
+  });
 }
 
 main().finally(async () => prisma.$disconnect());

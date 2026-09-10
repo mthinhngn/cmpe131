@@ -6,7 +6,23 @@ export type Course = {
   description: string;
   recommendedSemester: number;
   prerequisiteCourseIds: string[];
+  corequisiteCourseIds: string[];
+  prerequisiteText?: string;
   sourceUrl: string;
+};
+
+export type CourseOffering = {
+  instructors: string[];
+  courseCode: string;
+  sectionNumber: string;
+  classNumber: string;
+  mode: string;
+  component: string;
+  days: string;
+  times: string;
+  location: string;
+  dates: string;
+  openSeats: number;
 };
 
 export type RequirementItem = {
@@ -26,13 +42,21 @@ export type RequirementGroup = {
 };
 
 export type ProgramCatalog = {
-  name: "Computer Engineering";
-  abbreviation: "BSCMPE";
+  name: "Computer Engineering" | "Software Engineering";
+  abbreviation: "BSCMPE" | "BSSE";
   catalogYear: string;
   dataVersion: string;
   dataStatus: "draft-unverified" | "reviewed";
+  lastVerifiedAt: string;
   sourceUrl: string;
   programUrl: string;
+  currentTerm: {
+    id: string;
+    name: string;
+    sourceUrl: string;
+    fetchedAt: string;
+  };
+  offerings: CourseOffering[];
   courses: Course[];
   requirementGroups: RequirementGroup[];
 };

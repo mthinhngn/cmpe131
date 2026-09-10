@@ -5,12 +5,12 @@ import { PrismaService } from "../prisma/prisma.service";
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async course(id: string, catalogYear?: string) {
+  async course(id: string, catalogYear = "2026-2027", program = "computer-engineering") {
     const course = await this.prisma.course.findUnique({
       where: { id },
       include: {
         versions: {
-          where: catalogYear ? { catalogVersion: { catalogYear } } : undefined,
+          where: { catalogVersion: { catalogYear, program: { slug: program } } },
           include: { catalogVersion: true, prerequisiteRules: { include: { requiredCourse: true } } },
         },
       },

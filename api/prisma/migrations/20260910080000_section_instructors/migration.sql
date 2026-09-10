@@ -1,0 +1,1 @@
+ALTER TABLE "Section" ADD COLUMN "instructors" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];

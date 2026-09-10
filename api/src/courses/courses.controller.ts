@@ -6,7 +6,7 @@ export class CoursesController {
   constructor(private readonly courses: CoursesService) {}
 
   @Get(":id")
-  course(@Param("id") id: string, @Query("catalogYear") catalogYear?: string) {
-    return this.courses.course(id, catalogYear);
+  course(@Param("id") id: string, @Query("catalogYear") catalogYear?: string, @Query("program") program?: string) {
+    return this.courses.course(id, catalogYear, program);
   }
 }

@@ -46,8 +46,38 @@ model Course {
   code            String
   versions        CourseVersion[]
   requiredByRules PrerequisiteRule[] @relation("RequiredCourse")
+  sections        Section[]
 
   @@unique([code, id])
+}
+
+model Term {
+  id        String    @id
+  name      String
+  sourceUrl String
+  fetchedAt DateTime
+  sections  Section[]
+}
+
+model Section {
+  id            String @id @default(cuid())
+  termId        String
+  courseId      String
+  classNumber   String
+  sectionNumber String
+  mode          String
+  component     String
+  days          String
+  times         String
+  location      String
+  dates         String
+  openSeats     Int
+  instructors   String[] @default([])
+  term          Term   @relation(fields: [termId], references: [id], onDelete: Cascade)
+  course        Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([termId, classNumber])
+  @@index([courseId, termId])
 }
 
 model CourseVersion {
@@ -56,6 +86,7 @@ model CourseVersion {
   catalogVersionId    String
   title               String
   description         String
+  prerequisiteText    String?
   units               Int
   course              Course               @relation(fields: [courseId], references: [id], onDelete: Cascade)
   catalogVersion      CatalogVersion       @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)

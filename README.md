@@ -1,14 +1,16 @@
 # Course Radar
 
-Course Radar currently focuses on one program: SJSU Computer Engineering. It displays graduation requirement groups, courses, and recorded prerequisite relationships for a selected catalog dataset.
+Course Radar supports SJSU Computer Engineering and Software Engineering, catalog 2026-2027 only. Choose a degree on the main page to view its eight-semester roadmap, prerequisite chart, and Fall 2026 sections.
 
 ## Current scope
 
-- Computer Engineering only.
-- Graduation requirements and course details.
+- Computer Engineering and Software Engineering, selected on the main page.
+- 2026-2027 roadmap and course details.
+- Fall 2026 sections, meeting times, modes, locations, dates, and open-seat counts, including rows with zero open seats.
 - Prerequisite relationships stored in PostgreSQL through Prisma.
 - NestJS read API.
-- No student plan, local storage, authentication, class sections, availability, or schedule conflicts.
+- Instructor names and Rate My Professors search links (not verified profile matches).
+- No student plan, local storage, authentication, ratings import, or schedule-conflict checking yet.
 
 ## Run the frontend
 
@@ -17,22 +19,35 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. Without the API, the UI uses the same draft catalog fixture and labels it `Local draft`.
+Open `http://localhost:5173`. Without the API, the UI uses the reviewed 2026-2027 catalog dataset bundled with the frontend.
+
+- Roadmap: `http://localhost:5173/`
+- Vertical prerequisite chart: `http://localhost:5173/prerequisite-chart`
 
 ## Backend data flow
 
 ```text
-Reviewed SJSU source -> structured catalog data -> Prisma seed/import -> PostgreSQL -> NestJS API -> React
+Official SJSU 2026-2027 catalog -> structured catalog data -> Prisma seed/import -> PostgreSQL -> NestJS API -> React
 ```
 
-The current structured draft is in `src/data.ts`. It is imported by the seed script; nobody needs to type individual SQL rows manually. Before the dataset is marked reviewed, its course list, graduation groups, and prerequisite wording must be checked against the official SJSU catalog.
+The reviewed structured dataset is in `src/data.ts`. It is imported by the seed script; nobody needs to type individual SQL rows manually. The source of truth for this version is the [official 2026-2027 Computer Engineering roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19250&returnto=8647), with each linked course page used to check prerequisite wording.
+
+Fall 2026 offerings are generated from the [official SJSU Fall 2026 class schedule](https://www.sjsu.edu/classes/schedules/fall-2026.php):
+
+```powershell
+npm run data:fall-2026
+```
+
+The importer keeps lecture/lab components, rows with `0` open seats, and instructor names. Clicking a section reveals SJSU-scoped Rate My Professors name-search links.
 
 ## API
 
 - `GET /api/v1/programs`
-- `GET /api/v1/programs/computer-engineering/requirements?catalogYear=...`
-- `GET /api/v1/courses/:id?catalogYear=...`
-- `GET /api/v1/bootstrap`
+- `GET /api/v1/programs/:slug/requirements?catalogYear=2026-2027`
+- `GET /api/v1/courses/:id?catalogYear=2026-2027&program=software-engineering`
+- `GET /api/v1/bootstrap?program=software-engineering` (defaults to `computer-engineering`)
 - `GET /api/v1/health`
 
 Database setup and final verification are deferred until the project reaches the integration phase.
+
+Software Engineering data lives in `src/softwareEngineeringData.ts`, based on the [official SE roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19349&returnto=8647). Two math/statistics pairs are explicitly marked choose-one; open-ended electives remain placeholders. Shared course IDs retain separate program-specific course versions in Prisma. Run the existing seed after database setup to import both programs; this update does not run migrations or seed automatically.
