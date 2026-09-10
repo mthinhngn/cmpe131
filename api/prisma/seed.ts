@@ -1,90 +1,75 @@
-import { Availability, PrismaClient, RuleOperator } from "@prisma/client";
-import { majors, roadmaps, sections } from "../../src/data";
+import { PrismaClient, RequirementItemType, RuleOperator } from "@prisma/client";
+import { computerEngineeringCatalog } from "../../src/data";
 
 const prisma = new PrismaClient();
 
-const slugByMajor = {
-  "Software Engineering": "software-engineering",
-  "Computer Engineering": "computer-engineering",
-} as const;
-
 async function main() {
-  await prisma.$transaction([
-    prisma.meeting.deleteMany(),
-    prisma.section.deleteMany(),
-    prisma.instructor.deleteMany(),
-    prisma.term.deleteMany(),
-    prisma.prerequisiteRule.deleteMany(),
-    prisma.roadmapItem.deleteMany(),
-    prisma.courseVersion.deleteMany(),
-    prisma.sourceSnapshot.deleteMany(),
-    prisma.catalogVersion.deleteMany(),
-    prisma.program.deleteMany(),
-    prisma.course.deleteMany(),
-  ]);
+  const catalog = computerEngineeringCatalog;
+  const program = await prisma.program.upsert({
+    where: { slug: "computer-engineering" },
+    update: { name: catalog.name, abbreviation: catalog.abbreviation },
+    create: { slug: "computer-engineering", name: catalog.name, abbreviation: catalog.abbreviation },
+  });
+  const catalogVersion = await prisma.catalogVersion.upsert({
+    where: { programId_catalogYear: { programId: program.id, catalogYear: catalog.catalogYear } },
+    update: { dataVersion: catalog.dataVersion, sourceUrl: catalog.sourceUrl, semesterCount: 10 },
+    create: {
+      programId: program.id,
+      catalogYear: catalog.catalogYear,
+      dataVersion: catalog.dataVersion,
+      sourceUrl: catalog.sourceUrl,
+      semesterCount: 10,
+    },
+  });
 
-  const uniqueCourses = new Map(majors.flatMap((major) => roadmaps[major].courses).map((course) => [course.id, course]));
-  await prisma.course.createMany({ data: [...uniqueCourses.values()].map((course) => ({ id: course.id, code: course.code })) });
-
-  for (const major of majors) {
-    const roadmap = roadmaps[major];
-    const program = await prisma.program.create({ data: { slug: slugByMajor[major], name: roadmap.name, abbreviation: roadmap.abbreviation } });
-    const catalog = await prisma.catalogVersion.create({
-      data: {
-        programId: program.id,
-        catalogYear: roadmap.catalog,
-        dataVersion: "week-1-fixture",
-        sourceUrl: roadmap.sourceUrl,
-        semesterCount: roadmap.semesterCount,
-      },
+  const versionIdByCourseId = new Map<string, string>();
+  for (const item of catalog.courses) {
+    await prisma.course.upsert({ where: { id: item.id }, update: { code: item.code }, create: { id: item.id, code: item.code } });
+    const version = await prisma.courseVersion.upsert({
+      where: { courseId_catalogVersionId: { courseId: item.id, catalogVersionId: catalogVersion.id } },
+      update: { title: item.title, description: item.description, units: item.units },
+      create: { courseId: item.id, catalogVersionId: catalogVersion.id, title: item.title, description: item.description, units: item.units },
     });
-    for (const course of roadmap.courses) {
-      const version = await prisma.courseVersion.create({
-        data: {
-          courseId: course.id,
-          catalogVersionId: catalog.id,
-          title: course.title,
-          description: course.description,
-          units: course.units,
-          roadmapItem: { create: { recommendedSemester: course.recommendedSemester } },
-        },
+    versionIdByCourseId.set(item.id, version.id);
+  }
+
+  await prisma.prerequisiteRule.deleteMany({ where: { courseVersion: { catalogVersionId: catalogVersion.id } } });
+  for (const item of catalog.courses) {
+    const courseVersionId = versionIdByCourseId.get(item.id)!;
+    if (item.prerequisiteCourseIds.length) {
+      await prisma.prerequisiteRule.createMany({
+        data: item.prerequisiteCourseIds.map((requiredCourseId) => ({
+          courseVersionId,
+          requiredCourseId,
+          groupKey: "all-required",
+          operator: RuleOperator.AND,
+        })),
       });
-      if (course.prerequisiteCourseIds.length) {
-        await prisma.prerequisiteRule.createMany({
-          data: course.prerequisiteCourseIds.map((requiredCourseId) => ({
-            courseVersionId: version.id,
-            requiredCourseId,
-            groupKey: "all-required",
-            operator: RuleOperator.AND,
-          })),
-        });
-      }
     }
   }
 
-  const term = await prisma.term.create({
-    data: {
-      id: "fall-2026",
-      label: "Fall 2026",
-      sourceUrl: sections[0]?.sourceUrl ?? "https://www.sjsu.edu/classes/schedules/",
-      dataVersion: "week-1-fixture",
-    },
-  });
-  for (const section of sections) {
-    const instructor = section.instructor
-      ? await prisma.instructor.upsert({ where: { name: section.instructor }, update: {}, create: { name: section.instructor } })
-      : null;
-    await prisma.section.create({
+  await prisma.requirementGroup.deleteMany({ where: { catalogVersionId: catalogVersion.id } });
+  for (const [groupIndex, group] of catalog.requirementGroups.entries()) {
+    await prisma.requirementGroup.create({
       data: {
-        id: section.id,
-        courseId: section.courseId,
-        termId: term.id,
-        instructorId: instructor?.id,
-        sectionNumber: section.sectionNumber,
-        availability: section.availability.toUpperCase() as Availability,
-        openSeats: section.openSeats,
-        sourceUrl: section.sourceUrl,
-        meetings: { create: section.meetings.map((meeting) => ({ ...meeting })) },
+        key: group.id,
+        catalogVersionId: catalogVersion.id,
+        title: group.title,
+        description: group.description,
+        sortOrder: groupIndex,
+        requirements: {
+          create: group.items.map((item, itemIndex) => ({
+            sourceKey: item.id,
+            itemType: item.type === "course" ? RequirementItemType.COURSE : RequirementItemType.PLACEHOLDER,
+            courseVersionId: item.courseId ? versionIdByCourseId.get(item.courseId) : undefined,
+            label: item.label,
+            description: item.description,
+            recommendedSemester: item.courseId
+              ? catalog.courses.find((course) => course.id === item.courseId)?.recommendedSemester
+              : item.recommendedSemester,
+            sortOrder: itemIndex,
+          })),
+        },
       },
     });
   }

@@ -1,44 +1,26 @@
-# Course Radar - current implementation snapshot
+# Computer Engineering backend snapshot
 
-This is the first-week MVP slice. The browser workflow is the priority now; Docker, database acceptance checks, and end-to-end verification are intentionally deferred to the final phase.
+## Implemented now
 
-## What is working in the website
+- The product is limited to SJSU Computer Engineering.
+- The frontend lists five graduation requirement groups and opens course prerequisite details.
+- The dataset is explicitly labeled `draft-unverified`.
+- Prisma models catalog versions, courses, course versions, prerequisite rules, requirement groups, requirement items, and source snapshots.
+- NestJS exposes read-only program, requirement, course, bootstrap, and health endpoints.
+- The seed imports structured data; it does not contain hand-written SQL inserts.
 
-- Course Explorer for Software Engineering and Computer Engineering.
-- Roadmap view with catalog-specific course sequence and prerequisite highlighting.
-- Course detail drawer with units, prerequisites, sections, meeting times, instructors, source links, and section selection.
-- `My Plan` page at `/plan`.
-- Completed-course state stored in the browser.
-- One selected section per course.
-- Prerequisite warnings with missing course IDs translated to course codes.
-- Meeting-time conflict warnings for overlapping days and intervals.
-- JSON export/import for browser plans.
-- Invalid JSON import leaves the existing plan unchanged and shows an inline error.
-- Responsive mobile layout and keyboard-visible controls.
+## Removed from this phase
 
-The stored plan is versioned JSON. It contains `schemaVersion`, `major`, `catalog`, `dataVersion`, completed course IDs, selected section IDs, and `updatedAt`. No account or authentication is required.
+- Student plans and browser local storage.
+- Authentication and user IDs.
+- Terms, sections, instructors, seat availability, and meeting conflicts.
+- Planning and plan-validation endpoints.
+- Software Engineering data.
 
-## Architecture prepared for the next phase
+## Data caveat
 
-- `api/` contains the NestJS modular monolith.
-- `api/prisma/schema.prisma` models programs, catalog versions, courses, prerequisite rules, roadmap items, terms, sections, meetings, instructors, and source snapshots.
-- `api/src/catalog`, `api/src/courses`, `api/src/terms`, and `api/src/planning` are separated by responsibility.
-- `GET /api/v1/bootstrap` is the read model used by the frontend when the API is available.
-- `POST /api/v1/plans/validate` is stateless. It validates a plan without persisting it, leaving room for authenticated persistence later.
-- `src/planner.ts` and `api/src/planning/rules.ts` keep the planning rules independent from React and NestJS controllers.
+The current draft is based on the existing Fall 2024 BSCMPE prerequisite-chart reference. Live SJSU access failed during this implementation pass, so the dataset has not been promoted to `reviewed`. The next data task is to compare this draft against the official catalog and update `lastVerifiedAt` only after that review succeeds.
 
-## Run the current website
+## Next backend implementation
 
-```powershell
-npm install
-npm run dev
-```
-
-Open `http://localhost:5173`. When the API is not running, the website uses its local fixture data and labels it as a sample dataset. Docker and PostgreSQL are not required for this phase.
-
-## Deliberately deferred
-
-- User IDs, authentication, and server-side plan persistence.
-- Production data import and catalog-source review.
-- Real-time seat availability or enrollment integration.
-- Final Docker/database acceptance testing and complete end-to-end test pass.
+Build one importer command that accepts reviewed Computer Engineering catalog data, validates duplicate IDs and missing prerequisite references, and publishes a catalog version in one transaction. PostgreSQL then becomes the runtime source of truth for the React application.

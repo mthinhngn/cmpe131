@@ -12,11 +12,9 @@ enum RuleOperator {
   OR
 }
 
-enum Availability {
-  OPEN
-  CLOSED
-  WAITLIST
-  UNKNOWN
+enum RequirementItemType {
+  COURSE
+  PLACEHOLDER
 }
 
 model Program {
@@ -28,105 +26,87 @@ model Program {
 }
 
 model CatalogVersion {
-  id              String          @id @default(cuid())
-  programId       String
-  catalogYear     String
-  dataVersion     String
-  sourceUrl       String
-  lastVerifiedAt  DateTime?
-  semesterCount   Int
-  program         Program         @relation(fields: [programId], references: [id], onDelete: Cascade)
-  courseVersions  CourseVersion[]
-  sourceSnapshots SourceSnapshot[]
+  id                String             @id @default(cuid())
+  programId         String
+  catalogYear       String
+  dataVersion       String
+  sourceUrl         String
+  lastVerifiedAt    DateTime?
+  semesterCount     Int
+  program           Program            @relation(fields: [programId], references: [id], onDelete: Cascade)
+  courseVersions    CourseVersion[]
+  requirementGroups RequirementGroup[]
+  sourceSnapshots   SourceSnapshot[]
 
   @@unique([programId, catalogYear])
 }
 
 model Course {
-  id                 String             @id
-  code               String
-  versions           CourseVersion[]
-  requiredByRules    PrerequisiteRule[] @relation("RequiredCourse")
-  sections           Section[]
+  id              String             @id
+  code            String
+  versions        CourseVersion[]
+  requiredByRules PrerequisiteRule[] @relation("RequiredCourse")
 
   @@unique([code, id])
 }
 
 model CourseVersion {
-  id                    String             @id @default(cuid())
-  courseId              String
-  catalogVersionId      String
-  title                 String
-  description           String
-  units                 Int
-  course                Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  catalogVersion        CatalogVersion     @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
-  prerequisiteRules     PrerequisiteRule[]
-  roadmapItem           RoadmapItem?
+  id                  String               @id @default(cuid())
+  courseId            String
+  catalogVersionId    String
+  title               String
+  description         String
+  units               Int
+  course              Course               @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  catalogVersion      CatalogVersion       @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
+  prerequisiteRules   PrerequisiteRule[]
+  programRequirements ProgramRequirement[]
 
   @@unique([courseId, catalogVersionId])
 }
 
 model PrerequisiteRule {
-  id                   String         @id @default(cuid())
+  id                   String        @id @default(cuid())
   courseVersionId      String
   requiredCourseId     String
-  groupKey             String         @default("default")
-  operator             RuleOperator   @default(AND)
+  groupKey             String        @default("default")
+  operator             RuleOperator  @default(AND)
   minimumGrade         String?
-  isCorequisite        Boolean        @default(false)
-  requiresManualReview Boolean        @default(false)
-  courseVersion        CourseVersion  @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
-  requiredCourse       Course         @relation("RequiredCourse", fields: [requiredCourseId], references: [id])
+  isCorequisite        Boolean       @default(false)
+  requiresManualReview Boolean       @default(false)
+  courseVersion        CourseVersion @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+  requiredCourse       Course        @relation("RequiredCourse", fields: [requiredCourseId], references: [id])
 }
 
-model RoadmapItem {
-  id                  String        @id @default(cuid())
-  courseVersionId     String        @unique
-  recommendedSemester Int
-  courseVersion       CourseVersion @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+model RequirementGroup {
+  id               String               @id @default(cuid())
+  key              String
+  catalogVersionId String
+  title            String
+  description      String
+  sortOrder        Int
+  catalogVersion   CatalogVersion       @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
+  requirements     ProgramRequirement[]
+
+  @@unique([catalogVersionId, sortOrder])
+  @@unique([catalogVersionId, key])
 }
 
-model Term {
-  id          String    @id
-  label       String    @unique
-  sourceUrl   String
-  dataVersion String
-  verifiedAt  DateTime?
-  sections    Section[]
-}
+model ProgramRequirement {
+  id                  String              @id @default(cuid())
+  sourceKey           String
+  requirementGroupId  String
+  itemType            RequirementItemType
+  courseVersionId     String?
+  label               String?
+  description         String?
+  recommendedSemester Int?
+  sortOrder           Int
+  requirementGroup    RequirementGroup    @relation(fields: [requirementGroupId], references: [id], onDelete: Cascade)
+  courseVersion       CourseVersion?      @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
 
-model Instructor {
-  id       String    @id @default(cuid())
-  name     String    @unique
-  sections Section[]
-}
-
-model Section {
-  id           String       @id
-  courseId     String
-  termId       String
-  instructorId String?
-  sectionNumber String
-  availability Availability @default(UNKNOWN)
-  openSeats    Int?
-  sourceUrl    String
-  course       Course       @relation(fields: [courseId], references: [id])
-  term         Term         @relation(fields: [termId], references: [id])
-  instructor   Instructor?  @relation(fields: [instructorId], references: [id])
-  meetings     Meeting[]
-
-  @@unique([courseId, termId, sectionNumber])
-}
-
-model Meeting {
-  id        String   @id @default(cuid())
-  sectionId String
-  days      String[]
-  startTime String?
-  endTime   String?
-  location  String?
-  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  @@unique([requirementGroupId, sortOrder])
+  @@unique([requirementGroupId, sourceKey])
 }
 
 model SourceSnapshot {

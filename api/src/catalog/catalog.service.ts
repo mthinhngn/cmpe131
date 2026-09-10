@@ -12,7 +12,7 @@ export class CatalogService {
     });
   }
 
-  async roadmap(slug: string, catalogYear?: string) {
+  async requirements(slug: string, catalogYear?: string) {
     const program = await this.prisma.program.findUnique({
       where: { slug },
       include: {
@@ -21,11 +21,13 @@ export class CatalogService {
           orderBy: { catalogYear: "desc" },
           take: 1,
           include: {
-            courseVersions: {
+            requirementGroups: {
+              orderBy: { sortOrder: "asc" },
               include: {
-                course: true,
-                roadmapItem: true,
-                prerequisiteRules: { include: { requiredCourse: true } },
+                requirements: {
+                  orderBy: { sortOrder: "asc" },
+                  include: { courseVersion: { include: { course: true, prerequisiteRules: { include: { requiredCourse: true } } } } },
+                },
               },
             },
           },
@@ -40,24 +42,7 @@ export class CatalogService {
       lastVerifiedAt: catalog.lastVerifiedAt,
       program: { id: program.id, slug: program.slug, name: program.name, abbreviation: program.abbreviation },
       catalogYear: catalog.catalogYear,
-      semesterCount: catalog.semesterCount,
-      courses: catalog.courseVersions.map((version) => ({
-        id: version.course.id,
-        code: version.course.code,
-        title: version.title,
-        description: version.description,
-        units: version.units,
-        recommendedSemester: version.roadmapItem?.recommendedSemester ?? null,
-        prerequisiteRules: version.prerequisiteRules.map((rule) => ({
-          requiredCourseId: rule.requiredCourseId,
-          requiredCourseCode: rule.requiredCourse.code,
-          groupKey: rule.groupKey,
-          operator: rule.operator,
-          minimumGrade: rule.minimumGrade,
-          isCorequisite: rule.isCorequisite,
-          requiresManualReview: rule.requiresManualReview,
-        })),
-      })),
+      requirementGroups: catalog.requirementGroups,
     };
   }
 }

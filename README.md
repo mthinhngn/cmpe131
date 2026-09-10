@@ -1,6 +1,14 @@
 # Course Radar
 
-Course Radar is an SJSU course-planning MVP. The React app keeps a versioned student plan in the browser. The NestJS API exposes catalog, roadmap, term, section, and stateless validation endpoints backed by PostgreSQL through Prisma.
+Course Radar currently focuses on one program: SJSU Computer Engineering. It displays graduation requirement groups, courses, and recorded prerequisite relationships for a selected catalog dataset.
+
+## Current scope
+
+- Computer Engineering only.
+- Graduation requirements and course details.
+- Prerequisite relationships stored in PostgreSQL through Prisma.
+- NestJS read API.
+- No student plan, local storage, authentication, class sections, availability, or schedule conflicts.
 
 ## Run the frontend
 
@@ -9,24 +17,22 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`.
+Open `http://localhost:5173`. Without the API, the UI uses the same draft catalog fixture and labels it `Local draft`.
 
-## Run PostgreSQL and the API
+## Backend data flow
 
-```powershell
-docker compose up -d postgres
-Copy-Item api/.env.example api/.env
-Set-Location api
-npm install
-npx prisma migrate dev --name init
-npm run prisma:seed
-npm run dev
+```text
+Reviewed SJSU source -> structured catalog data -> Prisma seed/import -> PostgreSQL -> NestJS API -> React
 ```
 
-The API listens on `http://localhost:3001/api/v1`. Try `/health`, `/programs`, `/programs/software-engineering/roadmap`, `/terms`, and `/courses/cmpe131/sections?termId=fall-2026`.
+The current structured draft is in `src/data.ts`. It is imported by the seed script; nobody needs to type individual SQL rows manually. Before the dataset is marked reviewed, its course list, graduation groups, and prerequisite wording must be checked against the official SJSU catalog.
 
-After the database has been migrated and seeded once, the API can also run in Compose with `docker compose up --build api`.
+## API
 
-`StudentPlan` is intentionally absent from the Prisma schema. The browser owns it today, including JSON export/import. `POST /api/v1/plans/validate` is stateless so the same validation boundary can later be called after authentication is added.
+- `GET /api/v1/programs`
+- `GET /api/v1/programs/computer-engineering/requirements?catalogYear=...`
+- `GET /api/v1/courses/:id?catalogYear=...`
+- `GET /api/v1/bootstrap`
+- `GET /api/v1/health`
 
-The repository currently includes a deliberately small week-one fixture. Every visible enrollment detail remains a planning aid and must be confirmed against the linked SJSU source.
+Database setup and final verification are deferred until the project reaches the integration phase.

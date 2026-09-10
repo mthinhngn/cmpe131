@@ -19,15 +19,4 @@ export class CoursesService {
     const version = course.versions[0];
     return { ...course, versions: undefined, version, dataVersion: version.catalogVersion.dataVersion };
   }
-
-  async sections(id: string, termId: string) {
-    const term = await this.prisma.term.findUnique({ where: { id: termId } });
-    if (!term) throw new NotFoundException("Term was not found");
-    const sections = await this.prisma.section.findMany({
-      where: { courseId: id, termId },
-      include: { meetings: true, instructor: true },
-      orderBy: { sectionNumber: "asc" },
-    });
-    return { dataVersion: term.dataVersion, sourceUrl: term.sourceUrl, lastVerifiedAt: term.verifiedAt, sections };
-  }
 }

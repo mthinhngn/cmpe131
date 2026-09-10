@@ -8,8 +8,8 @@ export class CatalogController {
   @Get()
   programs() { return this.catalog.programs(); }
 
-  @Get(":slug/roadmap")
-  roadmap(@Param("slug") slug: string, @Query("catalogYear") catalogYear?: string) {
-    return this.catalog.roadmap(slug, catalogYear);
+  @Get(":slug/requirements")
+  requirements(@Param("slug") slug: string, @Query("catalogYear") catalogYear?: string) {
+    return this.catalog.requirements(slug, catalogYear);
   }
 }
