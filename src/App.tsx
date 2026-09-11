@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowSquareOut,
@@ -16,10 +16,31 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { useCatalog } from "./CatalogContext";
+import { CourseStateBadge } from "./CourseState";
 import type { Course } from "./types";
 
 export function CourseDetail({ course, onClose }: { course: Course; onClose: () => void }) {
-  const { catalog, courseById } = useCatalog();
+  const { catalog, courseById, takenCourseIds, toggleTakenCourse, plans, setPlan, removePlan } = useCatalog();
+  const dialog = useRef<HTMLElement>(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  useEffect(() => {
+    const origin = document.activeElement as HTMLElement | null;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    const listener = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); closeRef.current(); }
+      if (event.key !== "Tab") return;
+      const elements = Array.from(dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], select, summary, input') ?? []).filter(element => element.getClientRects().length);
+      const first = elements[0], last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener("keydown", listener);
+    return () => { document.body.style.overflow = oldOverflow; document.removeEventListener("keydown", listener); origin?.focus(); };
+  }, []);
+  const isTaken = takenCourseIds.has(course.id);
   const [selectedTerm, setSelectedTerm] = useState(catalog.currentTerm.name);
   const hasTermData = selectedTerm === catalog.currentTerm.name;
   const semesterChoices = Array.from({ length: 5 }, (_, index) => 2026 - index)
@@ -37,12 +58,24 @@ export function CourseDetail({ course, onClose }: { course: Course; onClose: () 
 
   return (
     <div className="drawer-layer" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <aside className="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="course-title">
+      <aside ref={dialog} className="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="course-title">
         <header className="drawer-header">
           <div><span className="course-code">{course.code}</span><h2 id="course-title">{course.title}</h2></div>
           <button className="icon-button" onClick={onClose} aria-label="Close course details"><X size={20} /></button>
         </header>
         <div className="drawer-content">
+          <section className="taken-control" aria-label="Course completion">
+            <button type="button" aria-pressed={isTaken} onClick={() => { if (!isTaken) removePlan(course.id); toggleTakenCourse(course.id); }}>
+              <CheckCircle size={19} weight={isTaken ? "fill" : "regular"} />
+              {isTaken ? "Already taken · Undo" : "Mark as already taken"}
+            </button>
+            <p role="status">{isTaken ? "Marked with a red line on your chart." : "Mark this course to cross it out on your chart."} Marks reset when you refresh.</p>
+          </section>
+          <section className="plan-controls" aria-label="Plan this course">
+            <label>Plan semester<select value={plans[course.id]?.semester ?? ""} onChange={event => { if (event.target.value) setPlan(course.id, Number(event.target.value)); else removePlan(course.id); }}><option value="">Not planned</option>{catalog.requirementGroups.map((group, index) => <option key={group.id} value={index + 1}>Semester {index + 1}</option>)}</select></label>
+            {plans[course.id] && <label>Course status<select value={plans[course.id].status} onChange={event => setPlan(course.id, plans[course.id].semester, event.target.value as "planned" | "in-progress")}><option value="planned">Planned</option><option value="in-progress">In progress</option></select></label>}
+            <p>Session draft · Changes reset on refresh. Planning does not enroll you.</p>
+          </section>
           <div className="course-facts">
             <span><BookOpen size={17} />{course.units} {course.units === 1 ? "unit" : "units"}</span>
             <span><GraduationCap size={17} />Recommended semester {course.recommendedSemester}</span>
@@ -200,6 +233,7 @@ export default function App() {
                     <button className="requirement-row course-row" key={item.id} onClick={() => setSelectedCourse(course)}>
                       <span className="course-code">{course.code}</span>
                       <div><strong>{course.title}</strong><p>{item.description ?? (course.prerequisiteCourseIds.length ? `${course.prerequisiteCourseIds.length} recorded prerequisite${course.prerequisiteCourseIds.length === 1 ? "" : "s"}` : "No recorded course prerequisite")}</p></div>
+                      <CourseStateBadge course={course} compact />
                       <span className="units">{course.units} {course.units === 1 ? "unit" : "units"}</span>
                       <CaretRight size={17} />
                     </button>

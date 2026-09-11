@@ -344,3 +344,12 @@ main { max-width: 1320px; padding-top: 36px; }
 .chart-note { border-width: 0 0 0 4px; border-color: var(--gold); border-radius: 0; color: #526675; background: white; }
 .chart-note svg { color: var(--accent); }
 .site-footer { color: #657481; }
+.taken-control { margin-bottom: 24px; }
+.taken-control button { width: 100%; min-height: 44px; padding: 12px 14px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #a52332; border-radius: 4px; background: white; color: #a52332; font: inherit; font-weight: 650; cursor: pointer; }
+.taken-control button:hover { background: #fff2f3; }
+.taken-control button[aria-pressed="true"] { background: #a52332; color: white; }
+.taken-control p { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.chart-node.is-taken { border-color: #a52332; }
+.chart-node.is-taken::after { content: ""; position: absolute; left: 5%; right: 5%; top: 52%; height: 3px; background: #ba2638; transform: rotate(-18deg); pointer-events: none; }
+.taken-label { position: absolute; right: 5px; top: 5px; color: #a52332; font-size: 9px; font-weight: 750; }
+.legend-taken { width: 36px; border-top: 3px solid #ba2638; transform: rotate(-12deg); }

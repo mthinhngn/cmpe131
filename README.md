@@ -1,6 +1,6 @@
 # Course Radar
 
-Course Radar supports SJSU Computer Engineering and Software Engineering, catalog 2026-2027 only. Choose a degree on the main page to view its eight-semester roadmap, prerequisite chart, and Fall 2026 sections.
+Course Radar supports SJSU Computer Engineering and Software Engineering, catalog 2026-2027 only. Its academic workspace brings together a personal overview, course explorer, degree roadmap, prerequisite chart, session-based semester planner, and a clearly labeled preview of future recommendations.
 
 ## Current scope
 
@@ -10,7 +10,7 @@ Course Radar supports SJSU Computer Engineering and Software Engineering, catalo
 - Prerequisite relationships stored in PostgreSQL through Prisma.
 - NestJS read API.
 - Instructor names and Rate My Professors search links (not verified profile matches).
-- No student plan, local storage, authentication, ratings import, or schedule-conflict checking yet.
+- A frontend-only semester planning draft that resets on refresh; no persistent student plan, authentication, ratings import, or schedule-conflict checking yet.
 
 ## Run the frontend
 
@@ -21,8 +21,12 @@ npm run dev
 
 Open `http://localhost:5173`. Without the API, the UI uses the reviewed 2026-2027 catalog dataset bundled with the frontend.
 
-- Roadmap: `http://localhost:5173/`
+- Overview: `http://localhost:5173/`
+- Course explorer: `http://localhost:5173/courses`
+- Roadmap: `http://localhost:5173/roadmap`
 - Vertical prerequisite chart: `http://localhost:5173/prerequisite-chart`
+- Semester planner: `http://localhost:5173/planner`
+- Recommendations preview: `http://localhost:5173/recommendations`
 
 ## Backend data flow
 

@@ -4,6 +4,12 @@ import { softwareEngineeringCatalog } from "./softwareEngineeringData";
 import type { Course, ProgramCatalog } from "./types";
 
 type CatalogContextValue = {
+  plans: Record<string, { status: "planned" | "in-progress"; semester: number }>;
+  setPlan: (id: string, semester: number, status?: "planned" | "in-progress") => void;
+  removePlan: (id: string) => void;
+  retry: () => void;
+  takenCourseIds: Set<string>;
+  toggleTakenCourse: (id: string) => void;
   program: string;
   selectProgram: (program: string) => void;
   catalog: ProgramCatalog;
@@ -14,6 +20,9 @@ type CatalogContextValue = {
 const CatalogContext = createContext<CatalogContextValue | null>(null);
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
+  const [planByProgram, setPlanByProgram] = useState<Record<string, Record<string, { status: "planned" | "in-progress"; semester: number }>>>({});
+  const [attempt, setAttempt] = useState(0);
+  const [takenCourseIds, setTakenCourseIds] = useState<Set<string>>(() => new Set());
   const [program, setProgram] = useState("computer-engineering");
   const [catalog, setCatalog] = useState(computerEngineeringCatalog);
   const [mode, setMode] = useState<CatalogContextValue["mode"]>("loading");
@@ -41,15 +50,28 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         setMode("fixture");
       });
     return () => controller.abort();
-  }, [program]);
+  }, [program, attempt]);
 
   const value = useMemo(() => ({
+    plans: planByProgram[program] ?? {},
+    setPlan: (id: string, semester: number, status: "planned" | "in-progress" = "planned") => {
+      setPlanByProgram(previous => ({ ...previous, [program]: { ...previous[program], [id]: { semester, status } } }));
+      setTakenCourseIds(previous => { const next = new Set(previous); next.delete(id); return next; });
+    },
+    removePlan: (id: string) => setPlanByProgram(previous => { const next = { ...previous[program] }; delete next[id]; return { ...previous, [program]: next }; }),
+    retry: () => setAttempt(previous => previous + 1),
+    takenCourseIds,
+    toggleTakenCourse: (id: string) => setTakenCourseIds((previous) => {
+      const next = new Set(previous);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    }),
     program,
     selectProgram: setProgram,
     catalog,
     courseById: new Map(catalog.courses.map((course) => [course.id, course])),
     mode,
-  }), [catalog, mode, program]);
+  }), [catalog, mode, program, takenCourseIds, planByProgram]);
 
   return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>;
 }
