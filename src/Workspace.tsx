@@ -5,6 +5,7 @@ import { useCatalog } from "./CatalogContext";
 import { CourseDetail } from "./App";
 import type { Course } from "./types";
 import { CourseStateBadge } from "./CourseState";
+import { CourseRadarLogo } from "./CourseRadarLogo";
 import "./workspace.css";
 
 const navigation = [
@@ -24,7 +25,7 @@ export function Workspace() {
   return <div className="workspace">
     <a className="skip-link" href="#workspace-content">Skip to content</a>
     <header className="workspace-header">
-      <Link className="workspace-brand" to="/"><span className="radar-symbol"><span /></span><span className="brand-copy"><strong>Course Radar</strong><small>Plan with clarity</small></span></Link>
+      <Link className="workspace-brand" to="/" aria-label="CourseRadar home"><CourseRadarLogo /></Link>
       <nav aria-label="Main navigation">{navigation.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === "/"}><Icon size={19} aria-hidden="true" /><span>{label}</span>{to === "/recommendations" && <small>Preview</small>}</NavLink>)}</nav>
       <a className="program-source" href={catalog.programUrl} target="_blank" rel="noreferrer">Official guide <ArrowSquareOut size={14} aria-hidden="true" /></a>
     </header>

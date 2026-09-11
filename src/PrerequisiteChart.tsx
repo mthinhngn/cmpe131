@@ -5,7 +5,6 @@ import { useCatalog } from "./CatalogContext";
 import { CourseDetail } from "./App";
 import type { Course } from "./types";
 import { CourseStateBadge, courseStateLabels, useCourseState } from "./CourseState";
-import { GraphDepthCanvas } from "./GraphDepthCanvas";
 
 type GraphEdge = { from: string; to: string; kind: "prerequisite" | "corequisite" };
 type DrawnEdge = GraphEdge & { key: string; path: string };
@@ -177,14 +176,14 @@ export default function PrerequisiteChart() {
           <div className="chart-legend" aria-label="Chart legend">
             <span><i className="legend-line solid" />Prerequisite</span>
             <span><i className="legend-line dashed" />Corequisite</span>
-            <span><i className="legend-dot" />Official roadmap course</span>
+            <span><i className="legend-status-dot open" />Open</span>
+            <span><i className="legend-status-dot closed" />Closed</span>
             <span><i className="legend-taken" />Already taken</span>
           </div>
         </section>
 
         <div className="chart-scroll">
           <div className="prerequisite-chart" ref={chartRef}>
-            <GraphDepthCanvas focusKey={highlightedCourseId} />
             <svg className="chart-connections" aria-hidden="true">
               <defs>
                 <marker id="arrow-prerequisite" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" /></marker>
