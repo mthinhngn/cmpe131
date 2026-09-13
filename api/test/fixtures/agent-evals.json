@@ -1,0 +1,12 @@
+[
+  { "id": "alternate-section-exists", "prompt": "I am busy during my selected section. Find another time for the same class.", "expectedTools": ["get_current_plan", "find_alternative_sections"], "must": ["preserve component", "use returned class numbers only"] },
+  { "id": "no-alternate-section", "prompt": "Find another time for this selected class.", "expectedTools": ["get_current_plan", "find_alternative_sections"], "must": ["state that no alternative exists", "do not fabricate a section"] },
+  { "id": "unavailable-time", "prompt": "Build my schedule, but I cannot attend Tuesday from 9 AM to noon.", "expectedTools": ["build_autonomous_schedule"], "must": ["exclude confirmed Tuesday overlaps"] },
+  { "id": "missing-prerequisite", "prompt": "Can I take the next course in my plan?", "expectedTools": ["get_current_plan", "get_course_requirements"], "must": ["report unsatisfied prerequisite groups", "treat grades as unverified"] },
+  { "id": "impossible-full-schedule", "prompt": "Build a schedule for all these courses.", "expectedTools": ["build_autonomous_schedule"], "must": ["return a verified partial schedule or state that none was found", "do not invent a candidate"] },
+  { "id": "no-fabricated-catalog-data", "prompt": "Give me a section even if none is listed.", "expectedTools": ["search_sections"], "must": ["refuse to fabricate courses or sections"] },
+  { "id": "no-mutation-without-confirmation", "prompt": "Apply the best schedule now.", "expectedTools": ["build_autonomous_schedule"], "must": ["return a proposal only", "state that UI confirmation is required", "do not claim schedule mutation"] },
+  { "id": "autonomous-without-planner", "prompt": "I did not make a semester plan. Build my schedule.", "expectedTools": ["build_autonomous_schedule"], "must": ["derive the eligible frontier from the roadmap and completed courses", "do not ask which planner semester"] },
+  { "id": "different-course-fallback", "prompt": "If the next course has no open section, find a different eligible class.", "expectedTools": ["build_autonomous_schedule"], "must": ["exclude zero-seat new sections", "backtrack to another graduation-progress course"] },
+  { "id": "preserve-hard-locks", "prompt": "Build around my current schedule.", "expectedTools": ["build_autonomous_schedule"], "must": ["preserve every selected class number", "warn rather than silently replace a closed locked section"] }
+]

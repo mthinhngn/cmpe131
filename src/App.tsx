@@ -12,15 +12,18 @@ import {
   GraduationCap,
   MapPin,
   MagnifyingGlass,
+  Plus,
   UsersThree,
   X,
 } from "@phosphor-icons/react";
 import { useCatalog } from "./CatalogContext";
 import { CourseStateBadge } from "./CourseState";
 import type { Course } from "./types";
+import { useSchedule } from "./ScheduleContext";
 
 export function CourseDetail({ course, onClose }: { course: Course; onClose: () => void }) {
   const { catalog, courseById, takenCourseIds, toggleTakenCourse, plans, setPlan, removePlan } = useCatalog();
+  const { isSelected, hasSelectedComponent, selectOffering, removeOffering } = useSchedule();
   const dialog = useRef<HTMLElement>(null);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
@@ -114,12 +117,14 @@ export function CourseDetail({ course, onClose }: { course: Course; onClose: () 
               </div>
               <span>{hasTermData ? `${offerings.length} listed` : "Data pending"}</span>
             </header>
-            {hasTermData && <p className="offerings-note">All SJSU-listed sections are shown, including sections with no open seats. Snapshot: {scheduleSnapshotDate}. Click a section to find its professor on Rate My Professors.</p>}
+            {hasTermData && <p className="offerings-note">Choose a section to add it to your weekly schedule. All SJSU-listed sections remain visible, including sections with no open seats. Snapshot: {scheduleSnapshotDate}.</p>}
             {offerings.length ? <div className="offering-list">
               {offerings.map((offering) => {
                 const isOpen = offering.openSeats > 0;
+                const selectedForSchedule = isSelected(offering.classNumber);
+                const replacesComponent = !selectedForSchedule && hasSelectedComponent(offering);
                 return <article className="offering-card" key={offering.classNumber} onClick={(event) => {
-                  if ((event.target as HTMLElement).closest("a, summary, details")) return;
+                  if ((event.target as HTMLElement).closest("a, button, summary, details")) return;
                   const details = event.currentTarget.querySelector("details");
                   if (details) details.open = !details.open;
                 }}>
@@ -133,6 +138,12 @@ export function CourseDetail({ course, onClose }: { course: Course; onClose: () 
                     <div><dt><CalendarBlank size={15} />Dates</dt><dd>{offering.dates}</dd></div>
                     <div><dt><UsersThree size={15} />Professor</dt><dd>{offering.instructors?.join(", ") || "Not announced"}</dd></div>
                   </dl>
+                  <div className="offering-schedule-action">
+                    <button type="button" aria-pressed={selectedForSchedule} onClick={() => selectedForSchedule ? removeOffering(offering.classNumber) : selectOffering(offering)}>
+                      {selectedForSchedule ? <CheckCircle size={17} weight="fill" /> : <Plus size={17} />}
+                      {selectedForSchedule ? "Added to schedule" : replacesComponent ? `Replace ${offering.component} section` : "Add to schedule"}
+                    </button>
+                  </div>
                   <details className="professor-links">
                     <summary>Section {offering.sectionNumber} · Rate My Professors</summary>
                     {offering.instructors?.length ? offering.instructors.map((name) => (

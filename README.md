@@ -1,6 +1,6 @@
 # Course Radar
 
-Course Radar supports SJSU Computer Engineering and Software Engineering, catalog 2026-2027 only. Its academic workspace brings together a personal overview, course explorer, degree roadmap, prerequisite chart, session-based semester planner, and a clearly labeled preview of future recommendations.
+Course Radar supports SJSU Computer Engineering and Software Engineering, catalog 2026-2027 only. Its academic workspace brings together a personal overview, course explorer, degree roadmap, prerequisite chart, session-based semester planner, manual schedule builder, and a Gemini-powered scheduling assistant.
 
 ## Current scope
 
@@ -10,7 +10,9 @@ Course Radar supports SJSU Computer Engineering and Software Engineering, catalo
 - Prerequisite relationships stored in PostgreSQL through Prisma.
 - NestJS read API.
 - Instructor names and Rate My Professors search links (not verified profile matches).
-- A frontend-only semester planning draft that resets on refresh; no persistent student plan, authentication, ratings import, or schedule-conflict checking yet.
+- A session-only eight-semester course planner that resets on refresh.
+- A separate Fall 2026 schedule builder in Course Explorer: manually select sections, view an hourly weekly calendar, and see overlapping-time warnings. Schedule selections persist in browser `localStorage`; there is no authentication, cross-device sync, or registration action.
+- A read-only Gemini scheduling agent that can build from the official roadmap even when the semester planner is empty. It derives prerequisite eligibility from completed courses, preserves every currently selected section as a hard lock, excludes closed new sections, backtracks to another eligible graduation-progress course when needed, and returns proposals that require explicit confirmation.
 
 ## Run the frontend
 
@@ -26,7 +28,7 @@ Open `http://localhost:5173`. Without the API, the UI uses the reviewed 2026-202
 - Roadmap: `http://localhost:5173/roadmap`
 - Vertical prerequisite chart: `http://localhost:5173/prerequisite-chart`
 - Semester planner: `http://localhost:5173/planner`
-- Recommendations preview: `http://localhost:5173/recommendations`
+- Scheduling assistant: `http://localhost:5173/recommendations`
 
 ## Backend data flow
 
@@ -44,6 +46,29 @@ npm run data:fall-2026
 
 The importer keeps lecture/lab components, rows with `0` open seats, and instructor names. Clicking a section reveals SJSU-scoped Rate My Professors name-search links.
 
+The manual schedule builder consumes the same offering records returned by `/api/v1/bootstrap` (or the generated fixture when the API is unavailable). The scheduling agent is stricter: its tools require PostgreSQL and will return `CATALOG_UNAVAILABLE` instead of silently treating frontend fixtures as authoritative.
+
+## Gemini free-tier setup
+
+The backend uses `@google/genai` Interactions API with `store: false`. The API key is never sent to Vite or stored in browser state.
+
+1. Create a key in [Google AI Studio](https://aistudio.google.com/app/apikey) using a project that remains on the Gemini Free tier without Cloud Billing.
+2. Copy `api/.env.example` to `api/.env`.
+3. Put the key after `GEMINI_API_KEY=` in `api/.env`. Do not add it to a `VITE_` variable and do not commit `api/.env`.
+4. Start PostgreSQL and seed the catalog, then run the API:
+
+```powershell
+Copy-Item api\.env.example api\.env
+docker compose up -d postgres
+npm --prefix api run prisma:migrate
+npm --prefix api run prisma:seed
+npm --prefix api run dev
+```
+
+`GEMINI_MODEL` defaults to `gemini-3.1-flash-lite`. `AGENT_MAX_TOOL_CALLS` may lower, but cannot raise, the hard six-call safety limit. `AGENT_MAX_COMBINATIONS` bounds deterministic schedule search.
+
+Free-tier capacity and rate limits are not guaranteed. A missing/invalid key, exhausted quota, network failure, or unavailable PostgreSQL catalog produces a recoverable assistant message and never disables the manual planner or schedule builder. Google states that free-tier content may be used to improve its products, so this course demo should use sample or self-reported planning data—not protected student records. See the official [Interactions API documentation](https://ai.google.dev/gemini-api/docs/interactions-overview), [function-calling guide](https://ai.google.dev/gemini-api/docs/function-calling), and [pricing/free-tier table](https://ai.google.dev/gemini-api/docs/pricing).
+
 ## API
 
 - `GET /api/v1/programs`
@@ -51,7 +76,10 @@ The importer keeps lecture/lab components, rows with `0` open seats, and instruc
 - `GET /api/v1/courses/:id?catalogYear=2026-2027&program=software-engineering`
 - `GET /api/v1/bootstrap?program=software-engineering` (defaults to `computer-engineering`)
 - `GET /api/v1/health`
+- `POST /api/v1/agent/messages`
 
-Database setup and final verification are deferred until the project reaches the integration phase.
+The agent endpoint accepts at most eight prior conversation turns plus the optional session plan, completed course IDs, selected class numbers, and structured unavailable times. A simple “Build my schedule” request invokes `build_autonomous_schedule`, which reads the roadmap and prerequisite graph, targets 12–15 units, searches only open new sections, and returns the best verified partial schedule when the full load is impossible. Existing selected sections are hard locks. It returns assistant text, sanitized tool activity, a decision trace, warnings, and up to three proposals. Tool calls are read-only; there is no arbitrary SQL tool and no API endpoint that mutates a student schedule.
+
+The Recommendations screen shows the current locked weekly schedule above the conversation. Chat state survives navigation between Course Radar routes, but remains React-memory-only and clears on a browser refresh. Applying a proposal still requires a second explicit confirmation, and the browser validates that no hard lock was removed.
 
 Software Engineering data lives in `src/softwareEngineeringData.ts`, based on the [official SE roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19349&returnto=8647). Two math/statistics pairs are explicitly marked choose-one; open-ended electives remain placeholders. Shared course IDs retain separate program-specific course versions in Prisma. Run the existing seed after database setup to import both programs; this update does not run migrations or seed automatically.
