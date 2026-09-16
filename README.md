@@ -14,14 +14,31 @@ Course Radar supports SJSU Computer Engineering and Software Engineering, catalo
 - A separate Fall 2026 schedule builder in Course Explorer: manually select sections, view an hourly weekly calendar, and see overlapping-time warnings. Schedule selections persist in browser `localStorage`; there is no authentication, cross-device sync, or registration action.
 - A read-only Gemini scheduling agent that can build from the official roadmap even when the semester planner is empty. It derives prerequisite eligibility from completed courses, preserves every currently selected section as a hard lock, excludes closed new sections, backtracks to another eligible graduation-progress course when needed, and returns proposals that require explicit confirmation.
 
-## Run the frontend
+## Run the project after cloning
+
+Prerequisites: Node.js 24+, npm, and Docker Desktop with the Linux container engine running.
+
+Install the frontend dependencies:
 
 ```powershell
 npm install
+```
+
+Start PostgreSQL and the NestJS backend. Docker Compose builds the API image, waits for PostgreSQL, applies committed Prisma migrations, seeds both program catalogs and Fall 2026 sections, and then starts the API:
+
+```powershell
+docker compose up --build -d
+docker compose ps
+Invoke-RestMethod http://localhost:3001/api/v1/health
+```
+
+Start the frontend in a separate terminal:
+
+```powershell
 npm run dev
 ```
 
-Open `http://localhost:5173`. Without the API, the UI uses the reviewed 2026-2027 catalog dataset bundled with the frontend.
+Open `http://localhost:5173`. The frontend calls the backend at `http://localhost:3001/api/v1` by default. If the API is unavailable, catalog screens fall back to the reviewed 2026-2027 dataset bundled with the frontend; the Gemini scheduling agent still requires the backend and PostgreSQL.
 
 - Overview: `http://localhost:5173/`
 - Course explorer: `http://localhost:5173/courses`
@@ -29,6 +46,16 @@ Open `http://localhost:5173`. Without the API, the UI uses the reviewed 2026-202
 - Vertical prerequisite chart: `http://localhost:5173/prerequisite-chart`
 - Semester planner: `http://localhost:5173/planner`
 - Scheduling assistant: `http://localhost:5173/recommendations`
+
+Useful backend commands:
+
+```powershell
+docker compose logs -f api
+docker compose restart api
+docker compose down
+```
+
+`docker compose down` preserves PostgreSQL data in the named volume. To deliberately reset the local database, run `docker compose down -v`, then start the stack again. This deletes the local Course Radar database volume.
 
 ## Backend data flow
 
@@ -53,13 +80,19 @@ The manual schedule builder consumes the same offering records returned by `/api
 The backend uses `@google/genai` Interactions API with `store: false`. The API key is never sent to Vite or stored in browser state.
 
 1. Create a key in [Google AI Studio](https://aistudio.google.com/app/apikey) using a project that remains on the Gemini Free tier without Cloud Billing.
-2. Copy `api/.env.example` to `api/.env`.
-3. Put the key after `GEMINI_API_KEY=` in `api/.env`. Do not add it to a `VITE_` variable and do not commit `api/.env`.
-4. Start PostgreSQL and seed the catalog, then run the API:
+2. Before starting Docker Compose, set the key in the terminal that will run Compose. Do not add it to a `VITE_` variable or commit it:
+
+```powershell
+$env:GEMINI_API_KEY="your-key-here"
+docker compose up --build -d
+```
+
+The key is optional for catalog, roadmap, planner, and manual schedule features. It is required only for the Gemini scheduling assistant. To run the backend directly outside Docker, copy `api/.env.example` to `api/.env`, then use the manual backend commands below.
 
 ```powershell
 Copy-Item api\.env.example api\.env
 docker compose up -d postgres
+npm --prefix api install
 npm --prefix api run prisma:migrate
 npm --prefix api run prisma:seed
 npm --prefix api run dev
@@ -82,4 +115,4 @@ The agent endpoint accepts at most eight prior conversation turns plus the optio
 
 The Recommendations screen shows the current locked weekly schedule above the conversation. Chat state survives navigation between Course Radar routes, but remains React-memory-only and clears on a browser refresh. Applying a proposal still requires a second explicit confirmation, and the browser validates that no hard lock was removed.
 
-Software Engineering data lives in `src/softwareEngineeringData.ts`, based on the [official SE roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19349&returnto=8647). Two math/statistics pairs are explicitly marked choose-one; open-ended electives remain placeholders. Shared course IDs retain separate program-specific course versions in Prisma. Run the existing seed after database setup to import both programs; this update does not run migrations or seed automatically.
+Software Engineering data lives in `src/softwareEngineeringData.ts`, based on the [official SE roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19349&returnto=8647). Two math/statistics pairs are explicitly marked choose-one; open-ended electives remain placeholders. Shared course IDs retain separate program-specific course versions in Prisma. Docker Compose imports both programs automatically through the idempotent seed step; direct backend setups must run `npm --prefix api run prisma:seed` explicitly.

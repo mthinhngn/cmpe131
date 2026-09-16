@@ -1,6 +1,16 @@
+x-api-environment: &api-environment
+  DATABASE_URL: postgresql://course_radar:course_radar@postgres:5432/course_radar?schema=public
+  PORT: 3001
+  WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:5173}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.1-flash-lite}
+  AGENT_MAX_TOOL_CALLS: ${AGENT_MAX_TOOL_CALLS:-6}
+  AGENT_MAX_COMBINATIONS: ${AGENT_MAX_COMBINATIONS:-5000}
+
 services:
   postgres:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: course_radar
       POSTGRES_PASSWORD: course_radar
@@ -14,20 +24,36 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 5s
 
-  api:
+  api-init:
     build:
       context: .
       dockerfile: api/Dockerfile
-    environment:
-      DATABASE_URL: postgresql://course_radar:course_radar@postgres:5432/course_radar?schema=public
-      PORT: 3001
-      WEB_ORIGIN: http://localhost:5173
-    ports:
-      - "3001:3001"
+    image: course-radar-api:local
+    environment: *api-environment
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run prisma:seed"]
+    restart: "no"
     depends_on:
       postgres:
         condition: service_healthy
+
+  api:
+    image: course-radar-api:local
+    restart: unless-stopped
+    environment: *api-environment
+    command: ["npm", "run", "start"]
+    ports:
+      - "3001:3001"
+    depends_on:
+      api-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/v1/health').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
   course_radar_pgdata:
