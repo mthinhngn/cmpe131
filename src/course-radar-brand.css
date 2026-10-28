@@ -1,0 +1,18 @@
+/* Exact header identity from ReferenceLanding: no route-specific variants. */
+header .cr-header-brand.cr-header-brand {
+  display:inline-flex; align-items:center; align-self:center; gap:9px;
+  flex:0 0 auto; margin:0; padding:0; border:0; background:transparent;
+  color:#101010; font:600 15px/1.5 Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  letter-spacing:-.055em; white-space:nowrap; text-decoration:none;
+}
+header .cr-header-brand .cr-header-brand-mark {
+  display:block; width:27px; height:27px; min-width:27px; flex:0 0 27px;
+  color:#101010; margin:0; padding:0;
+}
+header .cr-header-brand .cr-header-brand-name {
+  display:inline; font:inherit; letter-spacing:inherit; color:#101010; margin:0; padding:0;
+}
+header .cr-header-brand .cr-header-brand-light {
+  display:inline; font:inherit; font-weight:400; color:#717171;
+  letter-spacing:inherit; margin:0; padding:0;
+}

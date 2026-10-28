@@ -1,0 +1,305 @@
+/* Recommendations carries Overview's warm-paper shell into a task-first workspace. */
+.workspace-recommendations {
+  --paper: #fdfcf9;
+  --canvas: #f5f3ee;
+  --ink: #24231f;
+  --muted: #646159;
+  --quiet: #747169;
+  --line: #e2e0d9;
+  --line-strong: #d5d2ca;
+  --accent: #d75c34;
+  --accent-dark: #24231f;
+  --accent-soft: #f7e9e2;
+  --gold: #816729;
+  background: var(--paper);
+}
+
+.workspace-recommendations .workspace-header {
+  width: min(1200px, calc(100% - 96px));
+  max-width: none;
+  min-height: 112px;
+  padding: 0;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  gap: 24px;
+  background: var(--paper);
+  backdrop-filter: none;
+}
+.workspace-recommendations .workspace-original-brand { display: none; }
+.workspace-recommendations .ov-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font: 400 25px "Inter Tight", sans-serif;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+.workspace-recommendations .ov-brand > span { margin-left: -7px; color: var(--accent); }
+.workspace-recommendations .workspace-header nav { padding: 6px; gap: 0; }
+.workspace-recommendations .workspace-header nav a { min-height: 36px; padding: 10px 12px; font:400 14px "DM Sans", sans-serif; }
+.workspace-recommendations .workspace-header nav a svg { display: none; }
+.workspace-recommendations .workspace-header nav a.active { background: var(--paper); box-shadow: none; }
+.workspace-recommendations .program-source { padding: 12px 15px; border-radius: 0; font:400 14px "DM Sans", sans-serif; }
+.workspace-recommendations .workspace-context,
+.workspace-recommendations .data-message {
+  width: min(1200px, calc(100% - 96px));
+  max-width: none;
+}
+.workspace-recommendations .workspace-context { min-height: 56px; padding: 0; background: transparent; border-bottom: 1px solid var(--line); }
+.workspace-recommendations .data-message { min-height: 0; padding: 9px 0 0; border: 0; color: var(--muted); font-size:14px; line-height: 1.6; }
+.workspace-recommendations .workspace-content { width: min(1200px, calc(100% - 96px)); max-width: none; margin: 0 auto; padding: 0; }
+.workspace-recommendations .workspace-footer { width: min(1200px, calc(100% - 96px)); max-width: none; margin: 0 auto; padding: 24px 0; background: transparent; color: var(--muted); }
+.workspace-recommendations :focus-visible { outline-color: var(--gold); outline-offset: 4px; }
+.workspace-recommendations ::selection { color: var(--ink); background: #e9c9b7; }
+
+.recommendations-page {
+  padding: 26px 0 68px;
+  color: var(--ink);
+  font: 400 14px/1.55 "DM Sans", sans-serif;
+}
+.recommendations-page h1,
+.recommendations-page h2,
+.recommendations-page h3,
+.recommendations-page p { margin: 0; }
+.recommendations-page h1,
+.recommendations-page h2,
+.recommendations-page h3 { font-family: "Inter Tight", sans-serif; font-weight: 400; letter-spacing: -.03em; }
+.recommendations-page a { color: inherit; text-decoration: none; }
+.recommendations-page button,
+.recommendations-page input,
+.recommendations-page select,
+.recommendations-page textarea { font: inherit; }
+.recommendations-page button { cursor: pointer; }
+.recommendations-page input,
+.recommendations-page textarea { caret-color: var(--accent); }
+.recommendations-page .workspace-search,
+.recommendations-page select,
+.recommendations-page input,
+.recommendations-page textarea { border-radius: 7px; }
+.recommendations-page .primary-button,
+.recommendations-page .secondary-button { border-radius: 8px; }
+
+.recommendations-intro {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(330px,.63fr);
+  align-items: center;
+  gap: 72px;
+  padding: 30px 0 34px;
+  border-bottom: 1px solid var(--line);
+}
+.recommendations-intro-copy h1 { max-width: 720px; font-size: clamp(48px,4.6vw,64px); line-height: 1.02; }
+.recommendations-intro-copy > p { max-width: 68ch; margin-top: 17px; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.recommendations-start { min-height: 48px; margin-top: 21px!important; padding: 12px 18px!important; gap: 19px!important; }
+.recommendations-principle { padding: 23px 25px 22px; border-radius: 10px; background: #f0efeb; }
+.recommendations-principle-title { display: flex; align-items: center; gap: 10px; }
+.recommendations-principle-title svg { flex: 0 0 auto; color: var(--gold); }
+.recommendations-principle-title h2 { font-size: 21px; line-height: 1.2; }
+.recommendations-principle > p { max-width: 49ch; margin-top: 12px; color: var(--muted); font-size:14px; line-height: 1.65; }
+.recommendations-principle > a { width: fit-content; margin-top: 17px; display: inline-flex; align-items: center; gap: 9px; font-size:14px; }
+.recommendations-principle > a svg { color: var(--gold); transition: transform 180ms ease; }
+.recommendations-principle > a:hover svg { transform: translateX(3px); }
+
+.recommendations-workbench {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: minmax(0,1.24fr) minmax(380px,.76fr);
+  align-items: start;
+  gap: 24px;
+}
+.recommendations-page .agent-chat {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+}
+.recommendations-page .agent-chat-header {
+  min-height: 62px;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--line);
+  background: #f0efeb;
+}
+.recommendations-page .agent-chat-header > span { color: var(--ink); font-size: 15px; font-weight: 500; }
+.recommendations-page .agent-chat-header > span svg { color: var(--gold); }
+.recommendations-page .agent-chat-header small { color: var(--quiet); font-size:14px; }
+.recommendations-page .agent-conversation {
+  min-height: 220px;
+  max-height: 370px;
+  padding: 20px 22px;
+  gap: 14px;
+  scrollbar-color: #c9c5bc #f5f3ee;
+  scrollbar-width: thin;
+}
+.recommendations-page .agent-message { max-width: 92%; padding: 13px 15px; border-color: var(--line); border-radius: 10px; }
+.recommendations-page .agent-message p { max-width: 72ch; font-size:14px; line-height: 1.55; }
+.recommendations-page .agent-message-role { color: var(--gold); font:600 14px/1.3 "DM Sans", sans-serif; letter-spacing: .09em; }
+.recommendations-page .agent-message.user .agent-message-role { color: #e7c3b4; }
+.recommendations-page .starter-prompts { padding: 0 22px 17px; }
+.recommendations-page .starter-prompts > p { margin-bottom: 9px; color: var(--muted); font-size:14px; }
+.recommendations-prompt-list { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.recommendations-prompt-list button {
+  min-width: 0;
+  min-height: 70px;
+  padding: 10px 11px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: #f7f6f2;
+  text-align: left;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+.recommendations-prompt-list button:hover { border-color: #c9b994; background: #f2efe6; }
+.recommendations-prompt-list button:active { transform: translateY(1px); }
+.recommendations-prompt-list button > span { min-width: 0; display: grid; gap: 4px; }
+.recommendations-prompt-list strong { font-size:14px; font-weight: 500; }
+.recommendations-prompt-list small { color: var(--muted); font-size:14px; line-height: 1.4; }
+.recommendations-prompt-list button > svg { flex: 0 0 auto; margin-top: 1px; color: var(--gold); transition: transform 160ms ease; }
+.recommendations-prompt-list button:hover > svg { transform: translateX(3px); }
+.recommendations-page .agent-composer { padding: 17px 20px 18px; border-top: 1px solid var(--line); background: #f7f6f2; }
+.recommendations-page .agent-composer > label { margin-bottom: 8px; font-size:14px; font-weight: 500; }
+.recommendations-page .agent-composer > div { grid-template-columns: minmax(0,1fr) 48px; border-color: var(--line-strong); border-radius: 8px; }
+.recommendations-page .agent-composer textarea { min-height: 84px; padding: 11px 12px; font-size:14px; line-height: 1.5; }
+.recommendations-page .agent-composer > div:focus-within { outline: 2px solid var(--gold); outline-offset: 3px; }
+.recommendations-page .agent-composer button { border-radius: 0 7px 7px 0; color: #fff; background: var(--ink); transition: background-color 160ms ease, transform 160ms ease; }
+.recommendations-page .agent-composer button:hover:not(:disabled) { background: #3d3b35; }
+.recommendations-page .agent-composer button:active:not(:disabled) { transform: scale(.96); }
+.recommendations-page .agent-composer button:disabled { color: var(--quiet); background: #dedbd2; }
+.recommendations-page .agent-composer > small { margin-top: 8px; color: var(--muted); font-size:14px; line-height: 1.5; }
+.recommendations-page .apply-notice { border-color: #b9c8bb; border-radius: 8px; color: #345540; background: #f0f5f0; font-size:14px; }
+
+.recommendations-sidebar { min-width: 0; display: grid; gap: 20px; }
+.recommendations-schedule { min-width: 0; margin: 0; padding: 0; border: 0; background: transparent!important; }
+.recommendations-schedule .current-schedule-intro { padding: 0 0 12px; display: block; border: 0; }
+.recommendations-schedule-title { display: flex; align-items: center; gap: 11px; }
+.recommendations-schedule-title h2 { margin: 0; font-size: 24px; line-height: 1.15; }
+.recommendations-schedule-title > span { padding: 4px 8px; border-radius: 100px; color: #675426; background: #f2eddf; font-size:14px; font-weight: 500; white-space: nowrap; }
+.recommendations-schedule .current-schedule-intro p { max-width: 54ch; margin-top: 8px; color: var(--muted); font-size:14px; line-height: 1.55; }
+.recommendations-page .schedule-pane.schedule-dashboard {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f0efeb;
+}
+.recommendations-page .schedule-pane .schedule-pane-header h2 { font-family: "Inter Tight",sans-serif; font-size: 19px; font-weight: 400; }
+.recommendations-page .schedule-pane .schedule-pane-header p { color: var(--muted); font-size:14px; }
+.recommendations-page .selected-section-list { grid-template-columns: 1fr; margin: 12px 0; }
+.recommendations-page .selected-section-list > div { border-color: var(--line); border-radius: 7px; background: var(--paper); }
+.recommendations-page .selected-section-list strong { color: var(--ink); font-family: "DM Sans",sans-serif; font-size:14px; }
+.recommendations-page .selected-section-list small { color: var(--muted); }
+.recommendations-page .selected-section-list .locked-section-label { padding: 4px 7px; border: 1px solid #c9b994; color: #675426; background: #f7f3e9; font:500 14px "DM Sans",sans-serif; }
+.recommendations-page .weekly-calendar { border-color: var(--line); border-radius: 7px; overflow: hidden; }
+.recommendations-page .schedule-day-headings { background: #eeece6; }
+.recommendations-page .schedule-day-headings strong { color: var(--muted); font:500 14px "DM Sans",sans-serif; }
+.recommendations-page .schedule-time-axis { background: #f7f6f2; }
+.recommendations-page .schedule-time-axis span { color: var(--muted); background: #f7f6f2; font-family: "DM Sans",sans-serif; font-size:14px; }
+.recommendations-page .schedule-day-column { background-color: var(--paper); }
+.recommendations-page .schedule-block { border-radius: 5px; }
+.recommendations-page .schedule-status { margin: 12px -17px -17px; padding: 12px 17px; border-color: var(--line); border-radius: 0 0 10px 10px; }
+.recommendations-page .schedule-status h3 { font-family: "Inter Tight",sans-serif; font-size: 17px; font-weight: 400; }
+.recommendations-page .schedule-status p,
+.recommendations-page .schedule-status li { font-size:14px; line-height: 1.5; }
+.recommendations-page .current-schedule-empty { min-height: 160px; padding: 22px 18px; border-color: var(--line-strong); border-radius: 10px; background: #f7f6f2; }
+.recommendations-page .current-schedule-empty strong { font-family: "Inter Tight",sans-serif; font-size: 18px; font-weight: 400; }
+.recommendations-page .current-schedule-empty span { max-width: 42ch; color: var(--muted); font-size:14px; line-height: 1.5; }
+.recommendations-page .current-schedule-empty > a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-size:14px; }
+.recommendations-page .current-schedule-empty > a svg { color: var(--gold); transition: transform 160ms ease; }
+.recommendations-page .current-schedule-empty > a:hover svg { transform: translateX(3px); }
+
+.recommendations-page .availability-panel {
+  padding: 19px 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+}
+.recommendations-page .panel-heading { margin-bottom: 3px; }
+.recommendations-page .panel-heading h2 { color: var(--ink); font-family: "Inter Tight",sans-serif; font-size: 21px; font-weight: 400; }
+.recommendations-page .panel-heading > svg { color: var(--gold); }
+.recommendations-page .availability-panel > p { margin: 5px 0 14px; color: var(--muted); font-size:14px; line-height: 1.5; }
+.recommendations-page .availability-fields { gap: 10px; }
+.recommendations-page .availability-fields label { color: var(--muted); font-size:14px; }
+.recommendations-page .availability-fields input,
+.recommendations-page .availability-fields select { min-height: 40px; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 7px; color: var(--ink); background: var(--paper); }
+.recommendations-page .secondary-button { min-height: 42px; margin-top: 13px; border-color: var(--ink); color: var(--ink); font-size:14px; font-weight: 400; }
+.recommendations-page .secondary-button:hover { color: #fff; background: var(--ink); }
+.recommendations-page .field-error { margin-top: 10px; color: #8c3f35!important; font-size:14px; }
+.recommendations-page .availability-list { margin-top: 13px; gap: 6px; }
+.recommendations-page .availability-list > div { min-height: 40px; padding: 5px 6px 5px 10px; border-color: var(--line); border-radius: 7px; background: #f7f6f2; transition: background-color 160ms ease; }
+.recommendations-page .availability-list > div:hover { background: #f0efeb; }
+.recommendations-page .availability-list span { color: var(--ink); font-size:14px; }
+.recommendations-page .availability-list button { border-radius: 6px; }
+.recommendations-page .availability-list button:hover { background: #f7e9e2; }
+.recommendations-page .availability-list > small { color: var(--muted); font-size:14px; }
+.recommendations-context { padding-top: 4px; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+.recommendations-context .panel-heading { padding: 13px 0 8px; }
+.recommendations-context .panel-heading h2 { font-size: 19px; }
+.recommendations-page .agent-context dl > div { padding: 8px 0; border-color: var(--line); }
+.recommendations-page .agent-context dt { color: var(--muted); font-size:14px; }
+.recommendations-page .agent-context dd { color: var(--ink); font-family: "DM Sans",sans-serif; font-size:14px; font-variant-numeric: tabular-nums; }
+.recommendations-page .agent-context > p { margin-top: 10px; color: var(--muted); font-size:14px; line-height: 1.55; }
+
+.recommendations-page .schedule-proposal { padding: 15px; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 9px; background: #f7f6f2; }
+.recommendations-page .proposal-heading span { color: var(--gold); font-size:14px; }
+.recommendations-page .proposal-heading h3 { font-family: "Inter Tight",sans-serif; font-size: 19px; font-weight: 400; }
+.recommendations-page .proposal-heading > small { color: var(--muted); font-size:14px; }
+.recommendations-page .proposal-sections article { border-color: var(--line); }
+.recommendations-page .proposal-sections strong { color: var(--ink); font-family: "DM Sans",sans-serif; font-size:14px; }
+.recommendations-page .proposal-sections span { color: var(--muted); font-size:14px; }
+.recommendations-page .proposal-confirm { flex-wrap: wrap; }
+.recommendations-page .proposal-confirm p { flex-basis: 100%; color: var(--muted); font-size:14px; }
+.recommendations-page .proposal-confirm .primary-button,
+.recommendations-page .proposal-apply { min-height: 42px; margin-top: 12px; font-size:14px; }
+.recommendations-page .proposal-confirm > button:last-child { min-height: 42px; border-color: var(--line-strong); border-radius: 8px; color: var(--ink); background: var(--paper); font:400 14px "DM Sans",sans-serif; }
+.recommendations-page .agent-decision-trace summary { color: var(--ink); font-size:14px; }
+.recommendations-page .agent-decision-trace p { color: var(--muted); font-size:14px!important; }
+.recommendations-page .proposal-source { border-radius: 4px; font:500 14px "DM Sans",sans-serif; }
+
+@keyframes recommendation-message-arrive {
+  0% { opacity: 0; filter: blur(1.5px); transform: translateY(14px); }
+  76% { opacity: 1; filter: blur(0); transform: translateY(-1px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+.recommendations-page .agent-message:last-of-type { animation: recommendation-message-arrive 480ms cubic-bezier(.16,1,.3,1) both; }
+
+@media (max-width: 1120px) {
+  .recommendations-intro { grid-template-columns: minmax(0,1fr) minmax(280px,.66fr); gap: 35px; }
+  .recommendations-workbench { grid-template-columns: minmax(0,1.1fr) minmax(330px,.9fr); gap: 18px; }
+  .recommendations-page .schedule-pane.schedule-dashboard { padding: 13px; }
+  .recommendations-page .schedule-status { margin: 12px -13px -13px; padding-inline: 13px; }
+}
+@media (max-width: 960px) {
+  .workspace-recommendations .workspace-header { width: calc(100% - 48px); grid-template-columns: auto 1fr; gap: 12px; }
+  .workspace-recommendations .workspace-header nav { grid-column: 1 / -1; grid-row: 2; width: 100%; justify-content: flex-start; overflow-x: auto; }
+  .workspace-recommendations .program-source { justify-self: end; }
+  .workspace-recommendations .workspace-context,
+  .workspace-recommendations .data-message,
+  .workspace-recommendations .workspace-content,
+  .workspace-recommendations .workspace-footer { width: calc(100% - 48px); }
+  .workspace-recommendations .workspace-context { min-height: 48px; }
+  .recommendations-intro { grid-template-columns: minmax(0,1fr) minmax(250px,.7fr); gap: 24px; }
+  .recommendations-workbench { grid-template-columns: 1fr; }
+  .recommendations-sidebar { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
+  .recommendations-schedule { grid-row: span 2; }
+  .recommendations-context { grid-column: 2; }
+}
+@media (max-width: 680px) {
+  .workspace-recommendations .workspace-header { width: calc(100% - 34px); }
+  .workspace-recommendations .workspace-context,
+  .workspace-recommendations .data-message,
+  .workspace-recommendations .workspace-content,
+  .workspace-recommendations .workspace-footer { width: calc(100% - 34px); }
+  .recommendations-intro { grid-template-columns: 1fr; gap: 22px; padding: 22px 0 28px; }
+  .recommendations-intro-copy h1 { font-size: 42px; }
+  .recommendations-sidebar { grid-template-columns: 1fr; }
+  .recommendations-schedule { grid-row: auto; }
+  .recommendations-context { grid-column: auto; }
+  .recommendations-prompt-list { grid-template-columns: 1fr; }
+  .recommendations-page .agent-conversation { padding: 16px; }
+  .recommendations-page .starter-prompts,
+  .recommendations-page .agent-composer { padding-right: 16px; padding-left: 16px; }
+}
+

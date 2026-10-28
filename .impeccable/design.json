@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 2,
+  "title": "Course Radar \u2014 Connected paths",
+  "narrative": {
+    "northStar": "See the connections. Own your next move.",
+    "overview": "Editorial white and charcoal frame a Deep Ocean prerequisite graph using real course records."
+  },
+  "extensions": {
+    "surface": "landing /",
+    "colors": {
+      "deepOcean": "#0b4b5e",
+      "oceanDepth": "#082f43",
+      "oceanNode": "#dce9e9"
+    },
+    "motion": {
+      "purpose": "Explain prerequisite progression",
+      "curve": "cubic-bezier(.23,1,.32,1)",
+      "pathDraw": "1.8s",
+      "nodeArrival": "850ms"
+    },
+    "referencePalette20261027": {
+      "scope": "shared vocabulary; first applied to /roadmap and roadmap course detail",
+      "colors": {
+        "ink": "#202d2e",
+        "paper": "#fcfcfa",
+        "cloud": "#f2f3f1",
+        "teal": "#12494b",
+        "onTeal": "#eff7f3",
+        "onTealMuted": "#bfd4d0",
+        "cyan": "#d1eef0",
+        "mist": "#e3eeea",
+        "line": "#d6e2de",
+        "muted": "#586c6a",
+        "secondary": "#6e8380",
+        "slate": "#555d76",
+        "peach": "#dac1b2",
+        "peachSoft": "#f5eee8"
+      },
+      "typography": {
+        "display": "Inter",
+        "interface": "Inter",
+        "note": "User rejected serif change; preserve prior typography throughout"
+      },
+      "implementation": "src/roadmap-palette.css",
+      "source": "five user-supplied reference images; authored color approximations"
+    },
+    "desktopNavigation": {
+      "scope": "all desktop headers >=1000px",
+      "headerHeight": "72px",
+      "maxWidth": "1344px",
+      "horizontalPadding": "32px",
+      "regionGap": "44px",
+      "navGap": "27px",
+      "font": "400 12px Inter",
+      "activeRule": {
+        "height": "2px",
+        "color": "#168873",
+        "bottom": "-1px",
+        "width": "label"
+      },
+      "source": "Semester Planner spacing and Overview accent, user screenshots 2026-10-27"
+    },
+    "roadmapBand": {
+      "background": "#335c5d",
+      "fade": "linear-gradient(90deg,#f5f0e6 0%,#335c5d 100%); continuous across full width",
+      "scope": "roadmap year navigation only",
+      "semesterHeading": "20px Inter 500",
+      "entry": "WAAPI 250ms,28px and opacity; keyboard immediate"
+    },
+    "headerBrand": {
+      "source": "existing landing page",
+      "component": "src/CourseRadarBrand.tsx",
+      "styles": "src/course-radar-brand.css",
+      "mark": "27x27px original radar SVG",
+      "gap": "9px",
+      "font": "Inter 15px",
+      "lineHeight": 1.5,
+      "letterSpacing": "-0.055em",
+      "course": {
+        "weight": 600,
+        "color": "#101010"
+      },
+      "radar": {
+        "weight": 400,
+        "color": "#717171"
+      },
+      "scope": "every product header"
+    }
+  }
+}

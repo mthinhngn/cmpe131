@@ -1,0 +1,1175 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/DesignPreview.tsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=645a9df2"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=645a9df2"; const useMemo = __vite__cjsImport1_react["useMemo"]; const useState = __vite__cjsImport1_react["useState"];
+import { ArrowRight, BookOpen, CalendarBlank, Check, CheckCircle, Clock, GitBranch, GraduationCap, House, Lock, MagnifyingGlass, MapTrifold, Minus, Plus, SlidersHorizontal, Sparkle, WarningCircle } from "/node_modules/.vite/deps/@phosphor-icons_react.js?v=645a9df2";
+import "/src/design-preview.css";
+const courseData = [
+  { code: "CMPE 30", title: "Programming Concepts and Methodology", units: 4, status: "completed", term: "Fall 2024", description: "Programming fundamentals, problem solving, and software development methodology.", prereqs: [], unlocks: ["CMPE 50"] },
+  { code: "MATH 30", title: "Calculus I", units: 3, status: "completed", term: "Fall 2024", description: "Limits, differentiation, and applications for science and engineering.", prereqs: [], unlocks: ["MATH 31", "PHYS 50"] },
+  { code: "CMPE 50", title: "Object-Oriented Concepts", units: 3, status: "in-progress", term: "Fall 2026", description: "Object-oriented design, data structures, and implementation techniques.", prereqs: ["CMPE 30"], unlocks: ["CMPE 126"] },
+  { code: "MATH 31", title: "Calculus II", units: 4, status: "planned", term: "Spring 2027", description: "Integration, sequences, series, and applications of integral calculus.", prereqs: ["MATH 30"], unlocks: ["PHYS 51"] },
+  { code: "PHYS 50", title: "General Physics: Mechanics", units: 4, status: "available", term: "Spring 2027", description: "Mechanics, oscillations, waves, and thermodynamics with laboratory work.", prereqs: ["MATH 30"], unlocks: ["PHYS 51"] },
+  { code: "CMPE 126", title: "Algorithms and Data Structure Design", units: 3, status: "available", term: "Recommended next", description: "Design, analysis, and implementation of efficient algorithms and data structures.", prereqs: ["CMPE 50"], unlocks: ["CMPE 131"] },
+  { code: "CMPE 131", title: "Software Engineering I", units: 3, status: "blocked", term: "Semester 5", description: "Requirements, architecture, testing, and team-based software delivery.", prereqs: ["CMPE 126"], unlocks: ["CMPE 195A"] },
+  { code: "CMPE 124", title: "Digital Design I", units: 3, status: "missing", term: "Needs review", description: "Combinational and sequential digital systems with laboratory design.", prereqs: ["EE 98"], unlocks: ["CMPE 125"] }
+];
+const stateMap = {
+  completed: { label: "Completed", icon: CheckCircle },
+  "in-progress": { label: "In progress", icon: Clock },
+  planned: { label: "Planned", icon: CalendarBlank },
+  available: { label: "Available", icon: Sparkle },
+  blocked: { label: "Blocked", icon: Lock },
+  missing: { label: "Missing prerequisite", icon: WarningCircle }
+};
+const edges = [
+  { from: "CMPE 30", to: "CMPE 50", d: "M136 92 C136 136 136 140 136 178" },
+  { from: "MATH 30", to: "MATH 31", d: "M438 92 C438 136 438 140 438 178" },
+  { from: "MATH 30", to: "PHYS 50", d: "M438 92 C438 145 720 130 720 178" },
+  { from: "CMPE 50", to: "CMPE 126", d: "M136 270 C136 318 438 306 438 348" },
+  { from: "MATH 31", to: "CMPE 131", d: "M438 270 C438 314 720 306 720 348" },
+  { from: "CMPE 126", to: "CMPE 131", d: "M438 440 C438 476 720 474 720 518" }
+];
+function pathFor(code) {
+  const included = /* @__PURE__ */ new Set([code]);
+  const up = (value) => edges.filter((edge) => edge.to === value).forEach((edge) => {
+    if (!included.has(edge.from)) {
+      included.add(edge.from);
+      up(edge.from);
+    }
+  });
+  const down = (value) => edges.filter((edge) => edge.from === value).forEach((edge) => {
+    if (!included.has(edge.to)) {
+      included.add(edge.to);
+      down(edge.to);
+    }
+  });
+  up(code);
+  down(code);
+  return included;
+}
+function StatusTag({ status, tiny = false }) {
+  const { label, icon: Icon } = stateMap[status];
+  return /* @__PURE__ */ jsxDEV("span", { className: `cr-status cr-${status}${tiny ? " tiny" : ""}`, children: [
+    /* @__PURE__ */ jsxDEV(Icon, { size: tiny ? 11 : 14, weight: status === "completed" ? "fill" : "regular" }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 24,
+      columnNumber: 200
+    }, this),
+    label
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+    lineNumber: 24,
+    columnNumber: 135
+  }, this);
+}
+_c = StatusTag;
+function GraphNode({ course, selected, muted, onClick, slot }) {
+  return /* @__PURE__ */ jsxDEV("button", { className: `cr-node ${slot}${selected ? " selected" : ""}${muted ? " muted" : ""}`, onClick, "aria-pressed": selected, children: [
+    /* @__PURE__ */ jsxDEV("span", { className: "cr-node-head", children: [
+      /* @__PURE__ */ jsxDEV("strong", { children: course.code }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 25,
+        columnNumber: 322
+      }, this),
+      /* @__PURE__ */ jsxDEV("span", { children: [
+        course.units,
+        " units"
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 25,
+        columnNumber: 352
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 25,
+      columnNumber: 291
+    }, this),
+    /* @__PURE__ */ jsxDEV("span", { className: "cr-node-title", children: course.title }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 25,
+      columnNumber: 392
+    }, this),
+    /* @__PURE__ */ jsxDEV(StatusTag, { status: course.status, tiny: true }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 25,
+      columnNumber: 445
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+    lineNumber: 25,
+    columnNumber: 157
+  }, this);
+}
+_c2 = GraphNode;
+export default function DesignPreview() {
+  _s();
+  const [selectedCode, setSelectedCode] = useState("CMPE 126");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [plannedCodes, setPlannedCodes] = useState(["MATH 31", "CMPE 126"]);
+  const selected = courseData.find((course) => course.code === selectedCode) ?? courseData[5];
+  const visiblePath = useMemo(() => pathFor(selectedCode), [selectedCode]);
+  const graphCourses = courseData.slice(0, 7);
+  const togglePlan = () => setPlannedCodes((current) => current.includes(selected.code) ? current.filter((code) => code !== selected.code) : [...current, selected.code]);
+  return /* @__PURE__ */ jsxDEV("div", { className: "course-radar-preview", children: [
+    /* @__PURE__ */ jsxDEV("header", { className: "cr-header", children: [
+      /* @__PURE__ */ jsxDEV("a", { className: "cr-brand", href: "#preview-top", children: [
+        /* @__PURE__ */ jsxDEV("span", { className: "cr-brand-orbit", children: [
+          /* @__PURE__ */ jsxDEV("span", {}, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 112
+          }, this),
+          /* @__PURE__ */ jsxDEV("i", {}, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 120
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 79
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { children: [
+          "Course Radar",
+          /* @__PURE__ */ jsxDEV("small", { children: "Plan with clarity" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 150
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 132
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 31,
+        columnNumber: 35
+      }, this),
+      /* @__PURE__ */ jsxDEV("nav", { "aria-label": "Preview navigation", children: [
+        /* @__PURE__ */ jsxDEV("a", { className: "active", href: "#preview-top", children: [
+          /* @__PURE__ */ jsxDEV(House, { size: 16 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 272
+          }, this),
+          "Home"
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 230
+        }, this),
+        /* @__PURE__ */ jsxDEV("a", { href: "#degree-map", children: [
+          /* @__PURE__ */ jsxDEV(GitBranch, { size: 16 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 321
+          }, this),
+          "Degree map"
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 299
+        }, this),
+        /* @__PURE__ */ jsxDEV("a", { href: "#semester-plan", children: [
+          /* @__PURE__ */ jsxDEV(CalendarBlank, { size: 16 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 383
+          }, this),
+          "Plan"
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 358
+        }, this),
+        /* @__PURE__ */ jsxDEV("a", { href: "#course-shelf", children: [
+          /* @__PURE__ */ jsxDEV(BookOpen, { size: 16 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 31,
+            columnNumber: 442
+          }, this),
+          "Courses"
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 418
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 31,
+        columnNumber: 193
+      }, this),
+      /* @__PURE__ */ jsxDEV("label", { className: "cr-global-search", children: [
+        /* @__PURE__ */ jsxDEV(MagnifyingGlass, { size: 17 }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 517
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { className: "cr-sr", children: "Search courses" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 546
+        }, this),
+        /* @__PURE__ */ jsxDEV("input", { placeholder: "Search courses" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 31,
+          columnNumber: 591
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 31,
+        columnNumber: 481
+      }, this),
+      /* @__PURE__ */ jsxDEV("button", { className: "cr-avatar", "aria-label": "Open profile", children: "TN" }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 31,
+        columnNumber: 637
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 31,
+      columnNumber: 5
+    }, this),
+    /* @__PURE__ */ jsxDEV("main", { id: "preview-top", children: [
+      /* @__PURE__ */ jsxDEV("section", { className: "cr-welcome", children: [
+        /* @__PURE__ */ jsxDEV("div", { children: [
+          /* @__PURE__ */ jsxDEV("span", { className: "cr-overline", children: "COMPUTER ENGINEERING · 2026–2027" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 33,
+            columnNumber: 44
+          }, this),
+          /* @__PURE__ */ jsxDEV("h1", { children: "Good afternoon, Thinh." }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 33,
+            columnNumber: 113
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { children: "Your degree map is taking shape. Here’s what’s open now and what comes next." }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 33,
+            columnNumber: 144
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 33,
+          columnNumber: 39
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-degree-progress", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "cr-ring", style: { "--progress": "62%" }, children: [
+            /* @__PURE__ */ jsxDEV("strong", { children: "62%" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 33,
+              columnNumber: 343
+            }, this),
+            /* @__PURE__ */ jsxDEV("span", { children: "complete" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 33,
+              columnNumber: 363
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 33,
+            columnNumber: 269
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("span", { children: "Degree progress" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 33,
+              columnNumber: 395
+            }, this),
+            /* @__PURE__ */ jsxDEV("strong", { children: "74 / 120 units" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 33,
+              columnNumber: 423
+            }, this),
+            /* @__PURE__ */ jsxDEV("small", { children: "46 units to graduation" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 33,
+              columnNumber: 454
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 33,
+            columnNumber: 390
+          }, this),
+          /* @__PURE__ */ jsxDEV(ArrowRight, { size: 18 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 33,
+            columnNumber: 497
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 33,
+          columnNumber: 233
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 33,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("section", { className: "cr-map-section", id: "degree-map", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-section-title", children: [
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("span", { className: "cr-title-icon", children: /* @__PURE__ */ jsxDEV(MapTrifold, { size: 20, weight: "duotone" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 130
+            }, this) }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 98
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { children: [
+              /* @__PURE__ */ jsxDEV("h2", { children: "Your degree map" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 183
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { children: "Select a course to trace prerequisites and see what it unlocks." }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 207
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 178
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 34,
+            columnNumber: 93
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "cr-map-actions", children: [
+            /* @__PURE__ */ jsxDEV("label", { children: [
+              /* @__PURE__ */ jsxDEV(MagnifyingGlass, { size: 15 }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 328
+              }, this),
+              /* @__PURE__ */ jsxDEV("select", { "aria-label": "Focus course", value: selectedCode, onChange: (event) => setSelectedCode(event.target.value), children: graphCourses.map((course) => /* @__PURE__ */ jsxDEV("option", { children: course.code }, course.code, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 500
+              }, this)) }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 357
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 321
+            }, this),
+            /* @__PURE__ */ jsxDEV("button", { "aria-label": "Map filters", children: /* @__PURE__ */ jsxDEV(SlidersHorizontal, { size: 17 }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 600
+            }, this) }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 567
+            }, this),
+            /* @__PURE__ */ jsxDEV("span", { className: "cr-zoom", children: [
+              /* @__PURE__ */ jsxDEV("button", { "aria-label": "Zoom out", children: /* @__PURE__ */ jsxDEV(Minus, { size: 14 }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 696
+              }, this) }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 666
+              }, this),
+              /* @__PURE__ */ jsxDEV("b", { children: "100%" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 724
+              }, this),
+              /* @__PURE__ */ jsxDEV("button", { "aria-label": "Zoom in", children: /* @__PURE__ */ jsxDEV(Plus, { size: 14 }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 764
+              }, this) }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 34,
+                columnNumber: 735
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 34,
+              columnNumber: 640
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 34,
+            columnNumber: 289
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 34,
+          columnNumber: 59
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-map-studio", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "cr-map-canvas", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "cr-map-legend", children: [
+              /* @__PURE__ */ jsxDEV("span", { children: [
+                /* @__PURE__ */ jsxDEV("i", { className: "path" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 108
+                }, this),
+                "Prerequisite path"
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 102
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { children: [
+                /* @__PURE__ */ jsxDEV("i", { className: "coreq" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 160
+                }, this),
+                "Corequisite"
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 154
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { className: "focus", children: [
+                /* @__PURE__ */ jsxDEV("i", {}, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 225
+                }, this),
+                "Focused on ",
+                selectedCode
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 201
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 35,
+              columnNumber: 71
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "cr-map-scroll", children: /* @__PURE__ */ jsxDEV("div", { className: "cr-map-inner", children: [
+              /* @__PURE__ */ jsxDEV("svg", { className: "cr-edges", viewBox: "0 0 856 620", "aria-hidden": "true", children: [
+                /* @__PURE__ */ jsxDEV("defs", { children: /* @__PURE__ */ jsxDEV("marker", { id: "cr-arrow", viewBox: "0 0 8 8", refX: "7", refY: "4", markerWidth: "6", markerHeight: "6", orient: "auto", children: /* @__PURE__ */ jsxDEV("path", { d: "M0 0L8 4L0 8Z" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 507
+                }, this) }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 402
+                }, this) }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 396
+                }, this),
+                edges.map((edge) => /* @__PURE__ */ jsxDEV("path", { d: edge.d, className: visiblePath.has(edge.from) && visiblePath.has(edge.to) ? "active" : "quiet" }, `${edge.from}-${edge.to}`, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 35,
+                  columnNumber: 570
+                }, this))
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 329
+              }, this),
+              graphCourses.map((course, index) => /* @__PURE__ */ jsxDEV(GraphNode, { course, selected: selectedCode === course.code, muted: statusFilter !== "all" && course.status !== statusFilter || !visiblePath.has(course.code), onClick: () => setSelectedCode(course.code), slot: `slot-${index + 1}` }, course.code, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 754
+              }, this))
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 35,
+              columnNumber: 299
+            }, this) }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 35,
+              columnNumber: 268
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "cr-map-footer", children: [
+              /* @__PURE__ */ jsxDEV("span", { children: "Course status" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 1056
+              }, this),
+              Object.keys(stateMap).map((status) => /* @__PURE__ */ jsxDEV("button", { className: statusFilter === status ? "active" : "", onClick: () => setStatusFilter(statusFilter === status ? "all" : status), children: /* @__PURE__ */ jsxDEV(StatusTag, { status, tiny: true }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 1282
+              }, this) }, status, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 35,
+                columnNumber: 1135
+              }, this))
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 35,
+              columnNumber: 1025
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 35,
+            columnNumber: 40
+          }, this),
+          /* @__PURE__ */ jsxDEV("aside", { className: "cr-inspector", "aria-live": "polite", children: [
+            /* @__PURE__ */ jsxDEV("header", { children: [
+              /* @__PURE__ */ jsxDEV("span", { children: "COURSE DETAILS" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 70
+              }, this),
+              /* @__PURE__ */ jsxDEV("button", { "aria-label": "More course actions", children: "•••" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 97
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 62
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "cr-course-identity", children: [
+              /* @__PURE__ */ jsxDEV("span", { className: "cr-course-mark", children: selected.code.split(" ")[0].slice(0, 2) }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 195
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { children: [
+                /* @__PURE__ */ jsxDEV("strong", { children: selected.code }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 281
+                }, this),
+                /* @__PURE__ */ jsxDEV("h3", { children: selected.title }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 313
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 276
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 159
+            }, this),
+            /* @__PURE__ */ jsxDEV(StatusTag, { status: selected.status }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 350
+            }, this),
+            /* @__PURE__ */ jsxDEV("dl", { children: [
+              /* @__PURE__ */ jsxDEV("div", { children: [
+                /* @__PURE__ */ jsxDEV("dt", { children: "Units" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 397
+                }, this),
+                /* @__PURE__ */ jsxDEV("dd", { children: selected.units }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 411
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 392
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { children: [
+                /* @__PURE__ */ jsxDEV("dt", { children: "Suggested" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 447
+                }, this),
+                /* @__PURE__ */ jsxDEV("dd", { children: selected.term }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 465
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 442
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 388
+            }, this),
+            /* @__PURE__ */ jsxDEV("section", { children: [
+              /* @__PURE__ */ jsxDEV("h4", { children: "About" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 509
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { children: selected.description }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 523
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 500
+            }, this),
+            /* @__PURE__ */ jsxDEV("section", { children: [
+              /* @__PURE__ */ jsxDEV("h4", { children: "Prerequisites" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 571
+              }, this),
+              selected.prereqs.length ? selected.prereqs.map((code) => /* @__PURE__ */ jsxDEV("button", { className: "cr-relation", onClick: () => courseData.some((course) => course.code === code) && setSelectedCode(code), children: [
+                /* @__PURE__ */ jsxDEV(GitBranch, { size: 15 }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 785
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { children: [
+                  /* @__PURE__ */ jsxDEV("strong", { children: code }, void 0, false, {
+                    fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                    lineNumber: 36,
+                    columnNumber: 814
+                  }, this),
+                  /* @__PURE__ */ jsxDEV("small", { children: "Required before this course" }, void 0, false, {
+                    fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                    lineNumber: 36,
+                    columnNumber: 837
+                  }, this)
+                ] }, void 0, true, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 808
+                }, this),
+                /* @__PURE__ */ jsxDEV(ArrowRight, { size: 14 }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 886
+                }, this)
+              ] }, code, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 651
+              }, this)) : /* @__PURE__ */ jsxDEV("p", { className: "cr-ready", children: [
+                /* @__PURE__ */ jsxDEV(Check, { size: 14 }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 947
+                }, this),
+                "No course prerequisite recorded"
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 923
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 562
+            }, this),
+            /* @__PURE__ */ jsxDEV("section", { children: [
+              /* @__PURE__ */ jsxDEV("h4", { children: "Unlocks" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1021
+              }, this),
+              /* @__PURE__ */ jsxDEV("div", { className: "cr-unlocks", children: selected.unlocks.map((code) => /* @__PURE__ */ jsxDEV("button", { onClick: () => courseData.some((course) => course.code === code) && setSelectedCode(code), children: code }, code, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1097
+              }, this)) }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1037
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 1012
+            }, this),
+            /* @__PURE__ */ jsxDEV("footer", { children: [
+              /* @__PURE__ */ jsxDEV("button", { className: "cr-outline", onClick: () => document.querySelector("#semester-plan")?.scrollIntoView({ behavior: "smooth" }), children: "View in planner" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1248
+              }, this),
+              /* @__PURE__ */ jsxDEV("button", { className: "cr-action", onClick: togglePlan, children: plannedCodes.includes(selected.code) ? /* @__PURE__ */ jsxDEV(Fragment, { children: [
+                /* @__PURE__ */ jsxDEV(Check, { size: 15 }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 1493
+                }, this),
+                "In your plan"
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1491
+              }, this) : /* @__PURE__ */ jsxDEV(Fragment, { children: [
+                /* @__PURE__ */ jsxDEV(Plus, { size: 15 }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 36,
+                  columnNumber: 1532
+                }, this),
+                "Add to plan"
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1530
+              }, this) }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 36,
+                columnNumber: 1400
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 36,
+              columnNumber: 1240
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 36,
+            columnNumber: 11
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 35,
+          columnNumber: 9
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 34,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("section", { className: "cr-course-shelf", id: "course-shelf", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-section-title", children: [
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("span", { className: "cr-title-icon coral", children: /* @__PURE__ */ jsxDEV(BookOpen, { size: 20 }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 38,
+              columnNumber: 139
+            }, this) }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 38,
+              columnNumber: 101
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { children: [
+              /* @__PURE__ */ jsxDEV("h2", { children: "Courses on your radar" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 38,
+                columnNumber: 173
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { children: "Current, available, and planned courses at a glance." }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 38,
+                columnNumber: 203
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 38,
+              columnNumber: 168
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 38,
+            columnNumber: 96
+          }, this),
+          /* @__PURE__ */ jsxDEV("button", { className: "cr-link-button", children: [
+            "Explore all courses ",
+            /* @__PURE__ */ jsxDEV(ArrowRight, { size: 15 }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 38,
+              columnNumber: 329
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 38,
+            columnNumber: 274
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 38,
+          columnNumber: 62
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-shelf-grid", children: courseData.slice(2, 6).map((course) => /* @__PURE__ */ jsxDEV("button", { onClick: () => {
+          setSelectedCode(course.code);
+          document.querySelector("#degree-map")?.scrollIntoView({ behavior: "smooth" });
+        }, children: [
+          /* @__PURE__ */ jsxDEV("span", { children: [
+            /* @__PURE__ */ jsxDEV("strong", { children: course.code }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 38,
+              columnNumber: 597
+            }, this),
+            /* @__PURE__ */ jsxDEV("small", { children: [
+              course.units,
+              " units"
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 38,
+              columnNumber: 627
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 38,
+            columnNumber: 591
+          }, this),
+          /* @__PURE__ */ jsxDEV("h3", { children: course.title }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 38,
+            columnNumber: 669
+          }, this),
+          /* @__PURE__ */ jsxDEV(StatusTag, { status: course.status, tiny: true }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 38,
+            columnNumber: 692
+          }, this),
+          /* @__PURE__ */ jsxDEV(ArrowRight, { className: "cr-card-arrow", size: 17 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 38,
+            columnNumber: 733
+          }, this)
+        ] }, course.code, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 38,
+          columnNumber: 439
+        }, this)) }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 38,
+          columnNumber: 368
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 38,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("section", { className: "cr-planner", id: "semester-plan", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-section-title", children: [
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("span", { className: "cr-title-icon gold", children: /* @__PURE__ */ jsxDEV(CalendarBlank, { size: 20 }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 134
+            }, this) }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 97
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { children: [
+              /* @__PURE__ */ jsxDEV("h2", { children: "Semester plan" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 173
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { children: "A flexible draft for the year ahead." }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 195
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 168
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 39,
+            columnNumber: 92
+          }, this),
+          /* @__PURE__ */ jsxDEV("button", { className: "cr-link-button", children: [
+            "Open full planner ",
+            /* @__PURE__ */ jsxDEV(ArrowRight, { size: 15 }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 303
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 39,
+            columnNumber: 250
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 39,
+          columnNumber: 58
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "cr-term-grid", children: [
+          /* @__PURE__ */ jsxDEV("article", { children: [
+            /* @__PURE__ */ jsxDEV("header", { children: [
+              /* @__PURE__ */ jsxDEV("div", { children: [
+                /* @__PURE__ */ jsxDEV("span", { children: "FALL 2026" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 394
+                }, this),
+                /* @__PURE__ */ jsxDEV("h3", { children: "In progress" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 416
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 389
+              }, this),
+              /* @__PURE__ */ jsxDEV("b", { children: "7 units" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 442
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 381
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "cr-plan-course", children: [
+              /* @__PURE__ */ jsxDEV("span", { children: "CMPE 50" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 497
+              }, this),
+              /* @__PURE__ */ jsxDEV("strong", { children: "Object-Oriented Concepts" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 517
+              }, this),
+              /* @__PURE__ */ jsxDEV(StatusTag, { status: "in-progress", tiny: true }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 558
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 465
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "cr-plan-course", children: [
+              /* @__PURE__ */ jsxDEV("span", { children: "PHYS 50" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 635
+              }, this),
+              /* @__PURE__ */ jsxDEV("strong", { children: "General Physics: Mechanics" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 655
+              }, this),
+              /* @__PURE__ */ jsxDEV(StatusTag, { status: "available", tiny: true }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 698
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 603
+            }, this),
+            /* @__PURE__ */ jsxDEV("button", { className: "cr-add-course", children: [
+              /* @__PURE__ */ jsxDEV(Plus, { size: 15 }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 775
+              }, this),
+              "Add course"
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 741
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 39,
+            columnNumber: 372
+          }, this),
+          /* @__PURE__ */ jsxDEV("article", { children: [
+            /* @__PURE__ */ jsxDEV("header", { children: [
+              /* @__PURE__ */ jsxDEV("div", { children: [
+                /* @__PURE__ */ jsxDEV("span", { children: "SPRING 2027" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 844
+                }, this),
+                /* @__PURE__ */ jsxDEV("h3", { children: "Next semester" }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 868
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 839
+              }, this),
+              /* @__PURE__ */ jsxDEV("b", { children: [
+                plannedCodes.length * 3 + 1,
+                " units"
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 896
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 831
+            }, this),
+            plannedCodes.slice(0, 3).map((code) => {
+              const course = courseData.find((item) => item.code === code);
+              return course ? /* @__PURE__ */ jsxDEV("div", { className: "cr-plan-course", children: [
+                /* @__PURE__ */ jsxDEV("span", { children: course.code }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 1108
+                }, this),
+                /* @__PURE__ */ jsxDEV("strong", { children: course.title }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 1134
+                }, this),
+                /* @__PURE__ */ jsxDEV(StatusTag, { status: "planned", tiny: true }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                  lineNumber: 39,
+                  columnNumber: 1165
+                }, this)
+              ] }, code, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 1065
+              }, this) : null;
+            }),
+            /* @__PURE__ */ jsxDEV("button", { className: "cr-add-course", children: [
+              /* @__PURE__ */ jsxDEV(Plus, { size: 15 }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 1251
+              }, this),
+              "Add course"
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 1217
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 39,
+            columnNumber: 822
+          }, this),
+          /* @__PURE__ */ jsxDEV("aside", { children: [
+            /* @__PURE__ */ jsxDEV(GraduationCap, { size: 25, weight: "duotone" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 1305
+            }, this),
+            /* @__PURE__ */ jsxDEV("span", { children: "PLANNING NOTE" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 1349
+            }, this),
+            /* @__PURE__ */ jsxDEV("h3", { children: "You’re building toward upper-division standing." }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 1375
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { children: "Finish the foundation sequence before adding advanced CMPE courses." }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 1431
+            }, this),
+            /* @__PURE__ */ jsxDEV("button", { children: [
+              "Review milestone ",
+              /* @__PURE__ */ jsxDEV(ArrowRight, { size: 14 }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+                lineNumber: 39,
+                columnNumber: 1530
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+              lineNumber: 39,
+              columnNumber: 1505
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+            lineNumber: 39,
+            columnNumber: 1298
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 39,
+          columnNumber: 342
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 39,
+        columnNumber: 7
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 32,
+      columnNumber: 5
+    }, this),
+    /* @__PURE__ */ jsxDEV("footer", { className: "cr-footer", children: [
+      /* @__PURE__ */ jsxDEV("span", { children: [
+        /* @__PURE__ */ jsxDEV("span", { className: "cr-mini-orbit" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+          lineNumber: 40,
+          columnNumber: 48
+        }, this),
+        "Course Radar"
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 40,
+        columnNumber: 42
+      }, this),
+      /* @__PURE__ */ jsxDEV("p", { children: "Visual prototype · Static SJSU course data · Planning reference only" }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+        lineNumber: 40,
+        columnNumber: 101
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+      lineNumber: 40,
+      columnNumber: 12
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/DesignPreview.tsx",
+    lineNumber: 30,
+    columnNumber: 10
+  }, this);
+}
+_s(DesignPreview, "Td/Ykbc60lAvfng1q19raxYvxdg=");
+_c3 = DesignPreview;
+var _c, _c2, _c3;
+$RefreshReg$(_c, "StatusTag");
+$RefreshReg$(_c2, "GraphNode");
+$RefreshReg$(_c3, "DesignPreview");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/Users/thinh/CMPE131/src/DesignPreview.tsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/Users/thinh/CMPE131/src/DesignPreview.tsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/Users/thinh/CMPE131/src/DesignPreview.tsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6IkFBdUIyTSxTQVkrdkMsVUFaL3ZDOztBQXZCM00sU0FBU0EsU0FBU0MsZ0JBQW9DO0FBQ3RELFNBQVNDLFlBQVlDLFVBQVVDLGVBQWVDLE9BQU9DLGFBQWFDLE9BQU9DLFdBQVdDLGVBQWVDLE9BQU9DLE1BQU1DLGlCQUFpQkMsWUFBWUMsT0FBT0MsTUFBTUMsbUJBQW1CQyxTQUFTQyxxQkFBcUI7QUFDM00sT0FBTztBQUlQLE1BQU1DLGFBQXVCO0FBQUEsRUFDM0IsRUFBRUMsTUFBTSxXQUFXQyxPQUFPLHdDQUF3Q0MsT0FBTyxHQUFHQyxRQUFRLGFBQWFDLE1BQU0sYUFBYUMsYUFBYSxvRkFBb0ZDLFNBQVMsSUFBSUMsU0FBUyxDQUFDLFNBQVMsRUFBRTtBQUFBLEVBQ3ZQLEVBQUVQLE1BQU0sV0FBV0MsT0FBTyxjQUFjQyxPQUFPLEdBQUdDLFFBQVEsYUFBYUMsTUFBTSxhQUFhQyxhQUFhLDBFQUEwRUMsU0FBUyxJQUFJQyxTQUFTLENBQUMsV0FBVyxTQUFTLEVBQUU7QUFBQSxFQUM5TixFQUFFUCxNQUFNLFdBQVdDLE9BQU8sNEJBQTRCQyxPQUFPLEdBQUdDLFFBQVEsZUFBZUMsTUFBTSxhQUFhQyxhQUFhLDJFQUEyRUMsU0FBUyxDQUFDLFNBQVMsR0FBR0MsU0FBUyxDQUFDLFVBQVUsRUFBRTtBQUFBLEVBQzlPLEVBQUVQLE1BQU0sV0FBV0MsT0FBTyxlQUFlQyxPQUFPLEdBQUdDLFFBQVEsV0FBV0MsTUFBTSxlQUFlQyxhQUFhLDBFQUEwRUMsU0FBUyxDQUFDLFNBQVMsR0FBR0MsU0FBUyxDQUFDLFNBQVMsRUFBRTtBQUFBLEVBQzdOLEVBQUVQLE1BQU0sV0FBV0MsT0FBTyw4QkFBOEJDLE9BQU8sR0FBR0MsUUFBUSxhQUFhQyxNQUFNLGVBQWVDLGFBQWEsNEVBQTRFQyxTQUFTLENBQUMsU0FBUyxHQUFHQyxTQUFTLENBQUMsU0FBUyxFQUFFO0FBQUEsRUFDaFAsRUFBRVAsTUFBTSxZQUFZQyxPQUFPLHdDQUF3Q0MsT0FBTyxHQUFHQyxRQUFRLGFBQWFDLE1BQU0sb0JBQW9CQyxhQUFhLHFGQUFxRkMsU0FBUyxDQUFDLFNBQVMsR0FBR0MsU0FBUyxDQUFDLFVBQVUsRUFBRTtBQUFBLEVBQzFRLEVBQUVQLE1BQU0sWUFBWUMsT0FBTywwQkFBMEJDLE9BQU8sR0FBR0MsUUFBUSxXQUFXQyxNQUFNLGNBQWNDLGFBQWEsMEVBQTBFQyxTQUFTLENBQUMsVUFBVSxHQUFHQyxTQUFTLENBQUMsV0FBVyxFQUFFO0FBQUEsRUFDM08sRUFBRVAsTUFBTSxZQUFZQyxPQUFPLG9CQUFvQkMsT0FBTyxHQUFHQyxRQUFRLFdBQVdDLE1BQU0sZ0JBQWdCQyxhQUFhLHdFQUF3RUMsU0FBUyxDQUFDLE9BQU8sR0FBR0MsU0FBUyxDQUFDLFVBQVUsRUFBRTtBQUFDO0FBRXBPLE1BQU1DLFdBQXdFO0FBQUEsRUFDNUVDLFdBQVcsRUFBRUMsT0FBTyxhQUFhQyxNQUFNekIsWUFBWTtBQUFBLEVBQUcsZUFBZSxFQUFFd0IsT0FBTyxlQUFlQyxNQUFNeEIsTUFBTTtBQUFBLEVBQUd5QixTQUFTLEVBQUVGLE9BQU8sV0FBV0MsTUFBTTNCLGNBQWM7QUFBQSxFQUFHNkIsV0FBVyxFQUFFSCxPQUFPLGFBQWFDLE1BQU1kLFFBQVE7QUFBQSxFQUFHaUIsU0FBUyxFQUFFSixPQUFPLFdBQVdDLE1BQU1wQixLQUFLO0FBQUEsRUFBR3dCLFNBQVMsRUFBRUwsT0FBTyx3QkFBd0JDLE1BQU1iLGNBQWM7QUFDN1Q7QUFDQSxNQUFNa0IsUUFBUTtBQUFBLEVBQ1osRUFBRUMsTUFBTSxXQUFXQyxJQUFJLFdBQVdDLEdBQUcsbUNBQW1DO0FBQUEsRUFBRyxFQUFFRixNQUFNLFdBQVdDLElBQUksV0FBV0MsR0FBRyxtQ0FBbUM7QUFBQSxFQUFHLEVBQUVGLE1BQU0sV0FBV0MsSUFBSSxXQUFXQyxHQUFHLG1DQUFtQztBQUFBLEVBQUcsRUFBRUYsTUFBTSxXQUFXQyxJQUFJLFlBQVlDLEdBQUcsb0NBQW9DO0FBQUEsRUFBRyxFQUFFRixNQUFNLFdBQVdDLElBQUksWUFBWUMsR0FBRyxvQ0FBb0M7QUFBQSxFQUFHLEVBQUVGLE1BQU0sWUFBWUMsSUFBSSxZQUFZQyxHQUFHLG9DQUFvQztBQUFDO0FBRXpjLFNBQVNDLFFBQVFwQixNQUFjO0FBQUUsUUFBTXFCLFdBQVcsb0JBQUlDLElBQUksQ0FBQ3RCLElBQUksQ0FBQztBQUFHLFFBQU11QixLQUFLQSxDQUFDQyxVQUFrQlIsTUFBTVMsT0FBTyxDQUFBQyxTQUFRQSxLQUFLUixPQUFPTSxLQUFLLEVBQUVHLFFBQVEsQ0FBQUQsU0FBUTtBQUFFLFFBQUksQ0FBQ0wsU0FBU08sSUFBSUYsS0FBS1QsSUFBSSxHQUFHO0FBQUVJLGVBQVNRLElBQUlILEtBQUtULElBQUk7QUFBR00sU0FBR0csS0FBS1QsSUFBSTtBQUFBLElBQUc7QUFBQSxFQUFFLENBQUM7QUFBRyxRQUFNYSxPQUFPQSxDQUFDTixVQUFrQlIsTUFBTVMsT0FBTyxDQUFBQyxTQUFRQSxLQUFLVCxTQUFTTyxLQUFLLEVBQUVHLFFBQVEsQ0FBQUQsU0FBUTtBQUFFLFFBQUksQ0FBQ0wsU0FBU08sSUFBSUYsS0FBS1IsRUFBRSxHQUFHO0FBQUVHLGVBQVNRLElBQUlILEtBQUtSLEVBQUU7QUFBR1ksV0FBS0osS0FBS1IsRUFBRTtBQUFBLElBQUc7QUFBQSxFQUFFLENBQUM7QUFBR0ssS0FBR3ZCLElBQUk7QUFBRzhCLE9BQUs5QixJQUFJO0FBQUcsU0FBT3FCO0FBQVU7QUFDdGIsU0FBU1UsVUFBVSxFQUFFNUIsUUFBUTZCLE9BQU8sTUFBMEMsR0FBRztBQUFFLFFBQU0sRUFBRXRCLE9BQU9DLE1BQU1zQixLQUFLLElBQUl6QixTQUFTTCxNQUFNO0FBQUcsU0FBTyx1QkFBQyxVQUFLLFdBQVcsZ0JBQWdCQSxNQUFNLEdBQUc2QixPQUFPLFVBQVUsRUFBRSxJQUFJO0FBQUEsMkJBQUMsUUFBSyxNQUFNQSxPQUFPLEtBQUssSUFBSSxRQUFRN0IsV0FBVyxjQUFjLFNBQVMsYUFBdEU7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUFnRjtBQUFBLElBQUlPO0FBQUFBLE9BQXJKO0FBQUE7QUFBQTtBQUFBO0FBQUEsU0FBMko7QUFBUztBQUFDd0IsS0FBdFNIO0FBQ1QsU0FBU0ksVUFBVSxFQUFFQyxRQUFRQyxVQUFVQyxPQUFPQyxTQUFTQyxLQUErRixHQUFHO0FBQUUsU0FBTyx1QkFBQyxZQUFPLFdBQVcsV0FBV0EsSUFBSSxHQUFHSCxXQUFXLGNBQWMsRUFBRSxHQUFHQyxRQUFRLFdBQVcsRUFBRSxJQUFJLFNBQWtCLGdCQUFjRCxVQUFVO0FBQUEsMkJBQUMsVUFBSyxXQUFVLGdCQUFlO0FBQUEsNkJBQUMsWUFBUUQsaUJBQU9wQyxRQUFoQjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQXFCO0FBQUEsTUFBUyx1QkFBQyxVQUFNb0M7QUFBQUEsZUFBT2xDO0FBQUFBLFFBQU07QUFBQSxXQUFwQjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQTBCO0FBQUEsU0FBdkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUE4RjtBQUFBLElBQU8sdUJBQUMsVUFBSyxXQUFVLGlCQUFpQmtDLGlCQUFPbkMsU0FBeEM7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUE4QztBQUFBLElBQU8sdUJBQUMsYUFBVSxRQUFRbUMsT0FBT2pDLFFBQVEsTUFBSSxRQUF0QztBQUFBO0FBQUE7QUFBQTtBQUFBLFdBQXNDO0FBQUEsT0FBdFU7QUFBQTtBQUFBO0FBQUE7QUFBQSxTQUF5VTtBQUFXO0FBQUNzQyxNQUE5ZU47QUFFVCx3QkFBd0JPLGdCQUFnQjtBQUFBQyxLQUFBO0FBQ3RDLFFBQU0sQ0FBQ0MsY0FBY0MsZUFBZSxJQUFJaEUsU0FBUyxVQUFVO0FBQUcsUUFBTSxDQUFDaUUsY0FBY0MsZUFBZSxJQUFJbEUsU0FBeUIsS0FBSztBQUFHLFFBQU0sQ0FBQ21FLGNBQWNDLGVBQWUsSUFBSXBFLFNBQVMsQ0FBQyxXQUFXLFVBQVUsQ0FBQztBQUMvTSxRQUFNd0QsV0FBV3RDLFdBQVdtRCxLQUFLLENBQUFkLFdBQVVBLE9BQU9wQyxTQUFTNEMsWUFBWSxLQUFLN0MsV0FBVyxDQUFDO0FBQUcsUUFBTW9ELGNBQWN2RSxRQUFRLE1BQU13QyxRQUFRd0IsWUFBWSxHQUFHLENBQUNBLFlBQVksQ0FBQztBQUFHLFFBQU1RLGVBQWVyRCxXQUFXc0QsTUFBTSxHQUFHLENBQUM7QUFBRyxRQUFNQyxhQUFhQSxNQUFNTCxnQkFBZ0IsQ0FBQU0sWUFBV0EsUUFBUUMsU0FBU25CLFNBQVNyQyxJQUFJLElBQUl1RCxRQUFROUIsT0FBTyxDQUFBekIsU0FBUUEsU0FBU3FDLFNBQVNyQyxJQUFJLElBQUksQ0FBQyxHQUFHdUQsU0FBU2xCLFNBQVNyQyxJQUFJLENBQUM7QUFDcFgsU0FBTyx1QkFBQyxTQUFJLFdBQVUsd0JBQ3BCO0FBQUEsMkJBQUMsWUFBTyxXQUFVLGFBQVk7QUFBQSw2QkFBQyxPQUFFLFdBQVUsWUFBVyxNQUFLLGdCQUFlO0FBQUEsK0JBQUMsVUFBSyxXQUFVLGtCQUFpQjtBQUFBLGlDQUFDLFlBQUQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBSztBQUFBLFVBQUcsdUJBQUMsU0FBRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFFO0FBQUEsYUFBM0M7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUE4QztBQUFBLFFBQU8sdUJBQUMsVUFBSztBQUFBO0FBQUEsVUFBWSx1QkFBQyxXQUFNLGlDQUFQO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXdCO0FBQUEsYUFBMUM7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFrRDtBQUFBLFdBQW5KO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBMEo7QUFBQSxNQUFJLHVCQUFDLFNBQUksY0FBVyxzQkFBcUI7QUFBQSwrQkFBQyxPQUFFLFdBQVUsVUFBUyxNQUFLLGdCQUFlO0FBQUEsaUNBQUMsU0FBTSxNQUFNLE1BQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBZ0I7QUFBQSxVQUFHO0FBQUEsYUFBN0Q7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFpRTtBQUFBLFFBQUksdUJBQUMsT0FBRSxNQUFLLGVBQWM7QUFBQSxpQ0FBQyxhQUFVLE1BQU0sTUFBakI7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBb0I7QUFBQSxVQUFHO0FBQUEsYUFBN0M7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUF1RDtBQUFBLFFBQUksdUJBQUMsT0FBRSxNQUFLLGtCQUFpQjtBQUFBLGlDQUFDLGlCQUFjLE1BQU0sTUFBckI7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBd0I7QUFBQSxVQUFHO0FBQUEsYUFBcEQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUF3RDtBQUFBLFFBQUksdUJBQUMsT0FBRSxNQUFLLGlCQUFnQjtBQUFBLGlDQUFDLFlBQVMsTUFBTSxNQUFoQjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFtQjtBQUFBLFVBQUc7QUFBQSxhQUE5QztBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXFEO0FBQUEsV0FBdFI7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUEwUjtBQUFBLE1BQU0sdUJBQUMsV0FBTSxXQUFVLG9CQUFtQjtBQUFBLCtCQUFDLG1CQUFnQixNQUFNLE1BQXZCO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBMEI7QUFBQSxRQUFHLHVCQUFDLFVBQUssV0FBVSxTQUFRLDhCQUF4QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXNDO0FBQUEsUUFBTyx1QkFBQyxXQUFNLGFBQVksb0JBQW5CO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBbUM7QUFBQSxXQUFqSjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQW9KO0FBQUEsTUFBUSx1QkFBQyxZQUFPLFdBQVUsYUFBWSxjQUFXLGdCQUFlLGtCQUF4RDtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQTBEO0FBQUEsU0FBbHJCO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FBMnJCO0FBQUEsSUFDM3JCLHVCQUFDLFVBQUssSUFBRyxlQUNQO0FBQUEsNkJBQUMsYUFBUSxXQUFVLGNBQWE7QUFBQSwrQkFBQyxTQUFJO0FBQUEsaUNBQUMsVUFBSyxXQUFVLGVBQWMsZ0RBQTlCO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQThEO0FBQUEsVUFBTyx1QkFBQyxRQUFHLHNDQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTBCO0FBQUEsVUFBSyx1QkFBQyxPQUFFLDRGQUFIO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQStFO0FBQUEsYUFBeEw7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUE0TDtBQUFBLFFBQU0sdUJBQUMsU0FBSSxXQUFVLHNCQUFxQjtBQUFBLGlDQUFDLFNBQUksV0FBVSxXQUFVLE9BQU8sRUFBRSxjQUFjLE1BQU0sR0FBb0I7QUFBQSxtQ0FBQyxZQUFPLG1CQUFSO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQVc7QUFBQSxZQUFTLHVCQUFDLFVBQUssd0JBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBYztBQUFBLGVBQTVHO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQW1IO0FBQUEsVUFBTSx1QkFBQyxTQUFJO0FBQUEsbUNBQUMsVUFBSywrQkFBTjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFxQjtBQUFBLFlBQU8sdUJBQUMsWUFBTyw4QkFBUjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFzQjtBQUFBLFlBQVMsdUJBQUMsV0FBTSxzQ0FBUDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUE2QjtBQUFBLGVBQTdGO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXFHO0FBQUEsVUFBTSx1QkFBQyxjQUFXLE1BQU0sTUFBbEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBcUI7QUFBQSxhQUE3UjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQWdTO0FBQUEsV0FBbGdCO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBd2dCO0FBQUEsTUFDeGdCLHVCQUFDLGFBQVEsV0FBVSxrQkFBaUIsSUFBRyxjQUFhO0FBQUEsK0JBQUMsU0FBSSxXQUFVLG9CQUFtQjtBQUFBLGlDQUFDLFNBQUk7QUFBQSxtQ0FBQyxVQUFLLFdBQVUsaUJBQWdCLGlDQUFDLGNBQVcsTUFBTSxJQUFJLFFBQU8sYUFBN0I7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBc0MsS0FBdEU7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBeUU7QUFBQSxZQUFPLHVCQUFDLFNBQUk7QUFBQSxxQ0FBQyxRQUFHLCtCQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQW1CO0FBQUEsY0FBSyx1QkFBQyxPQUFFLCtFQUFIO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWtFO0FBQUEsaUJBQS9GO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQW1HO0FBQUEsZUFBeEw7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBOEw7QUFBQSxVQUFNLHVCQUFDLFNBQUksV0FBVSxrQkFBaUI7QUFBQSxtQ0FBQyxXQUFNO0FBQUEscUNBQUMsbUJBQWdCLE1BQU0sTUFBdkI7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBMEI7QUFBQSxjQUFHLHVCQUFDLFlBQU8sY0FBVyxnQkFBZSxPQUFPNEMsY0FBYyxVQUFVLENBQUFhLFVBQVNaLGdCQUFnQlksTUFBTUMsT0FBT2xDLEtBQUssR0FBSTRCLHVCQUFhTyxJQUFJLENBQUF2QixXQUFVLHVCQUFDLFlBQTBCQSxpQkFBT3BDLFFBQXJCb0MsT0FBT3BDLE1BQXBCO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQXVDLENBQVMsS0FBM0w7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBNkw7QUFBQSxpQkFBak87QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBME87QUFBQSxZQUFRLHVCQUFDLFlBQU8sY0FBVyxlQUFjLGlDQUFDLHFCQUFrQixNQUFNLE1BQXpCO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQTRCLEtBQTdEO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQWdFO0FBQUEsWUFBUyx1QkFBQyxVQUFLLFdBQVUsV0FBVTtBQUFBLHFDQUFDLFlBQU8sY0FBVyxZQUFXLGlDQUFDLFNBQU0sTUFBTSxNQUFiO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWdCLEtBQTlDO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWlEO0FBQUEsY0FBUyx1QkFBQyxPQUFFLG9CQUFIO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQU87QUFBQSxjQUFJLHVCQUFDLFlBQU8sY0FBVyxXQUFVLGlDQUFDLFFBQUssTUFBTSxNQUFaO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWUsS0FBNUM7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBK0M7QUFBQSxpQkFBOUk7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBdUo7QUFBQSxlQUFsZjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF5ZjtBQUFBLGFBQS90QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXF1QjtBQUFBLFFBQ3Z4Qix1QkFBQyxTQUFJLFdBQVUsaUJBQWdCO0FBQUEsaUNBQUMsU0FBSSxXQUFVLGlCQUFnQjtBQUFBLG1DQUFDLFNBQUksV0FBVSxpQkFBZ0I7QUFBQSxxQ0FBQyxVQUFLO0FBQUEsdUNBQUMsT0FBRSxXQUFVLFVBQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBbUI7QUFBQSxnQkFBRztBQUFBLG1CQUE1QjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUE2QztBQUFBLGNBQU8sdUJBQUMsVUFBSztBQUFBLHVDQUFDLE9BQUUsV0FBVSxXQUFiO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQW9CO0FBQUEsZ0JBQUc7QUFBQSxtQkFBN0I7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBd0M7QUFBQSxjQUFPLHVCQUFDLFVBQUssV0FBVSxTQUFRO0FBQUEsdUNBQUMsU0FBRDtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUFFO0FBQUEsZ0JBQUc7QUFBQSxnQkFBWTRDO0FBQUFBLG1CQUF6QztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFzRDtBQUFBLGlCQUF4TDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUErTDtBQUFBLFlBQU0sdUJBQUMsU0FBSSxXQUFVLGlCQUFnQixpQ0FBQyxTQUFJLFdBQVUsZ0JBQWU7QUFBQSxxQ0FBQyxTQUFJLFdBQVUsWUFBVyxTQUFRLGVBQWMsZUFBWSxRQUFPO0FBQUEsdUNBQUMsVUFBSyxpQ0FBQyxZQUFPLElBQUcsWUFBVyxTQUFRLFdBQVUsTUFBSyxLQUFJLE1BQUssS0FBSSxhQUFZLEtBQUksY0FBYSxLQUFJLFFBQU8sUUFBTyxpQ0FBQyxVQUFLLEdBQUUsbUJBQVI7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBdUIsS0FBaEk7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBbUksS0FBekk7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBa0o7QUFBQSxnQkFBUTVCLE1BQU0yQyxJQUFJLENBQUFqQyxTQUFRLHVCQUFDLFVBQXFDLEdBQUdBLEtBQUtQLEdBQUcsV0FBV2dDLFlBQVl2QixJQUFJRixLQUFLVCxJQUFJLEtBQUtrQyxZQUFZdkIsSUFBSUYsS0FBS1IsRUFBRSxJQUFJLFdBQVcsV0FBckgsR0FBR1EsS0FBS1QsSUFBSSxJQUFJUyxLQUFLUixFQUFFLElBQWxDO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQXdJLENBQUc7QUFBQSxtQkFBMVg7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBNFg7QUFBQSxjQUFPa0MsYUFBYU8sSUFBSSxDQUFDdkIsUUFBUXdCLFVBQVUsdUJBQUMsYUFBNEIsUUFBZ0IsVUFBVWhCLGlCQUFpQlIsT0FBT3BDLE1BQU0sT0FBUThDLGlCQUFpQixTQUFTVixPQUFPakMsV0FBVzJDLGdCQUFpQixDQUFDSyxZQUFZdkIsSUFBSVEsT0FBT3BDLElBQUksR0FBRyxTQUFTLE1BQU02QyxnQkFBZ0JULE9BQU9wQyxJQUFJLEdBQUcsTUFBTSxRQUFRNEQsUUFBUSxDQUFDLE1BQTdPeEIsT0FBT3BDLE1BQXZCO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWdRLENBQUc7QUFBQSxpQkFBeHNCO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQTBzQixLQUF6dUI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBK3VCO0FBQUEsWUFBTSx1QkFBQyxTQUFJLFdBQVUsaUJBQWdCO0FBQUEscUNBQUMsVUFBSyw2QkFBTjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFtQjtBQUFBLGNBQVM2RCxPQUFPQyxLQUFLdEQsUUFBUSxFQUFlbUQsSUFBSSxDQUFBeEQsV0FBVSx1QkFBQyxZQUFvQixXQUFXMkMsaUJBQWlCM0MsU0FBUyxXQUFXLElBQUksU0FBUyxNQUFNNEMsZ0JBQWdCRCxpQkFBaUIzQyxTQUFTLFFBQVFBLE1BQU0sR0FBRyxpQ0FBQyxhQUFVLFFBQWdCLE1BQUksUUFBL0I7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBK0IsS0FBcktBLFFBQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBcUwsQ0FBUztBQUFBLGlCQUExUztBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUE0UztBQUFBLGVBQXJ3QztBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUEyd0M7QUFBQSxVQUN4eUMsdUJBQUMsV0FBTSxXQUFVLGdCQUFlLGFBQVUsVUFBUztBQUFBLG1DQUFDLFlBQU87QUFBQSxxQ0FBQyxVQUFLLDhCQUFOO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQW9CO0FBQUEsY0FBTyx1QkFBQyxZQUFPLGNBQVcsdUJBQXNCLG1CQUF6QztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUE0QztBQUFBLGlCQUEvRTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUF3RjtBQUFBLFlBQVMsdUJBQUMsU0FBSSxXQUFVLHNCQUFxQjtBQUFBLHFDQUFDLFVBQUssV0FBVSxrQkFBa0JrQyxtQkFBU3JDLEtBQUsrRCxNQUFNLEdBQUcsRUFBRSxDQUFDLEVBQUVWLE1BQU0sR0FBRyxDQUFDLEtBQXhFO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQTBFO0FBQUEsY0FBTyx1QkFBQyxTQUFJO0FBQUEsdUNBQUMsWUFBUWhCLG1CQUFTckMsUUFBbEI7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBdUI7QUFBQSxnQkFBUyx1QkFBQyxRQUFJcUMsbUJBQVNwQyxTQUFkO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQW9CO0FBQUEsbUJBQXpEO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQThEO0FBQUEsaUJBQW5MO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXlMO0FBQUEsWUFBTSx1QkFBQyxhQUFVLFFBQVFvQyxTQUFTbEMsVUFBNUI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBbUM7QUFBQSxZQUFHLHVCQUFDLFFBQUc7QUFBQSxxQ0FBQyxTQUFJO0FBQUEsdUNBQUMsUUFBRyxxQkFBSjtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUFTO0FBQUEsZ0JBQUssdUJBQUMsUUFBSWtDLG1CQUFTbkMsU0FBZDtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUFvQjtBQUFBLG1CQUF2QztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUE0QztBQUFBLGNBQU0sdUJBQUMsU0FBSTtBQUFBLHVDQUFDLFFBQUcseUJBQUo7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBYTtBQUFBLGdCQUFLLHVCQUFDLFFBQUltQyxtQkFBU2pDLFFBQWQ7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBbUI7QUFBQSxtQkFBMUM7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBK0M7QUFBQSxpQkFBckc7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBMkc7QUFBQSxZQUFLLHVCQUFDLGFBQVE7QUFBQSxxQ0FBQyxRQUFHLHFCQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQVM7QUFBQSxjQUFLLHVCQUFDLE9BQUdpQyxtQkFBU2hDLGVBQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBeUI7QUFBQSxpQkFBaEQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBb0Q7QUFBQSxZQUFVLHVCQUFDLGFBQVE7QUFBQSxxQ0FBQyxRQUFHLDZCQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWlCO0FBQUEsY0FBTWdDLFNBQVMvQixRQUFRMEQsU0FBUzNCLFNBQVMvQixRQUFRcUQsSUFBSSxDQUFBM0QsU0FBUSx1QkFBQyxZQUFPLFdBQVUsZUFBeUIsU0FBUyxNQUFNRCxXQUFXa0UsS0FBSyxDQUFBN0IsV0FBVUEsT0FBT3BDLFNBQVNBLElBQUksS0FBSzZDLGdCQUFnQjdDLElBQUksR0FBRztBQUFBLHVDQUFDLGFBQVUsTUFBTSxNQUFqQjtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUFvQjtBQUFBLGdCQUFHLHVCQUFDLFVBQUs7QUFBQSx5Q0FBQyxZQUFRQSxrQkFBVDtBQUFBO0FBQUE7QUFBQTtBQUFBLHlCQUFjO0FBQUEsa0JBQVMsdUJBQUMsV0FBTSwyQ0FBUDtBQUFBO0FBQUE7QUFBQTtBQUFBLHlCQUFrQztBQUFBLHFCQUEvRDtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUF1RTtBQUFBLGdCQUFPLHVCQUFDLGNBQVcsTUFBTSxNQUFsQjtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUFxQjtBQUFBLG1CQUF6TkEsTUFBckM7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBaVEsQ0FBUyxJQUFJLHVCQUFDLE9BQUUsV0FBVSxZQUFXO0FBQUEsdUNBQUMsU0FBTSxNQUFNLE1BQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBZ0I7QUFBQSxnQkFBRztBQUFBLG1CQUEzQztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUEwRTtBQUFBLGlCQUEvYTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFvYjtBQUFBLFlBQVUsdUJBQUMsYUFBUTtBQUFBLHFDQUFDLFFBQUcsdUJBQUo7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBVztBQUFBLGNBQUssdUJBQUMsU0FBSSxXQUFVLGNBQWNxQyxtQkFBUzlCLFFBQVFvRCxJQUFJLENBQUEzRCxTQUFRLHVCQUFDLFlBQWtCLFNBQVMsTUFBTUQsV0FBV2tFLEtBQUssQ0FBQTdCLFdBQVVBLE9BQU9wQyxTQUFTQSxJQUFJLEtBQUs2QyxnQkFBZ0I3QyxJQUFJLEdBQUlBLGtCQUFoR0EsTUFBYjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFrSCxDQUFTLEtBQXJMO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQXVMO0FBQUEsaUJBQWhOO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXNOO0FBQUEsWUFBVSx1QkFBQyxZQUFPO0FBQUEscUNBQUMsWUFBTyxXQUFVLGNBQWEsU0FBUyxNQUFNa0UsU0FBU0MsY0FBYyxnQkFBZ0IsR0FBR0MsZUFBZSxFQUFFQyxVQUFVLFNBQVMsQ0FBQyxHQUFHLCtCQUFoSTtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUErSTtBQUFBLGNBQVMsdUJBQUMsWUFBTyxXQUFVLGFBQVksU0FBU2YsWUFBYU4sdUJBQWFRLFNBQVNuQixTQUFTckMsSUFBSSxJQUFJLG1DQUFFO0FBQUEsdUNBQUMsU0FBTSxNQUFNLE1BQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBZ0I7QUFBQSxnQkFBRztBQUFBLG1CQUFyQjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFpQyxJQUFNLG1DQUFFO0FBQUEsdUNBQUMsUUFBSyxNQUFNLE1BQVo7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBZTtBQUFBLGdCQUFHO0FBQUEsbUJBQXBCO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQStCLEtBQWpLO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQXFLO0FBQUEsaUJBQXJVO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQThVO0FBQUEsZUFBbmhEO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTRoRDtBQUFBLGFBRDloRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQ3NpRDtBQUFBLFdBRnhpRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBR0E7QUFBQSxNQUNBLHVCQUFDLGFBQVEsV0FBVSxtQkFBa0IsSUFBRyxnQkFBZTtBQUFBLCtCQUFDLFNBQUksV0FBVSxvQkFBbUI7QUFBQSxpQ0FBQyxTQUFJO0FBQUEsbUNBQUMsVUFBSyxXQUFVLHVCQUFzQixpQ0FBQyxZQUFTLE1BQU0sTUFBaEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBbUIsS0FBekQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBNEQ7QUFBQSxZQUFPLHVCQUFDLFNBQUk7QUFBQSxxQ0FBQyxRQUFHLHFDQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQXlCO0FBQUEsY0FBSyx1QkFBQyxPQUFFLG9FQUFIO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQXVEO0FBQUEsaUJBQTFGO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQThGO0FBQUEsZUFBdEs7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBNEs7QUFBQSxVQUFNLHVCQUFDLFlBQU8sV0FBVSxrQkFBaUI7QUFBQTtBQUFBLFlBQW9CLHVCQUFDLGNBQVcsTUFBTSxNQUFsQjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFxQjtBQUFBLGVBQTVFO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQStFO0FBQUEsYUFBblM7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUE0UztBQUFBLFFBQU0sdUJBQUMsU0FBSSxXQUFVLGlCQUFpQkQscUJBQVdzRCxNQUFNLEdBQUcsQ0FBQyxFQUFFTSxJQUFJLENBQUF2QixXQUFVLHVCQUFDLFlBQXlCLFNBQVMsTUFBTTtBQUFFUywwQkFBZ0JULE9BQU9wQyxJQUFJO0FBQUdrRSxtQkFBU0MsY0FBYyxhQUFhLEdBQUdDLGVBQWUsRUFBRUMsVUFBVSxTQUFTLENBQUM7QUFBQSxRQUFHLEdBQUc7QUFBQSxpQ0FBQyxVQUFLO0FBQUEsbUNBQUMsWUFBUWpDLGlCQUFPcEMsUUFBaEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBcUI7QUFBQSxZQUFTLHVCQUFDLFdBQU9vQztBQUFBQSxxQkFBT2xDO0FBQUFBLGNBQU07QUFBQSxpQkFBckI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBMkI7QUFBQSxlQUEvRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF1RTtBQUFBLFVBQU8sdUJBQUMsUUFBSWtDLGlCQUFPbkMsU0FBWjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFrQjtBQUFBLFVBQUssdUJBQUMsYUFBVSxRQUFRbUMsT0FBT2pDLFFBQVEsTUFBSSxRQUF0QztBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFzQztBQUFBLFVBQUcsdUJBQUMsY0FBVyxXQUFVLGlCQUFnQixNQUFNLE1BQTVDO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQStDO0FBQUEsYUFBM1VpQyxPQUFPcEMsTUFBcEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUEyVixDQUFTLEtBQXphO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBMmE7QUFBQSxXQUFweEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUEweEI7QUFBQSxNQUMxeEIsdUJBQUMsYUFBUSxXQUFVLGNBQWEsSUFBRyxpQkFBZ0I7QUFBQSwrQkFBQyxTQUFJLFdBQVUsb0JBQW1CO0FBQUEsaUNBQUMsU0FBSTtBQUFBLG1DQUFDLFVBQUssV0FBVSxzQkFBcUIsaUNBQUMsaUJBQWMsTUFBTSxNQUFyQjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUF3QixLQUE3RDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFnRTtBQUFBLFlBQU8sdUJBQUMsU0FBSTtBQUFBLHFDQUFDLFFBQUcsNkJBQUo7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBaUI7QUFBQSxjQUFLLHVCQUFDLE9BQUUsb0RBQUg7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBdUM7QUFBQSxpQkFBbEU7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBc0U7QUFBQSxlQUFsSjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF3SjtBQUFBLFVBQU0sdUJBQUMsWUFBTyxXQUFVLGtCQUFpQjtBQUFBO0FBQUEsWUFBa0IsdUJBQUMsY0FBVyxNQUFNLE1BQWxCO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXFCO0FBQUEsZUFBMUU7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBNkU7QUFBQSxhQUE3UTtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXNSO0FBQUEsUUFBTSx1QkFBQyxTQUFJLFdBQVUsZ0JBQWU7QUFBQSxpQ0FBQyxhQUFRO0FBQUEsbUNBQUMsWUFBTztBQUFBLHFDQUFDLFNBQUk7QUFBQSx1Q0FBQyxVQUFLLHlCQUFOO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQWU7QUFBQSxnQkFBTyx1QkFBQyxRQUFHLDJCQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQWU7QUFBQSxtQkFBMUM7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBK0M7QUFBQSxjQUFNLHVCQUFDLE9BQUUsdUJBQUg7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBVTtBQUFBLGlCQUF2RTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUEyRTtBQUFBLFlBQVMsdUJBQUMsU0FBSSxXQUFVLGtCQUFpQjtBQUFBLHFDQUFDLFVBQUssdUJBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBYTtBQUFBLGNBQU8sdUJBQUMsWUFBTyx3Q0FBUjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFnQztBQUFBLGNBQVMsdUJBQUMsYUFBVSxRQUFPLGVBQWMsTUFBSSxRQUFwQztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFvQztBQUFBLGlCQUFqSTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFvSTtBQUFBLFlBQU0sdUJBQUMsU0FBSSxXQUFVLGtCQUFpQjtBQUFBLHFDQUFDLFVBQUssdUJBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBYTtBQUFBLGNBQU8sdUJBQUMsWUFBTywwQ0FBUjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFrQztBQUFBLGNBQVMsdUJBQUMsYUFBVSxRQUFPLGFBQVksTUFBSSxRQUFsQztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFrQztBQUFBLGlCQUFqSTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFvSTtBQUFBLFlBQU0sdUJBQUMsWUFBTyxXQUFVLGlCQUFnQjtBQUFBLHFDQUFDLFFBQUssTUFBTSxNQUFaO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWU7QUFBQSxjQUFHO0FBQUEsaUJBQXBEO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQThEO0FBQUEsZUFBL2E7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBd2I7QUFBQSxVQUFVLHVCQUFDLGFBQVE7QUFBQSxtQ0FBQyxZQUFPO0FBQUEscUNBQUMsU0FBSTtBQUFBLHVDQUFDLFVBQUssMkJBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBaUI7QUFBQSxnQkFBTyx1QkFBQyxRQUFHLDZCQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQWlCO0FBQUEsbUJBQTlDO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQW1EO0FBQUEsY0FBTSx1QkFBQyxPQUFHZ0Q7QUFBQUEsNkJBQWFnQixTQUFTLElBQUk7QUFBQSxnQkFBRTtBQUFBLG1CQUFoQztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFzQztBQUFBLGlCQUF2RztBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUEyRztBQUFBLFlBQVVoQixhQUFhSyxNQUFNLEdBQUcsQ0FBQyxFQUFFTSxJQUFJLENBQUEzRCxTQUFRO0FBQUUsb0JBQU1vQyxTQUFTckMsV0FBV21ELEtBQUssQ0FBQW9CLFNBQVFBLEtBQUt0RSxTQUFTQSxJQUFJO0FBQUcscUJBQU9vQyxTQUFTLHVCQUFDLFNBQUksV0FBVSxrQkFBNEI7QUFBQSx1Q0FBQyxVQUFNQSxpQkFBT3BDLFFBQWQ7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBbUI7QUFBQSxnQkFBTyx1QkFBQyxZQUFRb0MsaUJBQU9uQyxTQUFoQjtBQUFBO0FBQUE7QUFBQTtBQUFBLHVCQUFzQjtBQUFBLGdCQUFTLHVCQUFDLGFBQVUsUUFBTyxXQUFVLE1BQUksUUFBaEM7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBZ0M7QUFBQSxtQkFBL0ZELE1BQXJDO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQXVJLElBQVM7QUFBQSxZQUFNLENBQUM7QUFBQSxZQUFFLHVCQUFDLFlBQU8sV0FBVSxpQkFBZ0I7QUFBQSxxQ0FBQyxRQUFLLE1BQU0sTUFBWjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFlO0FBQUEsY0FBRztBQUFBLGlCQUFwRDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUE4RDtBQUFBLGVBQXhjO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQWlkO0FBQUEsVUFBVSx1QkFBQyxXQUFNO0FBQUEsbUNBQUMsaUJBQWMsTUFBTSxJQUFJLFFBQU8sYUFBaEM7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBeUM7QUFBQSxZQUFHLHVCQUFDLFVBQUssNkJBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBbUI7QUFBQSxZQUFPLHVCQUFDLFFBQUcsK0RBQUo7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBbUQ7QUFBQSxZQUFLLHVCQUFDLE9BQUUsbUZBQUg7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBc0U7QUFBQSxZQUFJLHVCQUFDLFlBQU87QUFBQTtBQUFBLGNBQWlCLHVCQUFDLGNBQVcsTUFBTSxNQUFsQjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFxQjtBQUFBLGlCQUE5QztBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFpRDtBQUFBLGVBQWhRO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXlRO0FBQUEsYUFBcHNDO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBNHNDO0FBQUEsV0FBM2hEO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBaWlEO0FBQUEsU0FQbmlEO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FRQTtBQUFBLElBQU8sdUJBQUMsWUFBTyxXQUFVLGFBQVk7QUFBQSw2QkFBQyxVQUFLO0FBQUEsK0JBQUMsVUFBSyxXQUFVLG1CQUFoQjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQStCO0FBQUEsUUFBRztBQUFBLFdBQXhDO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBb0Q7QUFBQSxNQUFPLHVCQUFDLE9BQUUsb0ZBQUg7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUF1RTtBQUFBLFNBQWhLO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FBb0s7QUFBQSxPQVZ0SztBQUFBO0FBQUE7QUFBQTtBQUFBLFNBV1A7QUFDRjtBQUFDMkMsR0FmdUJELGVBQWE7QUFBQSxNQUFiQTtBQUFhLElBQUFSLElBQUFPLEtBQUE4QjtBQUFBLGFBQUFyQyxJQUFBO0FBQUEsYUFBQU8sS0FBQTtBQUFBLGFBQUE4QixLQUFBIiwibmFtZXMiOlsidXNlTWVtbyIsInVzZVN0YXRlIiwiQXJyb3dSaWdodCIsIkJvb2tPcGVuIiwiQ2FsZW5kYXJCbGFuayIsIkNoZWNrIiwiQ2hlY2tDaXJjbGUiLCJDbG9jayIsIkdpdEJyYW5jaCIsIkdyYWR1YXRpb25DYXAiLCJIb3VzZSIsIkxvY2siLCJNYWduaWZ5aW5nR2xhc3MiLCJNYXBUcmlmb2xkIiwiTWludXMiLCJQbHVzIiwiU2xpZGVyc0hvcml6b250YWwiLCJTcGFya2xlIiwiV2FybmluZ0NpcmNsZSIsImNvdXJzZURhdGEiLCJjb2RlIiwidGl0bGUiLCJ1bml0cyIsInN0YXR1cyIsInRlcm0iLCJkZXNjcmlwdGlvbiIsInByZXJlcXMiLCJ1bmxvY2tzIiwic3RhdGVNYXAiLCJjb21wbGV0ZWQiLCJsYWJlbCIsImljb24iLCJwbGFubmVkIiwiYXZhaWxhYmxlIiwiYmxvY2tlZCIsIm1pc3NpbmciLCJlZGdlcyIsImZyb20iLCJ0byIsImQiLCJwYXRoRm9yIiwiaW5jbHVkZWQiLCJTZXQiLCJ1cCIsInZhbHVlIiwiZmlsdGVyIiwiZWRnZSIsImZvckVhY2giLCJoYXMiLCJhZGQiLCJkb3duIiwiU3RhdHVzVGFnIiwidGlueSIsIkljb24iLCJfYyIsIkdyYXBoTm9kZSIsImNvdXJzZSIsInNlbGVjdGVkIiwibXV0ZWQiLCJvbkNsaWNrIiwic2xvdCIsIl9jMiIsIkRlc2lnblByZXZpZXciLCJfcyIsInNlbGVjdGVkQ29kZSIsInNldFNlbGVjdGVkQ29kZSIsInN0YXR1c0ZpbHRlciIsInNldFN0YXR1c0ZpbHRlciIsInBsYW5uZWRDb2RlcyIsInNldFBsYW5uZWRDb2RlcyIsImZpbmQiLCJ2aXNpYmxlUGF0aCIsImdyYXBoQ291cnNlcyIsInNsaWNlIiwidG9nZ2xlUGxhbiIsImN1cnJlbnQiLCJpbmNsdWRlcyIsImV2ZW50IiwidGFyZ2V0IiwibWFwIiwiaW5kZXgiLCJPYmplY3QiLCJrZXlzIiwic3BsaXQiLCJsZW5ndGgiLCJzb21lIiwiZG9jdW1lbnQiLCJxdWVyeVNlbGVjdG9yIiwic2Nyb2xsSW50b1ZpZXciLCJiZWhhdmlvciIsIml0ZW0iLCJfYzMiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiRGVzaWduUHJldmlldy50c3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgdXNlTWVtbywgdXNlU3RhdGUsIHR5cGUgQ1NTUHJvcGVydGllcyB9IGZyb20gXCJyZWFjdFwiO1xyXG5pbXBvcnQgeyBBcnJvd1JpZ2h0LCBCb29rT3BlbiwgQ2FsZW5kYXJCbGFuaywgQ2hlY2ssIENoZWNrQ2lyY2xlLCBDbG9jaywgR2l0QnJhbmNoLCBHcmFkdWF0aW9uQ2FwLCBIb3VzZSwgTG9jaywgTWFnbmlmeWluZ0dsYXNzLCBNYXBUcmlmb2xkLCBNaW51cywgUGx1cywgU2xpZGVyc0hvcml6b250YWwsIFNwYXJrbGUsIFdhcm5pbmdDaXJjbGUgfSBmcm9tIFwiQHBob3NwaG9yLWljb25zL3JlYWN0XCI7XHJcbmltcG9ydCBcIi4vZGVzaWduLXByZXZpZXcuY3NzXCI7XHJcblxyXG50eXBlIFN0YXR1cyA9IFwiY29tcGxldGVkXCIgfCBcImluLXByb2dyZXNzXCIgfCBcInBsYW5uZWRcIiB8IFwiYXZhaWxhYmxlXCIgfCBcImJsb2NrZWRcIiB8IFwibWlzc2luZ1wiO1xyXG50eXBlIENvdXJzZSA9IHsgY29kZTogc3RyaW5nOyB0aXRsZTogc3RyaW5nOyB1bml0czogbnVtYmVyOyBzdGF0dXM6IFN0YXR1czsgdGVybTogc3RyaW5nOyBkZXNjcmlwdGlvbjogc3RyaW5nOyBwcmVyZXFzOiBzdHJpbmdbXTsgdW5sb2Nrczogc3RyaW5nW10gfTtcclxuY29uc3QgY291cnNlRGF0YTogQ291cnNlW10gPSBbXHJcbiAgeyBjb2RlOiBcIkNNUEUgMzBcIiwgdGl0bGU6IFwiUHJvZ3JhbW1pbmcgQ29uY2VwdHMgYW5kIE1ldGhvZG9sb2d5XCIsIHVuaXRzOiA0LCBzdGF0dXM6IFwiY29tcGxldGVkXCIsIHRlcm06IFwiRmFsbCAyMDI0XCIsIGRlc2NyaXB0aW9uOiBcIlByb2dyYW1taW5nIGZ1bmRhbWVudGFscywgcHJvYmxlbSBzb2x2aW5nLCBhbmQgc29mdHdhcmUgZGV2ZWxvcG1lbnQgbWV0aG9kb2xvZ3kuXCIsIHByZXJlcXM6IFtdLCB1bmxvY2tzOiBbXCJDTVBFIDUwXCJdIH0sXHJcbiAgeyBjb2RlOiBcIk1BVEggMzBcIiwgdGl0bGU6IFwiQ2FsY3VsdXMgSVwiLCB1bml0czogMywgc3RhdHVzOiBcImNvbXBsZXRlZFwiLCB0ZXJtOiBcIkZhbGwgMjAyNFwiLCBkZXNjcmlwdGlvbjogXCJMaW1pdHMsIGRpZmZlcmVudGlhdGlvbiwgYW5kIGFwcGxpY2F0aW9ucyBmb3Igc2NpZW5jZSBhbmQgZW5naW5lZXJpbmcuXCIsIHByZXJlcXM6IFtdLCB1bmxvY2tzOiBbXCJNQVRIIDMxXCIsIFwiUEhZUyA1MFwiXSB9LFxyXG4gIHsgY29kZTogXCJDTVBFIDUwXCIsIHRpdGxlOiBcIk9iamVjdC1PcmllbnRlZCBDb25jZXB0c1wiLCB1bml0czogMywgc3RhdHVzOiBcImluLXByb2dyZXNzXCIsIHRlcm06IFwiRmFsbCAyMDI2XCIsIGRlc2NyaXB0aW9uOiBcIk9iamVjdC1vcmllbnRlZCBkZXNpZ24sIGRhdGEgc3RydWN0dXJlcywgYW5kIGltcGxlbWVudGF0aW9uIHRlY2huaXF1ZXMuXCIsIHByZXJlcXM6IFtcIkNNUEUgMzBcIl0sIHVubG9ja3M6IFtcIkNNUEUgMTI2XCJdIH0sXHJcbiAgeyBjb2RlOiBcIk1BVEggMzFcIiwgdGl0bGU6IFwiQ2FsY3VsdXMgSUlcIiwgdW5pdHM6IDQsIHN0YXR1czogXCJwbGFubmVkXCIsIHRlcm06IFwiU3ByaW5nIDIwMjdcIiwgZGVzY3JpcHRpb246IFwiSW50ZWdyYXRpb24sIHNlcXVlbmNlcywgc2VyaWVzLCBhbmQgYXBwbGljYXRpb25zIG9mIGludGVncmFsIGNhbGN1bHVzLlwiLCBwcmVyZXFzOiBbXCJNQVRIIDMwXCJdLCB1bmxvY2tzOiBbXCJQSFlTIDUxXCJdIH0sXHJcbiAgeyBjb2RlOiBcIlBIWVMgNTBcIiwgdGl0bGU6IFwiR2VuZXJhbCBQaHlzaWNzOiBNZWNoYW5pY3NcIiwgdW5pdHM6IDQsIHN0YXR1czogXCJhdmFpbGFibGVcIiwgdGVybTogXCJTcHJpbmcgMjAyN1wiLCBkZXNjcmlwdGlvbjogXCJNZWNoYW5pY3MsIG9zY2lsbGF0aW9ucywgd2F2ZXMsIGFuZCB0aGVybW9keW5hbWljcyB3aXRoIGxhYm9yYXRvcnkgd29yay5cIiwgcHJlcmVxczogW1wiTUFUSCAzMFwiXSwgdW5sb2NrczogW1wiUEhZUyA1MVwiXSB9LFxyXG4gIHsgY29kZTogXCJDTVBFIDEyNlwiLCB0aXRsZTogXCJBbGdvcml0aG1zIGFuZCBEYXRhIFN0cnVjdHVyZSBEZXNpZ25cIiwgdW5pdHM6IDMsIHN0YXR1czogXCJhdmFpbGFibGVcIiwgdGVybTogXCJSZWNvbW1lbmRlZCBuZXh0XCIsIGRlc2NyaXB0aW9uOiBcIkRlc2lnbiwgYW5hbHlzaXMsIGFuZCBpbXBsZW1lbnRhdGlvbiBvZiBlZmZpY2llbnQgYWxnb3JpdGhtcyBhbmQgZGF0YSBzdHJ1Y3R1cmVzLlwiLCBwcmVyZXFzOiBbXCJDTVBFIDUwXCJdLCB1bmxvY2tzOiBbXCJDTVBFIDEzMVwiXSB9LFxyXG4gIHsgY29kZTogXCJDTVBFIDEzMVwiLCB0aXRsZTogXCJTb2Z0d2FyZSBFbmdpbmVlcmluZyBJXCIsIHVuaXRzOiAzLCBzdGF0dXM6IFwiYmxvY2tlZFwiLCB0ZXJtOiBcIlNlbWVzdGVyIDVcIiwgZGVzY3JpcHRpb246IFwiUmVxdWlyZW1lbnRzLCBhcmNoaXRlY3R1cmUsIHRlc3RpbmcsIGFuZCB0ZWFtLWJhc2VkIHNvZnR3YXJlIGRlbGl2ZXJ5LlwiLCBwcmVyZXFzOiBbXCJDTVBFIDEyNlwiXSwgdW5sb2NrczogW1wiQ01QRSAxOTVBXCJdIH0sXHJcbiAgeyBjb2RlOiBcIkNNUEUgMTI0XCIsIHRpdGxlOiBcIkRpZ2l0YWwgRGVzaWduIElcIiwgdW5pdHM6IDMsIHN0YXR1czogXCJtaXNzaW5nXCIsIHRlcm06IFwiTmVlZHMgcmV2aWV3XCIsIGRlc2NyaXB0aW9uOiBcIkNvbWJpbmF0aW9uYWwgYW5kIHNlcXVlbnRpYWwgZGlnaXRhbCBzeXN0ZW1zIHdpdGggbGFib3JhdG9yeSBkZXNpZ24uXCIsIHByZXJlcXM6IFtcIkVFIDk4XCJdLCB1bmxvY2tzOiBbXCJDTVBFIDEyNVwiXSB9LFxyXG5dO1xyXG5jb25zdCBzdGF0ZU1hcDogUmVjb3JkPFN0YXR1cywgeyBsYWJlbDogc3RyaW5nOyBpY29uOiB0eXBlb2YgQ2hlY2tDaXJjbGUgfT4gPSB7XHJcbiAgY29tcGxldGVkOiB7IGxhYmVsOiBcIkNvbXBsZXRlZFwiLCBpY29uOiBDaGVja0NpcmNsZSB9LCBcImluLXByb2dyZXNzXCI6IHsgbGFiZWw6IFwiSW4gcHJvZ3Jlc3NcIiwgaWNvbjogQ2xvY2sgfSwgcGxhbm5lZDogeyBsYWJlbDogXCJQbGFubmVkXCIsIGljb246IENhbGVuZGFyQmxhbmsgfSwgYXZhaWxhYmxlOiB7IGxhYmVsOiBcIkF2YWlsYWJsZVwiLCBpY29uOiBTcGFya2xlIH0sIGJsb2NrZWQ6IHsgbGFiZWw6IFwiQmxvY2tlZFwiLCBpY29uOiBMb2NrIH0sIG1pc3Npbmc6IHsgbGFiZWw6IFwiTWlzc2luZyBwcmVyZXF1aXNpdGVcIiwgaWNvbjogV2FybmluZ0NpcmNsZSB9LFxyXG59O1xyXG5jb25zdCBlZGdlcyA9IFtcclxuICB7IGZyb206IFwiQ01QRSAzMFwiLCB0bzogXCJDTVBFIDUwXCIsIGQ6IFwiTTEzNiA5MiBDMTM2IDEzNiAxMzYgMTQwIDEzNiAxNzhcIiB9LCB7IGZyb206IFwiTUFUSCAzMFwiLCB0bzogXCJNQVRIIDMxXCIsIGQ6IFwiTTQzOCA5MiBDNDM4IDEzNiA0MzggMTQwIDQzOCAxNzhcIiB9LCB7IGZyb206IFwiTUFUSCAzMFwiLCB0bzogXCJQSFlTIDUwXCIsIGQ6IFwiTTQzOCA5MiBDNDM4IDE0NSA3MjAgMTMwIDcyMCAxNzhcIiB9LCB7IGZyb206IFwiQ01QRSA1MFwiLCB0bzogXCJDTVBFIDEyNlwiLCBkOiBcIk0xMzYgMjcwIEMxMzYgMzE4IDQzOCAzMDYgNDM4IDM0OFwiIH0sIHsgZnJvbTogXCJNQVRIIDMxXCIsIHRvOiBcIkNNUEUgMTMxXCIsIGQ6IFwiTTQzOCAyNzAgQzQzOCAzMTQgNzIwIDMwNiA3MjAgMzQ4XCIgfSwgeyBmcm9tOiBcIkNNUEUgMTI2XCIsIHRvOiBcIkNNUEUgMTMxXCIsIGQ6IFwiTTQzOCA0NDAgQzQzOCA0NzYgNzIwIDQ3NCA3MjAgNTE4XCIgfSxcclxuXTtcclxuZnVuY3Rpb24gcGF0aEZvcihjb2RlOiBzdHJpbmcpIHsgY29uc3QgaW5jbHVkZWQgPSBuZXcgU2V0KFtjb2RlXSk7IGNvbnN0IHVwID0gKHZhbHVlOiBzdHJpbmcpID0+IGVkZ2VzLmZpbHRlcihlZGdlID0+IGVkZ2UudG8gPT09IHZhbHVlKS5mb3JFYWNoKGVkZ2UgPT4geyBpZiAoIWluY2x1ZGVkLmhhcyhlZGdlLmZyb20pKSB7IGluY2x1ZGVkLmFkZChlZGdlLmZyb20pOyB1cChlZGdlLmZyb20pOyB9IH0pOyBjb25zdCBkb3duID0gKHZhbHVlOiBzdHJpbmcpID0+IGVkZ2VzLmZpbHRlcihlZGdlID0+IGVkZ2UuZnJvbSA9PT0gdmFsdWUpLmZvckVhY2goZWRnZSA9PiB7IGlmICghaW5jbHVkZWQuaGFzKGVkZ2UudG8pKSB7IGluY2x1ZGVkLmFkZChlZGdlLnRvKTsgZG93bihlZGdlLnRvKTsgfSB9KTsgdXAoY29kZSk7IGRvd24oY29kZSk7IHJldHVybiBpbmNsdWRlZDsgfVxyXG5mdW5jdGlvbiBTdGF0dXNUYWcoeyBzdGF0dXMsIHRpbnkgPSBmYWxzZSB9OiB7IHN0YXR1czogU3RhdHVzOyB0aW55PzogYm9vbGVhbiB9KSB7IGNvbnN0IHsgbGFiZWwsIGljb246IEljb24gfSA9IHN0YXRlTWFwW3N0YXR1c107IHJldHVybiA8c3BhbiBjbGFzc05hbWU9e2Bjci1zdGF0dXMgY3ItJHtzdGF0dXN9JHt0aW55ID8gXCIgdGlueVwiIDogXCJcIn1gfT48SWNvbiBzaXplPXt0aW55ID8gMTEgOiAxNH0gd2VpZ2h0PXtzdGF0dXMgPT09IFwiY29tcGxldGVkXCIgPyBcImZpbGxcIiA6IFwicmVndWxhclwifSAvPntsYWJlbH08L3NwYW4+OyB9XHJcbmZ1bmN0aW9uIEdyYXBoTm9kZSh7IGNvdXJzZSwgc2VsZWN0ZWQsIG11dGVkLCBvbkNsaWNrLCBzbG90IH06IHsgY291cnNlOiBDb3Vyc2U7IHNlbGVjdGVkOiBib29sZWFuOyBtdXRlZDogYm9vbGVhbjsgb25DbGljazogKCkgPT4gdm9pZDsgc2xvdDogc3RyaW5nIH0pIHsgcmV0dXJuIDxidXR0b24gY2xhc3NOYW1lPXtgY3Itbm9kZSAke3Nsb3R9JHtzZWxlY3RlZCA/IFwiIHNlbGVjdGVkXCIgOiBcIlwifSR7bXV0ZWQgPyBcIiBtdXRlZFwiIDogXCJcIn1gfSBvbkNsaWNrPXtvbkNsaWNrfSBhcmlhLXByZXNzZWQ9e3NlbGVjdGVkfT48c3BhbiBjbGFzc05hbWU9XCJjci1ub2RlLWhlYWRcIj48c3Ryb25nPntjb3Vyc2UuY29kZX08L3N0cm9uZz48c3Bhbj57Y291cnNlLnVuaXRzfSB1bml0czwvc3Bhbj48L3NwYW4+PHNwYW4gY2xhc3NOYW1lPVwiY3Itbm9kZS10aXRsZVwiPntjb3Vyc2UudGl0bGV9PC9zcGFuPjxTdGF0dXNUYWcgc3RhdHVzPXtjb3Vyc2Uuc3RhdHVzfSB0aW55IC8+PC9idXR0b24+OyB9XHJcblxyXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBEZXNpZ25QcmV2aWV3KCkge1xyXG4gIGNvbnN0IFtzZWxlY3RlZENvZGUsIHNldFNlbGVjdGVkQ29kZV0gPSB1c2VTdGF0ZShcIkNNUEUgMTI2XCIpOyBjb25zdCBbc3RhdHVzRmlsdGVyLCBzZXRTdGF0dXNGaWx0ZXJdID0gdXNlU3RhdGU8U3RhdHVzIHwgXCJhbGxcIj4oXCJhbGxcIik7IGNvbnN0IFtwbGFubmVkQ29kZXMsIHNldFBsYW5uZWRDb2Rlc10gPSB1c2VTdGF0ZShbXCJNQVRIIDMxXCIsIFwiQ01QRSAxMjZcIl0pO1xyXG4gIGNvbnN0IHNlbGVjdGVkID0gY291cnNlRGF0YS5maW5kKGNvdXJzZSA9PiBjb3Vyc2UuY29kZSA9PT0gc2VsZWN0ZWRDb2RlKSA/PyBjb3Vyc2VEYXRhWzVdOyBjb25zdCB2aXNpYmxlUGF0aCA9IHVzZU1lbW8oKCkgPT4gcGF0aEZvcihzZWxlY3RlZENvZGUpLCBbc2VsZWN0ZWRDb2RlXSk7IGNvbnN0IGdyYXBoQ291cnNlcyA9IGNvdXJzZURhdGEuc2xpY2UoMCwgNyk7IGNvbnN0IHRvZ2dsZVBsYW4gPSAoKSA9PiBzZXRQbGFubmVkQ29kZXMoY3VycmVudCA9PiBjdXJyZW50LmluY2x1ZGVzKHNlbGVjdGVkLmNvZGUpID8gY3VycmVudC5maWx0ZXIoY29kZSA9PiBjb2RlICE9PSBzZWxlY3RlZC5jb2RlKSA6IFsuLi5jdXJyZW50LCBzZWxlY3RlZC5jb2RlXSk7XHJcbiAgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPVwiY291cnNlLXJhZGFyLXByZXZpZXdcIj5cclxuICAgIDxoZWFkZXIgY2xhc3NOYW1lPVwiY3ItaGVhZGVyXCI+PGEgY2xhc3NOYW1lPVwiY3ItYnJhbmRcIiBocmVmPVwiI3ByZXZpZXctdG9wXCI+PHNwYW4gY2xhc3NOYW1lPVwiY3ItYnJhbmQtb3JiaXRcIj48c3BhbiAvPjxpIC8+PC9zcGFuPjxzcGFuPkNvdXJzZSBSYWRhcjxzbWFsbD5QbGFuIHdpdGggY2xhcml0eTwvc21hbGw+PC9zcGFuPjwvYT48bmF2IGFyaWEtbGFiZWw9XCJQcmV2aWV3IG5hdmlnYXRpb25cIj48YSBjbGFzc05hbWU9XCJhY3RpdmVcIiBocmVmPVwiI3ByZXZpZXctdG9wXCI+PEhvdXNlIHNpemU9ezE2fSAvPkhvbWU8L2E+PGEgaHJlZj1cIiNkZWdyZWUtbWFwXCI+PEdpdEJyYW5jaCBzaXplPXsxNn0gLz5EZWdyZWUgbWFwPC9hPjxhIGhyZWY9XCIjc2VtZXN0ZXItcGxhblwiPjxDYWxlbmRhckJsYW5rIHNpemU9ezE2fSAvPlBsYW48L2E+PGEgaHJlZj1cIiNjb3Vyc2Utc2hlbGZcIj48Qm9va09wZW4gc2l6ZT17MTZ9IC8+Q291cnNlczwvYT48L25hdj48bGFiZWwgY2xhc3NOYW1lPVwiY3ItZ2xvYmFsLXNlYXJjaFwiPjxNYWduaWZ5aW5nR2xhc3Mgc2l6ZT17MTd9IC8+PHNwYW4gY2xhc3NOYW1lPVwiY3Itc3JcIj5TZWFyY2ggY291cnNlczwvc3Bhbj48aW5wdXQgcGxhY2Vob2xkZXI9XCJTZWFyY2ggY291cnNlc1wiIC8+PC9sYWJlbD48YnV0dG9uIGNsYXNzTmFtZT1cImNyLWF2YXRhclwiIGFyaWEtbGFiZWw9XCJPcGVuIHByb2ZpbGVcIj5UTjwvYnV0dG9uPjwvaGVhZGVyPlxyXG4gICAgPG1haW4gaWQ9XCJwcmV2aWV3LXRvcFwiPlxyXG4gICAgICA8c2VjdGlvbiBjbGFzc05hbWU9XCJjci13ZWxjb21lXCI+PGRpdj48c3BhbiBjbGFzc05hbWU9XCJjci1vdmVybGluZVwiPkNPTVBVVEVSIEVOR0lORUVSSU5HIMK3IDIwMjbigJMyMDI3PC9zcGFuPjxoMT5Hb29kIGFmdGVybm9vbiwgVGhpbmguPC9oMT48cD5Zb3VyIGRlZ3JlZSBtYXAgaXMgdGFraW5nIHNoYXBlLiBIZXJl4oCZcyB3aGF04oCZcyBvcGVuIG5vdyBhbmQgd2hhdCBjb21lcyBuZXh0LjwvcD48L2Rpdj48ZGl2IGNsYXNzTmFtZT1cImNyLWRlZ3JlZS1wcm9ncmVzc1wiPjxkaXYgY2xhc3NOYW1lPVwiY3ItcmluZ1wiIHN0eWxlPXt7IFwiLS1wcm9ncmVzc1wiOiBcIjYyJVwiIH0gYXMgQ1NTUHJvcGVydGllc30+PHN0cm9uZz42MiU8L3N0cm9uZz48c3Bhbj5jb21wbGV0ZTwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPkRlZ3JlZSBwcm9ncmVzczwvc3Bhbj48c3Ryb25nPjc0IC8gMTIwIHVuaXRzPC9zdHJvbmc+PHNtYWxsPjQ2IHVuaXRzIHRvIGdyYWR1YXRpb248L3NtYWxsPjwvZGl2PjxBcnJvd1JpZ2h0IHNpemU9ezE4fSAvPjwvZGl2Pjwvc2VjdGlvbj5cclxuICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwiY3ItbWFwLXNlY3Rpb25cIiBpZD1cImRlZ3JlZS1tYXBcIj48ZGl2IGNsYXNzTmFtZT1cImNyLXNlY3Rpb24tdGl0bGVcIj48ZGl2PjxzcGFuIGNsYXNzTmFtZT1cImNyLXRpdGxlLWljb25cIj48TWFwVHJpZm9sZCBzaXplPXsyMH0gd2VpZ2h0PVwiZHVvdG9uZVwiIC8+PC9zcGFuPjxkaXY+PGgyPllvdXIgZGVncmVlIG1hcDwvaDI+PHA+U2VsZWN0IGEgY291cnNlIHRvIHRyYWNlIHByZXJlcXVpc2l0ZXMgYW5kIHNlZSB3aGF0IGl0IHVubG9ja3MuPC9wPjwvZGl2PjwvZGl2PjxkaXYgY2xhc3NOYW1lPVwiY3ItbWFwLWFjdGlvbnNcIj48bGFiZWw+PE1hZ25pZnlpbmdHbGFzcyBzaXplPXsxNX0gLz48c2VsZWN0IGFyaWEtbGFiZWw9XCJGb2N1cyBjb3Vyc2VcIiB2YWx1ZT17c2VsZWN0ZWRDb2RlfSBvbkNoYW5nZT17ZXZlbnQgPT4gc2V0U2VsZWN0ZWRDb2RlKGV2ZW50LnRhcmdldC52YWx1ZSl9PntncmFwaENvdXJzZXMubWFwKGNvdXJzZSA9PiA8b3B0aW9uIGtleT17Y291cnNlLmNvZGV9Pntjb3Vyc2UuY29kZX08L29wdGlvbj4pfTwvc2VsZWN0PjwvbGFiZWw+PGJ1dHRvbiBhcmlhLWxhYmVsPVwiTWFwIGZpbHRlcnNcIj48U2xpZGVyc0hvcml6b250YWwgc2l6ZT17MTd9IC8+PC9idXR0b24+PHNwYW4gY2xhc3NOYW1lPVwiY3Item9vbVwiPjxidXR0b24gYXJpYS1sYWJlbD1cIlpvb20gb3V0XCI+PE1pbnVzIHNpemU9ezE0fSAvPjwvYnV0dG9uPjxiPjEwMCU8L2I+PGJ1dHRvbiBhcmlhLWxhYmVsPVwiWm9vbSBpblwiPjxQbHVzIHNpemU9ezE0fSAvPjwvYnV0dG9uPjwvc3Bhbj48L2Rpdj48L2Rpdj5cclxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImNyLW1hcC1zdHVkaW9cIj48ZGl2IGNsYXNzTmFtZT1cImNyLW1hcC1jYW52YXNcIj48ZGl2IGNsYXNzTmFtZT1cImNyLW1hcC1sZWdlbmRcIj48c3Bhbj48aSBjbGFzc05hbWU9XCJwYXRoXCIgLz5QcmVyZXF1aXNpdGUgcGF0aDwvc3Bhbj48c3Bhbj48aSBjbGFzc05hbWU9XCJjb3JlcVwiIC8+Q29yZXF1aXNpdGU8L3NwYW4+PHNwYW4gY2xhc3NOYW1lPVwiZm9jdXNcIj48aSAvPkZvY3VzZWQgb24ge3NlbGVjdGVkQ29kZX08L3NwYW4+PC9kaXY+PGRpdiBjbGFzc05hbWU9XCJjci1tYXAtc2Nyb2xsXCI+PGRpdiBjbGFzc05hbWU9XCJjci1tYXAtaW5uZXJcIj48c3ZnIGNsYXNzTmFtZT1cImNyLWVkZ2VzXCIgdmlld0JveD1cIjAgMCA4NTYgNjIwXCIgYXJpYS1oaWRkZW49XCJ0cnVlXCI+PGRlZnM+PG1hcmtlciBpZD1cImNyLWFycm93XCIgdmlld0JveD1cIjAgMCA4IDhcIiByZWZYPVwiN1wiIHJlZlk9XCI0XCIgbWFya2VyV2lkdGg9XCI2XCIgbWFya2VySGVpZ2h0PVwiNlwiIG9yaWVudD1cImF1dG9cIj48cGF0aCBkPVwiTTAgMEw4IDRMMCA4WlwiIC8+PC9tYXJrZXI+PC9kZWZzPntlZGdlcy5tYXAoZWRnZSA9PiA8cGF0aCBrZXk9e2Ake2VkZ2UuZnJvbX0tJHtlZGdlLnRvfWB9IGQ9e2VkZ2UuZH0gY2xhc3NOYW1lPXt2aXNpYmxlUGF0aC5oYXMoZWRnZS5mcm9tKSAmJiB2aXNpYmxlUGF0aC5oYXMoZWRnZS50bykgPyBcImFjdGl2ZVwiIDogXCJxdWlldFwifSAvPil9PC9zdmc+e2dyYXBoQ291cnNlcy5tYXAoKGNvdXJzZSwgaW5kZXgpID0+IDxHcmFwaE5vZGUga2V5PXtjb3Vyc2UuY29kZX0gY291cnNlPXtjb3Vyc2V9IHNlbGVjdGVkPXtzZWxlY3RlZENvZGUgPT09IGNvdXJzZS5jb2RlfSBtdXRlZD17KHN0YXR1c0ZpbHRlciAhPT0gXCJhbGxcIiAmJiBjb3Vyc2Uuc3RhdHVzICE9PSBzdGF0dXNGaWx0ZXIpIHx8ICF2aXNpYmxlUGF0aC5oYXMoY291cnNlLmNvZGUpfSBvbkNsaWNrPXsoKSA9PiBzZXRTZWxlY3RlZENvZGUoY291cnNlLmNvZGUpfSBzbG90PXtgc2xvdC0ke2luZGV4ICsgMX1gfSAvPil9PC9kaXY+PC9kaXY+PGRpdiBjbGFzc05hbWU9XCJjci1tYXAtZm9vdGVyXCI+PHNwYW4+Q291cnNlIHN0YXR1czwvc3Bhbj57KE9iamVjdC5rZXlzKHN0YXRlTWFwKSBhcyBTdGF0dXNbXSkubWFwKHN0YXR1cyA9PiA8YnV0dG9uIGtleT17c3RhdHVzfSBjbGFzc05hbWU9e3N0YXR1c0ZpbHRlciA9PT0gc3RhdHVzID8gXCJhY3RpdmVcIiA6IFwiXCJ9IG9uQ2xpY2s9eygpID0+IHNldFN0YXR1c0ZpbHRlcihzdGF0dXNGaWx0ZXIgPT09IHN0YXR1cyA/IFwiYWxsXCIgOiBzdGF0dXMpfT48U3RhdHVzVGFnIHN0YXR1cz17c3RhdHVzfSB0aW55IC8+PC9idXR0b24+KX08L2Rpdj48L2Rpdj5cclxuICAgICAgICAgIDxhc2lkZSBjbGFzc05hbWU9XCJjci1pbnNwZWN0b3JcIiBhcmlhLWxpdmU9XCJwb2xpdGVcIj48aGVhZGVyPjxzcGFuPkNPVVJTRSBERVRBSUxTPC9zcGFuPjxidXR0b24gYXJpYS1sYWJlbD1cIk1vcmUgY291cnNlIGFjdGlvbnNcIj7igKLigKLigKI8L2J1dHRvbj48L2hlYWRlcj48ZGl2IGNsYXNzTmFtZT1cImNyLWNvdXJzZS1pZGVudGl0eVwiPjxzcGFuIGNsYXNzTmFtZT1cImNyLWNvdXJzZS1tYXJrXCI+e3NlbGVjdGVkLmNvZGUuc3BsaXQoXCIgXCIpWzBdLnNsaWNlKDAsIDIpfTwvc3Bhbj48ZGl2PjxzdHJvbmc+e3NlbGVjdGVkLmNvZGV9PC9zdHJvbmc+PGgzPntzZWxlY3RlZC50aXRsZX08L2gzPjwvZGl2PjwvZGl2PjxTdGF0dXNUYWcgc3RhdHVzPXtzZWxlY3RlZC5zdGF0dXN9IC8+PGRsPjxkaXY+PGR0PlVuaXRzPC9kdD48ZGQ+e3NlbGVjdGVkLnVuaXRzfTwvZGQ+PC9kaXY+PGRpdj48ZHQ+U3VnZ2VzdGVkPC9kdD48ZGQ+e3NlbGVjdGVkLnRlcm19PC9kZD48L2Rpdj48L2RsPjxzZWN0aW9uPjxoND5BYm91dDwvaDQ+PHA+e3NlbGVjdGVkLmRlc2NyaXB0aW9ufTwvcD48L3NlY3Rpb24+PHNlY3Rpb24+PGg0PlByZXJlcXVpc2l0ZXM8L2g0PntzZWxlY3RlZC5wcmVyZXFzLmxlbmd0aCA/IHNlbGVjdGVkLnByZXJlcXMubWFwKGNvZGUgPT4gPGJ1dHRvbiBjbGFzc05hbWU9XCJjci1yZWxhdGlvblwiIGtleT17Y29kZX0gb25DbGljaz17KCkgPT4gY291cnNlRGF0YS5zb21lKGNvdXJzZSA9PiBjb3Vyc2UuY29kZSA9PT0gY29kZSkgJiYgc2V0U2VsZWN0ZWRDb2RlKGNvZGUpfT48R2l0QnJhbmNoIHNpemU9ezE1fSAvPjxzcGFuPjxzdHJvbmc+e2NvZGV9PC9zdHJvbmc+PHNtYWxsPlJlcXVpcmVkIGJlZm9yZSB0aGlzIGNvdXJzZTwvc21hbGw+PC9zcGFuPjxBcnJvd1JpZ2h0IHNpemU9ezE0fSAvPjwvYnV0dG9uPikgOiA8cCBjbGFzc05hbWU9XCJjci1yZWFkeVwiPjxDaGVjayBzaXplPXsxNH0gLz5ObyBjb3Vyc2UgcHJlcmVxdWlzaXRlIHJlY29yZGVkPC9wPn08L3NlY3Rpb24+PHNlY3Rpb24+PGg0PlVubG9ja3M8L2g0PjxkaXYgY2xhc3NOYW1lPVwiY3ItdW5sb2Nrc1wiPntzZWxlY3RlZC51bmxvY2tzLm1hcChjb2RlID0+IDxidXR0b24ga2V5PXtjb2RlfSBvbkNsaWNrPXsoKSA9PiBjb3Vyc2VEYXRhLnNvbWUoY291cnNlID0+IGNvdXJzZS5jb2RlID09PSBjb2RlKSAmJiBzZXRTZWxlY3RlZENvZGUoY29kZSl9Pntjb2RlfTwvYnV0dG9uPil9PC9kaXY+PC9zZWN0aW9uPjxmb290ZXI+PGJ1dHRvbiBjbGFzc05hbWU9XCJjci1vdXRsaW5lXCIgb25DbGljaz17KCkgPT4gZG9jdW1lbnQucXVlcnlTZWxlY3RvcihcIiNzZW1lc3Rlci1wbGFuXCIpPy5zY3JvbGxJbnRvVmlldyh7IGJlaGF2aW9yOiBcInNtb290aFwiIH0pfT5WaWV3IGluIHBsYW5uZXI8L2J1dHRvbj48YnV0dG9uIGNsYXNzTmFtZT1cImNyLWFjdGlvblwiIG9uQ2xpY2s9e3RvZ2dsZVBsYW59PntwbGFubmVkQ29kZXMuaW5jbHVkZXMoc2VsZWN0ZWQuY29kZSkgPyA8PjxDaGVjayBzaXplPXsxNX0gLz5JbiB5b3VyIHBsYW48Lz4gOiA8PjxQbHVzIHNpemU9ezE1fSAvPkFkZCB0byBwbGFuPC8+fTwvYnV0dG9uPjwvZm9vdGVyPjwvYXNpZGU+PC9kaXY+XHJcbiAgICAgIDwvc2VjdGlvbj5cclxuICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwiY3ItY291cnNlLXNoZWxmXCIgaWQ9XCJjb3Vyc2Utc2hlbGZcIj48ZGl2IGNsYXNzTmFtZT1cImNyLXNlY3Rpb24tdGl0bGVcIj48ZGl2PjxzcGFuIGNsYXNzTmFtZT1cImNyLXRpdGxlLWljb24gY29yYWxcIj48Qm9va09wZW4gc2l6ZT17MjB9IC8+PC9zcGFuPjxkaXY+PGgyPkNvdXJzZXMgb24geW91ciByYWRhcjwvaDI+PHA+Q3VycmVudCwgYXZhaWxhYmxlLCBhbmQgcGxhbm5lZCBjb3Vyc2VzIGF0IGEgZ2xhbmNlLjwvcD48L2Rpdj48L2Rpdj48YnV0dG9uIGNsYXNzTmFtZT1cImNyLWxpbmstYnV0dG9uXCI+RXhwbG9yZSBhbGwgY291cnNlcyA8QXJyb3dSaWdodCBzaXplPXsxNX0gLz48L2J1dHRvbj48L2Rpdj48ZGl2IGNsYXNzTmFtZT1cImNyLXNoZWxmLWdyaWRcIj57Y291cnNlRGF0YS5zbGljZSgyLCA2KS5tYXAoY291cnNlID0+IDxidXR0b24ga2V5PXtjb3Vyc2UuY29kZX0gb25DbGljaz17KCkgPT4geyBzZXRTZWxlY3RlZENvZGUoY291cnNlLmNvZGUpOyBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiI2RlZ3JlZS1tYXBcIik/LnNjcm9sbEludG9WaWV3KHsgYmVoYXZpb3I6IFwic21vb3RoXCIgfSk7IH19PjxzcGFuPjxzdHJvbmc+e2NvdXJzZS5jb2RlfTwvc3Ryb25nPjxzbWFsbD57Y291cnNlLnVuaXRzfSB1bml0czwvc21hbGw+PC9zcGFuPjxoMz57Y291cnNlLnRpdGxlfTwvaDM+PFN0YXR1c1RhZyBzdGF0dXM9e2NvdXJzZS5zdGF0dXN9IHRpbnkgLz48QXJyb3dSaWdodCBjbGFzc05hbWU9XCJjci1jYXJkLWFycm93XCIgc2l6ZT17MTd9IC8+PC9idXR0b24+KX08L2Rpdj48L3NlY3Rpb24+XHJcbiAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cImNyLXBsYW5uZXJcIiBpZD1cInNlbWVzdGVyLXBsYW5cIj48ZGl2IGNsYXNzTmFtZT1cImNyLXNlY3Rpb24tdGl0bGVcIj48ZGl2PjxzcGFuIGNsYXNzTmFtZT1cImNyLXRpdGxlLWljb24gZ29sZFwiPjxDYWxlbmRhckJsYW5rIHNpemU9ezIwfSAvPjwvc3Bhbj48ZGl2PjxoMj5TZW1lc3RlciBwbGFuPC9oMj48cD5BIGZsZXhpYmxlIGRyYWZ0IGZvciB0aGUgeWVhciBhaGVhZC48L3A+PC9kaXY+PC9kaXY+PGJ1dHRvbiBjbGFzc05hbWU9XCJjci1saW5rLWJ1dHRvblwiPk9wZW4gZnVsbCBwbGFubmVyIDxBcnJvd1JpZ2h0IHNpemU9ezE1fSAvPjwvYnV0dG9uPjwvZGl2PjxkaXYgY2xhc3NOYW1lPVwiY3ItdGVybS1ncmlkXCI+PGFydGljbGU+PGhlYWRlcj48ZGl2PjxzcGFuPkZBTEwgMjAyNjwvc3Bhbj48aDM+SW4gcHJvZ3Jlc3M8L2gzPjwvZGl2PjxiPjcgdW5pdHM8L2I+PC9oZWFkZXI+PGRpdiBjbGFzc05hbWU9XCJjci1wbGFuLWNvdXJzZVwiPjxzcGFuPkNNUEUgNTA8L3NwYW4+PHN0cm9uZz5PYmplY3QtT3JpZW50ZWQgQ29uY2VwdHM8L3N0cm9uZz48U3RhdHVzVGFnIHN0YXR1cz1cImluLXByb2dyZXNzXCIgdGlueSAvPjwvZGl2PjxkaXYgY2xhc3NOYW1lPVwiY3ItcGxhbi1jb3Vyc2VcIj48c3Bhbj5QSFlTIDUwPC9zcGFuPjxzdHJvbmc+R2VuZXJhbCBQaHlzaWNzOiBNZWNoYW5pY3M8L3N0cm9uZz48U3RhdHVzVGFnIHN0YXR1cz1cImF2YWlsYWJsZVwiIHRpbnkgLz48L2Rpdj48YnV0dG9uIGNsYXNzTmFtZT1cImNyLWFkZC1jb3Vyc2VcIj48UGx1cyBzaXplPXsxNX0gLz5BZGQgY291cnNlPC9idXR0b24+PC9hcnRpY2xlPjxhcnRpY2xlPjxoZWFkZXI+PGRpdj48c3Bhbj5TUFJJTkcgMjAyNzwvc3Bhbj48aDM+TmV4dCBzZW1lc3RlcjwvaDM+PC9kaXY+PGI+e3BsYW5uZWRDb2Rlcy5sZW5ndGggKiAzICsgMX0gdW5pdHM8L2I+PC9oZWFkZXI+e3BsYW5uZWRDb2Rlcy5zbGljZSgwLCAzKS5tYXAoY29kZSA9PiB7IGNvbnN0IGNvdXJzZSA9IGNvdXJzZURhdGEuZmluZChpdGVtID0+IGl0ZW0uY29kZSA9PT0gY29kZSk7IHJldHVybiBjb3Vyc2UgPyA8ZGl2IGNsYXNzTmFtZT1cImNyLXBsYW4tY291cnNlXCIga2V5PXtjb2RlfT48c3Bhbj57Y291cnNlLmNvZGV9PC9zcGFuPjxzdHJvbmc+e2NvdXJzZS50aXRsZX08L3N0cm9uZz48U3RhdHVzVGFnIHN0YXR1cz1cInBsYW5uZWRcIiB0aW55IC8+PC9kaXY+IDogbnVsbDsgfSl9PGJ1dHRvbiBjbGFzc05hbWU9XCJjci1hZGQtY291cnNlXCI+PFBsdXMgc2l6ZT17MTV9IC8+QWRkIGNvdXJzZTwvYnV0dG9uPjwvYXJ0aWNsZT48YXNpZGU+PEdyYWR1YXRpb25DYXAgc2l6ZT17MjV9IHdlaWdodD1cImR1b3RvbmVcIiAvPjxzcGFuPlBMQU5OSU5HIE5PVEU8L3NwYW4+PGgzPllvdeKAmXJlIGJ1aWxkaW5nIHRvd2FyZCB1cHBlci1kaXZpc2lvbiBzdGFuZGluZy48L2gzPjxwPkZpbmlzaCB0aGUgZm91bmRhdGlvbiBzZXF1ZW5jZSBiZWZvcmUgYWRkaW5nIGFkdmFuY2VkIENNUEUgY291cnNlcy48L3A+PGJ1dHRvbj5SZXZpZXcgbWlsZXN0b25lIDxBcnJvd1JpZ2h0IHNpemU9ezE0fSAvPjwvYnV0dG9uPjwvYXNpZGU+PC9kaXY+PC9zZWN0aW9uPlxyXG4gICAgPC9tYWluPjxmb290ZXIgY2xhc3NOYW1lPVwiY3ItZm9vdGVyXCI+PHNwYW4+PHNwYW4gY2xhc3NOYW1lPVwiY3ItbWluaS1vcmJpdFwiIC8+Q291cnNlIFJhZGFyPC9zcGFuPjxwPlZpc3VhbCBwcm90b3R5cGUgwrcgU3RhdGljIFNKU1UgY291cnNlIGRhdGEgwrcgUGxhbm5pbmcgcmVmZXJlbmNlIG9ubHk8L3A+PC9mb290ZXI+XHJcbiAgPC9kaXY+O1xyXG59XHJcbiJdLCJmaWxlIjoiQzovVXNlcnMvdGhpbmgvQ01QRTEzMS9zcmMvRGVzaWduUHJldmlldy50c3gifQ==

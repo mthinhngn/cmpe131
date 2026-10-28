@@ -1,5 +1,8 @@
-import { useMemo, type CSSProperties } from "react";
-import { CalendarBlank, Clock, WarningCircle, X } from "@phosphor-icons/react";
+import { memo, useMemo, type CSSProperties } from "react";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { useCatalog } from "./CatalogContext";
 import { useSchedule } from "./ScheduleContext";
 import { dayLabel, detectTimeConflicts, formatMinute, parseMeeting, WEEKDAYS, type MeetingDay } from "./schedule";
@@ -22,7 +25,7 @@ function colorFor(value: string) {
   return COLORS[hash % COLORS.length];
 }
 
-export function WeeklySchedule({ mobileOpen = false, onClose = () => undefined, readOnly = false, variant = "pane" }: { mobileOpen?: boolean; onClose?: () => void; readOnly?: boolean; variant?: "pane" | "dashboard" }) {
+export const WeeklySchedule = memo(function WeeklySchedule({ mobileOpen = false, onClose = () => undefined, readOnly = false, variant = "pane" }: { mobileOpen?: boolean; onClose?: () => void; readOnly?: boolean; variant?: "pane" | "dashboard" }) {
   const { catalog } = useCatalog();
   const { selectedOfferings, removeOffering } = useSchedule();
   const parsed = useMemo(() => selectedOfferings.map((offering) => ({ offering, meeting: parseMeeting(offering) })), [selectedOfferings]);
@@ -110,4 +113,4 @@ export function WeeklySchedule({ mobileOpen = false, onClose = () => undefined, 
       {conflicts.length ? <><h3><WarningCircle size={19} weight="fill" /> {conflicts.length} time conflict{conflicts.length === 1 ? "" : "s"}</h3><ul>{conflicts.map((conflict) => <li key={`${conflict.left.classNumber}-${conflict.right.classNumber}`}><strong>{conflict.left.courseCode}</strong> section {conflict.left.sectionNumber} overlaps <strong>{conflict.right.courseCode}</strong> section {conflict.right.sectionNumber} on {conflict.days.map(dayLabel).join(", ")} from {formatMinute(conflict.startMinute)} to {formatMinute(conflict.endMinute)}.</li>)}</ul></> : unscheduled.length ? <><h3><WarningCircle size={19} weight="fill" /> Schedule needs review</h3><p>{unscheduled.length} section{unscheduled.length === 1 ? " has" : "s have"} no verified meeting time, so Course Radar cannot confirm a conflict-free schedule.</p></> : <><h3><CalendarBlank size={19} weight="fill" /> No time conflicts</h3><p>Selected sections do not overlap in the published meeting snapshot.</p></>}
     </footer>
   </aside>;
-}
+});

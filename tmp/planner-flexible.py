@@ -1,0 +1,10 @@
+from pathlib import Path
+p=Path('src/SemesterPlanner.tsx');s=p.read_text()
+s=s.replace('<span>Click a semester to edit</span></div><div className="sp-chart-plot">','<span>Click a semester to edit</span></div><div className="sp-chart-scroll" ref={chartScroll} role="region" aria-label="Semester workload chart" tabIndex={0}><div className="sp-chart-wide"><div className="sp-chart-plot">')
+s=s.replace('<span key={n}>Year {Math.ceil(n / 2)}</span>)}</div></div>', '<span key={n} style={{ gridColumn: `span ${Math.min(2, semesterCount - n + 1)}` }}>Year {Math.ceil(n / 2)}</span>)}</div></div></div></div>')
+s=s.replace('<section className="sp-timeline" aria-label="Choose a semester">', '''<div className="sp-plan-tools"><span>{semesterCount} semesters</span><div>{semesterCount > catalog.requirementGroups.length && <button type="button" className="sp-remove-semester" aria-label={`Remove Semester ${semesterCount}`} disabled={!canRemoveSemester} title={canRemoveSemester ? "Remove the last empty semester" : `Move courses out of Semester ${semesterCount} before removing it`} onClick={() => { removeLastSemester(); setSemester(current => Math.min(current, semesterCount - 1)); }}><Trash2 size={13}/> Remove Semester {semesterCount}</button>}<button type="button" className="sp-button" onClick={extendPlan}><Plus size={15}/> Add semester</button></div></div>
+      <section className="sp-timeline" ref={timelineScroll} aria-label="Choose a semester">''')
+s=s.replace('"Choose from the recommended courses to start this semester."', '(semester > catalog.requirementGroups.length ? "Browse unplanned courses to build this semester." : "Choose from the recommended courses to start this semester.")')
+s=s.replace('setFilter(filter === "planned" ? "suggested" : "all");', 'setFilter(filter === "planned" && semester <= catalog.requirementGroups.length ? "suggested" : "all");')
+s=s.replace('{filter === "planned" ? "recommended" : "all"}', '{filter === "planned" && semester <= catalog.requirementGroups.length ? "recommended" : "all"}')
+p.write_text(s)

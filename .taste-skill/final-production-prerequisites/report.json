@@ -1,0 +1,551 @@
+{
+ "url": "http://127.0.0.1:4173/prerequisite-chart",
+ "at": "2026-10-25T10:31:34.683Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    0.33,
+    0.38,
+    0.43
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 2252,
+     "screens": 2.5,
+     "words": 662,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 46,
+     "sections": 10,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Course prerequisites",
+     "words": 2,
+     "chars": 20,
+     "lines": 1,
+     "size": 28,
+     "vw": 1.9,
+     "font": "IBM Plex Sans Condensed",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.18,
+     "top": 115,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Course prerequisites",
+     "words": 2,
+     "lines": 1,
+     "size": 28,
+     "font": "IBM Plex Sans Condensed"
+    },
+    "headings": [
+     {
+      "text": "Course prerequisites",
+      "words": 2,
+      "chars": 20,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "IBM Plex Sans Condensed",
+      "weight": 600,
+      "tracking": -0.025,
+      "leading": 1.18,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.57,
+      "top": 115,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "IBM Plex Sans",
+       "share": 0.89,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Sans Condensed",
+       "share": 0.1,
+       "mono": false
+      },
+      {
+       "family": "Crimson Pro",
+       "share": 0.01,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      12,
+      13,
+      14,
+      16,
+      20,
+      28
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "IBM Plex Sans",
+      "size": 13,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 6.4
+     },
+     "measureChars": 171,
+     "max": {
+      "size": 28,
+      "vw": 1.9,
+      "font": "IBM Plex Sans Condensed",
+      "text": "Course prerequisites"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.09,
+     "centerShare": 0.01,
+     "smallText": 36
+    },
+    "eyebrows": [
+     {
+      "text": "Degree",
+      "above": "Course prerequisites",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 10
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#eff1ee",
+     "bodyBgHsl": {
+      "h": 100,
+      "s": 0.1,
+      "l": 0.94
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#eff1ee",
+       "top": 321,
+       "hsl": {
+        "h": 100,
+        "s": 0.1,
+        "l": 0.94
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#172225",
+       "share": 0.51
+      },
+      {
+       "color": "#4b5a58",
+       "share": 0.4
+      },
+      {
+       "color": "#873737",
+       "share": 0.05
+      },
+      {
+       "color": "#40504c",
+       "share": 0.03
+      },
+      {
+       "color": "#245b47",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#172225"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 2,
+     "radius": 0,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "Prerequisites"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 31,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "button.chart-node.node-cmpe → rgba(67, 57, 43, 0.08) 0px 5px 13px 0px",
+      "button.chart-node.node-engineering → rgba(67, 57, 43, 0.08) 0px 5px 13px 0px",
+      "button.chart-node.node-general → rgba(67, 57, 43, 0.08) 0px 5px 13px 0px",
+      "button.chart-node.node-math → rgba(67, 57, 43, 0.08) 0px 5px 13px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 5,
+     "hairlineSamples": [
+      "header.workspace-header 216px",
+      "div.workspace-context 1224px",
+      "section.chart-title-block 1138px",
+      "aside.chart-note 1138px",
+      "footer.workspace-footer 1224px"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 357
+      },
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 547
+      },
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 768
+      },
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 961
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 1156
+      },
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 1342
+      },
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 1532
+      },
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 1727
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.52
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "crimson pro",
+     "ibm plex sans",
+     "ibm plex sans condensed"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 2252,
+    "margins": {
+     "left": 58,
+     "right": 60
+    },
+    "sections": [
+     {
+      "sel": "section.chart-title-block",
+      "tag": "section",
+      "top": 115,
+      "height": 181,
+      "words": 38,
+      "media": 0,
+      "middle": 136,
+      "heading": {
+       "text": "Course prerequisites",
+       "size": 28,
+       "tag": "h1"
+      },
+      "left": 259,
+      "right": 60,
+      "textLeft": 259,
+      "textRight": 60,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.chart-scroll",
+      "tag": "div",
+      "top": 321,
+      "height": 1632,
+      "words": 255,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 248,
+      "right": 32,
+      "textLeft": 278,
+      "textRight": 77,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Course prerequisites",
+      "size": 28,
+      "top": 115,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 259,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.08,
+    "voidBox": {
+     "x": 0,
+     "y": 360,
+     "w": 240,
+     "h": 420
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#eff1ee",
+    "sidebar": {
+     "w": 216,
+     "tag": "header",
+     "links": 9,
+     "share": 0.15
+    },
+    "topbar": {
+     "h": 56
+    },
+    "canvas": {
+     "left": 43,
+     "right": 60
+    },
+    "hero": {
+     "text": "Course prerequisites",
+     "words": 2,
+     "chars": 20,
+     "lines": 1,
+     "size": 28,
+     "vw": 1.9,
+     "font": "IBM Plex Sans Condensed",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.18,
+     "top": 115,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 7,
+    "layout": {
+     "panels": 4,
+     "firstScreen": 3,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 35,
+     "radii": [
+      [
+       2,
+       32
+      ],
+      [
+       0,
+       3
+      ]
+     ],
+     "heavyBorders": 25,
+     "borderSamples": [
+      "#bac5be on #eff1ee (1.56:1)",
+      "#a62b38 on #faf5f3 (6.42:1)",
+      "#a62b38 on #faf5f3 (6.42:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 31,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 1,
+    "placeholders": [],
+    "type": {
+     "under13": 0.45,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      12,
+      13,
+      14,
+      16,
+      20,
+      28
+     ]
+    },
+    "title": {
+     "text": "Course prerequisites",
+     "size": 28,
+     "top": 115
+    },
+    "colourShare": 0
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "heavy-borders",
+   "width": 1440,
+   "message": "25 panel borders are dark against their ground: #bac5be on #eff1ee (1.56:1) | #a62b38 on #faf5f3 (6.42:1) | #a62b38 on #faf5f3 (6.42:1)",
+   "fix": "A panel border is a whisper: about 1.1–1.3:1 against its ground on a light screen (#e5e7eb–#ededed on white), and about 1.2–1.5:1 on a dark one (#1a1a1a on #000, #2e2e2e on #111). Darker lines turn the screen into a grid of boxes; keep the stronger line for controls."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\thinh\\CMPE131\\.taste-skill\\final-production-prerequisites\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\thinh\\CMPE131\\.taste-skill\\final-production-prerequisites\\desktop-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

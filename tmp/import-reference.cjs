@@ -1,0 +1,30 @@
+const fs = require('fs');
+const postcss = require('postcss');
+const base='tmp/courseradar-reference-20261026/client/src/';
+let home=fs.readFileSync(base+'pages/Home.tsx','utf8');
+home=home.replace('} from "lucide-react";', '} from "@phosphor-icons/react";').replace('  Check,','  Check,').replace('  Network,','  Graph as Network,').replace('  Timer,','  Timer,').replace('  Waypoints,','  Path as Waypoints,').replace('  Sparkles,','  Sparkle as Sparkles,');
+home=home.replace('import CourseNetwork from "@/components/CourseNetwork";', 'import CourseNetwork from "./LandingCourseNetwork";\nimport "./reference-landing.css";');
+home=home.replace('export default function Home()', 'export default function ReferenceLanding()');
+home=home.replace('<div className="site-shell" id="top">','<div className="zip-landing"><div className="site-shell" id="top">');
+home=home.replace(/<\/div>\s*\);\s*}\s*$/, '</div></div>\n  );\n}\n');
+home=home.replaceAll('href="#course-map">Start planning', 'href="/overview">Start planning');
+home=home.replace('COMPUTER SCIENCE, B.S.', 'SJSU · 2026–27 CATALOG');
+home=home.replace('0</strong><span>mystery prerequisites', '02</strong><span>engineering program views');
+home=home.replace('Know what you’re eligible for now and what to take next, before registration week gets loud.', 'Review recorded prerequisites and plan what to take next, before registration week gets loud.');
+home=home.replace('See exactly what a course opens up.', 'See the recorded connections a course opens up.');
+home=home.replace('CS 201</span><small>Data Structures', 'CMPE 126</span><small>Algorithms and Data Structures');
+home=home.replace('<div className="hero-caption">','<div className="hero-caption">').replace('From “what do I need?” to “I’ve got a plan.”','Session draft · Changes reset on refresh. Verify requirements with the official SJSU catalog.');
+fs.writeFileSync('src/ReferenceLanding.tsx',home);
+let css=fs.readFileSync(base+'index.css','utf8');
+const root=postcss.parse(css);
+root.walkAtRules('import',r=>r.remove());
+root.walkRules(rule=>{
+ if(rule.parent.type==='atrule' && /keyframes$/.test(rule.parent.name)) return;
+ rule.selectors=rule.selectors.map(s=> {
+ if(s===':root'||s==='html'||s==='body') return '.zip-landing';
+ return '.zip-landing '+s;
+ });
+});
+fs.writeFileSync('src/reference-landing.css',root.toString()+`\n/* Isolate reference styles from workspace globals. */\n.zip-landing { background:#fff; color:#050505; font-family:"Radar Sans", "Segoe UI", sans-serif; }\n.zip-landing main { max-width:none; margin:0; padding:0; }\n.zip-landing .site-header { position:relative; top:auto; padding:0; display:flex; backdrop-filter:none; }\n.zip-landing h1,.zip-landing h2,.zip-landing h3 { font-family:inherit; }\n.zip-landing a { text-decoration:none; }\n.zip-landing .hero-main-copy h1 { color:#050505; }\n.zip-landing .reveal { opacity:1; transform:none; }\n`);
+let main=fs.readFileSync('src/main.tsx','utf8').replace('import Landing from "./ChronicleLanding"','import Landing from "./ReferenceLanding"');
+fs.writeFileSync('src/main.tsx',main);

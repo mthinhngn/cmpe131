@@ -1,0 +1,31 @@
+/* Desktop content rail taken from Overview. Landing keeps its own composition. */
+@media (min-width: 1000px) {
+  .workspace[class], .sp-page[class], .prereq-shell[class] {
+    --product-content-max: 1380px;
+    --product-content-gutters: 88px;
+    --product-content-width: min(calc(100% - var(--product-content-gutters)), var(--product-content-max));
+  }
+
+  .workspace[class] .workspace-content,
+  .workspace[class] .workspace-footer,
+  .workspace[class] .data-message,
+  .sp-page[class] .sp-main {
+    box-sizing: border-box;
+    width: var(--product-content-width);
+    max-width: none;
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+
+  .prereq-shell[class] .prereq-full-page {
+    padding-inline: calc(var(--product-content-gutters) / 2);
+  }
+  .prereq-shell[class] .prereq-full-page > .prereq-full-page-topline,
+  .prereq-shell[class] .prereq-full-page > .prereq-full-map-heading,
+  .prereq-shell[class] .prereq-full-page > .prereq-map-frame {
+    box-sizing: border-box;
+    width: min(100%, var(--product-content-max));
+    max-width: none;
+    margin-inline: auto;
+  }
+}

@@ -7,3 +7,6 @@ dist/
 vite.config.js
 vite.config.d.ts
 .vercel
+
+# Local upstream component sources; recreate with npm run ui:sync.
+.references/

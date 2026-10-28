@@ -2,11 +2,16 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { computerEngineeringCatalog } from "./data";
 import { softwareEngineeringCatalog } from "./softwareEngineeringData";
 import type { Course, ProgramCatalog } from "./types";
+import { apiEndpoint } from "./api";
+import { progressStorage, readProgressSession, writeProgressSession } from "./progressSession";
 
 type CatalogContextValue = {
   plans: Record<string, { status: "planned" | "in-progress"; semester: number }>;
   setPlan: (id: string, semester: number, status?: "planned" | "in-progress") => void;
   removePlan: (id: string) => void;
+  semesterCount: number;
+  addSemester: () => void;
+  removeLastSemester: () => void;
   retry: () => void;
   takenCourseIds: Set<string>;
   toggleTakenCourse: (id: string) => void;
@@ -20,20 +25,25 @@ type CatalogContextValue = {
 const CatalogContext = createContext<CatalogContextValue | null>(null);
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
+  const [savedProgress] = useState(() => readProgressSession(progressStorage()));
   const [planByProgram, setPlanByProgram] = useState<Record<string, Record<string, { status: "planned" | "in-progress"; semester: number }>>>({});
+  const [semesterCountByProgram, setSemesterCountByProgram] = useState<Record<string, number>>({});
   const [attempt, setAttempt] = useState(0);
-  const [takenCourseIds, setTakenCourseIds] = useState<Set<string>>(() => new Set());
-  const [program, setProgram] = useState("computer-engineering");
-  const [catalog, setCatalog] = useState(computerEngineeringCatalog);
+  const [takenCourseIds, setTakenCourseIds] = useState<Set<string>>(() => new Set(savedProgress.completedCourseIds));
+  const [program, setProgram] = useState(savedProgress.program);
+  const [catalog, setCatalog] = useState(savedProgress.program === "software-engineering" ? softwareEngineeringCatalog : computerEngineeringCatalog);
   const [mode, setMode] = useState<CatalogContextValue["mode"]>("loading");
+
+  useEffect(() => {
+    writeProgressSession({ program, completedCourseIds: [...takenCourseIds] }, progressStorage());
+  }, [program, takenCourseIds]);
 
   useEffect(() => {
     const controller = new AbortController();
     const fixture = program === "software-engineering" ? softwareEngineeringCatalog : computerEngineeringCatalog;
     setCatalog(fixture);
     setMode("loading");
-    const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3001/api/v1";
-    fetch(`${apiUrl}/bootstrap?program=${encodeURIComponent(program)}`, { signal: controller.signal })
+    fetch(apiEndpoint(`bootstrap?program=${encodeURIComponent(program)}`), { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error(`API returned ${response.status}`);
         return response.json() as Promise<{ catalog: ProgramCatalog }>;
@@ -52,9 +62,22 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     return () => controller.abort();
   }, [program, attempt]);
 
+  const courseById = useMemo(() => new Map(catalog.courses.map(course => [course.id, course])), [catalog.courses]);
+
+  const minimumSemesterCount = catalog.requirementGroups.length;
+  const semesterCount = Math.max(minimumSemesterCount, semesterCountByProgram[program] ?? 0, ...Object.values(planByProgram[program] ?? {}).map(plan => plan.semester));
+
   const value = useMemo(() => ({
     plans: planByProgram[program] ?? {},
+    semesterCount,
+    addSemester: () => setSemesterCountByProgram(previous => ({ ...previous, [program]: Math.max(previous[program] ?? minimumSemesterCount, semesterCount) + 1 })),
+    removeLastSemester: () => setSemesterCountByProgram(previous => {
+      const count = Math.max(previous[program] ?? minimumSemesterCount, minimumSemesterCount);
+      if (count <= minimumSemesterCount || Object.values(planByProgram[program] ?? {}).some(plan => plan.semester === count)) return previous;
+      return { ...previous, [program]: count - 1 };
+    }),
     setPlan: (id: string, semester: number, status: "planned" | "in-progress" = "planned") => {
+      setSemesterCountByProgram(previous => ({ ...previous, [program]: Math.max(previous[program] ?? minimumSemesterCount, semester) }));
       setPlanByProgram(previous => ({ ...previous, [program]: { ...previous[program], [id]: { semester, status } } }));
       setTakenCourseIds(previous => { const next = new Set(previous); next.delete(id); return next; });
     },
@@ -69,9 +92,9 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     program,
     selectProgram: setProgram,
     catalog,
-    courseById: new Map(catalog.courses.map((course) => [course.id, course])),
+    courseById,
     mode,
-  }), [catalog, mode, program, takenCourseIds, planByProgram]);
+  }), [catalog, courseById, mode, program, takenCourseIds, planByProgram, semesterCount, minimumSemesterCount]);
 
   return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>;
 }

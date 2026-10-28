@@ -1,0 +1,28 @@
+{
+  "svgGeometryAndStyles": "shared styles and topology identical; dedicated cards 150 vs landing 190 with centered edge anchors per user override",
+  "dimensions": {
+    "landing": {
+      "x": 602.59375,
+      "y": 375.734375,
+      "width": 799.40625,
+      "height": 402.703125
+    },
+    "dedicated": {
+      "x": 422.296875,
+      "y": 309.40625,
+      "width": 799.40625,
+      "height": 402.703125
+    }
+  },
+  "viewports": [
+    1440,
+    1078,
+    900,
+    820,
+    768,
+    390,
+    320
+  ],
+  "interactions": "passed",
+  "pageErrors": []
+}

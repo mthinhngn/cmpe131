@@ -33,6 +33,14 @@ export class BootstrapController {
       where: { id: "fall-2026" },
       include: { sections: { include: { course: true }, orderBy: [{ course: { code: "asc" } }, { sectionNumber: "asc" }] } },
     });
+    const requirements = version.requirementGroups.flatMap(group => group.requirements);
+    const semesterByVersion = new Map<string, number | null>();
+    for (const requirement of requirements) {
+      if (requirement.courseVersionId && !semesterByVersion.has(requirement.courseVersionId)) {
+        semesterByVersion.set(requirement.courseVersionId, requirement.recommendedSemester);
+      }
+    }
+    const courseIdByVersion = new Map(version.courseVersions.map(course => [course.id, course.courseId]));
     return {
       catalog: {
         name: program.name,
@@ -68,23 +76,21 @@ export class BootstrapController {
           title: courseVersion.title,
           units: courseVersion.units,
           description: courseVersion.description,
-          recommendedSemester: version.requirementGroups
-            .flatMap((group) => group.requirements)
-            .find((requirement) => requirement.courseVersionId === courseVersion.id)?.recommendedSemester ?? 1,
+          recommendedSemester: semesterByVersion.get(courseVersion.id) ?? 1,
           prerequisiteCourseIds: courseVersion.prerequisiteRules.filter((rule) => !rule.isCorequisite).map((rule) => rule.requiredCourseId),
           corequisiteCourseIds: courseVersion.prerequisiteRules.filter((rule) => rule.isCorequisite).map((rule) => rule.requiredCourseId),
           prerequisiteText: courseVersion.prerequisiteText ?? undefined,
           sourceUrl: version.sourceUrl,
         })),
         requirementGroups: version.requirementGroups.map((group) => ({
-          id: group.id,
+          id: group.key,
           title: group.title,
           description: group.description,
           items: group.requirements.map((requirement) => ({
-            id: requirement.id,
+            id: requirement.sourceKey,
             type: requirement.itemType.toLowerCase(),
             courseId: requirement.courseVersionId
-              ? version.courseVersions.find((courseVersion) => courseVersion.id === requirement.courseVersionId)?.courseId
+              ? courseIdByVersion.get(requirement.courseVersionId)
               : undefined,
             label: requirement.label ?? undefined,
             description: requirement.description ?? undefined,

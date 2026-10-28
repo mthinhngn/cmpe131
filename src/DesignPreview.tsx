@@ -1,5 +1,21 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import { ArrowRight, BookOpen, CalendarBlank, Check, CheckCircle, Clock, GitBranch, GraduationCap, House, Lock, MagnifyingGlass, MapTrifold, Minus, Plus, SlidersHorizontal, Sparkle, WarningCircle } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { BookOpen } from "@phosphor-icons/react/dist/csr/BookOpen";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Check } from "@phosphor-icons/react/dist/csr/Check";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { GitBranch } from "@phosphor-icons/react/dist/csr/GitBranch";
+import { GraduationCap } from "@phosphor-icons/react/dist/csr/GraduationCap";
+import { House } from "@phosphor-icons/react/dist/csr/House";
+import { Lock } from "@phosphor-icons/react/dist/csr/Lock";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { MapTrifold } from "@phosphor-icons/react/dist/csr/MapTrifold";
+import { Minus } from "@phosphor-icons/react/dist/csr/Minus";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { SlidersHorizontal } from "@phosphor-icons/react/dist/csr/SlidersHorizontal";
+import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
+import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import "./design-preview.css";
 
 type Status = "completed" | "in-progress" | "planned" | "available" | "blocked" | "missing";

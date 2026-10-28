@@ -1,0 +1,361 @@
+[
+  {
+    "width": 1920,
+    "overflow": false,
+    "hero": {
+      "x": 160,
+      "y": 80,
+      "width": 1600,
+      "height": 700,
+      "right": 1760,
+      "bottom": 780
+    },
+    "copy": {
+      "x": 160,
+      "y": 266,
+      "width": 800,
+      "height": 328,
+      "right": 960,
+      "bottom": 594
+    },
+    "art": {
+      "x": 1010,
+      "y": 145,
+      "width": 700,
+      "height": 570,
+      "right": 1710,
+      "bottom": 715
+    },
+    "cta": {
+      "x": 192,
+      "y": 544,
+      "width": 201.578125,
+      "height": 50,
+      "right": 393.578125,
+      "bottom": 594
+    },
+    "header": {
+      "x": 160,
+      "y": 0,
+      "width": 1600,
+      "height": 80,
+      "right": 1760,
+      "bottom": 80
+    },
+    "nav": {
+      "x": 693.046875,
+      "y": 14.15625,
+      "width": 533.890625,
+      "height": 51.6875,
+      "right": 1226.9375,
+      "bottom": 65.84375
+    }
+  },
+  {
+    "width": 1440,
+    "overflow": false,
+    "hero": {
+      "x": 49.6875,
+      "y": 80,
+      "width": 1340.625,
+      "height": 700,
+      "right": 1390.3125,
+      "bottom": 780
+    },
+    "copy": {
+      "x": 49.6875,
+      "y": 272.234375,
+      "width": 670.3125,
+      "height": 315.53125,
+      "right": 720,
+      "bottom": 587.765625
+    },
+    "art": {
+      "x": 732,
+      "y": 145,
+      "width": 646.3125,
+      "height": 570,
+      "right": 1378.3125,
+      "bottom": 715
+    },
+    "cta": {
+      "x": 78.484375,
+      "y": 537.765625,
+      "width": 201.578125,
+      "height": 50,
+      "right": 280.0625,
+      "bottom": 587.765625
+    },
+    "header": {
+      "x": 49.6875,
+      "y": 0,
+      "width": 1340.625,
+      "height": 80,
+      "right": 1390.3125,
+      "bottom": 80
+    },
+    "nav": {
+      "x": 453.046875,
+      "y": 14.15625,
+      "width": 533.890625,
+      "height": 51.6875,
+      "right": 986.9375,
+      "bottom": 65.84375
+    }
+  },
+  {
+    "width": 1280,
+    "overflow": false,
+    "hero": {
+      "x": 44.15625,
+      "y": 80,
+      "width": 1191.671875,
+      "height": 700,
+      "right": 1235.828125,
+      "bottom": 780
+    },
+    "copy": {
+      "x": 44.15625,
+      "y": 280.5625,
+      "width": 595.828125,
+      "height": 298.875,
+      "right": 639.984375,
+      "bottom": 579.4375
+    },
+    "art": {
+      "x": 651.984375,
+      "y": 145,
+      "width": 571.84375,
+      "height": 570,
+      "right": 1223.828125,
+      "bottom": 715
+    },
+    "cta": {
+      "x": 69.75,
+      "y": 529.4375,
+      "width": 201.578125,
+      "height": 50,
+      "right": 271.328125,
+      "bottom": 579.4375
+    },
+    "header": {
+      "x": 44.15625,
+      "y": 0,
+      "width": 1191.671875,
+      "height": 80,
+      "right": 1235.828125,
+      "bottom": 80
+    },
+    "nav": {
+      "x": 373.046875,
+      "y": 14.15625,
+      "width": 533.890625,
+      "height": 51.6875,
+      "right": 906.9375,
+      "bottom": 65.84375
+    }
+  },
+  {
+    "search": "3 matching courses · showing 3",
+    "results": "Find a course.\nSee the possibility.\n\nSearch the catalog by name or course code. Start with what you want to understand.\n\nProgram views: Computer Engineering and Software Engineering.\n\n2026-2027 catalog · BSCMPE\n3 matching courses · showing 3\nMATH 30\nCalculus I\n3 units\nMATH 31\nCalculus II\n4 units\nMATH 32\nCalculus III\n3 units"
+  },
+  {
+    "empty": "0 matching courses · showing 0"
+  },
+  {
+    "hoverActive": 1,
+    "muted": 1
+  },
+  {
+    "focus": {
+      "outline": "rgb(33, 29, 31) solid 2px",
+      "active": true
+    }
+  },
+  {
+    "semester": "true"
+  },
+  {
+    "meetings": [
+      {
+        "text": "CMPE50",
+        "client": [
+          81,
+          24
+        ],
+        "scroll": [
+          81,
+          24
+        ]
+      },
+      {
+        "text": "MATH31",
+        "client": [
+          79,
+          14
+        ],
+        "scroll": [
+          79,
+          22
+        ]
+      },
+      {
+        "text": "ENGL1B",
+        "client": [
+          81,
+          24
+        ],
+        "scroll": [
+          81,
+          24
+        ]
+      },
+      {
+        "text": "MATH31",
+        "client": [
+          79,
+          14
+        ],
+        "scroll": [
+          79,
+          22
+        ]
+      },
+      {
+        "text": "CMPE50",
+        "client": [
+          81,
+          24
+        ],
+        "scroll": [
+          81,
+          24
+        ]
+      },
+      {
+        "text": "MATH31",
+        "client": [
+          79,
+          14
+        ],
+        "scroll": [
+          79,
+          22
+        ]
+      },
+      {
+        "text": "ENGL1B",
+        "client": [
+          81,
+          24
+        ],
+        "scroll": [
+          81,
+          24
+        ]
+      },
+      {
+        "text": "MATH31",
+        "client": [
+          79,
+          14
+        ],
+        "scroll": [
+          79,
+          22
+        ]
+      },
+      {
+        "text": "CMPE 50\n9:00 AM",
+        "client": [
+          206,
+          60
+        ],
+        "scroll": [
+          206,
+          60
+        ]
+      },
+      {
+        "text": "MATH 31",
+        "client": [
+          204,
+          38
+        ],
+        "scroll": [
+          204,
+          38
+        ]
+      },
+      {
+        "text": "ENGL 1B\n1:30 PM",
+        "client": [
+          206,
+          60
+        ],
+        "scroll": [
+          206,
+          60
+        ]
+      },
+      {
+        "text": "MATH 31",
+        "client": [
+          204,
+          38
+        ],
+        "scroll": [
+          204,
+          38
+        ]
+      },
+      {
+        "text": "CMPE 50\n9:00 AM",
+        "client": [
+          206,
+          60
+        ],
+        "scroll": [
+          206,
+          60
+        ]
+      },
+      {
+        "text": "MATH 31",
+        "client": [
+          204,
+          38
+        ],
+        "scroll": [
+          204,
+          38
+        ]
+      },
+      {
+        "text": "ENGL 1B\n1:30 PM",
+        "client": [
+          206,
+          60
+        ],
+        "scroll": [
+          206,
+          60
+        ]
+      },
+      {
+        "text": "MATH 31",
+        "client": [
+          204,
+          38
+        ],
+        "scroll": [
+          204,
+          38
+        ]
+      }
+    ]
+  },
+  {
+    "anchor": "http://localhost:5173/#your-plan"
+  }
+]

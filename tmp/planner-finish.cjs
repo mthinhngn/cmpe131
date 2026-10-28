@@ -1,0 +1,1 @@
+const fs=require('fs');const p='src/SemesterPlanner.tsx';let s=fs.readFileSync(p,'utf8');s=s.replace('<div className="sp-section-title"><span className="sp-dot"/> THE SHAPE OF YOUR PLAN</div>','');s=s.replace('<span>YEAR {Math.ceil(semester / 2)} / YOUR PLAN</span>','');fs.writeFileSync(p,s);

@@ -1,0 +1,20 @@
+/* Main landing only: preserve the approved split hero and white right-edge fade. */
+@media (min-width:901px) {
+ .landing-home .hero-section { width:100%; margin:0; padding:40px 24px 44px max(32px,calc((100% - 1280px)/2)); min-height:calc(100vh - 72px); display:flex; align-items:center; position:relative; isolation:isolate; background:linear-gradient(90deg,#fff 0%,#fff 37%,#fafafa 65%,#f4f4f4 100%); }
+ .landing-home .hero-stage { width:100%; grid-template-columns:minmax(300px,.72fr) minmax(0,1.28fr); gap:clamp(32px,3vw,60px); align-items:center; }
+ .landing-home .hero-main-copy { position:relative; z-index:2; transform:translateY(24px); }
+ .landing-home .hero-product-column { width:100%; margin:0; container-type:inline-size; }
+ .landing-home .product-frame.hero-window-shell { width:100%; aspect-ratio:auto; height:calc(100cqw / 1.46 - clamp(64px,8cqw,100px)); min-height:360px; box-shadow:0 28px 68px rgba(19,39,33,.13),0 5px 16px rgba(19,39,33,.06); animation:landing-window-arrive 500ms cubic-bezier(.23,1,.32,1) both; }
+ .landing-home .hero-window-shade { width:clamp(150px,24cqw,300px); background:linear-gradient(90deg,rgba(244,244,244,0),rgba(244,244,244,.32) 40%,rgba(244,244,244,.85) 78%,#f4f4f4); box-shadow:none; border-radius:0; top:-1px; right:-1px; bottom:-1px; pointer-events:none; }
+ .landing-home .hero-section::after { content:""; position:absolute; z-index:3; inset:0 0 0 auto; width:clamp(150px,18vw,330px); background:linear-gradient(90deg,rgba(244,244,244,0),rgba(244,244,244,.1) 30%,rgba(244,244,244,.78) 78%,#f4f4f4); pointer-events:none; }
+ .landing-home .radar-app--hero .map-canvas { display:flex; flex-direction:column; overflow:hidden; padding:0; }
+ .landing-home .radar-app--hero .map-scroll { display:block; position:relative; flex:1 1 0; min-height:0; overflow-x:hidden; overflow-y:auto; padding:8px 7px 24px; scrollbar-width:thin; scrollbar-color:#8eafa2 #f0f6f3; }
+ .landing-home .radar-app--hero .desktop-prereq-map { height:max(260px,calc(100cqw / 1.46 - 164px)); min-height:max(260px,calc(100cqw / 1.46 - 164px)); flex:none; }
+ .landing-home .radar-app--hero .map-canvas-footer { display:flex; flex:0 0 34px; min-height:34px; align-items:center; justify-content:space-between; gap:16px; padding:5px 12px; background:#f8fbf9; border-top:1px solid #e4ede8; }
+ .landing-home .radar-app--hero .map-canvas-footer .map-legend,.landing-home .radar-app--hero .map-canvas-footer .map-zoom { position:static; flex:none; }
+ .landing-home .radar-app--hero .map-canvas-footer .map-zoom { margin-left:auto; }
+}
+.map-scroll,.map-canvas-footer { display:contents; }
+@keyframes landing-window-arrive { from {opacity:.65;transform:translateX(3%)} to {opacity:1;transform:translateX(0)} }
+@media(prefers-reduced-motion:reduce) { .landing-home .product-frame.hero-window-shell {animation-name:landing-window-fade} }
+@keyframes landing-window-fade { from {opacity:.85} to {opacity:1} }

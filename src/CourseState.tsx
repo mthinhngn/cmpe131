@@ -1,4 +1,9 @@
-import { CalendarBlank, CheckCircle, Circle, Clock, Minus, WarningDiamond } from "@phosphor-icons/react";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Circle } from "@phosphor-icons/react/dist/csr/Circle";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { Minus } from "@phosphor-icons/react/dist/csr/Minus";
+import { WarningDiamond } from "@phosphor-icons/react/dist/csr/WarningDiamond";
 import { useCatalog } from "./CatalogContext";
 import type { Course } from "./types";
 

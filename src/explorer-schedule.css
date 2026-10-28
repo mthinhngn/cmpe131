@@ -1,0 +1,248 @@
+/* Graphite / Porcelain: neutral surfaces with one restrained slate accent. */
+.cx-page {
+  --cx-graphite: #27282f;
+  --cx-porcelain: #f8f8fa;
+  --cx-slate: #526b8f;
+}
+.cx-page .cx-desktop-workbench .cx-catalog { color: #f0f0f3; background: transparent; font-family: ExplorerInter, Inter, Arial, sans-serif; }
+.cx-desktop-workbench .cx-catalog-title h2 { color: #f5f5f7; font-size: 15px; font-weight: 600; letter-spacing: -.02em; }
+.cx-desktop-workbench .cx-catalog-title > span,
+.cx-desktop-workbench .cx-results-caption,
+.cx-desktop-workbench .cx-course-copy > span,
+.cx-desktop-workbench .cx-course-copy > strong small { color: #bfc1ca; }
+.cx-desktop-workbench .cx-search { color: #bfc1ca; border-color: #555862; }
+.cx-desktop-workbench .cx-search input { color: #f0f0f3; }
+.cx-desktop-workbench .cx-search input::placeholder { color: #bfc1ca; }
+.cx-desktop-workbench .cx-filters button { color: #c6c8d0; }
+.cx-desktop-workbench .cx-filters button > span { color: #aeb1bd; }
+.cx-desktop-workbench .cx-filters button[aria-pressed=true] { color: #e2e7ef; border-color: #a4b7ce; }
+.cx-desktop-workbench .cx-results-caption,
+.cx-desktop-workbench .cx-course { border-color: #40424b; }
+.cx-desktop-workbench .cx-course-list { scrollbar-color: #737985 transparent; }
+.cx-desktop-workbench .cx-course-trigger { background: transparent; color: #f0f0f3; }
+.cx-desktop-workbench .cx-course-trigger > svg { color: #bfc1ca; }
+.cx-desktop-workbench .cx-expanded > .cx-course-trigger,
+.cx-desktop-workbench .cx-course-content { background: #30323a; }
+.cx-desktop-workbench .cx-section { border-color: #4d505c; }
+.cx-desktop-workbench .cx-section-preview { background: #3a414e; }
+.cx-desktop-workbench .cx-section-intro > span,
+.cx-desktop-workbench .cx-section > p,
+.cx-desktop-workbench .cx-section-top > strong span,
+.cx-desktop-workbench .cx-no-sections,
+.cx-desktop-workbench .cx-empty-results p { color: #bfc1ca; }
+.cx-desktop-workbench .cx-section-intro button,
+.cx-desktop-workbench .cx-section > .cx-section-time,
+.cx-desktop-workbench .cx-empty-results button,
+.cx-desktop-workbench .cx-seats,
+.cx-desktop-workbench .cx-section > .cx-fit { color: #d6d9e1; }
+.cx-desktop-workbench .cx-seats-full,
+.cx-desktop-workbench .cx-section > .cx-fit-warning { color: #edc292; }
+.cx-desktop-workbench .cx-section-actions > button { color: #d6d9e1; border-color: #737c8c; }
+.cx-desktop-workbench .cx-section-selected .cx-add { color: #e1e8f2; background: #394454; border-color: #7c94b1; }
+@media (hover:hover) and (pointer:fine) {
+  .cx-desktop-workbench .cx-course-trigger:hover { background: #343740; }
+  .cx-desktop-workbench .cx-section-actions > button:first-child:hover { background: #424754; }
+}
+.cx-page .cx-week {
+  --week-ground: #ffffff;
+  --week-ink: #30333c;
+  --week-muted: #686c78;
+  --week-line: #dce2e5;
+  container-type: inline-size;
+  color: var(--week-ink);
+  background-color: var(--week-ground);
+  border-radius: 0;
+  scrollbar-color: #99a7af #f6f8f9;
+}
+.cx-desktop-workbench .cx-week-frame { height: 100%; min-width: 0; border: 1px solid #d9e0e4; border-radius: 12px; overflow: hidden; background: #ffffff; isolation: isolate; }
+.cx-page .cx-desktop-workbench .cx-week { height: 100%; border: 0; border-radius: inherit; overflow: auto; clip-path: inset(0 round 11px); }
+.cx-week .cx-week-title { padding: 24px 20px 18px; gap: 16px; background: var(--week-ground); }
+.cx-week .cx-week-title h2 { color: var(--week-ink); font-size: 15px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; text-wrap: pretty; }
+.cx-week .cx-week-title p { margin-top: 5px; color: #686c78; font-size: 14px; line-height: 1.5; }
+.cx-week .cx-view-switch { border-color: #cbd6dc; background: #edf1f3; }
+.cx-week .cx-view-switch button { color: #576b78; width: 34px; height: 32px; }
+.cx-week .cx-view-switch button[aria-pressed=true] { color: #30333c; background: var(--cx-slate); }
+.cx-week .cx-week-meta { padding-inline: 20px; color: #686c78; font-size: 14px; background: var(--week-ground); }
+.cx-week .cx-week-meta i { background: var(--cx-slate); }
+.cx-week .cx-calendar-scroll, .cx-week .cx-agenda { scrollbar-color: #99a7af #f6f8f9; }
+.cx-week .cx-calendar-head { border-color: #dce2e5; background: var(--week-ground); }
+/* Only the functional calendar grid remains on the flat inset surface. */
+.cx-week .cx-calendar-body { background-color: var(--week-ground); background-image: none; }
+.cx-week .cx-agenda { background: var(--week-ground); }
+.cx-week .cx-calendar-head > span { color: #414550; font-size: 14px; }
+.cx-week .cx-calendar-head > span:first-child { color: #686c78; font-size: 14px; }
+.cx-week .cx-calendar-head i { background: #becbd2; }
+.cx-week .cx-calendar-head i.has-class { background: var(--cx-slate); }
+.cx-week .cx-hour-rail > span { color: #686c78; font-size: 14px; }
+.cx-week .cx-day { border-color: #e1e6e9; }
+.cx-week .cx-hour-line { border-color: #e8ecee; }
+.cx-week .cx-hour-line:first-child { border-top: 0; }
+.cx-week .cx-free-day { color: #686c78; font-size: 14px; }
+.cx-week .cx-week-empty { width: 330px; padding: 24px 14px; color: #30333c; background: var(--week-ground); }
+.cx-week .cx-empty-mark { border-color: #cbd6dc; color: var(--cx-slate); background: #f0f1f5; }
+.cx-week .cx-week-empty h3 { color: #30333c; font-size: 15px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; }
+.cx-week .cx-week-empty p { color: #686c78; font-size: 14px; }
+.cx-week .cx-week-empty button { padding: 6px 0; margin-top: 12px; border: 0; border-radius: 0; color: var(--cx-slate); background: transparent; font-size: 14px; }
+.cx-week .cx-preview-bar { border-color: #b9c7d8; background: #edf0f5; }
+.cx-week .cx-preview-bar strong { color: #35455e; font-size: 14px; }
+.cx-week .cx-preview-bar > div > span { color: #637085; font-size: 14px; }
+.cx-page .cx-week .cx-back-to-sections { color: var(--cx-slate); }
+.cx-page .cx-week button.cx-add { border-color: var(--cx-slate); background: var(--cx-slate); color: #ffffff; }
+.cx-week .cx-icon-button { color: #546c7c; }
+.cx-week .cx-calendar-hint { color: #686c78; background: #f0f1f5; border-color: #dce2e5; }
+.cx-week .cx-week-warning { color: #784b1d; background: #fff2df; border-color: #d8bd92; }
+.cx-week .cx-week-warning strong { font-size: 14px; }
+.cx-week .cx-week-warning p { color: #795c38; font-size: 14px; }
+.cx-week .cx-saved-sections { border-color: #dce2e5; background: #f6f8f9; }
+.cx-week .cx-saved-section strong, .cx-week .cx-saved-section span { font-size: 14px; }
+.cx-week .cx-week-footer { color: #414550; border-color: #dce2e5; background: #f6f8f9; }
+.cx-week .cx-week-footer > span { border-color: #d5d9e2; }
+.cx-week .cx-week-footer p { color: #414550; font-size: 14px; }
+.cx-week .cx-week-footer small { color: #686c78; font-size: 14px; }
+.cx-week .cx-agenda section { border-color: #dce2e5; }
+.cx-week .cx-agenda h3 { color: #414550; font-size: 14px; }
+.cx-week .cx-agenda h3 span, .cx-week .cx-agenda section > p, .cx-week .cx-agenda small { color: #686c78; font-size: 14px; }
+.cx-week .cx-agenda section > button { color: #414550; }
+.cx-week .cx-agenda strong { font-size: 14px; }
+.cx-week .cx-agenda section > button > span { font-size: 14px; }
+.cx-week :focus-visible { outline-color: #79a48e; }
+.cx-week ::selection { background: #cfe5da; color: #203b30; }
+/* Course hues stay readable on the ivory board; previews keep dashed outlines. */
+.cx-page .cx-week .cx-meeting, .cx-page .cx-week .cx-saved-section { color: #244c36; background: #dbe9d8; border-color: #94b28f; }
+.cx-page .cx-week .cx-blue { color: #29465d; background: #e0e8ee; border-color: #9fb3c2; }
+.cx-page .cx-week .cx-stone { color: #5d502b; background: #eee7d3; border-color: #c2b588; }
+.cx-page .cx-week .cx-ghost { color: #2d4c63; background: #e2ecf1; border-color: #79a48e; }
+.cx-page .cx-week .cx-conflict { color: #792f23; background: #f7ded3; border-color: #c48974; }
+@media (hover:hover) and (pointer:fine) {
+  .cx-page .cx-week button.cx-add:hover { background: #30333c; color: #ffffff; }
+  .cx-week .cx-saved-section button:hover { background: rgb(36 76 54 / .08); }
+  .cx-week .cx-view-switch button:hover { color: var(--cx-slate); }
+}
+
+/* Compact reference rhythm; no extra surface around ordinary rows. */
+.cx-desktop-workbench .cx-catalog-title { padding: 26px 20px 18px; }
+.cx-desktop-workbench .cx-search { margin-inline: 20px; }
+.cx-desktop-workbench .cx-filters { padding-inline: 20px; }
+.cx-desktop-workbench .cx-course-trigger { padding: 16px 20px; transition: none; }
+.cx-desktop-workbench .cx-course-copy > strong { font-size: 14px; font-weight: 600; }
+.cx-desktop-workbench .cx-course-copy > span { font-size: 14px; line-height: 1.5; }
+.cx-desktop-workbench .cx-week-empty .cx-empty-mark { display: none; }
+.cx-desktop-workbench .cx-week-empty h3 { margin-top: 0; }
+.cx-desktop-workbench .cx-view-switch { border: 0; background: transparent; }
+.cx-desktop-workbench .cx-view-switch button[aria-pressed=true] { background: var(--cx-slate); }
+.cx-desktop-workbench .cx-week-footer,
+.cx-desktop-workbench .cx-saved-sections { background: var(--week-ground); }
+.cx-desktop-workbench .cx-week-footer > span { display: none; }
+.cx-desktop-workbench .cx-meeting { animation: none; transition: none; }
+
+/* Expanded sections share the inset charcoal palette; color denotes state only. */
+.cx-desktop-workbench .cx-section-top > strong { color: #f0f0f3; }
+.cx-desktop-workbench .cx-section > .cx-section-time { color: #f0f0f3; }
+.cx-desktop-workbench .cx-section > .cx-fit { color: #bfc1ca; }
+.cx-desktop-workbench .cx-section > .cx-fit-warning { color: #edc292; }
+.cx-page .cx-desktop-workbench .cx-section-actions button.cx-add { background: var(--cx-slate); color: #f5f5f7; border-color: #737c8c; }
+.cx-page .cx-desktop-workbench .cx-section-selected .cx-section-actions button.cx-add { background: #394454; color: #e1e8f2; border-color: #7c94b1; }
+.cx-desktop-workbench .cx-course-content :focus-visible { outline-color: #d6d9e1; }
+@media (hover:hover) and (pointer:fine) {
+  .cx-page .cx-desktop-workbench .cx-section-actions button.cx-add:hover { background: #435b7c; }
+}
+
+
+/* Readable desktop scale: content never uses miniature 9–12px labels. */
+.cx-page .cx-workbench-heading { font-size: 14px; font-weight: 500; flex-wrap: wrap; }
+.cx-page .cx-workbench-heading > span { flex-wrap: wrap; }
+.cx-page .cx-workbench-heading button, .cx-page .cx-workbench-heading small { font-size: 14px; font-weight: 500; }
+.cx-page .cx-intro > div > p { font-size: 17px; line-height: 1.6; }
+.cx-page .cx-desktop-workbench :is(.cx-catalog-title h2,.cx-week-title h2) { font-family: ExplorerInter, sans-serif; font-size: 21px; font-weight: 600; letter-spacing: -.025em; line-height: 1.2; }
+.cx-page .cx-desktop-workbench .cx-search input { font-size: 16px; font-weight: 450; }
+.cx-page .cx-desktop-workbench .cx-filters button { font-size: 14px; font-weight: 500; }
+.cx-page .cx-desktop-workbench .cx-course-copy > strong { font-size: 16px; font-weight: 600; }
+.cx-page .cx-desktop-workbench .cx-course-copy > span { font-size: 15px; font-weight: 400; line-height: 1.5; }
+.cx-page .cx-desktop-workbench .cx-section > p { font-size: 15px; }
+.cx-page .cx-desktop-workbench .cx-section-top > strong { font-size: 16px; font-weight: 600; }
+.cx-page .cx-desktop-workbench .cx-week-title p { font-size: 14px; }
+.cx-page .cx-desktop-workbench .cx-week-empty p { font-size: 16px; }
+.cx-page .cx-desktop-workbench .cx-week-empty h3 { font-size: 24px; }
+.cx-page .cx-desktop-workbench .cx-course-units { width: 28px; font-size: 15px; }
+.cx-page .cx-desktop-workbench .cx-filters { overflow-x: auto; }
+
+
+/* A single graphite shell owns both panes; the week is inset into its right side.
+   Insets stay inside the existing resize panels, preserving all split constraints. */
+.cx-page .cx-workbench.cx-desktop-workbench {
+  --cx-shell: var(--cx-graphite);
+  background: var(--cx-shell);
+  border: 1px solid #3c3e46;
+  border-radius: 16px;
+}
+.cx-page .cx-desktop-workbench .cx-catalog { background: transparent; border: 0; border-radius: 0; }
+.cx-desktop-workbench .cx-catalog-title { padding-top: 30px; }
+.cx-desktop-workbench .cx-resizable-panel:first-child { border-radius: 15px 0 0 15px; }
+.cx-desktop-workbench.cx-layout-catalog .cx-resizable-panel:first-child { border-radius: 15px; }
+.cx-desktop-workbench .cx-week-title { border-bottom: 0; }
+.cx-desktop-workbench .cx-course-copy > span,
+.cx-desktop-workbench .cx-results-caption,
+.cx-desktop-workbench .cx-search input::placeholder { color: #bfc1ca; }
+.cx-desktop-workbench .cx-week-title p,
+.cx-desktop-workbench .cx-week-meta,
+.cx-desktop-workbench .cx-hour-rail > span { color: #686c78; }
+
+.cx-desktop-workbench .cx-week-frame {
+  background: var(--cx-porcelain);
+  border: 1px solid #dedfe5;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(20 22 31 / .16);
+}
+.cx-desktop-workbench .cx-filters { scrollbar-width: thin; scrollbar-color: #626a6d transparent; }
+.cx-desktop-workbench .cx-week .cx-view-switch button:hover { color: var(--cx-slate); }
+.cx-desktop-workbench .cx-week .cx-view-switch button[aria-pressed=true] { color: #ffffff; }
+
+.cx-desktop-workbench .cx-resizable-panel:last-child > div:not([hidden]) { padding: 20px 20px 20px 16px; }
+.workspace-explorer .cr-resizable-handle { --cx-divider-axis: 0px; }
+.workspace-explorer .cr-resizable-handle::before { background: #737985; opacity: .3; }
+.workspace-explorer .cr-resizable-handle:hover::before,
+.workspace-explorer .cr-resizable-handle[data-separator=active]::before { opacity: .8; }
+.workspace-explorer .cr-resizable-grip { border: 1px solid #9ca4b3; color: #46566e; background: #edf0f5; box-shadow: 0 3px 10px rgb(20 22 31 / .15); }
+
+.cx-desktop-workbench .cx-week .cx-view-switch button[aria-pressed=true] { background: var(--cx-slate); color: #ffffff; }
+.cx-desktop-workbench .cx-week .cx-view-switch button:hover { color: var(--cx-slate); }
+.cx-desktop-workbench .cx-week .cx-view-switch button[aria-pressed=true]:hover { color: #ffffff; }
+.cx-page .cx-desktop-workbench .cx-section-actions button.cx-add { color: #f5f5f7; }
+
+/* Focus views keep the same shared shell and inset calendar geometry. */
+.cx-desktop-workbench.cx-layout-week .cx-resizable-panel:last-child > div:not([hidden]) { padding-left: 20px; }
+.workspace-explorer .cr-resizable-handle:hover .cr-resizable-grip,
+.workspace-explorer .cr-resizable-handle[data-separator=active] .cr-resizable-grip { border-color: #a4b7ce; color: var(--cx-slate); }
+.cx-desktop-workbench .cx-week .cx-view-switch { background: #e8eaf0; border-color: #d7dae2; }
+.cx-desktop-workbench .cx-week .cx-view-switch button[aria-pressed=true] { background: var(--cx-slate); }
+.cx-page .cx-desktop-workbench .cx-week {
+  --week-ground: var(--cx-porcelain);
+  --week-ink: #30333c;
+  --week-muted: #686c78;
+  --week-line: #e0e2e8;
+}
+
+/* Carry the same accent through keyboard focus and schedule states. */
+.cx-page :focus-visible { outline-color: var(--cx-slate); }
+.cx-page .cx-catalog :focus-visible { outline-color: #a4b7ce; }
+.cx-page .cx-workbench-heading i { background: var(--cx-slate); }
+.cx-page .cx-catalog .cx-course-copy > strong svg { color: #a4b7ce; }
+/* Course colors encode identity; chrome keeps its single slate accent. */
+.cx-week .cx-course-sage { --course-fill: #e2eee5; --course-ink: #345940; --course-edge: #a8c4af; }
+.cx-week .cx-course-sky { --course-fill: #e2ebf6; --course-ink: #365477; --course-edge: #abc0dc; }
+.cx-week .cx-course-sand { --course-fill: #f3ecd9; --course-ink: #6c5728; --course-edge: #d4c28e; }
+.cx-week .cx-course-lilac { --course-fill: #ece6f5; --course-ink: #5e467c; --course-edge: #c4b2dc; }
+.cx-week .cx-course-rose { --course-fill: #f4e3e9; --course-ink: #7c4057; --course-edge: #d9adbd; }
+.cx-week .cx-course-aqua { --course-fill: #dfeeee; --course-ink: #315e62; --course-edge: #9fc5c7; }
+.cx-week .cx-course-apricot { --course-fill: #f6e7da; --course-ink: #79502f; --course-edge: #dcb99b; }
+.cx-week .cx-course-slate { --course-fill: #e7e9f0; --course-ink: #4d5671; --course-edge: #b9bfd0; }
+.cx-page .cx-week .cx-meeting,
+.cx-page .cx-week .cx-saved-section {
+  background: var(--course-fill);
+  color: var(--course-ink);
+  border-color: var(--course-edge);
+}
+.cx-page .cx-week .cx-ghost { border-style: dashed; }
+.cx-page .cx-week .cx-conflict { background: #f5e7df; color: #783b2b; border-color: #a45e49; }
+.workspace-explorer .cr-resizable-grip:focus-visible,
+.cx-page .cr-resizable-handle:focus-visible .cr-resizable-grip { outline-color: var(--cx-slate); }

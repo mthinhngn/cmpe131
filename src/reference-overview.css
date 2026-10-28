@@ -1,0 +1,130 @@
+/* Overview refinements from the user's four browser comments (2026-10-26).
+   Reference composition: wide upper panel, two separated lower panels. */
+.ov3-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+  flex-shrink: 0;
+}
+.ov3-header-actions a { color: #5f636c; font-size:14px; }
+.ov3-header-actions a:hover { color: var(--a-accent); }
+.ov3-header-actions > span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #edf7f2;
+  color: #183933;
+  font-size:14px;
+  font-weight: 600;
+}
+.ov3-hero { gap: 54px; padding: 48px 0 60px; }
+.ov3-chart-field {
+  display: grid;
+  grid-template-columns: 1.12fr 1fr;
+  gap: 24px;
+  min-height: 0;
+  padding: 0 0 18px;
+  align-items: start;
+}
+.ov3-chart-field > .ov3-chart {
+  position: relative;
+  inset: auto;
+  width: auto;
+  transform: none;
+  border: 0;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(24, 57, 51, .06);
+}
+.ov3-chart-field > .ov3-credit-chart {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-left: 42px;
+  min-height: 174px;
+  padding: 22px 24px;
+}
+.ov3-credit-chart .ov3-credit-number { margin-top: 15px; }
+.ov3-credit-chart .ov3-bars { height: 20px; margin: 15px 0; }
+.ov3-credit-chart .ov3-mini-legend { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.ov3-chart-field > .ov3-progress-chart {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 221px;
+  padding: 21px;
+}
+.ov3-progress-chart .ov3-progress-body {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.ov3-progress-chart .ov3-donut { width: 112px; height: 112px; align-self: center; }
+.ov3-progress-chart .ov3-chart-copy { width: 100%; }
+.ov3-progress-chart .ov3-chart-copy p { max-width: none; margin: 6px 0 10px; }
+.ov3-chart-field > .ov3-term-chart {
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 42px;
+  padding: 21px;
+  min-height: 195px;
+}
+.ov3-term-chart .ov3-term-visual { flex-direction: column; align-items: flex-start; gap: 16px; }
+.ov3-term-chart .ov3-term-ring { border-top-color: #a5d8c9; }
+.ov3-page .ov3-actions .ov3-primary { background: #050505; border-radius: 4px; }
+.ov3-page .ov3-actions .ov3-primary:hover { background: #303030; }
+.ov3-page .ov3-cta > a {
+  background: #050505;
+  border-color: #050505;
+  border-radius: 4px;
+  color: #fff;
+}
+.ov3-page .ov3-cta > a:hover { background: #303030; border-color: #303030; }
+.ov3-page a:focus-visible, .ov3-page button:focus-visible {
+  outline: 2px solid #168873;
+  outline-offset: 4px;
+}
+/* Keep the connector and milestones in a dedicated lane above the copy. */
+.ov3-timeline { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ov3-track { top: 45px; }
+.ov3-timeline-node { padding: 30px 14px 0 0; }
+.ov3-timeline-node::before { top: 0; }
+.ov3-timeline-node.active::before { top: -2px; }
+@media (max-width: 1100px) {
+  .ov3-hero { gap: 32px; }
+  .ov3-header { gap: 20px; }
+  .ov3-header-actions { gap: 12px; }
+  .ov3-chart-field { gap: 18px; }
+  .ov3-chart-field > .ov3-credit-chart { margin-left: 24px; }
+  .ov3-chart-field > .ov3-progress-chart,
+  .ov3-chart-field > .ov3-term-chart { padding: 18px; }
+}
+@media (max-width: 760px) {
+  .ov3-trajectory { overflow: visible; }
+  .ov3-timeline { min-width: 0; grid-template-columns: 1fr; padding-top: 0; }
+  .ov3-timeline-labels, .ov3-track { display: none; }
+  .ov3-timeline-node {
+    margin-left: 8px;
+    padding: 18px 0 18px 25px;
+    border-left: 1px solid var(--a-rule);
+  }
+  .ov3-timeline-node::before { top: 23px; left: -6px; }
+  .ov3-timeline-node.active::before { top: 21px; left: -8px; }
+  .ov3-hero { padding-top: 30px; gap: 35px; }
+  .ov3-chart-field { min-height: 0; padding: 0; }
+  .ov3-chart-field > .ov3-credit-chart { margin-left: 18px; }
+  .ov3-chart-field > .ov3-term-chart { margin-top: 28px; }
+  .ov3-credit-chart .ov3-mini-legend { gap: 12px; }
+}
+@media (max-width: 420px) {
+  .ov3-chart-field { grid-template-columns: minmax(0, 1fr); }
+  .ov3-chart-field > .ov3-credit-chart,
+  .ov3-chart-field > .ov3-progress-chart,
+  .ov3-chart-field > .ov3-term-chart { grid-column: 1; grid-row: auto; margin: 0; }
+  .ov3-chart-field > .ov3-credit-chart { order: -1; }
+  .ov3-progress-chart .ov3-progress-body,
+  .ov3-term-chart .ov3-term-visual { flex-direction: row; align-items: center; }
+  .ov3-chart-field > .ov3-progress-chart,
+  .ov3-chart-field > .ov3-term-chart { min-height: 0; }
+}
+

@@ -1,0 +1,347 @@
+{
+  "/overview": [
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "HEADER",
+      "text": "Course Radar.CourseRadarPlan with clarityOverviewCourse explorerDegree",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Workspace / OverviewDegreeComputer Engineering — BSSoftware Engineerin",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Your path.Your next move.A little perspective for the semester ahead. ",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "64px / 65.92px \"Inter Tight\", sans-serif",
+      "padding": "0px",
+      "tag": "H1",
+      "text": "Your path.Your next move.",
+      "width": 688
+    }
+  ],
+  "/courses": [
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "HEADER",
+      "text": "Course Radar.CourseRadarPlan with clarityOverviewCourse explorerDegree",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Workspace / Course explorerDegreeComputer Engineering — BSSoftware Eng",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Course explorerFind your next course, review its requirements, and com",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "72px / 70.56px \"Inter Tight\", sans-serif",
+      "padding": "0px",
+      "tag": "H1",
+      "text": "Course explorer",
+      "width": 620
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "borderRadius": "9px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "SECTION",
+      "text": "COURSEUNITSSTATUSCMPE 30Programming Concepts and Methodology4OpenENGR ",
+      "width": 1200
+    }
+  ],
+  "/roadmap": [
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "HEADER",
+      "text": "Course Radar.CourseRadarPlan with clarityOverviewCourse explorerDegree",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Workspace / Degree roadmapDegreeComputer Engineering — BSSoftware Engi",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Your degree,one semester at a time.Browse the official 2026-2027 Compu",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "54px / 55.62px \"Inter Tight\", \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "H1",
+      "text": "Your degree,one semester at a time.",
+      "width": 690
+    }
+  ],
+  "/prerequisite-chart": [
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px 48px",
+      "tag": "HEADER",
+      "text": "Course Radar.CourseRadarPlan with clarityOverviewCourse explorerDegree",
+      "width": 1296
+    },
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px 48px",
+      "tag": "DIV",
+      "text": "Workspace / PrerequisitesDegreeComputer Engineering — BSSoftware Engin",
+      "width": 1425
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "48px 48px 110px",
+      "tag": "DIV",
+      "text": "Course RadarSJSU Computer EngineeringBack to roadmapSee how yourcourse",
+      "width": 1296
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "64px / 65.28px \"Inter Tight\", \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "H1",
+      "text": "See how yourcourses connect.",
+      "width": 905
+    },
+    {
+      "background": "rgb(36, 35, 31)",
+      "borderRadius": "0px",
+      "font": "13px \"DM Sans\", sans-serif",
+      "padding": "11px 18px",
+      "tag": "A",
+      "text": "Open semester planner ",
+      "width": 208
+    }
+  ],
+  "/planner": [
+    {
+      "background": "rgba(255, 255, 255, 0.88)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px 48px",
+      "tag": "HEADER",
+      "text": "Course Radar.CourseRadarPlan with clarityOverviewCourse explorerDegree",
+      "width": 1425
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px 48px",
+      "tag": "DIV",
+      "text": "Workspace / Semester plannerDegreeComputer Engineering — BSSoftware En",
+      "width": 1425
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "36px 48px 110px",
+      "tag": "DIV",
+      "text": "THINK A SEMESTER AHEADSemester plannerGive your next steps a place. Ad",
+      "width": 1425
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "69.12px / 67.7376px \"Inter Tight\", \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "H1",
+      "text": "Semester planner",
+      "width": 632
+    },
+    {
+      "background": "rgb(36, 35, 31)",
+      "borderRadius": "8px",
+      "font": "15px \"Inter Tight\", sans-serif",
+      "padding": "11px 18px",
+      "tag": "A",
+      "text": "Find courses ",
+      "width": 150
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 1Semester 10 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    },
+    {
+      "background": "rgb(246, 245, 241)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 1Semester 20 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    },
+    {
+      "background": "rgb(246, 245, 241)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 2Semester 30 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 2Semester 40 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 3Semester 50 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    },
+    {
+      "background": "rgb(246, 245, 241)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 3Semester 60 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    },
+    {
+      "background": "rgb(246, 245, 241)",
+      "borderRadius": "10px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "25px",
+      "tag": "SECTION",
+      "text": "YEAR 4Semester 70 unitsRoom for your next move.Add a courseChoose a co",
+      "width": 664
+    }
+  ],
+  "/recommendations": [
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "HEADER",
+      "text": "Course Radar.CourseRadarPlan with clarityOverviewCourse explorerDegree",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Workspace / RecommendationsDegreeComputer Engineering — BSSoftware Eng",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "16px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "DIV",
+      "text": "Build a schedule that fits.Tell Course Radar what you need this term. ",
+      "width": 1200
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "font": "64px / 65.28px \"Inter Tight\", sans-serif",
+      "padding": "0px",
+      "tag": "H1",
+      "text": "Build a schedule that fits.",
+      "width": 692
+    },
+    {
+      "background": "rgb(36, 35, 31)",
+      "borderRadius": "8px",
+      "font": "14px / 21.7px \"DM Sans\", sans-serif",
+      "padding": "12px 18px",
+      "tag": "BUTTON",
+      "text": "Start with a prompt ",
+      "width": 200
+    },
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "10px",
+      "font": "14px / 21.7px \"DM Sans\", sans-serif",
+      "padding": "0px",
+      "tag": "SECTION",
+      "text": " Gemini scheduling agentSession-only conversationCourse RadarTell me t",
+      "width": 729
+    },
+    {
+      "background": "rgb(253, 252, 249)",
+      "borderRadius": "10px",
+      "font": "14px / 21.7px \"DM Sans\", sans-serif",
+      "padding": "19px 20px",
+      "tag": "SECTION",
+      "text": "Unavailable timeAdd times the candidate generator must avoid.DayMonday",
+      "width": 447
+    }
+  ]
+}

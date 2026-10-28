@@ -1,0 +1,12 @@
+from pathlib import Path
+p=Path('src/ReferenceLanding.tsx')
+s=p.read_text(encoding='utf-8').replace('className="button button-dark header-cta" href="/prerequisites"','className="button button-dark header-cta" href="/overview"').replace('className="button button-dark closing-cta" href="/prerequisites"','className="button button-dark closing-cta" href="/overview"')
+s=s.replace('<div className="footer-links"><a href="#how-it-works">How it works</a><a href="/prerequisites">Explore the map</a>', '<div className="footer-links"><a href="/overview">Overview</a><a href="/courses">Courses</a><a href="/roadmap">Roadmap</a><a href="/prerequisites">Prerequisites</a><a href="/planner">Planner</a><a href="/recommendations">Recommendations</a>')
+p.write_text(s,encoding='utf-8')
+p=Path('src/ReferenceOverview.tsx')
+s=p.read_text(encoding='utf-8').replace('href="#courses">Course explorer','href="/courses">Course explorer').replace('href="#trajectory">Degree roadmap','href="/roadmap">Degree roadmap')
+s=s.replace('<a href="/planner">Semester planner</a></nav>', '<a href="/planner">Semester planner</a><a href="/recommendations">Recommendations</a></nav>')
+p.write_text(s,encoding='utf-8')
+p=Path('src/PrerequisiteMap.tsx')
+s=p.read_text(encoding='utf-8').replace('<a href="/overview" onClick={() => setMenuOpen(false)}>Overview</a>','<a href="/overview" onClick={() => setMenuOpen(false)}>Overview</a>\n<a href="/courses">Courses</a>\n<a href="/planner">Planner</a>')
+p.write_text(s,encoding='utf-8')

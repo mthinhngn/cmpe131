@@ -1,0 +1,799 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/Workspace.tsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=00dae65e"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$(), _s2 = $RefreshSig$(), _s3 = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=00dae65e"; const useEffect = __vite__cjsImport1_react["useEffect"]; const useRef = __vite__cjsImport1_react["useRef"]; const useState = __vite__cjsImport1_react["useState"];
+import { Link, NavLink, Outlet, useLocation, useSearchParams } from "/node_modules/.vite/deps/react-router-dom.js?v=b696583c";
+import { ArrowRight, ArrowSquareOut, BookOpen, CalendarBlank, Circle, GitBranch, House, MagnifyingGlass, MapTrifold, Sparkle, WarningCircle } from "/node_modules/.vite/deps/@phosphor-icons_react.js?v=044bee05";
+import { useCatalog } from "/src/CatalogContext.tsx";
+import { CourseDetail } from "/src/App.tsx?t=1793002037896";
+import { CourseStateBadge } from "/src/CourseState.tsx";
+import { CourseRadarLogo } from "/src/CourseRadarLogo.tsx";
+import { useSchedule } from "/src/ScheduleContext.tsx";
+import { WeeklySchedule } from "/src/WeeklySchedule.tsx";
+import "/src/workspace.css";
+import "/src/editorial.css";
+import "/src/explorer.css";
+import "/src/roadmap.css";
+const navigation = [
+  { to: "/overview", label: "Overview", icon: House },
+  { to: "/courses", label: "Course explorer", icon: BookOpen },
+  { to: "/roadmap", label: "Degree roadmap", icon: MapTrifold },
+  { to: "/prerequisite-chart", label: "Prerequisites", icon: GitBranch },
+  { to: "/planner", label: "Semester planner", icon: CalendarBlank },
+  { to: "/recommendations", label: "Recommendations", icon: Sparkle }
+];
+export function Workspace() {
+  _s();
+  const { catalog, program, selectProgram, mode, retry } = useCatalog();
+  const location = useLocation();
+  const content = useRef(null);
+  useEffect(() => {
+    content.current?.focus();
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  return /* @__PURE__ */ jsxDEV("div", { className: `workspace ${location.pathname === "/overview" ? "workspace-overview" : ""} ${location.pathname === "/recommendations" ? "workspace-recommendations" : ""} ${location.pathname === "/courses" ? "workspace-explorer" : ""} ${location.pathname === "/roadmap" ? "workspace-roadmap" : ""}`, children: [
+    /* @__PURE__ */ jsxDEV("a", { className: "skip-link", href: "#workspace-content", children: "Skip to content" }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 31,
+      columnNumber: 5
+    }, this),
+    /* @__PURE__ */ jsxDEV("header", { className: "workspace-header", children: [
+      /* @__PURE__ */ jsxDEV(Link, { className: "workspace-brand", to: "/", "aria-label": "CourseRadar home", children: [
+        /* @__PURE__ */ jsxDEV("span", { className: "ov-brand", children: [
+          /* @__PURE__ */ jsxDEV("svg", { width: "30", height: "30", viewBox: "0 0 30 30", fill: "none", "aria-hidden": "true", children: [
+            /* @__PURE__ */ jsxDEV("rect", { x: "3", y: "3", width: "10", height: "8", rx: "1", stroke: "currentColor", strokeWidth: "1.5" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 33,
+              columnNumber: 184
+            }, this),
+            /* @__PURE__ */ jsxDEV("rect", { x: "17", y: "19", width: "10", height: "8", rx: "1", stroke: "currentColor", strokeWidth: "1.5" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 33,
+              columnNumber: 273
+            }, this),
+            /* @__PURE__ */ jsxDEV("path", { d: "M8 11v12h9m-4-4 4 4-4 4", stroke: "#d75c34", strokeWidth: "1.5" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 33,
+              columnNumber: 364
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 33,
+            columnNumber: 105
+          }, this),
+          "Course Radar",
+          /* @__PURE__ */ jsxDEV("span", { children: "." }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 33,
+            columnNumber: 453
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 33,
+          columnNumber: 78
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { className: "workspace-original-brand", children: /* @__PURE__ */ jsxDEV(CourseRadarLogo, {}, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 33,
+          columnNumber: 517
+        }, this) }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 33,
+          columnNumber: 474
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 33,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("nav", { "aria-label": "Main navigation", children: navigation.map(({ to, label, icon: Icon }) => /* @__PURE__ */ jsxDEV(NavLink, { to, end: to === "/", children: [
+        /* @__PURE__ */ jsxDEV(Icon, { size: 19, "aria-hidden": "true" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 34,
+          columnNumber: 131
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { children: label }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 34,
+          columnNumber: 168
+        }, this)
+      ] }, to, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 34,
+        columnNumber: 88
+      }, this)) }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 34,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("a", { className: "program-source", href: catalog.programUrl, target: "_blank", rel: "noreferrer", children: [
+        "Official guide ",
+        /* @__PURE__ */ jsxDEV(ArrowSquareOut, { size: 14, "aria-hidden": "true" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 35,
+          columnNumber: 111
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 35,
+        columnNumber: 7
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 32,
+      columnNumber: 5
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "workspace-body", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "workspace-context", children: [
+        /* @__PURE__ */ jsxDEV("span", { className: "breadcrumb", children: [
+          "Workspace ",
+          /* @__PURE__ */ jsxDEV("span", { children: "/" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 38,
+            columnNumber: 81
+          }, this),
+          " ",
+          /* @__PURE__ */ jsxDEV("strong", { children: navigation.find((item) => item.to === location.pathname)?.label ?? "Course Radar" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 38,
+            columnNumber: 96
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 38,
+          columnNumber: 42
+        }, this),
+        /* @__PURE__ */ jsxDEV("label", { children: [
+          "Degree",
+          /* @__PURE__ */ jsxDEV("select", { "aria-label": "Degree program", value: program, onChange: (event) => selectProgram(event.target.value), children: [
+            /* @__PURE__ */ jsxDEV("option", { value: "computer-engineering", children: "Computer Engineering — BS" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 38,
+              columnNumber: 324
+            }, this),
+            /* @__PURE__ */ jsxDEV("option", { value: "software-engineering", children: "Software Engineering — BS" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 38,
+              columnNumber: 395
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 38,
+            columnNumber: 216
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 38,
+          columnNumber: 203
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { className: "catalog-pill", children: catalog.catalogYear }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 38,
+          columnNumber: 483
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { className: "session-label", children: [
+          /* @__PURE__ */ jsxDEV(Circle, { size: 8, weight: "fill", "aria-hidden": "true" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 38,
+            columnNumber: 574
+          }, this),
+          " Session draft"
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 38,
+          columnNumber: 542
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 38,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: `data-message ${mode}`, role: "status", children: mode === "loading" ? "Checking for the latest catalog… Reviewed snapshot available below." : mode === "fixture" ? /* @__PURE__ */ jsxDEV(Fragment, { children: [
+        "Showing the reviewed catalog snapshot. Live catalog unavailable. ",
+        /* @__PURE__ */ jsxDEV("button", { onClick: retry, children: "Retry connection" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 39,
+          columnNumber: 243
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 39,
+        columnNumber: 176
+      }, this) : "Connected to catalog · Section availability is a dated snapshot, not live enrollment." }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 39,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { id: "workspace-content", className: "workspace-content", ref: content, tabIndex: -1, children: /* @__PURE__ */ jsxDEV(Outlet, {}, program, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 40,
+        columnNumber: 93
+      }, this) }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 40,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("footer", { className: "workspace-footer", children: [
+        /* @__PURE__ */ jsxDEV("span", { children: "Built for the path ahead." }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 41,
+          columnNumber: 44
+        }, this),
+        /* @__PURE__ */ jsxDEV("span", { children: "Planning reference · Official SJSU requirements take precedence." }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 41,
+          columnNumber: 82
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 41,
+        columnNumber: 7
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 37,
+      columnNumber: 5
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+    lineNumber: 30,
+    columnNumber: 10
+  }, this);
+}
+_s(Workspace, "XUGhOnuNCtwrCB6O9ipArZr4HfM=", false, function() {
+  return [useCatalog, useLocation];
+});
+_c = Workspace;
+function Heading({ eyebrow, title, description }) {
+  return /* @__PURE__ */ jsxDEV("header", { className: "workspace-heading", children: [
+    eyebrow && /* @__PURE__ */ jsxDEV("span", { className: "section-eyebrow", children: eyebrow }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 47,
+      columnNumber: 60
+    }, this),
+    /* @__PURE__ */ jsxDEV("h1", { children: title }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 47,
+      columnNumber: 111
+    }, this),
+    /* @__PURE__ */ jsxDEV("p", { children: description }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 47,
+      columnNumber: 127
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+    lineNumber: 47,
+    columnNumber: 10
+  }, this);
+}
+_c2 = Heading;
+export { Overview } from "/src/Overview.tsx?t=1793002037896";
+export function Courses() {
+  _s2();
+  const { catalog, takenCourseIds, plans } = useCatalog();
+  const { selectedOfferings } = useSchedule();
+  const [params, setParams] = useSearchParams();
+  const query = params.get("q") ?? "";
+  const filter = params.get("status") ?? "all";
+  const [selected, setSelected] = useState(null);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const update = (key, value) => setParams((previous) => {
+    const next = new URLSearchParams(previous);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    return next;
+  }, { replace: true });
+  const courses = catalog.courses.filter((course) => `${course.code} ${course.title}`.toLowerCase().includes(query.toLowerCase()) && (filter === "all" || (filter === "completed" ? takenCourseIds.has(course.id) : !takenCourseIds.has(course.id) && plans[course.id]?.status === filter)));
+  const statuses = [
+    ["all", "All courses"],
+    ["completed", "Completed"],
+    ["planned", "Planned"],
+    ["in-progress", "In progress"]
+  ];
+  return /* @__PURE__ */ jsxDEV("main", { className: "course-explorer-page", children: [
+    /* @__PURE__ */ jsxDEV("header", { className: "explorer-intro", children: [
+      /* @__PURE__ */ jsxDEV("div", { children: [
+        /* @__PURE__ */ jsxDEV("h1", { children: "Course explorer" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 70,
+          columnNumber: 12
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { children: "Find your next course, review its requirements, and compare Fall 2026 sections in one place." }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 70,
+          columnNumber: 36
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 70,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV(Link, { className: "explorer-roadmap-link", to: "/roadmap", children: [
+        "View degree roadmap ",
+        /* @__PURE__ */ jsxDEV(ArrowRight, { size: 16, "aria-hidden": "true" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 71,
+          columnNumber: 81
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 71,
+        columnNumber: 7
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 69,
+      columnNumber: 5
+    }, this),
+    /* @__PURE__ */ jsxDEV("section", { className: "explorer-workbench", "aria-label": "Find courses", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "explorer-tools", children: [
+        /* @__PURE__ */ jsxDEV("label", { className: "workspace-search explorer-search", children: [
+          /* @__PURE__ */ jsxDEV(MagnifyingGlass, { size: 19, "aria-hidden": "true" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 75,
+            columnNumber: 61
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", { className: "sr-only", children: "Search courses by code or title" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 75,
+            columnNumber: 109
+          }, this),
+          /* @__PURE__ */ jsxDEV("input", { placeholder: "Search course code or title…", value: query, onChange: (event) => update("q", event.target.value) }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 75,
+            columnNumber: 173
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 75,
+          columnNumber: 9
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "explorer-status-tools", children: [
+          /* @__PURE__ */ jsxDEV("span", { className: "explorer-filter-label", children: "Show" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 76,
+            columnNumber: 48
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "explorer-filter-list", role: "group", "aria-label": "Filter courses by status", children: statuses.map(([value, label]) => /* @__PURE__ */ jsxDEV("button", { type: "button", "aria-pressed": filter === value, className: filter === value ? "is-active" : "", onClick: () => update("status", value === "all" ? "" : value), children: label }, value, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 76,
+            columnNumber: 222
+          }, this)) }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 76,
+            columnNumber: 99
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 76,
+          columnNumber: 9
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 74,
+        columnNumber: 7
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "explorer-result-row", children: [
+        /* @__PURE__ */ jsxDEV("p", { className: "result-count", role: "status", children: [
+          /* @__PURE__ */ jsxDEV("strong", { children: courses.length }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 78,
+            columnNumber: 86
+          }, this),
+          " ",
+          courses.length === 1 ? "course" : "courses",
+          " ",
+          /* @__PURE__ */ jsxDEV("span", { children: [
+            "in ",
+            catalog.name
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 78,
+            columnNumber: 166
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 78,
+          columnNumber: 44
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "explorer-result-hint", children: "Select a course to see prerequisites, plan it, or review sections." }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 78,
+          columnNumber: 200
+        }, this),
+        selectedOfferings.length > 0 && /* @__PURE__ */ jsxDEV("button", { className: "mobile-schedule-trigger", type: "button", onClick: () => setScheduleOpen(true), children: [
+          /* @__PURE__ */ jsxDEV(CalendarBlank, { size: 17 }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 78,
+            columnNumber: 435
+          }, this),
+          " View schedule · ",
+          selectedOfferings.length
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 78,
+          columnNumber: 339
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 78,
+        columnNumber: 7
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 73,
+      columnNumber: 5
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: `course-explorer-layout ${selectedOfferings.length ? "has-schedule" : ""}`, children: [
+      /* @__PURE__ */ jsxDEV("section", { className: "panel course-table", "aria-label": "Course results", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "course-table-head", children: [
+          /* @__PURE__ */ jsxDEV("span", { children: "COURSE" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 110
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", { children: "UNITS" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 129
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", { children: "STATUS" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 147
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", {}, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 166
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 81,
+          columnNumber: 75
+        }, this),
+        courses.map((course) => /* @__PURE__ */ jsxDEV("button", { className: "course-table-row", onClick: () => setSelected(course), "aria-label": `${course.code}, ${course.title}, ${course.units} units. Open course details.`, children: [
+          /* @__PURE__ */ jsxDEV("span", { children: [
+            /* @__PURE__ */ jsxDEV("strong", { children: course.code }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 81,
+              columnNumber: 392
+            }, this),
+            /* @__PURE__ */ jsxDEV("span", { children: course.title }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 81,
+              columnNumber: 422
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 386
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", { children: course.units }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 456
+          }, this),
+          /* @__PURE__ */ jsxDEV(CourseStateBadge, { course }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 483
+          }, this),
+          /* @__PURE__ */ jsxDEV(ArrowRight, { size: 16, "aria-hidden": "true" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 519
+          }, this)
+        ] }, course.id, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 81,
+          columnNumber: 205
+        }, this)),
+        !courses.length && /* @__PURE__ */ jsxDEV("div", { className: "workspace-empty", children: [
+          /* @__PURE__ */ jsxDEV(MagnifyingGlass, { size: 30, "aria-hidden": "true" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 626
+          }, this),
+          /* @__PURE__ */ jsxDEV("h2", { children: "No courses match" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 674
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { children: "Try another course name or clear your filters." }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 699
+          }, this),
+          /* @__PURE__ */ jsxDEV("button", { onClick: () => setParams({}), children: "Clear filters" }, void 0, false, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 81,
+            columnNumber: 752
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 81,
+          columnNumber: 593
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 81,
+        columnNumber: 7
+      }, this),
+      selectedOfferings.length > 0 && /* @__PURE__ */ jsxDEV(WeeklySchedule, { mobileOpen: scheduleOpen, onClose: () => setScheduleOpen(false) }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 82,
+        columnNumber: 40
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 80,
+      columnNumber: 5
+    }, this),
+    selected && /* @__PURE__ */ jsxDEV(CourseDetail, { course: selected, onClose: () => setSelected(null) }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 84,
+      columnNumber: 18
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+    lineNumber: 68,
+    columnNumber: 10
+  }, this);
+}
+_s2(Courses, "MinColMJo/nqJHdzebAh1gPmoe8=", false, function() {
+  return [useCatalog, useSchedule, useSearchParams];
+});
+_c3 = Courses;
+export function Planner() {
+  _s3();
+  const { catalog, courseById, plans, takenCourseIds, setPlan, removePlan } = useCatalog();
+  const [selected, setSelected] = useState(null);
+  return /* @__PURE__ */ jsxDEV(Fragment, { children: [
+    /* @__PURE__ */ jsxDEV("div", { className: "heading-with-action", children: [
+      /* @__PURE__ */ jsxDEV(Heading, { eyebrow: "THINK A SEMESTER AHEAD", title: "Semester planner", description: "Give your next steps a place. Add courses, move them, and explore your options." }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 91,
+        columnNumber: 49
+      }, this),
+      /* @__PURE__ */ jsxDEV(Link, { className: "primary-button", to: "/courses", children: [
+        "Find courses ",
+        /* @__PURE__ */ jsxDEV(ArrowRight, { size: 17, "aria-hidden": "true" }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 91,
+          columnNumber: 272
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 91,
+        columnNumber: 212
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 91,
+      columnNumber: 12
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "planning-note", children: [
+      /* @__PURE__ */ jsxDEV(WarningCircle, { size: 19, "aria-hidden": "true" }, void 0, false, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 91,
+        columnNumber: 359
+      }, this),
+      /* @__PURE__ */ jsxDEV("p", { children: [
+        /* @__PURE__ */ jsxDEV("strong", { children: "Session draft." }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 91,
+          columnNumber: 408
+        }, this),
+        " Refresh clears your plan. Semester numbers are personal planning slots, not confirmed offerings. Prerequisites, grades and course availability must be reviewed separately."
+      ] }, void 0, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 91,
+        columnNumber: 405
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 91,
+      columnNumber: 328
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "semester-grid", children: catalog.requirementGroups.map((group, index) => {
+      const courses = catalog.courses.filter((course) => plans[course.id]?.semester === index + 1 && !takenCourseIds.has(course.id));
+      return /* @__PURE__ */ jsxDEV("section", { className: "panel semester-card", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "panel-heading", children: [
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("span", { className: "section-eyebrow", children: [
+              "YEAR ",
+              Math.floor(index / 2) + 1
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 93,
+              columnNumber: 108
+            }, this),
+            /* @__PURE__ */ jsxDEV("h2", { children: [
+              "Semester ",
+              index + 1
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 93,
+              columnNumber: 181
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 93,
+            columnNumber: 103
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", { className: "subtle-tag", children: [
+            courses.reduce((sum, course) => sum + course.units, 0),
+            " units"
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 93,
+            columnNumber: 216
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 93,
+          columnNumber: 72
+        }, this),
+        courses.map((course) => {
+          const missing = course.prerequisiteCourseIds.filter((id) => !takenCourseIds.has(id));
+          return /* @__PURE__ */ jsxDEV("article", { className: "planned-course", children: [
+            /* @__PURE__ */ jsxDEV("button", { className: "planned-course-title", onClick: () => setSelected(course), children: [
+              /* @__PURE__ */ jsxDEV("strong", { children: course.code }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                lineNumber: 95,
+                columnNumber: 149
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { children: course.title }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                lineNumber: 95,
+                columnNumber: 179
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 95,
+              columnNumber: 72
+            }, this),
+            /* @__PURE__ */ jsxDEV(CourseStateBadge, { course }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 95,
+              columnNumber: 215
+            }, this),
+            missing.length > 0 && /* @__PURE__ */ jsxDEV("p", { className: "prereq-warning", children: [
+              /* @__PURE__ */ jsxDEV(WarningCircle, { size: 14, "aria-hidden": "true" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                lineNumber: 95,
+                columnNumber: 304
+              }, this),
+              " Review prerequisite: ",
+              missing.map((id) => courseById.get(id)?.code ?? id).join(", ")
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 95,
+              columnNumber: 274
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "planned-actions", children: [
+              /* @__PURE__ */ jsxDEV("label", { children: [
+                "Move to",
+                /* @__PURE__ */ jsxDEV("select", { "aria-label": `Move ${course.code} to semester`, value: index + 1, onChange: (event) => setPlan(course.id, Number(event.target.value), plans[course.id].status), children: catalog.requirementGroups.map((_, number) => /* @__PURE__ */ jsxDEV("option", { value: number + 1, children: [
+                  "Semester ",
+                  number + 1
+                ] }, number, true, {
+                  fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                  lineNumber: 95,
+                  columnNumber: 701
+                }, this)) }, void 0, false, {
+                  fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                  lineNumber: 95,
+                  columnNumber: 488
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                lineNumber: 95,
+                columnNumber: 474
+              }, this),
+              /* @__PURE__ */ jsxDEV("button", { onClick: () => removePlan(course.id), "aria-label": `Remove ${course.code} from plan`, children: "Remove" }, void 0, false, {
+                fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+                lineNumber: 95,
+                columnNumber: 790
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 95,
+              columnNumber: 441
+            }, this)
+          ] }, course.id, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 95,
+            columnNumber: 20
+          }, this);
+        }),
+        !courses.length && /* @__PURE__ */ jsxDEV("p", { className: "semester-empty", children: "Room for your next move." }, void 0, false, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 96,
+          columnNumber: 34
+        }, this),
+        /* @__PURE__ */ jsxDEV("label", { className: "add-course-label", children: [
+          "Add a course",
+          /* @__PURE__ */ jsxDEV("select", { "aria-label": `Add course to semester ${index + 1}`, value: "", onChange: (event) => {
+            if (event.target.value) setPlan(event.target.value, index + 1);
+          }, children: [
+            /* @__PURE__ */ jsxDEV("option", { value: "", children: "Choose a course…" }, void 0, false, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 96,
+              columnNumber: 297
+            }, this),
+            catalog.courses.filter((course) => !takenCourseIds.has(course.id) && !plans[course.id]).map((course) => /* @__PURE__ */ jsxDEV("option", { value: course.id, children: [
+              course.code,
+              " · ",
+              course.title
+            ] }, course.id, true, {
+              fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+              lineNumber: 96,
+              columnNumber: 444
+            }, this))
+          ] }, void 0, true, {
+            fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+            lineNumber: 96,
+            columnNumber: 141
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+          lineNumber: 96,
+          columnNumber: 93
+        }, this)
+      ] }, group.id, true, {
+        fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+        lineNumber: 93,
+        columnNumber: 16
+      }, this);
+    }) }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 91,
+      columnNumber: 621
+    }, this),
+    selected && /* @__PURE__ */ jsxDEV(CourseDetail, { course: selected, onClose: () => setSelected(null) }, void 0, false, {
+      fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+      lineNumber: 97,
+      columnNumber: 29
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/thinh/CMPE131/src/Workspace.tsx",
+    lineNumber: 91,
+    columnNumber: 10
+  }, this);
+}
+_s3(Planner, "HXZabdzvuxWVXrgv/gPaPPyRQYI=", false, function() {
+  return [useCatalog];
+});
+_c4 = Planner;
+var _c, _c2, _c3, _c4;
+$RefreshReg$(_c, "Workspace");
+$RefreshReg$(_c2, "Heading");
+$RefreshReg$(_c3, "Courses");
+$RefreshReg$(_c4, "Planner");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/Users/thinh/CMPE131/src/Workspace.tsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/Users/thinh/CMPE131/src/Workspace.tsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/Users/thinh/CMPE131/src/Workspace.tsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6IkFBOEJJLFNBUTJLLFVBUjNLOztBQTlCSixTQUFTQSxXQUFXQyxRQUFRQyxnQkFBZ0I7QUFDNUMsU0FBU0MsTUFBTUMsU0FBU0MsUUFBUUMsYUFBYUMsdUJBQXVCO0FBQ3BFLFNBQVNDLFlBQVlDLGdCQUFnQkMsVUFBVUMsZUFBZUMsUUFBUUMsV0FBV0MsT0FBT0MsaUJBQWlCQyxZQUFZQyxTQUFTQyxxQkFBcUI7QUFDbkosU0FBU0Msa0JBQWtCO0FBQzNCLFNBQVNDLG9CQUFvQjtBQUU3QixTQUFTQyx3QkFBd0I7QUFDakMsU0FBU0MsdUJBQXVCO0FBQ2hDLFNBQVNDLG1CQUFtQjtBQUM1QixTQUFTQyxzQkFBc0I7QUFDL0IsT0FBTztBQUNQLE9BQU87QUFDUCxPQUFPO0FBQ1AsT0FBTztBQUVQLE1BQU1DLGFBQWE7QUFBQSxFQUNqQixFQUFFQyxJQUFJLGFBQWFDLE9BQU8sWUFBWUMsTUFBTWQsTUFBTTtBQUFBLEVBQ2xELEVBQUVZLElBQUksWUFBWUMsT0FBTyxtQkFBbUJDLE1BQU1sQixTQUFTO0FBQUEsRUFDM0QsRUFBRWdCLElBQUksWUFBWUMsT0FBTyxrQkFBa0JDLE1BQU1aLFdBQVc7QUFBQSxFQUM1RCxFQUFFVSxJQUFJLHVCQUF1QkMsT0FBTyxpQkFBaUJDLE1BQU1mLFVBQVU7QUFBQSxFQUNyRSxFQUFFYSxJQUFJLFlBQVlDLE9BQU8sb0JBQW9CQyxNQUFNakIsY0FBYztBQUFBLEVBQ2pFLEVBQUVlLElBQUksb0JBQW9CQyxPQUFPLG1CQUFtQkMsTUFBTVgsUUFBUTtBQUFDO0FBRzlELGdCQUFTWSxZQUFZO0FBQUFDLEtBQUE7QUFDMUIsUUFBTSxFQUFFQyxTQUFTQyxTQUFTQyxlQUFlQyxNQUFNQyxNQUFNLElBQUloQixXQUFXO0FBQ3BFLFFBQU1pQixXQUFXOUIsWUFBWTtBQUM3QixRQUFNK0IsVUFBVXBDLE9BQXVCLElBQUk7QUFDM0NELFlBQVUsTUFBTTtBQUFFcUMsWUFBUUMsU0FBU0MsTUFBTTtBQUFHQyxXQUFPQyxTQUFTLEdBQUcsQ0FBQztBQUFBLEVBQUcsR0FBRyxDQUFDTCxTQUFTTSxRQUFRLENBQUM7QUFDekYsU0FBTyx1QkFBQyxTQUFJLFdBQVcsYUFBYU4sU0FBU00sYUFBYSxjQUFjLHVCQUF1QixFQUFFLElBQUlOLFNBQVNNLGFBQWEscUJBQXFCLDhCQUE4QixFQUFFLElBQUlOLFNBQVNNLGFBQWEsYUFBYSx1QkFBdUIsRUFBRSxJQUFJTixTQUFTTSxhQUFhLGFBQWEsc0JBQXNCLEVBQUUsSUFDN1M7QUFBQSwyQkFBQyxPQUFFLFdBQVUsYUFBWSxNQUFLLHNCQUFxQiwrQkFBbkQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUFrRTtBQUFBLElBQ2xFLHVCQUFDLFlBQU8sV0FBVSxvQkFDaEI7QUFBQSw2QkFBQyxRQUFLLFdBQVUsbUJBQWtCLElBQUcsS0FBSSxjQUFXLG9CQUFtQjtBQUFBLCtCQUFDLFVBQUssV0FBVSxZQUFXO0FBQUEsaUNBQUMsU0FBSSxPQUFNLE1BQUssUUFBTyxNQUFLLFNBQVEsYUFBWSxNQUFLLFFBQU8sZUFBWSxRQUFPO0FBQUEsbUNBQUMsVUFBSyxHQUFFLEtBQUksR0FBRSxLQUFJLE9BQU0sTUFBSyxRQUFPLEtBQUksSUFBRyxLQUFJLFFBQU8sZ0JBQWUsYUFBWSxTQUFqRjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFzRjtBQUFBLFlBQUcsdUJBQUMsVUFBSyxHQUFFLE1BQUssR0FBRSxNQUFLLE9BQU0sTUFBSyxRQUFPLEtBQUksSUFBRyxLQUFJLFFBQU8sZ0JBQWUsYUFBWSxTQUFuRjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUF3RjtBQUFBLFlBQUcsdUJBQUMsVUFBSyxHQUFFLDJCQUEwQixRQUFPLFdBQVUsYUFBWSxTQUEvRDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFvRTtBQUFBLGVBQXZVO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTBVO0FBQUEsVUFBTTtBQUFBLFVBQVksdUJBQUMsVUFBSyxpQkFBTjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFPO0FBQUEsYUFBOVg7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFxWTtBQUFBLFFBQU8sdUJBQUMsVUFBSyxXQUFVLDRCQUEyQixpQ0FBQyxxQkFBRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQWdCLEtBQTNEO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBOEQ7QUFBQSxXQUFqaEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUF3aEI7QUFBQSxNQUN4aEIsdUJBQUMsU0FBSSxjQUFXLG1CQUFtQmpCLHFCQUFXa0IsSUFBSSxDQUFDLEVBQUVqQixJQUFJQyxPQUFPQyxNQUFNZ0IsS0FBSyxNQUFNLHVCQUFDLFdBQWlCLElBQVEsS0FBS2xCLE9BQU8sS0FBSztBQUFBLCtCQUFDLFFBQUssTUFBTSxJQUFJLGVBQVksVUFBNUI7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFrQztBQUFBLFFBQUcsdUJBQUMsVUFBTUMsbUJBQVA7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFhO0FBQUEsV0FBL0VELElBQWQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUFvRyxDQUFVLEtBQS9MO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBaU07QUFBQSxNQUNqTSx1QkFBQyxPQUFFLFdBQVUsa0JBQWlCLE1BQU1LLFFBQVFjLFlBQVksUUFBTyxVQUFTLEtBQUksY0FBYTtBQUFBO0FBQUEsUUFBZSx1QkFBQyxrQkFBZSxNQUFNLElBQUksZUFBWSxVQUF0QztBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQTRDO0FBQUEsV0FBcEo7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUF1SjtBQUFBLFNBSHpKO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FJQTtBQUFBLElBQ0EsdUJBQUMsU0FBSSxXQUFVLGtCQUNiO0FBQUEsNkJBQUMsU0FBSSxXQUFVLHFCQUFvQjtBQUFBLCtCQUFDLFVBQUssV0FBVSxjQUFhO0FBQUE7QUFBQSxVQUFVLHVCQUFDLFVBQUssaUJBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBTztBQUFBLFVBQU87QUFBQSxVQUFDLHVCQUFDLFlBQVFwQixxQkFBV3FCLEtBQUssQ0FBQUMsU0FBUUEsS0FBS3JCLE9BQU9VLFNBQVNNLFFBQVEsR0FBR2YsU0FBUyxrQkFBMUU7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBeUY7QUFBQSxhQUEvSTtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXdKO0FBQUEsUUFBTyx1QkFBQyxXQUFNO0FBQUE7QUFBQSxVQUFNLHVCQUFDLFlBQU8sY0FBVyxrQkFBaUIsT0FBT0ssU0FBUyxVQUFVLENBQUFnQixVQUFTZixjQUFjZSxNQUFNQyxPQUFPQyxLQUFLLEdBQUc7QUFBQSxtQ0FBQyxZQUFPLE9BQU0sd0JBQXVCLHlDQUFyQztBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUE4RDtBQUFBLFlBQVMsdUJBQUMsWUFBTyxPQUFNLHdCQUF1Qix5Q0FBckM7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBOEQ7QUFBQSxlQUEvTztBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF3UDtBQUFBLGFBQXJRO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBOFE7QUFBQSxRQUFRLHVCQUFDLFVBQUssV0FBVSxnQkFBZ0JuQixrQkFBUW9CLGVBQXhDO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBb0Q7QUFBQSxRQUFPLHVCQUFDLFVBQUssV0FBVSxpQkFBZ0I7QUFBQSxpQ0FBQyxVQUFPLE1BQU0sR0FBRyxRQUFPLFFBQU8sZUFBWSxVQUEzQztBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFpRDtBQUFBLFVBQUc7QUFBQSxhQUFwRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQWtHO0FBQUEsV0FBcm5CO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBNG5CO0FBQUEsTUFDNW5CLHVCQUFDLFNBQUksV0FBVyxnQkFBZ0JqQixJQUFJLElBQUksTUFBSyxVQUFVQSxtQkFBUyxZQUFZLHdFQUF3RUEsU0FBUyxZQUFZLG1DQUFFO0FBQUE7QUFBQSxRQUFpRSx1QkFBQyxZQUFPLFNBQVNDLE9BQU8sZ0NBQXhCO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBd0M7QUFBQSxXQUEzRztBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQW9ILElBQU0sMkZBQW5TO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBMlg7QUFBQSxNQUMzWCx1QkFBQyxTQUFJLElBQUcscUJBQW9CLFdBQVUscUJBQW9CLEtBQUtFLFNBQVMsVUFBVSxJQUFJLGlDQUFDLFlBQVlMLFNBQWI7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUFxQixLQUEzRztBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQThHO0FBQUEsTUFDOUcsdUJBQUMsWUFBTyxXQUFVLG9CQUFtQjtBQUFBLCtCQUFDLFVBQUsseUNBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUErQjtBQUFBLFFBQU8sdUJBQUMsVUFBSyxnRkFBTjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXNFO0FBQUEsV0FBako7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUF3SjtBQUFBLFNBSjFKO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FLQTtBQUFBLE9BWks7QUFBQTtBQUFBO0FBQUE7QUFBQSxTQWFQO0FBQ0Y7QUFBQ0YsR0FuQmVELFdBQVM7QUFBQSxVQUNrQ1YsWUFDeENiLFdBQVc7QUFBQTtBQUFBLEtBRmR1QjtBQXFCaEIsU0FBU3VCLFFBQVEsRUFBRUMsU0FBU0MsT0FBT0MsWUFBc0UsR0FBRztBQUMxRyxTQUFPLHVCQUFDLFlBQU8sV0FBVSxxQkFBcUJGO0FBQUFBLGVBQVcsdUJBQUMsVUFBSyxXQUFVLG1CQUFtQkEscUJBQW5DO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FBMkM7QUFBQSxJQUFRLHVCQUFDLFFBQUlDLG1CQUFMO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FBVztBQUFBLElBQUssdUJBQUMsT0FBR0MseUJBQUo7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUFnQjtBQUFBLE9BQXJJO0FBQUE7QUFBQTtBQUFBO0FBQUEsU0FBeUk7QUFDbEo7QUFBQ0MsTUFGUUo7QUFJVCxTQUFTSyxnQkFBZ0I7QUFFbEIsZ0JBQVNDLFVBQVU7QUFBQUMsTUFBQTtBQUN4QixRQUFNLEVBQUU1QixTQUFTNkIsZ0JBQWdCQyxNQUFNLElBQUkxQyxXQUFXO0FBQ3RELFFBQU0sRUFBRTJDLGtCQUFrQixJQUFJdkMsWUFBWTtBQUMxQyxRQUFNLENBQUN3QyxRQUFRQyxTQUFTLElBQUl6RCxnQkFBZ0I7QUFDNUMsUUFBTTBELFFBQVFGLE9BQU9HLElBQUksR0FBRyxLQUFLO0FBQ2pDLFFBQU1DLFNBQVNKLE9BQU9HLElBQUksUUFBUSxLQUFLO0FBQ3ZDLFFBQU0sQ0FBQ0UsVUFBVUMsV0FBVyxJQUFJbkUsU0FBd0IsSUFBSTtBQUM1RCxRQUFNLENBQUNvRSxjQUFjQyxlQUFlLElBQUlyRSxTQUFTLEtBQUs7QUFDdEQsUUFBTXNFLFNBQVNBLENBQUNDLEtBQWF2QixVQUFrQmMsVUFBVSxDQUFBVSxhQUFZO0FBQUUsVUFBTUMsT0FBTyxJQUFJQyxnQkFBZ0JGLFFBQVE7QUFBRyxRQUFJeEIsTUFBT3lCLE1BQUtFLElBQUlKLEtBQUt2QixLQUFLO0FBQUEsUUFBUXlCLE1BQUtHLE9BQU9MLEdBQUc7QUFBRyxXQUFPRTtBQUFBQSxFQUFNLEdBQUcsRUFBRUksU0FBUyxLQUFLLENBQUM7QUFDNU0sUUFBTUMsVUFBVWpELFFBQVFpRCxRQUFRYixPQUFPLENBQUFjLFdBQVUsR0FBR0EsT0FBT0MsSUFBSSxJQUFJRCxPQUFPM0IsS0FBSyxHQUFHNkIsWUFBWSxFQUFFQyxTQUFTbkIsTUFBTWtCLFlBQVksQ0FBQyxNQUFNaEIsV0FBVyxVQUFVQSxXQUFXLGNBQWNQLGVBQWV5QixJQUFJSixPQUFPSyxFQUFFLElBQUksQ0FBQzFCLGVBQWV5QixJQUFJSixPQUFPSyxFQUFFLEtBQUt6QixNQUFNb0IsT0FBT0ssRUFBRSxHQUFHQyxXQUFXcEIsUUFBUTtBQUN2UixRQUFNcUIsV0FBVztBQUFBLElBQ2YsQ0FBQyxPQUFPLGFBQWE7QUFBQSxJQUNyQixDQUFDLGFBQWEsV0FBVztBQUFBLElBQ3pCLENBQUMsV0FBVyxTQUFTO0FBQUEsSUFDckIsQ0FBQyxlQUFlLGFBQWE7QUFBQSxFQUFDO0FBRWhDLFNBQU8sdUJBQUMsVUFBSyxXQUFVLHdCQUNyQjtBQUFBLDJCQUFDLFlBQU8sV0FBVSxrQkFDaEI7QUFBQSw2QkFBQyxTQUFJO0FBQUEsK0JBQUMsUUFBRywrQkFBSjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQW1CO0FBQUEsUUFBSyx1QkFBQyxPQUFFLDRHQUFIO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBK0Y7QUFBQSxXQUE1SDtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQWdJO0FBQUEsTUFDaEksdUJBQUMsUUFBSyxXQUFVLHlCQUF3QixJQUFHLFlBQVc7QUFBQTtBQUFBLFFBQW9CLHVCQUFDLGNBQVcsTUFBTSxJQUFJLGVBQVksVUFBbEM7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUF3QztBQUFBLFdBQWxIO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBcUg7QUFBQSxTQUZ2SDtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBR0E7QUFBQSxJQUNBLHVCQUFDLGFBQVEsV0FBVSxzQkFBcUIsY0FBVyxnQkFDakQ7QUFBQSw2QkFBQyxTQUFJLFdBQVUsa0JBQ2I7QUFBQSwrQkFBQyxXQUFNLFdBQVUsb0NBQW1DO0FBQUEsaUNBQUMsbUJBQWdCLE1BQU0sSUFBSSxlQUFZLFVBQXZDO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTZDO0FBQUEsVUFBRyx1QkFBQyxVQUFLLFdBQVUsV0FBVSwrQ0FBMUI7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBeUQ7QUFBQSxVQUFPLHVCQUFDLFdBQU0sYUFBWSxnQ0FBK0IsT0FBT3ZCLE9BQU8sVUFBVSxDQUFBakIsVUFBU3dCLE9BQU8sS0FBS3hCLE1BQU1DLE9BQU9DLEtBQUssS0FBakg7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBbUg7QUFBQSxhQUF2UjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQTBSO0FBQUEsUUFDMVIsdUJBQUMsU0FBSSxXQUFVLHlCQUF3QjtBQUFBLGlDQUFDLFVBQUssV0FBVSx5QkFBd0Isb0JBQXhDO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTRDO0FBQUEsVUFBTyx1QkFBQyxTQUFJLFdBQVUsd0JBQXVCLE1BQUssU0FBUSxjQUFXLDRCQUE0QnNDLG1CQUFTN0MsSUFBSSxDQUFDLENBQUNPLE9BQU92QixLQUFLLE1BQU0sdUJBQUMsWUFBbUIsTUFBSyxVQUFTLGdCQUFjd0MsV0FBV2pCLE9BQU8sV0FBV2lCLFdBQVdqQixRQUFRLGNBQWMsSUFBSSxTQUFTLE1BQU1zQixPQUFPLFVBQVV0QixVQUFVLFFBQVEsS0FBS0EsS0FBSyxHQUFJdkIsbUJBQXJLdUIsT0FBYjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF3TCxDQUFTLEtBQTVUO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQThUO0FBQUEsYUFBeFo7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUE4WjtBQUFBLFdBRmhhO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFHQTtBQUFBLE1BQ0EsdUJBQUMsU0FBSSxXQUFVLHVCQUFzQjtBQUFBLCtCQUFDLE9BQUUsV0FBVSxnQkFBZSxNQUFLLFVBQVM7QUFBQSxpQ0FBQyxZQUFROEIsa0JBQVFTLFVBQWpCO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXdCO0FBQUEsVUFBUztBQUFBLFVBQUVULFFBQVFTLFdBQVcsSUFBSSxXQUFXO0FBQUEsVUFBVTtBQUFBLFVBQUMsdUJBQUMsVUFBSztBQUFBO0FBQUEsWUFBSTFELFFBQVEyRDtBQUFBQSxlQUFsQjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF1QjtBQUFBLGFBQWpKO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBd0o7QUFBQSxRQUFJLHVCQUFDLE9BQUUsV0FBVSx3QkFBdUIsa0ZBQXBDO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBc0c7QUFBQSxRQUFLNUIsa0JBQWtCMkIsU0FBUyxLQUFLLHVCQUFDLFlBQU8sV0FBVSwyQkFBMEIsTUFBSyxVQUFTLFNBQVMsTUFBTWxCLGdCQUFnQixJQUFJLEdBQUc7QUFBQSxpQ0FBQyxpQkFBYyxNQUFNLE1BQXJCO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXdCO0FBQUEsVUFBRztBQUFBLFVBQWtCVCxrQkFBa0IyQjtBQUFBQSxhQUEvSjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXNLO0FBQUEsV0FBbGY7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUE0ZjtBQUFBLFNBTDlmO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FNQTtBQUFBLElBQ0EsdUJBQUMsU0FBSSxXQUFXLDBCQUEwQjNCLGtCQUFrQjJCLFNBQVMsaUJBQWlCLEVBQUUsSUFDdEY7QUFBQSw2QkFBQyxhQUFRLFdBQVUsc0JBQXFCLGNBQVcsa0JBQWlCO0FBQUEsK0JBQUMsU0FBSSxXQUFVLHFCQUFvQjtBQUFBLGlDQUFDLFVBQUssc0JBQU47QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBWTtBQUFBLFVBQU8sdUJBQUMsVUFBSyxxQkFBTjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFXO0FBQUEsVUFBTyx1QkFBQyxVQUFLLHNCQUFOO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQVk7QUFBQSxVQUFPLHVCQUFDLFlBQUQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBSztBQUFBLGFBQWhHO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBbUc7QUFBQSxRQUFPVCxRQUFRckMsSUFBSSxDQUFBc0MsV0FBVSx1QkFBQyxZQUF1QixXQUFVLG9CQUFtQixTQUFTLE1BQU1aLFlBQVlZLE1BQU0sR0FBRyxjQUFZLEdBQUdBLE9BQU9DLElBQUksS0FBS0QsT0FBTzNCLEtBQUssS0FBSzJCLE9BQU9VLEtBQUssZ0NBQWdDO0FBQUEsaUNBQUMsVUFBSztBQUFBLG1DQUFDLFlBQVFWLGlCQUFPQyxRQUFoQjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFxQjtBQUFBLFlBQVMsdUJBQUMsVUFBTUQsaUJBQU8zQixTQUFkO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQW9CO0FBQUEsZUFBeEQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBK0Q7QUFBQSxVQUFPLHVCQUFDLFVBQU0yQixpQkFBT1UsU0FBZDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFvQjtBQUFBLFVBQU8sdUJBQUMsb0JBQWlCLFVBQWxCO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQWlDO0FBQUEsVUFBRyx1QkFBQyxjQUFXLE1BQU0sSUFBSSxlQUFZLFVBQWxDO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQXdDO0FBQUEsYUFBclZWLE9BQU9LLElBQXBCO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBcVcsQ0FBUztBQUFBLFFBQUcsQ0FBQ04sUUFBUVMsVUFBVSx1QkFBQyxTQUFJLFdBQVUsbUJBQWtCO0FBQUEsaUNBQUMsbUJBQWdCLE1BQU0sSUFBSSxlQUFZLFVBQXZDO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTZDO0FBQUEsVUFBRyx1QkFBQyxRQUFHLGdDQUFKO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQW9CO0FBQUEsVUFBSyx1QkFBQyxPQUFFLDhEQUFIO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQWlEO0FBQUEsVUFBSSx1QkFBQyxZQUFPLFNBQVMsTUFBTXpCLFVBQVUsQ0FBQyxDQUFDLEdBQUcsNkJBQXRDO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQW1EO0FBQUEsYUFBbE47QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUEyTjtBQUFBLFdBQW55QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQTB5QjtBQUFBLE1BQ3p5QkYsa0JBQWtCMkIsU0FBUyxLQUFLLHVCQUFDLGtCQUFlLFlBQVluQixjQUFjLFNBQVMsTUFBTUMsZ0JBQWdCLEtBQUssS0FBOUU7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUFnRjtBQUFBLFNBRm5IO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FHQTtBQUFBLElBQ0NILFlBQVksdUJBQUMsZ0JBQWEsUUFBUUEsVUFBVSxTQUFTLE1BQU1DLFlBQVksSUFBSSxLQUEvRDtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBQWlFO0FBQUEsT0FoQnpFO0FBQUE7QUFBQTtBQUFBO0FBQUEsU0FpQlA7QUFDRjtBQUFDVixJQWxDZUQsU0FBTztBQUFBLFVBQ3NCdkMsWUFDYkksYUFDRmhCLGVBQWU7QUFBQTtBQUFBLE1BSDdCbUQ7QUFvQ1QsZ0JBQVNrQyxVQUFVO0FBQUFDLE1BQUE7QUFDeEIsUUFBTSxFQUFFOUQsU0FBUytELFlBQVlqQyxPQUFPRCxnQkFBZ0JtQyxTQUFTQyxXQUFXLElBQUk3RSxXQUFXO0FBQ3ZGLFFBQU0sQ0FBQ2lELFVBQVVDLFdBQVcsSUFBSW5FLFNBQXdCLElBQUk7QUFDNUQsU0FBTyxtQ0FBRTtBQUFBLDJCQUFDLFNBQUksV0FBVSx1QkFBc0I7QUFBQSw2QkFBQyxXQUFRLFNBQVEsMEJBQXlCLE9BQU0sb0JBQW1CLGFBQVkscUZBQS9FO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBZ0s7QUFBQSxNQUFHLHVCQUFDLFFBQUssV0FBVSxrQkFBaUIsSUFBRyxZQUFXO0FBQUE7QUFBQSxRQUFhLHVCQUFDLGNBQVcsTUFBTSxJQUFJLGVBQVksVUFBbEM7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUF3QztBQUFBLFdBQXBHO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFBdUc7QUFBQSxTQUEvUztBQUFBO0FBQUE7QUFBQTtBQUFBLFdBQXNUO0FBQUEsSUFBTSx1QkFBQyxTQUFJLFdBQVUsaUJBQWdCO0FBQUEsNkJBQUMsaUJBQWMsTUFBTSxJQUFJLGVBQVksVUFBckM7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUEyQztBQUFBLE1BQUcsdUJBQUMsT0FBRTtBQUFBLCtCQUFDLFlBQU8sOEJBQVI7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFzQjtBQUFBLFFBQVM7QUFBQSxXQUFsQztBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQThNO0FBQUEsU0FBM1I7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUErUjtBQUFBLElBQU0sdUJBQUMsU0FBSSxXQUFVLGlCQUFpQjZCLGtCQUFRa0Usa0JBQWtCdEQsSUFBSSxDQUFDdUQsT0FBT0MsVUFBVTtBQUN4ckIsWUFBTW5CLFVBQVVqRCxRQUFRaUQsUUFBUWIsT0FBTyxDQUFBYyxXQUFVcEIsTUFBTW9CLE9BQU9LLEVBQUUsR0FBR2MsYUFBYUQsUUFBUSxLQUFLLENBQUN2QyxlQUFleUIsSUFBSUosT0FBT0ssRUFBRSxDQUFDO0FBQzNILGFBQU8sdUJBQUMsYUFBUSxXQUFVLHVCQUFxQztBQUFBLCtCQUFDLFNBQUksV0FBVSxpQkFBZ0I7QUFBQSxpQ0FBQyxTQUFJO0FBQUEsbUNBQUMsVUFBSyxXQUFVLG1CQUFrQjtBQUFBO0FBQUEsY0FBTWUsS0FBS0MsTUFBTUgsUUFBUSxDQUFDLElBQUk7QUFBQSxpQkFBaEU7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBa0U7QUFBQSxZQUFPLHVCQUFDLFFBQUc7QUFBQTtBQUFBLGNBQVVBLFFBQVE7QUFBQSxpQkFBdEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBd0I7QUFBQSxlQUF0RztBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUEyRztBQUFBLFVBQU0sdUJBQUMsVUFBSyxXQUFVLGNBQWNuQjtBQUFBQSxvQkFBUXVCLE9BQU8sQ0FBQ0MsS0FBS3ZCLFdBQVd1QixNQUFNdkIsT0FBT1UsT0FBTyxDQUFDO0FBQUEsWUFBRTtBQUFBLGVBQXJGO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBQTJGO0FBQUEsYUFBM087QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUFrUDtBQUFBLFFBQU9YLFFBQVFyQyxJQUFJLENBQUFzQyxXQUFVO0FBQzVVLGdCQUFNd0IsVUFBVXhCLE9BQU95QixzQkFBc0J2QyxPQUFPLENBQUFtQixPQUFNLENBQUMxQixlQUFleUIsSUFBSUMsRUFBRSxDQUFDO0FBQ2pGLGlCQUFPLHVCQUFDLGFBQVEsV0FBVSxrQkFBaUM7QUFBQSxtQ0FBQyxZQUFPLFdBQVUsd0JBQXVCLFNBQVMsTUFBTWpCLFlBQVlZLE1BQU0sR0FBRztBQUFBLHFDQUFDLFlBQVFBLGlCQUFPQyxRQUFoQjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFxQjtBQUFBLGNBQVMsdUJBQUMsVUFBTUQsaUJBQU8zQixTQUFkO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQW9CO0FBQUEsaUJBQS9IO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXNJO0FBQUEsWUFBUyx1QkFBQyxvQkFBaUIsVUFBbEI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBaUM7QUFBQSxZQUFJbUQsUUFBUWhCLFNBQVMsS0FBSyx1QkFBQyxPQUFFLFdBQVUsa0JBQWlCO0FBQUEscUNBQUMsaUJBQWMsTUFBTSxJQUFJLGVBQVksVUFBckM7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBMkM7QUFBQSxjQUFHO0FBQUEsY0FBdUJnQixRQUFROUQsSUFBSSxDQUFBMkMsT0FBTVEsV0FBVzVCLElBQUlvQixFQUFFLEdBQUdKLFFBQVFJLEVBQUUsRUFBRXFCLEtBQUssSUFBSTtBQUFBLGlCQUE5SjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFnSztBQUFBLFlBQUssdUJBQUMsU0FBSSxXQUFVLG1CQUFrQjtBQUFBLHFDQUFDLFdBQU07QUFBQTtBQUFBLGdCQUFPLHVCQUFDLFlBQU8sY0FBWSxRQUFRMUIsT0FBT0MsSUFBSSxnQkFBZ0IsT0FBT2lCLFFBQVEsR0FBRyxVQUFVLENBQUFuRCxVQUFTK0MsUUFBUWQsT0FBT0ssSUFBSXNCLE9BQU81RCxNQUFNQyxPQUFPQyxLQUFLLEdBQUdXLE1BQU1vQixPQUFPSyxFQUFFLEVBQUVDLE1BQU0sR0FBSXhELGtCQUFRa0Usa0JBQWtCdEQsSUFBSSxDQUFDa0UsR0FBR0MsV0FBVyx1QkFBQyxZQUFvQixPQUFPQSxTQUFTLEdBQUc7QUFBQTtBQUFBLGtCQUFVQSxTQUFTO0FBQUEscUJBQTlDQSxRQUFiO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBQTZELENBQVMsS0FBelI7QUFBQTtBQUFBO0FBQUE7QUFBQSx1QkFBMlI7QUFBQSxtQkFBelM7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBa1Q7QUFBQSxjQUFRLHVCQUFDLFlBQU8sU0FBUyxNQUFNZCxXQUFXZixPQUFPSyxFQUFFLEdBQUcsY0FBWSxVQUFVTCxPQUFPQyxJQUFJLGNBQWMsc0JBQTdGO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQW1HO0FBQUEsaUJBQTliO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXVjO0FBQUEsZUFBajBCRCxPQUFPSyxJQUFoRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFnM0I7QUFBQSxRQUN6M0IsQ0FBQztBQUFBLFFBQUcsQ0FBQ04sUUFBUVMsVUFBVSx1QkFBQyxPQUFFLFdBQVUsa0JBQWlCLHdDQUE5QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQXNEO0FBQUEsUUFBSyx1QkFBQyxXQUFNLFdBQVUsb0JBQW1CO0FBQUE7QUFBQSxVQUFZLHVCQUFDLFlBQU8sY0FBWSwwQkFBMEJVLFFBQVEsQ0FBQyxJQUFJLE9BQU0sSUFBRyxVQUFVLENBQUFuRCxVQUFTO0FBQUUsZ0JBQUlBLE1BQU1DLE9BQU9DLE1BQU82QyxTQUFRL0MsTUFBTUMsT0FBT0MsT0FBT2lELFFBQVEsQ0FBQztBQUFBLFVBQUcsR0FBRztBQUFBLG1DQUFDLFlBQU8sT0FBTSxJQUFHLGdDQUFqQjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFpQztBQUFBLFlBQVVwRSxRQUFRaUQsUUFBUWIsT0FBTyxDQUFBYyxXQUFVLENBQUNyQixlQUFleUIsSUFBSUosT0FBT0ssRUFBRSxLQUFLLENBQUN6QixNQUFNb0IsT0FBT0ssRUFBRSxDQUFDLEVBQUUzQyxJQUFJLENBQUFzQyxXQUFVLHVCQUFDLFlBQXVCLE9BQU9BLE9BQU9LLElBQUtMO0FBQUFBLHFCQUFPQztBQUFBQSxjQUFLO0FBQUEsY0FBSUQsT0FBTzNCO0FBQUFBLGlCQUFyRDJCLE9BQU9LLElBQXBCO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXdFLENBQVM7QUFBQSxlQUE1WDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUE4WDtBQUFBLGFBQTlhO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFBdWI7QUFBQSxXQUhwZFksTUFBTVosSUFBcEQ7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUcwZ0I7QUFBQSxJQUNuaEIsQ0FBQyxLQU55bUI7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQU12bUI7QUFBQSxJQUFPbEIsWUFBWSx1QkFBQyxnQkFBYSxRQUFRQSxVQUFVLFNBQVMsTUFBTUMsWUFBWSxJQUFJLEtBQS9EO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FBaUU7QUFBQSxPQU5oRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFNBTW9GO0FBQzdGO0FBQUN3QixJQVZlRCxTQUFPO0FBQUEsVUFDdUR6RSxVQUFVO0FBQUE7QUFBQSxNQUR4RXlFO0FBQU8sSUFBQW1CLElBQUF2RCxLQUFBd0QsS0FBQUM7QUFBQSxhQUFBRixJQUFBO0FBQUEsYUFBQXZELEtBQUE7QUFBQSxhQUFBd0QsS0FBQTtBQUFBLGFBQUFDLEtBQUEiLCJuYW1lcyI6WyJ1c2VFZmZlY3QiLCJ1c2VSZWYiLCJ1c2VTdGF0ZSIsIkxpbmsiLCJOYXZMaW5rIiwiT3V0bGV0IiwidXNlTG9jYXRpb24iLCJ1c2VTZWFyY2hQYXJhbXMiLCJBcnJvd1JpZ2h0IiwiQXJyb3dTcXVhcmVPdXQiLCJCb29rT3BlbiIsIkNhbGVuZGFyQmxhbmsiLCJDaXJjbGUiLCJHaXRCcmFuY2giLCJIb3VzZSIsIk1hZ25pZnlpbmdHbGFzcyIsIk1hcFRyaWZvbGQiLCJTcGFya2xlIiwiV2FybmluZ0NpcmNsZSIsInVzZUNhdGFsb2ciLCJDb3Vyc2VEZXRhaWwiLCJDb3Vyc2VTdGF0ZUJhZGdlIiwiQ291cnNlUmFkYXJMb2dvIiwidXNlU2NoZWR1bGUiLCJXZWVrbHlTY2hlZHVsZSIsIm5hdmlnYXRpb24iLCJ0byIsImxhYmVsIiwiaWNvbiIsIldvcmtzcGFjZSIsIl9zIiwiY2F0YWxvZyIsInByb2dyYW0iLCJzZWxlY3RQcm9ncmFtIiwibW9kZSIsInJldHJ5IiwibG9jYXRpb24iLCJjb250ZW50IiwiY3VycmVudCIsImZvY3VzIiwid2luZG93Iiwic2Nyb2xsVG8iLCJwYXRobmFtZSIsIm1hcCIsIkljb24iLCJwcm9ncmFtVXJsIiwiZmluZCIsIml0ZW0iLCJldmVudCIsInRhcmdldCIsInZhbHVlIiwiY2F0YWxvZ1llYXIiLCJIZWFkaW5nIiwiZXllYnJvdyIsInRpdGxlIiwiZGVzY3JpcHRpb24iLCJfYzIiLCJPdmVydmlldyIsIkNvdXJzZXMiLCJfczIiLCJ0YWtlbkNvdXJzZUlkcyIsInBsYW5zIiwic2VsZWN0ZWRPZmZlcmluZ3MiLCJwYXJhbXMiLCJzZXRQYXJhbXMiLCJxdWVyeSIsImdldCIsImZpbHRlciIsInNlbGVjdGVkIiwic2V0U2VsZWN0ZWQiLCJzY2hlZHVsZU9wZW4iLCJzZXRTY2hlZHVsZU9wZW4iLCJ1cGRhdGUiLCJrZXkiLCJwcmV2aW91cyIsIm5leHQiLCJVUkxTZWFyY2hQYXJhbXMiLCJzZXQiLCJkZWxldGUiLCJyZXBsYWNlIiwiY291cnNlcyIsImNvdXJzZSIsImNvZGUiLCJ0b0xvd2VyQ2FzZSIsImluY2x1ZGVzIiwiaGFzIiwiaWQiLCJzdGF0dXMiLCJzdGF0dXNlcyIsImxlbmd0aCIsIm5hbWUiLCJ1bml0cyIsIlBsYW5uZXIiLCJfczMiLCJjb3Vyc2VCeUlkIiwic2V0UGxhbiIsInJlbW92ZVBsYW4iLCJyZXF1aXJlbWVudEdyb3VwcyIsImdyb3VwIiwiaW5kZXgiLCJzZW1lc3RlciIsIk1hdGgiLCJmbG9vciIsInJlZHVjZSIsInN1bSIsIm1pc3NpbmciLCJwcmVyZXF1aXNpdGVDb3Vyc2VJZHMiLCJqb2luIiwiTnVtYmVyIiwiXyIsIm51bWJlciIsIl9jIiwiX2MzIiwiX2M0Il0sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VzIjpbIldvcmtzcGFjZS50c3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgdXNlRWZmZWN0LCB1c2VSZWYsIHVzZVN0YXRlIH0gZnJvbSBcInJlYWN0XCI7XHJcbmltcG9ydCB7IExpbmssIE5hdkxpbmssIE91dGxldCwgdXNlTG9jYXRpb24sIHVzZVNlYXJjaFBhcmFtcyB9IGZyb20gXCJyZWFjdC1yb3V0ZXItZG9tXCI7XHJcbmltcG9ydCB7IEFycm93UmlnaHQsIEFycm93U3F1YXJlT3V0LCBCb29rT3BlbiwgQ2FsZW5kYXJCbGFuaywgQ2lyY2xlLCBHaXRCcmFuY2gsIEhvdXNlLCBNYWduaWZ5aW5nR2xhc3MsIE1hcFRyaWZvbGQsIFNwYXJrbGUsIFdhcm5pbmdDaXJjbGUgfSBmcm9tIFwiQHBob3NwaG9yLWljb25zL3JlYWN0XCI7XHJcbmltcG9ydCB7IHVzZUNhdGFsb2cgfSBmcm9tIFwiLi9DYXRhbG9nQ29udGV4dFwiO1xyXG5pbXBvcnQgeyBDb3Vyc2VEZXRhaWwgfSBmcm9tIFwiLi9BcHBcIjtcclxuaW1wb3J0IHR5cGUgeyBDb3Vyc2UgfSBmcm9tIFwiLi90eXBlc1wiO1xyXG5pbXBvcnQgeyBDb3Vyc2VTdGF0ZUJhZGdlIH0gZnJvbSBcIi4vQ291cnNlU3RhdGVcIjtcclxuaW1wb3J0IHsgQ291cnNlUmFkYXJMb2dvIH0gZnJvbSBcIi4vQ291cnNlUmFkYXJMb2dvXCI7XHJcbmltcG9ydCB7IHVzZVNjaGVkdWxlIH0gZnJvbSBcIi4vU2NoZWR1bGVDb250ZXh0XCI7XHJcbmltcG9ydCB7IFdlZWtseVNjaGVkdWxlIH0gZnJvbSBcIi4vV2Vla2x5U2NoZWR1bGVcIjtcclxuaW1wb3J0IFwiLi93b3Jrc3BhY2UuY3NzXCI7XHJcbmltcG9ydCBcIi4vZWRpdG9yaWFsLmNzc1wiO1xyXG5pbXBvcnQgXCIuL2V4cGxvcmVyLmNzc1wiO1xyXG5pbXBvcnQgXCIuL3JvYWRtYXAuY3NzXCI7XHJcblxyXG5jb25zdCBuYXZpZ2F0aW9uID0gW1xyXG4gIHsgdG86IFwiL292ZXJ2aWV3XCIsIGxhYmVsOiBcIk92ZXJ2aWV3XCIsIGljb246IEhvdXNlIH0sXHJcbiAgeyB0bzogXCIvY291cnNlc1wiLCBsYWJlbDogXCJDb3Vyc2UgZXhwbG9yZXJcIiwgaWNvbjogQm9va09wZW4gfSxcclxuICB7IHRvOiBcIi9yb2FkbWFwXCIsIGxhYmVsOiBcIkRlZ3JlZSByb2FkbWFwXCIsIGljb246IE1hcFRyaWZvbGQgfSxcclxuICB7IHRvOiBcIi9wcmVyZXF1aXNpdGUtY2hhcnRcIiwgbGFiZWw6IFwiUHJlcmVxdWlzaXRlc1wiLCBpY29uOiBHaXRCcmFuY2ggfSxcclxuICB7IHRvOiBcIi9wbGFubmVyXCIsIGxhYmVsOiBcIlNlbWVzdGVyIHBsYW5uZXJcIiwgaWNvbjogQ2FsZW5kYXJCbGFuayB9LFxyXG4gIHsgdG86IFwiL3JlY29tbWVuZGF0aW9uc1wiLCBsYWJlbDogXCJSZWNvbW1lbmRhdGlvbnNcIiwgaWNvbjogU3BhcmtsZSB9LFxyXG5dO1xyXG5cclxuZXhwb3J0IGZ1bmN0aW9uIFdvcmtzcGFjZSgpIHtcclxuICBjb25zdCB7IGNhdGFsb2csIHByb2dyYW0sIHNlbGVjdFByb2dyYW0sIG1vZGUsIHJldHJ5IH0gPSB1c2VDYXRhbG9nKCk7XHJcbiAgY29uc3QgbG9jYXRpb24gPSB1c2VMb2NhdGlvbigpO1xyXG4gIGNvbnN0IGNvbnRlbnQgPSB1c2VSZWY8SFRNTERpdkVsZW1lbnQ+KG51bGwpO1xyXG4gIHVzZUVmZmVjdCgoKSA9PiB7IGNvbnRlbnQuY3VycmVudD8uZm9jdXMoKTsgd2luZG93LnNjcm9sbFRvKDAsIDApOyB9LCBbbG9jYXRpb24ucGF0aG5hbWVdKTtcclxuICByZXR1cm4gPGRpdiBjbGFzc05hbWU9e2B3b3Jrc3BhY2UgJHtsb2NhdGlvbi5wYXRobmFtZSA9PT0gXCIvb3ZlcnZpZXdcIiA/IFwid29ya3NwYWNlLW92ZXJ2aWV3XCIgOiBcIlwifSAke2xvY2F0aW9uLnBhdGhuYW1lID09PSBcIi9yZWNvbW1lbmRhdGlvbnNcIiA/IFwid29ya3NwYWNlLXJlY29tbWVuZGF0aW9uc1wiIDogXCJcIn0gJHtsb2NhdGlvbi5wYXRobmFtZSA9PT0gXCIvY291cnNlc1wiID8gXCJ3b3Jrc3BhY2UtZXhwbG9yZXJcIiA6IFwiXCJ9ICR7bG9jYXRpb24ucGF0aG5hbWUgPT09IFwiL3JvYWRtYXBcIiA/IFwid29ya3NwYWNlLXJvYWRtYXBcIiA6IFwiXCJ9YH0+XHJcbiAgICA8YSBjbGFzc05hbWU9XCJza2lwLWxpbmtcIiBocmVmPVwiI3dvcmtzcGFjZS1jb250ZW50XCI+U2tpcCB0byBjb250ZW50PC9hPlxyXG4gICAgPGhlYWRlciBjbGFzc05hbWU9XCJ3b3Jrc3BhY2UtaGVhZGVyXCI+XHJcbiAgICAgIDxMaW5rIGNsYXNzTmFtZT1cIndvcmtzcGFjZS1icmFuZFwiIHRvPVwiL1wiIGFyaWEtbGFiZWw9XCJDb3Vyc2VSYWRhciBob21lXCI+PHNwYW4gY2xhc3NOYW1lPVwib3YtYnJhbmRcIj48c3ZnIHdpZHRoPVwiMzBcIiBoZWlnaHQ9XCIzMFwiIHZpZXdCb3g9XCIwIDAgMzAgMzBcIiBmaWxsPVwibm9uZVwiIGFyaWEtaGlkZGVuPVwidHJ1ZVwiPjxyZWN0IHg9XCIzXCIgeT1cIjNcIiB3aWR0aD1cIjEwXCIgaGVpZ2h0PVwiOFwiIHJ4PVwiMVwiIHN0cm9rZT1cImN1cnJlbnRDb2xvclwiIHN0cm9rZVdpZHRoPVwiMS41XCIgLz48cmVjdCB4PVwiMTdcIiB5PVwiMTlcIiB3aWR0aD1cIjEwXCIgaGVpZ2h0PVwiOFwiIHJ4PVwiMVwiIHN0cm9rZT1cImN1cnJlbnRDb2xvclwiIHN0cm9rZVdpZHRoPVwiMS41XCIgLz48cGF0aCBkPVwiTTggMTF2MTJoOW0tNC00IDQgNC00IDRcIiBzdHJva2U9XCIjZDc1YzM0XCIgc3Ryb2tlV2lkdGg9XCIxLjVcIiAvPjwvc3ZnPkNvdXJzZSBSYWRhcjxzcGFuPi48L3NwYW4+PC9zcGFuPjxzcGFuIGNsYXNzTmFtZT1cIndvcmtzcGFjZS1vcmlnaW5hbC1icmFuZFwiPjxDb3Vyc2VSYWRhckxvZ28gLz48L3NwYW4+PC9MaW5rPlxyXG4gICAgICA8bmF2IGFyaWEtbGFiZWw9XCJNYWluIG5hdmlnYXRpb25cIj57bmF2aWdhdGlvbi5tYXAoKHsgdG8sIGxhYmVsLCBpY29uOiBJY29uIH0pID0+IDxOYXZMaW5rIGtleT17dG99IHRvPXt0b30gZW5kPXt0byA9PT0gXCIvXCJ9PjxJY29uIHNpemU9ezE5fSBhcmlhLWhpZGRlbj1cInRydWVcIiAvPjxzcGFuPntsYWJlbH08L3NwYW4+PC9OYXZMaW5rPil9PC9uYXY+XHJcbiAgICAgIDxhIGNsYXNzTmFtZT1cInByb2dyYW0tc291cmNlXCIgaHJlZj17Y2F0YWxvZy5wcm9ncmFtVXJsfSB0YXJnZXQ9XCJfYmxhbmtcIiByZWw9XCJub3JlZmVycmVyXCI+T2ZmaWNpYWwgZ3VpZGUgPEFycm93U3F1YXJlT3V0IHNpemU9ezE0fSBhcmlhLWhpZGRlbj1cInRydWVcIiAvPjwvYT5cclxuICAgIDwvaGVhZGVyPlxyXG4gICAgPGRpdiBjbGFzc05hbWU9XCJ3b3Jrc3BhY2UtYm9keVwiPlxyXG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cIndvcmtzcGFjZS1jb250ZXh0XCI+PHNwYW4gY2xhc3NOYW1lPVwiYnJlYWRjcnVtYlwiPldvcmtzcGFjZSA8c3Bhbj4vPC9zcGFuPiA8c3Ryb25nPntuYXZpZ2F0aW9uLmZpbmQoaXRlbSA9PiBpdGVtLnRvID09PSBsb2NhdGlvbi5wYXRobmFtZSk/LmxhYmVsID8/IFwiQ291cnNlIFJhZGFyXCJ9PC9zdHJvbmc+PC9zcGFuPjxsYWJlbD5EZWdyZWU8c2VsZWN0IGFyaWEtbGFiZWw9XCJEZWdyZWUgcHJvZ3JhbVwiIHZhbHVlPXtwcm9ncmFtfSBvbkNoYW5nZT17ZXZlbnQgPT4gc2VsZWN0UHJvZ3JhbShldmVudC50YXJnZXQudmFsdWUpfT48b3B0aW9uIHZhbHVlPVwiY29tcHV0ZXItZW5naW5lZXJpbmdcIj5Db21wdXRlciBFbmdpbmVlcmluZyDigJQgQlM8L29wdGlvbj48b3B0aW9uIHZhbHVlPVwic29mdHdhcmUtZW5naW5lZXJpbmdcIj5Tb2Z0d2FyZSBFbmdpbmVlcmluZyDigJQgQlM8L29wdGlvbj48L3NlbGVjdD48L2xhYmVsPjxzcGFuIGNsYXNzTmFtZT1cImNhdGFsb2ctcGlsbFwiPntjYXRhbG9nLmNhdGFsb2dZZWFyfTwvc3Bhbj48c3BhbiBjbGFzc05hbWU9XCJzZXNzaW9uLWxhYmVsXCI+PENpcmNsZSBzaXplPXs4fSB3ZWlnaHQ9XCJmaWxsXCIgYXJpYS1oaWRkZW49XCJ0cnVlXCIgLz4gU2Vzc2lvbiBkcmFmdDwvc3Bhbj48L2Rpdj5cclxuICAgICAgPGRpdiBjbGFzc05hbWU9e2BkYXRhLW1lc3NhZ2UgJHttb2RlfWB9IHJvbGU9XCJzdGF0dXNcIj57bW9kZSA9PT0gXCJsb2FkaW5nXCIgPyBcIkNoZWNraW5nIGZvciB0aGUgbGF0ZXN0IGNhdGFsb2figKYgUmV2aWV3ZWQgc25hcHNob3QgYXZhaWxhYmxlIGJlbG93LlwiIDogbW9kZSA9PT0gXCJmaXh0dXJlXCIgPyA8PlNob3dpbmcgdGhlIHJldmlld2VkIGNhdGFsb2cgc25hcHNob3QuIExpdmUgY2F0YWxvZyB1bmF2YWlsYWJsZS4gPGJ1dHRvbiBvbkNsaWNrPXtyZXRyeX0+UmV0cnkgY29ubmVjdGlvbjwvYnV0dG9uPjwvPiA6IFwiQ29ubmVjdGVkIHRvIGNhdGFsb2cgwrcgU2VjdGlvbiBhdmFpbGFiaWxpdHkgaXMgYSBkYXRlZCBzbmFwc2hvdCwgbm90IGxpdmUgZW5yb2xsbWVudC5cIn08L2Rpdj5cclxuICAgICAgPGRpdiBpZD1cIndvcmtzcGFjZS1jb250ZW50XCIgY2xhc3NOYW1lPVwid29ya3NwYWNlLWNvbnRlbnRcIiByZWY9e2NvbnRlbnR9IHRhYkluZGV4PXstMX0+PE91dGxldCBrZXk9e3Byb2dyYW19IC8+PC9kaXY+XHJcbiAgICAgIDxmb290ZXIgY2xhc3NOYW1lPVwid29ya3NwYWNlLWZvb3RlclwiPjxzcGFuPkJ1aWx0IGZvciB0aGUgcGF0aCBhaGVhZC48L3NwYW4+PHNwYW4+UGxhbm5pbmcgcmVmZXJlbmNlIMK3IE9mZmljaWFsIFNKU1UgcmVxdWlyZW1lbnRzIHRha2UgcHJlY2VkZW5jZS48L3NwYW4+PC9mb290ZXI+XHJcbiAgICA8L2Rpdj5cclxuICA8L2Rpdj47XHJcbn1cclxuXHJcbmZ1bmN0aW9uIEhlYWRpbmcoeyBleWVicm93LCB0aXRsZSwgZGVzY3JpcHRpb24gfTogeyBleWVicm93Pzogc3RyaW5nOyB0aXRsZTogc3RyaW5nOyBkZXNjcmlwdGlvbjogc3RyaW5nIH0pIHtcclxuICByZXR1cm4gPGhlYWRlciBjbGFzc05hbWU9XCJ3b3Jrc3BhY2UtaGVhZGluZ1wiPntleWVicm93ICYmIDxzcGFuIGNsYXNzTmFtZT1cInNlY3Rpb24tZXllYnJvd1wiPntleWVicm93fTwvc3Bhbj59PGgxPnt0aXRsZX08L2gxPjxwPntkZXNjcmlwdGlvbn08L3A+PC9oZWFkZXI+O1xyXG59XHJcblxyXG5leHBvcnQgeyBPdmVydmlldyB9IGZyb20gXCIuL092ZXJ2aWV3XCI7XHJcblxyXG5leHBvcnQgZnVuY3Rpb24gQ291cnNlcygpIHtcclxuICBjb25zdCB7IGNhdGFsb2csIHRha2VuQ291cnNlSWRzLCBwbGFucyB9ID0gdXNlQ2F0YWxvZygpO1xyXG4gIGNvbnN0IHsgc2VsZWN0ZWRPZmZlcmluZ3MgfSA9IHVzZVNjaGVkdWxlKCk7XHJcbiAgY29uc3QgW3BhcmFtcywgc2V0UGFyYW1zXSA9IHVzZVNlYXJjaFBhcmFtcygpO1xyXG4gIGNvbnN0IHF1ZXJ5ID0gcGFyYW1zLmdldChcInFcIikgPz8gXCJcIjtcclxuICBjb25zdCBmaWx0ZXIgPSBwYXJhbXMuZ2V0KFwic3RhdHVzXCIpID8/IFwiYWxsXCI7XHJcbiAgY29uc3QgW3NlbGVjdGVkLCBzZXRTZWxlY3RlZF0gPSB1c2VTdGF0ZTxDb3Vyc2UgfCBudWxsPihudWxsKTtcclxuICBjb25zdCBbc2NoZWR1bGVPcGVuLCBzZXRTY2hlZHVsZU9wZW5dID0gdXNlU3RhdGUoZmFsc2UpO1xyXG4gIGNvbnN0IHVwZGF0ZSA9IChrZXk6IHN0cmluZywgdmFsdWU6IHN0cmluZykgPT4gc2V0UGFyYW1zKHByZXZpb3VzID0+IHsgY29uc3QgbmV4dCA9IG5ldyBVUkxTZWFyY2hQYXJhbXMocHJldmlvdXMpOyBpZiAodmFsdWUpIG5leHQuc2V0KGtleSwgdmFsdWUpOyBlbHNlIG5leHQuZGVsZXRlKGtleSk7IHJldHVybiBuZXh0OyB9LCB7IHJlcGxhY2U6IHRydWUgfSk7XHJcbiAgY29uc3QgY291cnNlcyA9IGNhdGFsb2cuY291cnNlcy5maWx0ZXIoY291cnNlID0+IGAke2NvdXJzZS5jb2RlfSAke2NvdXJzZS50aXRsZX1gLnRvTG93ZXJDYXNlKCkuaW5jbHVkZXMocXVlcnkudG9Mb3dlckNhc2UoKSkgJiYgKGZpbHRlciA9PT0gXCJhbGxcIiB8fCAoZmlsdGVyID09PSBcImNvbXBsZXRlZFwiID8gdGFrZW5Db3Vyc2VJZHMuaGFzKGNvdXJzZS5pZCkgOiAhdGFrZW5Db3Vyc2VJZHMuaGFzKGNvdXJzZS5pZCkgJiYgcGxhbnNbY291cnNlLmlkXT8uc3RhdHVzID09PSBmaWx0ZXIpKSk7XHJcbiAgY29uc3Qgc3RhdHVzZXMgPSBbXHJcbiAgICBbXCJhbGxcIiwgXCJBbGwgY291cnNlc1wiXSxcclxuICAgIFtcImNvbXBsZXRlZFwiLCBcIkNvbXBsZXRlZFwiXSxcclxuICAgIFtcInBsYW5uZWRcIiwgXCJQbGFubmVkXCJdLFxyXG4gICAgW1wiaW4tcHJvZ3Jlc3NcIiwgXCJJbiBwcm9ncmVzc1wiXSxcclxuICBdIGFzIGNvbnN0O1xyXG4gIHJldHVybiA8bWFpbiBjbGFzc05hbWU9XCJjb3Vyc2UtZXhwbG9yZXItcGFnZVwiPlxyXG4gICAgPGhlYWRlciBjbGFzc05hbWU9XCJleHBsb3Jlci1pbnRyb1wiPlxyXG4gICAgICA8ZGl2PjxoMT5Db3Vyc2UgZXhwbG9yZXI8L2gxPjxwPkZpbmQgeW91ciBuZXh0IGNvdXJzZSwgcmV2aWV3IGl0cyByZXF1aXJlbWVudHMsIGFuZCBjb21wYXJlIEZhbGwgMjAyNiBzZWN0aW9ucyBpbiBvbmUgcGxhY2UuPC9wPjwvZGl2PlxyXG4gICAgICA8TGluayBjbGFzc05hbWU9XCJleHBsb3Jlci1yb2FkbWFwLWxpbmtcIiB0bz1cIi9yb2FkbWFwXCI+VmlldyBkZWdyZWUgcm9hZG1hcCA8QXJyb3dSaWdodCBzaXplPXsxNn0gYXJpYS1oaWRkZW49XCJ0cnVlXCIgLz48L0xpbms+XHJcbiAgICA8L2hlYWRlcj5cclxuICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cImV4cGxvcmVyLXdvcmtiZW5jaFwiIGFyaWEtbGFiZWw9XCJGaW5kIGNvdXJzZXNcIj5cclxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJleHBsb3Jlci10b29sc1wiPlxyXG4gICAgICAgIDxsYWJlbCBjbGFzc05hbWU9XCJ3b3Jrc3BhY2Utc2VhcmNoIGV4cGxvcmVyLXNlYXJjaFwiPjxNYWduaWZ5aW5nR2xhc3Mgc2l6ZT17MTl9IGFyaWEtaGlkZGVuPVwidHJ1ZVwiIC8+PHNwYW4gY2xhc3NOYW1lPVwic3Itb25seVwiPlNlYXJjaCBjb3Vyc2VzIGJ5IGNvZGUgb3IgdGl0bGU8L3NwYW4+PGlucHV0IHBsYWNlaG9sZGVyPVwiU2VhcmNoIGNvdXJzZSBjb2RlIG9yIHRpdGxl4oCmXCIgdmFsdWU9e3F1ZXJ5fSBvbkNoYW5nZT17ZXZlbnQgPT4gdXBkYXRlKFwicVwiLCBldmVudC50YXJnZXQudmFsdWUpfSAvPjwvbGFiZWw+XHJcbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJleHBsb3Jlci1zdGF0dXMtdG9vbHNcIj48c3BhbiBjbGFzc05hbWU9XCJleHBsb3Jlci1maWx0ZXItbGFiZWxcIj5TaG93PC9zcGFuPjxkaXYgY2xhc3NOYW1lPVwiZXhwbG9yZXItZmlsdGVyLWxpc3RcIiByb2xlPVwiZ3JvdXBcIiBhcmlhLWxhYmVsPVwiRmlsdGVyIGNvdXJzZXMgYnkgc3RhdHVzXCI+e3N0YXR1c2VzLm1hcCgoW3ZhbHVlLCBsYWJlbF0pID0+IDxidXR0b24ga2V5PXt2YWx1ZX0gdHlwZT1cImJ1dHRvblwiIGFyaWEtcHJlc3NlZD17ZmlsdGVyID09PSB2YWx1ZX0gY2xhc3NOYW1lPXtmaWx0ZXIgPT09IHZhbHVlID8gXCJpcy1hY3RpdmVcIiA6IFwiXCJ9IG9uQ2xpY2s9eygpID0+IHVwZGF0ZShcInN0YXR1c1wiLCB2YWx1ZSA9PT0gXCJhbGxcIiA/IFwiXCIgOiB2YWx1ZSl9PntsYWJlbH08L2J1dHRvbj4pfTwvZGl2PjwvZGl2PlxyXG4gICAgICA8L2Rpdj5cclxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJleHBsb3Jlci1yZXN1bHQtcm93XCI+PHAgY2xhc3NOYW1lPVwicmVzdWx0LWNvdW50XCIgcm9sZT1cInN0YXR1c1wiPjxzdHJvbmc+e2NvdXJzZXMubGVuZ3RofTwvc3Ryb25nPiB7Y291cnNlcy5sZW5ndGggPT09IDEgPyBcImNvdXJzZVwiIDogXCJjb3Vyc2VzXCJ9IDxzcGFuPmluIHtjYXRhbG9nLm5hbWV9PC9zcGFuPjwvcD48cCBjbGFzc05hbWU9XCJleHBsb3Jlci1yZXN1bHQtaGludFwiPlNlbGVjdCBhIGNvdXJzZSB0byBzZWUgcHJlcmVxdWlzaXRlcywgcGxhbiBpdCwgb3IgcmV2aWV3IHNlY3Rpb25zLjwvcD57c2VsZWN0ZWRPZmZlcmluZ3MubGVuZ3RoID4gMCAmJiA8YnV0dG9uIGNsYXNzTmFtZT1cIm1vYmlsZS1zY2hlZHVsZS10cmlnZ2VyXCIgdHlwZT1cImJ1dHRvblwiIG9uQ2xpY2s9eygpID0+IHNldFNjaGVkdWxlT3Blbih0cnVlKX0+PENhbGVuZGFyQmxhbmsgc2l6ZT17MTd9IC8+IFZpZXcgc2NoZWR1bGUgwrcge3NlbGVjdGVkT2ZmZXJpbmdzLmxlbmd0aH08L2J1dHRvbj59PC9kaXY+XHJcbiAgICA8L3NlY3Rpb24+XHJcbiAgICA8ZGl2IGNsYXNzTmFtZT17YGNvdXJzZS1leHBsb3Jlci1sYXlvdXQgJHtzZWxlY3RlZE9mZmVyaW5ncy5sZW5ndGggPyBcImhhcy1zY2hlZHVsZVwiIDogXCJcIn1gfT5cclxuICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwicGFuZWwgY291cnNlLXRhYmxlXCIgYXJpYS1sYWJlbD1cIkNvdXJzZSByZXN1bHRzXCI+PGRpdiBjbGFzc05hbWU9XCJjb3Vyc2UtdGFibGUtaGVhZFwiPjxzcGFuPkNPVVJTRTwvc3Bhbj48c3Bhbj5VTklUUzwvc3Bhbj48c3Bhbj5TVEFUVVM8L3NwYW4+PHNwYW4gLz48L2Rpdj57Y291cnNlcy5tYXAoY291cnNlID0+IDxidXR0b24ga2V5PXtjb3Vyc2UuaWR9IGNsYXNzTmFtZT1cImNvdXJzZS10YWJsZS1yb3dcIiBvbkNsaWNrPXsoKSA9PiBzZXRTZWxlY3RlZChjb3Vyc2UpfSBhcmlhLWxhYmVsPXtgJHtjb3Vyc2UuY29kZX0sICR7Y291cnNlLnRpdGxlfSwgJHtjb3Vyc2UudW5pdHN9IHVuaXRzLiBPcGVuIGNvdXJzZSBkZXRhaWxzLmB9PjxzcGFuPjxzdHJvbmc+e2NvdXJzZS5jb2RlfTwvc3Ryb25nPjxzcGFuPntjb3Vyc2UudGl0bGV9PC9zcGFuPjwvc3Bhbj48c3Bhbj57Y291cnNlLnVuaXRzfTwvc3Bhbj48Q291cnNlU3RhdGVCYWRnZSBjb3Vyc2U9e2NvdXJzZX0gLz48QXJyb3dSaWdodCBzaXplPXsxNn0gYXJpYS1oaWRkZW49XCJ0cnVlXCIgLz48L2J1dHRvbj4pfXshY291cnNlcy5sZW5ndGggJiYgPGRpdiBjbGFzc05hbWU9XCJ3b3Jrc3BhY2UtZW1wdHlcIj48TWFnbmlmeWluZ0dsYXNzIHNpemU9ezMwfSBhcmlhLWhpZGRlbj1cInRydWVcIiAvPjxoMj5ObyBjb3Vyc2VzIG1hdGNoPC9oMj48cD5UcnkgYW5vdGhlciBjb3Vyc2UgbmFtZSBvciBjbGVhciB5b3VyIGZpbHRlcnMuPC9wPjxidXR0b24gb25DbGljaz17KCkgPT4gc2V0UGFyYW1zKHt9KX0+Q2xlYXIgZmlsdGVyczwvYnV0dG9uPjwvZGl2Pn08L3NlY3Rpb24+XHJcbiAgICAgIHtzZWxlY3RlZE9mZmVyaW5ncy5sZW5ndGggPiAwICYmIDxXZWVrbHlTY2hlZHVsZSBtb2JpbGVPcGVuPXtzY2hlZHVsZU9wZW59IG9uQ2xvc2U9eygpID0+IHNldFNjaGVkdWxlT3BlbihmYWxzZSl9IC8+fVxyXG4gICAgPC9kaXY+XHJcbiAgICB7c2VsZWN0ZWQgJiYgPENvdXJzZURldGFpbCBjb3Vyc2U9e3NlbGVjdGVkfSBvbkNsb3NlPXsoKSA9PiBzZXRTZWxlY3RlZChudWxsKX0gLz59XHJcbiAgPC9tYWluPjtcclxufVxyXG5cclxuZXhwb3J0IGZ1bmN0aW9uIFBsYW5uZXIoKSB7XHJcbiAgY29uc3QgeyBjYXRhbG9nLCBjb3Vyc2VCeUlkLCBwbGFucywgdGFrZW5Db3Vyc2VJZHMsIHNldFBsYW4sIHJlbW92ZVBsYW4gfSA9IHVzZUNhdGFsb2coKTtcclxuICBjb25zdCBbc2VsZWN0ZWQsIHNldFNlbGVjdGVkXSA9IHVzZVN0YXRlPENvdXJzZSB8IG51bGw+KG51bGwpO1xyXG4gIHJldHVybiA8PjxkaXYgY2xhc3NOYW1lPVwiaGVhZGluZy13aXRoLWFjdGlvblwiPjxIZWFkaW5nIGV5ZWJyb3c9XCJUSElOSyBBIFNFTUVTVEVSIEFIRUFEXCIgdGl0bGU9XCJTZW1lc3RlciBwbGFubmVyXCIgZGVzY3JpcHRpb249XCJHaXZlIHlvdXIgbmV4dCBzdGVwcyBhIHBsYWNlLiBBZGQgY291cnNlcywgbW92ZSB0aGVtLCBhbmQgZXhwbG9yZSB5b3VyIG9wdGlvbnMuXCIgLz48TGluayBjbGFzc05hbWU9XCJwcmltYXJ5LWJ1dHRvblwiIHRvPVwiL2NvdXJzZXNcIj5GaW5kIGNvdXJzZXMgPEFycm93UmlnaHQgc2l6ZT17MTd9IGFyaWEtaGlkZGVuPVwidHJ1ZVwiIC8+PC9MaW5rPjwvZGl2PjxkaXYgY2xhc3NOYW1lPVwicGxhbm5pbmctbm90ZVwiPjxXYXJuaW5nQ2lyY2xlIHNpemU9ezE5fSBhcmlhLWhpZGRlbj1cInRydWVcIiAvPjxwPjxzdHJvbmc+U2Vzc2lvbiBkcmFmdC48L3N0cm9uZz4gUmVmcmVzaCBjbGVhcnMgeW91ciBwbGFuLiBTZW1lc3RlciBudW1iZXJzIGFyZSBwZXJzb25hbCBwbGFubmluZyBzbG90cywgbm90IGNvbmZpcm1lZCBvZmZlcmluZ3MuIFByZXJlcXVpc2l0ZXMsIGdyYWRlcyBhbmQgY291cnNlIGF2YWlsYWJpbGl0eSBtdXN0IGJlIHJldmlld2VkIHNlcGFyYXRlbHkuPC9wPjwvZGl2PjxkaXYgY2xhc3NOYW1lPVwic2VtZXN0ZXItZ3JpZFwiPntjYXRhbG9nLnJlcXVpcmVtZW50R3JvdXBzLm1hcCgoZ3JvdXAsIGluZGV4KSA9PiB7XHJcbiAgICBjb25zdCBjb3Vyc2VzID0gY2F0YWxvZy5jb3Vyc2VzLmZpbHRlcihjb3Vyc2UgPT4gcGxhbnNbY291cnNlLmlkXT8uc2VtZXN0ZXIgPT09IGluZGV4ICsgMSAmJiAhdGFrZW5Db3Vyc2VJZHMuaGFzKGNvdXJzZS5pZCkpO1xyXG4gICAgcmV0dXJuIDxzZWN0aW9uIGNsYXNzTmFtZT1cInBhbmVsIHNlbWVzdGVyLWNhcmRcIiBrZXk9e2dyb3VwLmlkfT48ZGl2IGNsYXNzTmFtZT1cInBhbmVsLWhlYWRpbmdcIj48ZGl2PjxzcGFuIGNsYXNzTmFtZT1cInNlY3Rpb24tZXllYnJvd1wiPllFQVIge01hdGguZmxvb3IoaW5kZXggLyAyKSArIDF9PC9zcGFuPjxoMj5TZW1lc3RlciB7aW5kZXggKyAxfTwvaDI+PC9kaXY+PHNwYW4gY2xhc3NOYW1lPVwic3VidGxlLXRhZ1wiPntjb3Vyc2VzLnJlZHVjZSgoc3VtLCBjb3Vyc2UpID0+IHN1bSArIGNvdXJzZS51bml0cywgMCl9IHVuaXRzPC9zcGFuPjwvZGl2Pntjb3Vyc2VzLm1hcChjb3Vyc2UgPT4ge1xyXG4gICAgICBjb25zdCBtaXNzaW5nID0gY291cnNlLnByZXJlcXVpc2l0ZUNvdXJzZUlkcy5maWx0ZXIoaWQgPT4gIXRha2VuQ291cnNlSWRzLmhhcyhpZCkpO1xyXG4gICAgICByZXR1cm4gPGFydGljbGUgY2xhc3NOYW1lPVwicGxhbm5lZC1jb3Vyc2VcIiBrZXk9e2NvdXJzZS5pZH0+PGJ1dHRvbiBjbGFzc05hbWU9XCJwbGFubmVkLWNvdXJzZS10aXRsZVwiIG9uQ2xpY2s9eygpID0+IHNldFNlbGVjdGVkKGNvdXJzZSl9PjxzdHJvbmc+e2NvdXJzZS5jb2RlfTwvc3Ryb25nPjxzcGFuPntjb3Vyc2UudGl0bGV9PC9zcGFuPjwvYnV0dG9uPjxDb3Vyc2VTdGF0ZUJhZGdlIGNvdXJzZT17Y291cnNlfSAvPnttaXNzaW5nLmxlbmd0aCA+IDAgJiYgPHAgY2xhc3NOYW1lPVwicHJlcmVxLXdhcm5pbmdcIj48V2FybmluZ0NpcmNsZSBzaXplPXsxNH0gYXJpYS1oaWRkZW49XCJ0cnVlXCIgLz4gUmV2aWV3IHByZXJlcXVpc2l0ZToge21pc3NpbmcubWFwKGlkID0+IGNvdXJzZUJ5SWQuZ2V0KGlkKT8uY29kZSA/PyBpZCkuam9pbihcIiwgXCIpfTwvcD59PGRpdiBjbGFzc05hbWU9XCJwbGFubmVkLWFjdGlvbnNcIj48bGFiZWw+TW92ZSB0bzxzZWxlY3QgYXJpYS1sYWJlbD17YE1vdmUgJHtjb3Vyc2UuY29kZX0gdG8gc2VtZXN0ZXJgfSB2YWx1ZT17aW5kZXggKyAxfSBvbkNoYW5nZT17ZXZlbnQgPT4gc2V0UGxhbihjb3Vyc2UuaWQsIE51bWJlcihldmVudC50YXJnZXQudmFsdWUpLCBwbGFuc1tjb3Vyc2UuaWRdLnN0YXR1cyl9PntjYXRhbG9nLnJlcXVpcmVtZW50R3JvdXBzLm1hcCgoXywgbnVtYmVyKSA9PiA8b3B0aW9uIGtleT17bnVtYmVyfSB2YWx1ZT17bnVtYmVyICsgMX0+U2VtZXN0ZXIge251bWJlciArIDF9PC9vcHRpb24+KX08L3NlbGVjdD48L2xhYmVsPjxidXR0b24gb25DbGljaz17KCkgPT4gcmVtb3ZlUGxhbihjb3Vyc2UuaWQpfSBhcmlhLWxhYmVsPXtgUmVtb3ZlICR7Y291cnNlLmNvZGV9IGZyb20gcGxhbmB9PlJlbW92ZTwvYnV0dG9uPjwvZGl2PjwvYXJ0aWNsZT47XHJcbiAgICB9KX17IWNvdXJzZXMubGVuZ3RoICYmIDxwIGNsYXNzTmFtZT1cInNlbWVzdGVyLWVtcHR5XCI+Um9vbSBmb3IgeW91ciBuZXh0IG1vdmUuPC9wPn08bGFiZWwgY2xhc3NOYW1lPVwiYWRkLWNvdXJzZS1sYWJlbFwiPkFkZCBhIGNvdXJzZTxzZWxlY3QgYXJpYS1sYWJlbD17YEFkZCBjb3Vyc2UgdG8gc2VtZXN0ZXIgJHtpbmRleCArIDF9YH0gdmFsdWU9XCJcIiBvbkNoYW5nZT17ZXZlbnQgPT4geyBpZiAoZXZlbnQudGFyZ2V0LnZhbHVlKSBzZXRQbGFuKGV2ZW50LnRhcmdldC52YWx1ZSwgaW5kZXggKyAxKTsgfX0+PG9wdGlvbiB2YWx1ZT1cIlwiPkNob29zZSBhIGNvdXJzZeKApjwvb3B0aW9uPntjYXRhbG9nLmNvdXJzZXMuZmlsdGVyKGNvdXJzZSA9PiAhdGFrZW5Db3Vyc2VJZHMuaGFzKGNvdXJzZS5pZCkgJiYgIXBsYW5zW2NvdXJzZS5pZF0pLm1hcChjb3Vyc2UgPT4gPG9wdGlvbiBrZXk9e2NvdXJzZS5pZH0gdmFsdWU9e2NvdXJzZS5pZH0+e2NvdXJzZS5jb2RlfSDCtyB7Y291cnNlLnRpdGxlfTwvb3B0aW9uPil9PC9zZWxlY3Q+PC9sYWJlbD48L3NlY3Rpb24+O1xyXG4gIH0pfTwvZGl2PntzZWxlY3RlZCAmJiA8Q291cnNlRGV0YWlsIGNvdXJzZT17c2VsZWN0ZWR9IG9uQ2xvc2U9eygpID0+IHNldFNlbGVjdGVkKG51bGwpfSAvPn08Lz47XHJcbn1cclxuIl0sImZpbGUiOiJDOi9Vc2Vycy90aGluaC9DTVBFMTMxL3NyYy9Xb3Jrc3BhY2UudHN4In0=

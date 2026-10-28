@@ -1,0 +1,65 @@
+/* Page composition adapted from courseradarui.zip's Prerequisites screen.
+   Graph cards, paths, labels, grid, states and controls use reference-landing.css. */
+.prereq-shell { background: var(--paper); }
+.prereq-full-page { padding: 24px 32px 48px; background: var(--limestone); }
+.prereq-heading, .prereq-map-frame, .prereq-map-caption, .prereq-guidance { width: min(100%, 1280px); margin-inline: auto; }
+.prereq-map-caption a { display: inline-flex; align-items: center; gap: 7px; color: #555; font-size:14px; }
+.prereq-heading { padding-block: 6px 24px; }
+.prereq-heading h1 { margin: 0; font-size: 48px; font-weight: 500; letter-spacing: -.04em; line-height: 1.04; white-space: nowrap; }
+.prereq-map-frame { container-type: inline-size; padding: 10px; border: 1px solid #d9e1dc; border-radius: 9px; background: #f9fbf9; box-shadow: 0 14px 38px rgba(19, 39, 33, .08); scroll-margin-top: 18px; }
+.prereq-frame-label { display: flex; align-items: center; gap: 8px; padding: 3px 4px 12px; color: #71807a; font-family: "DM Mono", ui-monospace, monospace; font-size:14px; letter-spacing: .08em; }
+.prereq-live-dot { width: 6px; height: 6px; flex: none; border-radius: 50%; background: #21a778; box-shadow: 0 0 0 3px rgba(33, 167, 120, .1); }
+.prereq-frame-program { margin-left: auto; color: #71807a; font-size:14px; }
+.prereq-map-caption { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 14px; color: #626262; font-size:14px; line-height: 1.6; }
+.prereq-map-caption a { font-size:14px; }
+.prereq-guidance { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; border-top: 1px solid #dededb; margin-top: 36px; padding-top: 24px; }
+.prereq-guidance h2 { margin: 0 0 8px; color: #292929; font-size: 16px; font-weight: 500; letter-spacing: -.02em; }
+.prereq-guidance p { max-width: 65ch; margin: 0; color: #626262; font-size:14px; line-height: 1.7; }
+.prereq-shell .primary-nav a[aria-current="page"] { color: #111; text-decoration: underline; text-underline-offset: 7px; }
+.prereq-shell :is(a, button, input):focus-visible { outline: 2px solid #168873; outline-offset: 4px; }
+.prereq-skip { position: absolute; z-index: 20; top: 8px; left: 16px; padding: 12px; background: #fff; transform: translateY(-160%); }
+.prereq-skip:focus { transform: none; }
+@media (min-width: 901px) {
+  /* Expand only the viewport. SVG viewBox, card dimensions and paths are shared.
+     The same height rule gives identical geometry at equal chart widths. */
+  .prereq-map-frame { --hero-map-height: max(260px, calc((100cqw - 192px) / 1.46 - 164px)); }
+  .prereq-map-frame > .radar-app { height: calc(var(--hero-map-height) + 220px); }
+}
+@media (min-width: 821px) {
+  /* Full workspace restores the export's existing sidebar; graph markup/styles
+     stay shared with the landing's sidebar-free hero. */
+  .prereq-map-frame .radar-app--hero .radar-workspace { grid-template-columns: 204px minmax(0, 1fr); }
+  .prereq-map-frame .radar-app--hero .radar-sidebar { display: flex; }
+}
+@media (max-width: 900px) {
+  .prereq-heading h1 { font-size: 40px; }
+  .prereq-map-caption { flex-wrap: wrap; gap: 6px; }
+}
+@media (max-width: 600px) {
+  .prereq-full-page { padding: 18px 16px 32px; }
+  .prereq-heading { padding-block: 4px 22px; }
+  .prereq-heading h1 { font-size: 36px; }
+  .prereq-map-frame { padding: 3px; }
+  .prereq-frame-label { font-size:14px; padding: 8px 5px 11px; }
+  .prereq-frame-program { display: none; }
+  .prereq-guidance { grid-template-columns: 1fr; gap: 24px; margin-top: 24px; }
+}
+
+
+/* Shared with the landing map: mint wash plus its diagonal SVG fade. */
+.prereq-shell {
+  --map-surface-wash: linear-gradient(135deg, rgba(228, 242, 235, .6), rgba(251, 253, 252, 0)), radial-gradient(ellipse at 12% 8%, rgba(220, 244, 235, .46), transparent 50%), radial-gradient(ellipse at 96% 92%, rgba(232, 242, 237, .26), transparent 38%);
+}
+.prereq-shell .rf-roadmap {
+  background-color: #fbfdfc;
+  background-image: var(--map-surface-wash);
+}
+.prereq-shell .course-list-view {
+  background-color: #fbfdfc;
+  background-image: linear-gradient(rgba(24, 83, 71, .042) 1px, transparent 1px), linear-gradient(90deg, rgba(24, 83, 71, .042) 1px, transparent 1px), var(--map-surface-wash);
+  background-size: 26px 26px, 26px 26px, auto, auto, auto;
+  background-position: -1px -1px, -1px -1px, center, center, center;
+}
+
+.prereq-shell .prereq-full-map-heading { padding-top: 6px; }
+

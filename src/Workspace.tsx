@@ -1,78 +1,54 @@
+import { productNavigation } from "./product-navigation";
+import { CourseRadarBrand } from "./CourseRadarBrand";
+import { ProductContextBar } from "./ProductContextBar";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { ArrowRight, ArrowSquareOut, BookOpen, CalendarBlank, ChartPieSlice, CheckCircle, Circle, GitBranch, GraduationCap, House, MagnifyingGlass, MapTrifold, Sparkle, WarningCircle } from "@phosphor-icons/react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
+import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import { useCatalog } from "./CatalogContext";
-import { CourseDetail } from "./App";
+import { CourseDetail } from "./CourseDetail";
 import type { Course } from "./types";
 import { CourseStateBadge } from "./CourseState";
-import { CourseRadarLogo } from "./CourseRadarLogo";
-import { useSchedule } from "./ScheduleContext";
-import { WeeklySchedule } from "./WeeklySchedule";
 import "./workspace.css";
+import "./editorial.css";
+import "./explorer.css";
+import "./roadmap.css";
+import "./roadmap-detail.css";
+import "./roadmap-palette.css";
+import "./explorer-schedule.css";
+import "./course-inspector.css";
 
-const navigation = [
-  { to: "/", label: "Overview", icon: House },
-  { to: "/courses", label: "Course explorer", icon: BookOpen },
-  { to: "/roadmap", label: "Degree roadmap", icon: MapTrifold },
-  { to: "/prerequisite-chart", label: "Prerequisites", icon: GitBranch },
-  { to: "/planner", label: "Semester planner", icon: CalendarBlank },
-  { to: "/recommendations", label: "Recommendations", icon: Sparkle },
-];
+const navigation = productNavigation;
 
 export function Workspace() {
   const { catalog, program, selectProgram, mode, retry } = useCatalog();
   const location = useLocation();
   const content = useRef<HTMLDivElement>(null);
   useEffect(() => { content.current?.focus(); window.scrollTo(0, 0); }, [location.pathname]);
-  return <div className="workspace">
+  return <div className={`workspace ${["/overview", "/catalog-overview"].includes(location.pathname) ? "workspace-overview" : ""} ${location.pathname === "/courses" ? "workspace-explorer" : ""} ${location.pathname === "/roadmap" ? "workspace-roadmap" : ""}`}>
     <a className="skip-link" href="#workspace-content">Skip to content</a>
     <header className="workspace-header">
-      <Link className="workspace-brand" to="/" aria-label="CourseRadar home"><CourseRadarLogo /></Link>
-      <nav aria-label="Main navigation">{navigation.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} end={to === "/"}><Icon size={19} aria-hidden="true" /><span>{label}</span></NavLink>)}</nav>
-      <a className="program-source" href={catalog.programUrl} target="_blank" rel="noreferrer">Official guide <ArrowSquareOut size={14} aria-hidden="true" /></a>
+      <CourseRadarBrand />
+      <nav aria-label="Main navigation">{navigation.map(({ to, label }) => <NavLink reloadDocument={to === "/overview" || to === "/prerequisites"} key={to} to={to} end={to === "/"}><span>{label}</span></NavLink>)}</nav>
+      {!["/roadmap", "/courses"].includes(location.pathname) && <a className="program-source" href={catalog.programUrl} target="_blank" rel="noreferrer">Official guide <ArrowSquareOut size={14} aria-hidden="true" /></a>}
     </header>
     <div className="workspace-body">
-      <div className="workspace-context"><span className="breadcrumb">Workspace <span>/</span> <strong>{navigation.find(item => item.to === location.pathname)?.label ?? "Course Radar"}</strong></span><label>Degree<select aria-label="Degree program" value={program} onChange={event => selectProgram(event.target.value)}><option value="computer-engineering">Computer Engineering — BS</option><option value="software-engineering">Software Engineering — BS</option></select></label><span className="catalog-pill">{catalog.catalogYear}</span><span className="session-label"><Circle size={8} weight="fill" aria-hidden="true" /> Session draft</span></div>
-      <div className={`data-message ${mode}`} role="status">{mode === "loading" ? "Checking for the latest catalog… Reviewed snapshot available below." : mode === "fixture" ? <>Showing the reviewed catalog snapshot. Live catalog unavailable. <button onClick={retry}>Retry connection</button></> : "Connected to catalog · Section availability is a dated snapshot, not live enrollment."}</div>
+      <ProductContextBar page={navigation.find(item => item.to === location.pathname)?.label ?? "Course Radar"} edition={catalog.catalogYear} program={program} onProgramChange={selectProgram} />
+      {!["/roadmap", "/courses"].includes(location.pathname) && <div className={`data-message ${mode}`} role="status">{mode === "loading" ? "Checking for the latest catalog… Reviewed snapshot available below." : mode === "fixture" ? <>Showing the reviewed catalog snapshot. Live catalog unavailable. <button onClick={retry}>Retry connection</button></> : "Connected to catalog · Section availability is a dated snapshot, not live enrollment."}</div>}
       <div id="workspace-content" className="workspace-content" ref={content} tabIndex={-1}><Outlet key={program} /></div>
       <footer className="workspace-footer"><span>Built for the path ahead.</span><span>Planning reference · Official SJSU requirements take precedence.</span></footer>
     </div>
   </div>;
 }
 
-function Heading({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return <header className="workspace-heading"><span className="section-eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></header>;
+function Heading({ eyebrow, title, description }: { eyebrow?: string; title: string; description: string }) {
+  return <header className="workspace-heading">{eyebrow && <span className="section-eyebrow">{eyebrow}</span>}<h1>{title}</h1><p>{description}</p></header>;
 }
 
-export function Overview() {
-  const { catalog, takenCourseIds, plans } = useCatalog();
-  const [selected, setSelected] = useState<Course | null>(null);
-  const completed = catalog.courses.filter(course => takenCourseIds.has(course.id));
-  const planned = catalog.courses.filter(course => plans[course.id] && !takenCourseIds.has(course.id));
-  const units = completed.reduce((sum, course) => sum + course.units, 0);
-  const percentage = Math.round(completed.length / Math.max(1, catalog.courses.length) * 100);
-  return <>
-    <div className="heading-with-action"><Heading eyebrow="YOUR ACADEMIC PICTURE" title="Make room for what’s next." description="Your courses, your connections, your next semester. All in one place." /><Link className="primary-button" to="/planner">Open planner <ArrowRight size={17} aria-hidden="true" /></Link></div>
-    <div className="overview-stats"><article><span>Courses completed</span><strong>{completed.length}<small> / {catalog.courses.length}</small></strong><p>Named catalog courses you marked</p></article><article><span>Completed course units</span><strong>{units}<small> units</small></strong><p>Self-reported · not an official audit</p></article><article><span>In your plan</span><strong>{planned.length}<small> courses</small></strong><p>Personal draft for this session</p></article></div>
-    <div className="overview-grid"><section className="panel progress-panel"><div className="panel-heading"><h2>Your degree, in perspective</h2><ChartPieSlice size={20} aria-hidden="true" /></div><div className="degree-title"><span className="degree-icon"><GraduationCap size={30} aria-hidden="true" /></span><div><h3>{catalog.name}</h3><p>Bachelor of Science · {catalog.catalogYear}</p></div></div><div className="progress-label"><strong>Named course completion</strong><span>{percentage}%</span></div><progress max={catalog.courses.length || 1} value={completed.length} aria-label="Named course completion" /><div className="progress-key"><span><i />{completed.length} completed</span><span>{catalog.courses.length - completed.length} remaining course options</span></div><p className="fine-print">Includes named course options, not all graduation requirements. Electives, choose-one rules, grades and transfer credit need separate review.</p><Link className="text-link" to="/roadmap">Explore degree requirements <ArrowRight size={16} aria-hidden="true" /></Link></section>
-    <section className="panel next-panel"><div className="panel-heading"><h2>Your next steps</h2><span className="subtle-tag">Start here</span></div>{[{ to: "/courses", title: "Build your academic picture", text: "Mark courses you have already completed.", icon: CheckCircle }, { to: "/prerequisite-chart", title: "Connect the dots", text: "See how prerequisites shape your choices.", icon: GitBranch }, { to: "/planner", title: "Sketch your next semester", text: "Bring courses together in a personal draft.", icon: CalendarBlank }].map(({ to, title, text, icon: Icon }, index) => <Link className="next-step" to={to} key={to}><span className="step-number">0{index + 1}</span><div><strong>{title}</strong><p>{text}</p></div><Icon size={21} aria-hidden="true" /></Link>)}</section></div>
-    <div className="overview-grid lower-grid"><section className="panel"><div className="panel-heading"><h2>On your radar</h2><Link to="/courses">Browse courses <ArrowRight size={15} aria-hidden="true" /></Link></div><p className="panel-description">{planned.length ? "Your planned and in-progress courses." : "A starting point from the official first-semester roadmap."}</p>{(planned.length ? planned : catalog.courses.filter(course => course.recommendedSemester === 1)).slice(0, 4).map(course => <button className="compact-course" onClick={() => setSelected(course)} key={course.id}><span className="course-initial">{course.code.split(" ")[0].slice(0, 2)}</span><span><strong>{course.code}</strong><small>{course.title}</small></span><CourseStateBadge course={course} /><ArrowRight size={15} aria-hidden="true" /></button>)}</section><section className="future-panel"><span className="preview-label"><Sparkle size={15} aria-hidden="true" /> SCHEDULING AGENT</span><h2>A schedule shaped<br />around your week.</h2><p>Ask Gemini to inspect your session planner and compare verified Fall 2026 section combinations.</p><Link to="/recommendations">Open scheduling assistant <ArrowRight size={16} aria-hidden="true" /></Link><span className="orbit-decoration" aria-hidden="true" /></section></div>
-    {selected && <CourseDetail course={selected} onClose={() => setSelected(null)} />}
-  </>;
-}
+export { Overview } from "./Overview";
 
-export function Courses() {
-  const { catalog, takenCourseIds, plans } = useCatalog();
-  const { selectedOfferings } = useSchedule();
-  const [params, setParams] = useSearchParams();
-  const query = params.get("q") ?? "";
-  const filter = params.get("status") ?? "all";
-  const [selected, setSelected] = useState<Course | null>(null);
-  const [scheduleOpen, setScheduleOpen] = useState(false);
-  const update = (key: string, value: string) => setParams(previous => { const next = new URLSearchParams(previous); if (value) next.set(key, value); else next.delete(key); return next; }, { replace: true });
-  const courses = catalog.courses.filter(course => `${course.code} ${course.title}`.toLowerCase().includes(query.toLowerCase()) && (filter === "all" || (filter === "completed" ? takenCourseIds.has(course.id) : !takenCourseIds.has(course.id) && plans[course.id]?.status === filter)));
-  return <><Heading eyebrow="EXPLORE YOUR OPTIONS" title="Course explorer" description="Find a course, choose a Fall 2026 section, and see your week take shape without leaving the page." /><div className="explorer-toolbar"><label className="workspace-search"><MagnifyingGlass size={18} aria-hidden="true" /><span className="sr-only">Search courses</span><input placeholder="Search by course code or title…" value={query} onChange={event => update("q", event.target.value)} /></label><label className="filter-label">Status<select value={filter} onChange={event => update("status", event.target.value)}><option value="all">All courses</option><option value="completed">Completed</option><option value="planned">Planned</option><option value="in-progress">In progress</option></select></label></div><div className="explorer-result-row"><p className="result-count" role="status">{courses.length} courses · {catalog.name}</p>{selectedOfferings.length > 0 && <button className="mobile-schedule-trigger" type="button" onClick={() => setScheduleOpen(true)}><CalendarBlank size={17} /> View schedule · {selectedOfferings.length}</button>}</div><div className={`course-explorer-layout ${selectedOfferings.length ? "has-schedule" : ""}`}><section className="panel course-table"><div className="course-table-head"><span>COURSE</span><span>UNITS</span><span>STATUS</span><span /></div>{courses.map(course => <button key={course.id} className="course-table-row" onClick={() => setSelected(course)}><span><strong>{course.code}</strong><span>{course.title}</span></span><span>{course.units}</span><CourseStateBadge course={course} /><ArrowRight size={16} aria-hidden="true" /></button>)}{!courses.length && <div className="workspace-empty"><MagnifyingGlass size={30} aria-hidden="true" /><h2>No courses match</h2><p>Try another course name or clear your filters.</p><button onClick={() => setParams({})}>Clear filters</button></div>}</section>{selectedOfferings.length > 0 && <WeeklySchedule mobileOpen={scheduleOpen} onClose={() => setScheduleOpen(false)} />}</div>{selected && <CourseDetail course={selected} onClose={() => setSelected(null)} />}</>;
-}
+export { Courses } from "./CourseExplorer";
 
 export function Planner() {
   const { catalog, courseById, plans, takenCourseIds, setPlan, removePlan } = useCatalog();

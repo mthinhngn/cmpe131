@@ -1,0 +1,648 @@
+{
+ "url": "http://127.0.0.1:4173/roadmap",
+ "at": "2026-10-25T10:31:16.159Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.66,
+    0.77,
+    0.82,
+    0.77,
+    0.75
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 4043,
+     "screens": 4.5,
+     "words": 715,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 84,
+     "sections": 2,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Computer Engineering degree roadmap",
+     "words": 4,
+     "chars": 35,
+     "lines": 1,
+     "size": 28,
+     "vw": 1.9,
+     "font": "IBM Plex Sans Condensed",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.18,
+     "top": 115,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Computer Engineering degree roadmap",
+     "words": 4,
+     "lines": 1,
+     "size": 28,
+     "font": "IBM Plex Sans Condensed"
+    },
+    "headings": [
+     {
+      "text": "Computer Engineering degree roadmap",
+      "words": 4,
+      "chars": 35,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "IBM Plex Sans Condensed",
+      "weight": 600,
+      "tracking": -0.025,
+      "leading": 1.18,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.56,
+      "top": 115,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "IBM Plex Sans",
+       "share": 0.89,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Sans Condensed",
+       "share": 0.11,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      20,
+      28
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "IBM Plex Sans",
+      "size": 13,
+      "leading": 1.5,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 6.4
+     },
+     "measureChars": 167,
+     "max": {
+      "size": 28,
+      "vw": 1.9,
+      "font": "IBM Plex Sans Condensed",
+      "text": "Computer Engineering degree roadmap"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.05,
+     "centerShare": 0,
+     "smallText": 15
+    },
+    "eyebrows": [
+     {
+      "text": "Degree",
+      "above": "Computer Engineering degree roadmap",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 10
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#eff1ee",
+     "bodyBgHsl": {
+      "h": 100,
+      "s": 0.1,
+      "l": 0.94
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 380,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4b5a58",
+       "share": 0.43
+      },
+      {
+       "color": "#172225",
+       "share": 0.38
+      },
+      {
+       "color": "#53615d",
+       "share": 0.05
+      },
+      {
+       "color": "#624a1c",
+       "share": 0.04
+      },
+      {
+       "color": "#6f5108",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#172225"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 2,
+     "radius": 0,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "Degree roadmap"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 51,
+     "hairlineSamples": [
+      "header.workspace-header 216px",
+      "div.workspace-context 1224px",
+      "header.group-header 1136px",
+      "button.requirement-row.course-row 1100px",
+      "button.requirement-row.course-row 1100px"
+     ],
+     "outlinedBoxes": 8,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 8,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 380
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "ibm plex sans",
+     "ibm plex sans condensed"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 4043,
+    "margins": {
+     "left": 58,
+     "right": 62
+    },
+    "sections": [
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 380,
+      "height": 424,
+      "words": 68,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 1 - Fall (16 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 828,
+      "height": 356,
+      "words": 56,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 1 - Spring (15 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 1208,
+      "height": 424,
+      "words": 82,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 2 - Fall (16 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 1655,
+      "height": 424,
+      "words": 75,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 2 - Spring (13 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 2103,
+      "height": 424,
+      "words": 71,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 3 - Fall (16 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 2551,
+      "height": 424,
+      "words": 67,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 3 - Spring (16 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 2998,
+      "height": 491,
+      "words": 85,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 4 - Fall (15 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "article.requirement-group",
+      "tag": "article",
+      "top": 3513,
+      "height": 424,
+      "words": 67,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Year 4 - Spring (13 units)",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 278,
+      "right": 62,
+      "textLeft": 279,
+      "textRight": 63,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Computer Engineering degree roadmap",
+      "size": 28,
+      "top": 115,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 279,
+      "n": 8
+     },
+     {
+      "x": 259,
+      "n": 3
+     },
+     {
+      "x": 507,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 12,
+    "bodySize": 13,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.08,
+    "voidBox": {
+     "x": 0,
+     "y": 360,
+     "w": 240,
+     "h": 420
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#eff1ee",
+    "sidebar": {
+     "w": 216,
+     "tag": "header",
+     "links": 9,
+     "share": 0.15
+    },
+    "topbar": {
+     "h": 56
+    },
+    "canvas": {
+     "left": 44,
+     "right": 62
+    },
+    "hero": {
+     "text": "Computer Engineering degree roadmap",
+     "words": 4,
+     "chars": 35,
+     "lines": 1,
+     "size": 28,
+     "vw": 1.9,
+     "font": "IBM Plex Sans Condensed",
+     "weight": 600,
+     "tracking": -0.02,
+     "leading": 1.18,
+     "top": 115,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 9,
+     "firstScreen": 3,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 17,
+     "radii": [
+      [
+       0,
+       9
+      ],
+      [
+       2,
+       8
+      ]
+     ],
+     "heavyBorders": 1,
+     "borderSamples": [
+      "#bac5be on #eff1ee (1.56:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0.15,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      20,
+      28
+     ]
+    },
+    "title": {
+     "text": "Computer Engineering degree roadmap",
+     "size": 28,
+     "top": 115
+    },
+    "colourShare": 0
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "below-fold",
+   "width": 1440,
+   "message": "Only 3 of 9 blocks start on the first 1440px screen.",
+   "fix": "Every block the brief names shows its header and first rows on the first desktop screen: size the headline block to its question, cap long lists with \"View all\", and put time-sensitive blocks before long tables."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\thinh\\CMPE131\\.taste-skill\\final-production-roadmap\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\thinh\\CMPE131\\.taste-skill\\final-production-roadmap\\desktop-page-01.jpg",
+    "C:\\Users\\thinh\\CMPE131\\.taste-skill\\final-production-roadmap\\desktop-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

@@ -1,0 +1,1593 @@
+{
+ "url": "http://127.0.0.1:5173/courses",
+ "at": "2026-10-25T10:04:55.825Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    0.72,
+    0.92,
+    0.84
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 2460,
+     "screens": 2.7,
+     "words": 345,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 73,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Course explorer",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 48,
+     "vw": 3.3,
+     "font": "Inter",
+     "weight": 650,
+     "tracking": -0.05,
+     "leading": 1.12,
+     "top": 159,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Course explorer",
+     "words": 2,
+     "lines": 1,
+     "size": 48,
+     "font": "Inter"
+    },
+    "headings": [
+     {
+      "text": "Course explorer",
+      "words": 2,
+      "chars": 15,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Inter",
+      "weight": 650,
+      "tracking": -0.055,
+      "leading": 1.12,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.54,
+      "top": 159,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Mono",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      48
+     ],
+     "sizeCount": 9,
+     "notLoaded": [
+      "Inter",
+      "IBM Plex Mono"
+     ],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 5.9
+     },
+     "measureChars": 99,
+     "max": {
+      "size": 48,
+      "vw": 3.3,
+      "font": "Inter",
+      "text": "Course explorer"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0.02,
+     "monoFamilies": [
+      "IBM Plex Mono"
+     ],
+     "monoSamples": [
+      "31 courses · Computer Engineering"
+     ],
+     "microLabels": 6,
+     "microLabelShare": 0.046,
+     "microSamples": [
+      "ACADEMIC PLANNING",
+      "EXPLORE YOUR OPTIONS",
+      "31 courses · Computer Engineering",
+      "COURSE",
+      "UNITS",
+      "STATUS"
+     ],
+     "upperShare": 0.18,
+     "centerShare": 0.01,
+     "smallText": 12
+    },
+    "eyebrows": [
+     {
+      "text": "EXPLORE YOUR OPTIONS",
+      "above": "Course explorer",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 134
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f7f8f8",
+     "bodyBgHsl": {
+      "h": 180,
+      "s": 0.07,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#20242a",
+       "share": 0.49
+      },
+      {
+       "color": "#263784",
+       "share": 0.14
+      },
+      {
+       "color": "#59616b",
+       "share": 0.11
+      },
+      {
+       "color": "#717985",
+       "share": 0.11
+      },
+      {
+       "color": "#a03f4b",
+       "share": 0.08
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#263784"
+     },
+     "lowContrast": [
+      {
+       "text": "Showing the reviewed catalog snapshot. L",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Built for the path ahead.",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Planning reference · Official SJSU requi",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Plan with clarity",
+       "ratio": 4.2,
+       "need": 4.5,
+       "size": 8,
+       "fg": "#717985",
+       "bg": "#fbfbfa"
+      },
+      {
+       "text": "ACADEMIC PLANNING",
+       "ratio": 4.2,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#717985",
+       "bg": "#fbfbfa"
+      },
+      {
+       "text": "Workspace",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 2,
+     "radius": 0,
+     "height": 45,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "Course explorer"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 35,
+     "hairlineSamples": [
+      "header.workspace-header 224px",
+      "div.workspace-context 1216px",
+      "section.panel.course-table 1101px",
+      "button.course-table-row 1101px",
+      "button.course-table-row 1101px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 2460,
+    "margins": {
+     "left": 59,
+     "right": 58
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Course explorer",
+      "size": 48,
+      "top": 159,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 282,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 13,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.08,
+    "voidBox": {
+     "x": 0,
+     "y": 360,
+     "w": 240,
+     "h": 420
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": false,
+    "ground": "#f7f8f8",
+    "sidebar": {
+     "w": 224,
+     "tag": "header",
+     "links": 9,
+     "share": 0.16
+    },
+    "topbar": {
+     "h": 64
+    },
+    "canvas": {
+     "left": 58,
+     "right": 58
+    },
+    "hero": {
+     "text": "Course explorer",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 48,
+     "vw": 3.3,
+     "font": "Inter",
+     "weight": 650,
+     "tracking": -0.05,
+     "leading": 1.12,
+     "top": 159,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 2,
+     "firstScreen": 2,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 2,
+     "radii": [
+      [
+       0,
+       2
+      ]
+     ],
+     "heavyBorders": 1,
+     "borderSamples": [
+      "#c9cdd3 on #f7f8f8 (1.5:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0.42,
+     "tiny": 6,
+     "tinySamples": [
+      "Plan with clarity 8px",
+      "ACADEMIC PLANNING 10px",
+      "EXPLORE YOUR OPTIONS 10px",
+      "COURSE 10px"
+     ],
+     "sizes": [
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      48
+     ]
+    },
+    "title": {
+     "text": "Course explorer",
+     "size": 48,
+     "top": 159
+    },
+    "colourShare": 0
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    0.81,
+    0.92,
+    0.87
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 2543,
+     "screens": 2.5,
+     "words": 342,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 73,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Course explorer",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 34,
+     "vw": 4.4,
+     "font": "Inter",
+     "weight": 650,
+     "tracking": -0.05,
+     "leading": 1.12,
+     "top": 159,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Course explorer",
+     "words": 2,
+     "lines": 1,
+     "size": 34,
+     "font": "Inter"
+    },
+    "headings": [
+     {
+      "text": "Course explorer",
+      "words": 2,
+      "chars": 15,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter",
+      "weight": 650,
+      "tracking": -0.055,
+      "leading": 1.12,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.68,
+      "top": 159,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Mono",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      34
+     ],
+     "sizeCount": 9,
+     "notLoaded": [
+      "Inter",
+      "IBM Plex Mono"
+     ],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 5.9
+     },
+     "measureChars": 75,
+     "max": {
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter",
+      "text": "Course explorer"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0.02,
+     "monoFamilies": [
+      "IBM Plex Mono"
+     ],
+     "monoSamples": [
+      "31 courses · Computer Engineering"
+     ],
+     "microLabels": 6,
+     "microLabelShare": 0.046,
+     "microSamples": [
+      "ACADEMIC PLANNING",
+      "EXPLORE YOUR OPTIONS",
+      "31 courses · Computer Engineering",
+      "COURSE",
+      "UNITS",
+      "STATUS"
+     ],
+     "upperShare": 0.18,
+     "centerShare": 0.01,
+     "smallText": 16
+    },
+    "eyebrows": [
+     {
+      "text": "EXPLORE YOUR OPTIONS",
+      "above": "Course explorer",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 134
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f7f8f8",
+     "bodyBgHsl": {
+      "h": 180,
+      "s": 0.07,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#20242a",
+       "share": 0.5
+      },
+      {
+       "color": "#263784",
+       "share": 0.14
+      },
+      {
+       "color": "#59616b",
+       "share": 0.11
+      },
+      {
+       "color": "#717985",
+       "share": 0.11
+      },
+      {
+       "color": "#a03f4b",
+       "share": 0.08
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#20242a"
+     },
+     "lowContrast": [
+      {
+       "text": "Showing the reviewed catalog snapshot. L",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Built for the path ahead.",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Planning reference · Official SJSU requi",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Plan with clarity",
+       "ratio": 4.2,
+       "need": 4.5,
+       "size": 8,
+       "fg": "#717985",
+       "bg": "#fbfbfa"
+      },
+      {
+       "text": "ACADEMIC PLANNING",
+       "ratio": 4.2,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#717985",
+       "bg": "#fbfbfa"
+      },
+      {
+       "text": "Workspace",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 32,
+     "inHero": 11,
+     "radius": 0,
+     "height": 62,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "Course explorer",
+      "CMPE 30 Programming Concepts and Methodo",
+      "ENGR 10 Introduction to Engineering 3 Op",
+      "ENGL 1A First Year Writing 3 Open"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 35,
+     "hairlineSamples": [
+      "header.workspace-header 190px",
+      "div.workspace-context 578px",
+      "section.panel.course-table 526px",
+      "button.course-table-row 526px",
+      "button.course-table-row 526px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 1024,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 2543,
+    "margins": {
+     "left": 53,
+     "right": 26
+    },
+    "sections": [
+     {
+      "sel": "header.workspace-heading",
+      "tag": "header",
+      "top": 128,
+      "height": 126,
+      "words": 23,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Course explorer",
+       "size": 34,
+       "tag": "h1"
+      },
+      "left": 216,
+      "right": 59,
+      "textLeft": 216,
+      "textRight": 59,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.course-explorer-layout",
+      "tag": "div",
+      "top": 372,
+      "height": 2034,
+      "words": 211,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 216,
+      "right": 26,
+      "textLeft": 230,
+      "textRight": 143,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Course explorer",
+      "size": 34,
+      "top": 159,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 216,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 13,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "dark": false,
+    "ground": "#f7f8f8",
+    "sidebar": {
+     "w": 190,
+     "tag": "header",
+     "links": 9,
+     "share": 0.25
+    },
+    "topbar": {
+     "h": 64
+    },
+    "canvas": {
+     "left": 26,
+     "right": 26
+    },
+    "hero": {
+     "text": "Course explorer",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 34,
+     "vw": 4.4,
+     "font": "Inter",
+     "weight": 650,
+     "tracking": -0.05,
+     "leading": 1.12,
+     "top": 159,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 2,
+     "firstScreen": 2,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 8,
+     "radii": [
+      [
+       0,
+       8
+      ]
+     ],
+     "heavyBorders": 1,
+     "borderSamples": [
+      "#c9cdd3 on #f7f8f8 (1.5:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0.46,
+     "tiny": 6,
+     "tinySamples": [
+      "Plan with clarity 8px",
+      "ACADEMIC PLANNING 10px",
+      "EXPLORE YOUR OPTIONS 10px",
+      "COURSE 10px"
+     ],
+     "sizes": [
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      34
+     ]
+    },
+    "title": {
+     "text": "Course explorer",
+     "size": 34,
+     "top": 159
+    },
+    "colourShare": 0.003
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 4,
+   "filled": [
+    0.69,
+    0.92,
+    0.92,
+    0.85
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 2811,
+     "screens": 3.3,
+     "words": 322,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 73,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Course explorer",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 34,
+     "vw": 8.7,
+     "font": "Inter",
+     "weight": 650,
+     "tracking": -0.05,
+     "leading": 1.12,
+     "top": 252,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Course explorer",
+     "words": 2,
+     "lines": 1,
+     "size": 34,
+     "font": "Inter"
+    },
+    "headings": [
+     {
+      "text": "Course explorer",
+      "words": 2,
+      "chars": 15,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter",
+      "weight": 650,
+      "tracking": -0.055,
+      "leading": 1.12,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.91,
+      "top": 252,
+      "tag": "h1",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Mono",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      34
+     ],
+     "sizeCount": 9,
+     "notLoaded": [
+      "Inter",
+      "IBM Plex Mono"
+     ],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 5.9
+     },
+     "measureChars": 51,
+     "max": {
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter",
+      "text": "Course explorer"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0.02,
+     "monoFamilies": [
+      "IBM Plex Mono"
+     ],
+     "monoSamples": [
+      "31 courses · Computer Engineering"
+     ],
+     "microLabels": 5,
+     "microLabelShare": 0.04,
+     "microSamples": [
+      "EXPLORE YOUR OPTIONS",
+      "31 courses · Computer Engineering",
+      "COURSE",
+      "UNITS",
+      "STATUS"
+     ],
+     "upperShare": 0.18,
+     "centerShare": 0.01,
+     "smallText": 8
+    },
+    "eyebrows": [
+     {
+      "text": "EXPLORE YOUR OPTIONS",
+      "above": "Course explorer",
+      "upper": true,
+      "tracked": true,
+      "mono": false,
+      "pill": false,
+      "size": 10,
+      "top": 227
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f7f8f8",
+     "bodyBgHsl": {
+      "h": 180,
+      "s": 0.07,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [],
+     "textColors": [
+      {
+       "color": "#20242a",
+       "share": 0.54
+      },
+      {
+       "color": "#263784",
+       "share": 0.14
+      },
+      {
+       "color": "#717985",
+       "share": 0.11
+      },
+      {
+       "color": "#59616b",
+       "share": 0.09
+      },
+      {
+       "color": "#a03f4b",
+       "share": 0.08
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#20242a"
+     },
+     "lowContrast": [
+      {
+       "text": "Showing the reviewed catalog snapshot. L",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Built for the path ahead.",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Planning reference · Official SJSU requi",
+       "ratio": 4.1,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#f7f8f8"
+      },
+      {
+       "text": "Plan with clarity",
+       "ratio": 4.2,
+       "need": 4.5,
+       "size": 8,
+       "fg": "#717985",
+       "bg": "#fbfbfa"
+      },
+      {
+       "text": "Workspace",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Degree",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#717985",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 31,
+     "inHero": 5,
+     "radius": 0,
+     "height": 62,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "CMPE 30 Programming Concepts and Methodo",
+      "ENGR 10 Introduction to Engineering 3 Op",
+      "ENGL 1A First Year Writing 3 Open",
+      "MATH 30 Calculus I 3 Open"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 35,
+     "hairlineSamples": [
+      "header.workspace-header 390px",
+      "div.workspace-context 390px",
+      "section.panel.course-table 354px",
+      "button.course-table-row 354px",
+      "button.course-table-row 354px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 1,
+     "fixed": false,
+     "height": 63,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 2811,
+    "margins": {
+     "left": 18,
+     "right": 18
+    },
+    "sections": [
+     {
+      "sel": "header.workspace-heading",
+      "tag": "header",
+      "top": 221,
+      "height": 126,
+      "words": 23,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Course explorer",
+       "size": 34,
+       "tag": "h1"
+      },
+      "left": 18,
+      "right": 36,
+      "textLeft": 18,
+      "textRight": 36,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.course-explorer-layout",
+      "tag": "div",
+      "top": 512,
+      "height": 2170,
+      "words": 211,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 18,
+      "right": 18,
+      "textLeft": 27,
+      "textRight": 68,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Course explorer",
+      "size": 34,
+      "top": 252,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 18,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 14,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "dark": false,
+    "ground": "#f7f8f8",
+    "sidebar": null,
+    "topbar": {
+     "h": 63
+    },
+    "canvas": {
+     "left": 18,
+     "right": 18
+    },
+    "hero": {
+     "text": "Course explorer",
+     "words": 2,
+     "chars": 15,
+     "lines": 1,
+     "size": 34,
+     "vw": 8.7,
+     "font": "Inter",
+     "weight": 650,
+     "tracking": -0.05,
+     "leading": 1.12,
+     "top": 252,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 0,
+    "layout": {
+     "panels": 1,
+     "firstScreen": 1,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 15,
+     "radii": [
+      [
+       0,
+       15
+      ]
+     ],
+     "heavyBorders": 1,
+     "borderSamples": [
+      "#c9cdd3 on #f7f8f8 (1.5:1)"
+     ],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 0,
+     "tabularShare": null,
+     "kpiMax": null
+    },
+    "rows": null,
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0.45,
+     "tiny": 6,
+     "tinySamples": [
+      "Plan with clarity 8px",
+      "ACADEMIC PLANNING 10px",
+      "EXPLORE YOUR OPTIONS 10px",
+      "COURSE 10px"
+     ],
+     "sizes": [
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18,
+      34
+     ]
+    },
+    "title": {
+     "text": "Course explorer",
+     "size": 34,
+     "top": 252
+    },
+    "colourShare": 0.001
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "6 tiny uppercase letter-spaced labels (e.g. \"ACADEMIC PLANNING\", \"EXPLORE YOUR OPTIONS\", \"31 courses · Computer Engineering\", \"COURSE\").",
+   "fix": "Use sentence-case text at a readable size, or delete the label.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"Showing the reviewed catalog snapshot. L\" 4.1:1 needs 4.5:1; \"Built for the path ahead.\" 4.1:1 needs 4.5:1; \"Planning reference · Official SJSU requi\" 4.1:1 needs 4.5:1; \"Plan with clarity\" 4.2:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-fallback",
+   "width": 1440,
+   "message": "Typeface(s) declared but not loaded, so a fallback is rendering: Inter, IBM Plex Mono",
+   "fix": "Fix the font URL / family name, or the screenshots you are judging are not the design.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "dev-server",
+   "width": 1440,
+   "message": "This page is served by a development server (Vite, webpack or Next in dev mode).",
+   "fix": "Run the last gate on the production build too (vite build && vite preview, next build && next start, or the built index.html): minifiers and bundlers change the CSS a visitor receives.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "tiny-text",
+   "width": 1440,
+   "message": "6 text blocks under 11px: Plan with clarity 8px, ACADEMIC PLANNING 10px, EXPLORE YOUR OPTIONS 10px, COURSE 10px.",
+   "fix": "Nothing below 11px; secondary text 12px, data 13–14px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "app-title-size",
+   "width": 1440,
+   "message": "The h1 is 48px (\"Course explorer\").",
+   "fix": "An app screen is not a landing page: the title is 18-32px (20-24px on a phone).",
+   "alsoAt": [
+    390
+   ]
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\thinh\\CMPE131\\.taste-skill\\before\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\thinh\\CMPE131\\.taste-skill\\before\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\thinh\\CMPE131\\.taste-skill\\before\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\thinh\\CMPE131\\.taste-skill\\before\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\thinh\\CMPE131\\.taste-skill\\before\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\thinh\\CMPE131\\.taste-skill\\before\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

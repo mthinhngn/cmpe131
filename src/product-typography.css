@@ -1,0 +1,74 @@
+/* Shared desktop reading scale for every product page after Home. */
+@media (min-width: 1000px) {
+  .ov3-page, .prereq-shell, .sp-page, .degree-page, .recommendations-page { font-size: 16px; line-height: 1.55; }
+  .ov3-page :is(h1,h2,h3), .prereq-shell :is(h1,h2,h3), .sp-page :is(h1,h2,h3), .degree-page :is(h1,h2,h3), .recommendations-page :is(h1,h2,h3) { font-family: 'Radar Tight','Inter Tight',Arial,sans-serif; font-weight: 500; }
+  .degree-hero-copy p, .recommendations-intro-copy > p { font-size: 17px; }
+  .degree-course-title, .degree-course-top > strong, .recommendations-page .agent-message p { font-size: 16px; }
+  .degree-course-top > span { max-width: 58%; }
+  .degree-course-note, .degree-term-note { font-size: 14px; }
+  .recommendations-page .agent-composer textarea { font-size: 16px; }
+}
+@media (min-width: 1000px) {
+  .ov3-page :is(small, .ov3-eyebrow, .ov3-nav a, .ov3-header-actions a),
+  .prereq-shell :is(small, .section-label-inline, .back-link, .primary-nav a) { font-size: 14px; }
+  .ov3-page :is(.ov3-summary, .ov3-content p:not(.ov3-eyebrow)),
+  .prereq-shell :is(.prereq-full-page p, .prereq-map-caption p) { font-size: 16px; line-height: 1.6; }
+}
+
+/* Metric labels need their own geometry after the shared reading scale grows. */
+@media (min-width: 1000px) {
+  .ov3-page .ov3-donut > div,
+  .ov3-page .ov3-term-ring { white-space: nowrap; line-height: 1; }
+  .ov3-page .ov3-donut strong { display: flex; align-items: baseline; gap: 1px; font-family: 'Radar Tight','Inter Tight',Arial,sans-serif; font-size: 32px; line-height: 1; letter-spacing: -.035em; }
+  .ov3-page .ov3-donut strong span { font-size: 16px; line-height: 1; }
+  .ov3-page .ov3-donut small { margin-top: 4px; font-size: 14px; line-height: 1.15; }
+  .ov3-page .ov3-term-ring { width: 96px; height: 96px; flex: none; gap: 2px; }
+  .ov3-page .ov3-term-ring strong { font-family: 'Radar Tight','Inter Tight',Arial,sans-serif; font-size: 29px; line-height: 1; letter-spacing: -.03em; }
+  .ov3-page .ov3-term-ring small { font-size: 14px; line-height: 1.15; }
+  .ov3-page .ov3-term-visual > div:last-child { gap: 8px; font-size: 14px; line-height: 1.4; }
+  .ov3-page .ov3-term-visual > div:last-child span { display: flex; align-items: baseline; white-space: nowrap; }
+  .ov3-page .ov3-term-visual i { flex: none; }
+  .ov3-page .ov3-chart-field > .ov3-term-chart { min-height: 230px; }
+
+  .prereq-full-page .radar-app--compact .radar-workspace { grid-template-columns: 204px minmax(0, 1fr); }
+  .prereq-shell .radar-sidebar { padding-inline: 12px; }
+  .prereq-shell .semester-item { min-height: 58px; grid-template-columns: 21px minmax(0, 1fr) 10px; gap: 8px; padding-inline: 7px; }
+  .prereq-shell .semester-item > span:nth-child(2) { min-width: 0; gap: 3px; }
+  .prereq-shell .semester-item strong { font-size: 14px; line-height: 1.2; font-weight: 600; }
+  .prereq-shell .semester-item small { font-size: 10px; line-height: 1.3; white-space: nowrap; }
+  .prereq-shell .semester-number, .prereq-shell .semester-check { font-size: 13px; }
+}
+
+/* Status dots and a continuous card outline carry state without a strip
+   crossing the node's rounded top edge. The landing map keeps its own treatment. */
+.prereq-shell .course-node .node-accent { display: none; }
+.prereq-shell .node-complete .node-surface { stroke: #c6ded3; }
+.prereq-shell .node-current .node-surface { stroke: #168873; stroke-width: 1.5; }
+.prereq-shell .node-ready .node-surface { stroke: #a5d8c9; }
+
+/* The complete roadmap keeps every semester on the page at a readable card scale. */
+@media (min-width: 1000px) {
+  .prereq-full-page .radar-app--full-plan .radar-workspace { min-height: 0; }
+  .prereq-full-page .radar-app--full-plan .map-canvas { min-height: 0; flex: 0 0 auto; }
+  .prereq-full-page .radar-app--full-plan .map-scroll { overflow-x: auto; }
+  .prereq-full-page .radar-app--full-plan .desktop-prereq-map { width: 1130px; height: 1450px; min-height: 0; max-width: none; }
+  .prereq-shell .radar-app--full-plan .semester-item { grid-template-columns: 21px minmax(0, 1fr); }
+  .prereq-shell .radar-app--full-plan .semester-item strong { font-size: 12px; }
+  .prereq-shell .radar-app--full-plan .semester-item small { font-size: 9px; }
+  .prereq-shell .radar-app--full-plan .plan-period { color: #5e736b; font-size: 12px; white-space: nowrap; }
+  .prereq-full-page .radar-app--full-plan .semester-title { font-size: 12px; }
+  .prereq-full-page .radar-app--full-plan .semester-year,
+  .prereq-full-page .radar-app--full-plan .semester-summary { font-size: 7px; }
+  .prereq-full-page .radar-app--full-plan .node-code { font-size: 10px; }
+  .prereq-full-page .radar-app--full-plan .node-name { font-size: 9.5px; }
+  .prereq-full-page .radar-app--full-plan .node-credits { font-size: 7px; }
+  .prereq-full-page .radar-app--full-plan .node-status { font-size: 8px; }
+}
+.prereq-shell .radar-app--full-plan .node-recommended .node-surface { stroke: #c4ddd2; }
+.prereq-shell .radar-app--full-plan .node-choice .node-surface { fill: #f8fbf9; stroke: #a7bbb1; stroke-dasharray: 4 3; }
+.prereq-shell .radar-app--full-plan .node-recommended .node-state-dot,
+.prereq-shell .radar-app--full-plan .detail-recommended > span { background: #168873; fill: #168873; }
+.prereq-shell .radar-app--full-plan .node-choice .node-state-dot,
+.prereq-shell .radar-app--full-plan .detail-choice > span { background: #b98e48; fill: #b98e48; }
+.prereq-shell .radar-app--full-plan .graph-edge { stroke: #8cae9d; stroke-width: 1.35; opacity: .36; }
+.prereq-shell .radar-app--full-plan .graph-edge.is-lit { stroke: #168873; stroke-width: 2.2; opacity: .95; }

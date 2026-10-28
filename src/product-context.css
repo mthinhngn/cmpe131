@@ -1,0 +1,24 @@
+@font-face { font-family: "Radar Context Inter"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/fonts/inter-variable.woff2") format("woff2"); }
+/* The approved Explorer row is shared across product routes, independently of page themes. */
+.cr-context-bar.cr-context-bar { box-sizing: border-box; width: min(1280px, calc(100% - 64px)); min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 10px 0; margin: 0 auto; border-bottom: 1px solid #ededed; color: #656565; background: #fff; font:400 14px/1.5 "Radar Context Inter", Inter, Arial, sans-serif; }
+.cr-context-bar * { box-sizing: border-box; }
+.cr-context-breadcrumb { display: flex; align-items: center; gap: 13px; flex-shrink: 0; }
+.cr-context-breadcrumb strong { font-weight: 400; color: #101010; }
+.cr-context-details { display: flex; align-items: center; gap: 24px; }
+.cr-context-degree { display: flex; align-items: center; gap: 8px; }
+.cr-context-bar .cr-context-degree select, .cr-context-degree-value { max-width: 280px; min-height: 28px; padding: 5px 28px 5px 8px; border: 1px solid #ddd; border-radius: 3px; background: transparent; color: #101010; font: inherit; letter-spacing: normal; }
+.cr-context-degree-value { border-color: transparent; padding-right: 0; }
+.cr-context-edition { white-space: nowrap; }
+.cr-context-dot { display: block; width: 6px; height: 6px; border-radius: 50%; background: #168873; }
+.cr-context-bar select:focus-visible { outline: 2px solid #168873; outline-offset: 3px; }
+@media (max-width:999px) {
+  .cr-context-bar.cr-context-bar { width: calc(100% - 40px); flex-wrap: wrap; gap: 8px 14px; }
+  .cr-context-details { gap: 14px; flex-wrap: wrap; }
+}
+@media (max-width:420px) {
+  .cr-context-breadcrumb { display: none; }
+  .cr-context-details { width: 100%; justify-content: space-between; gap: 8px; }
+  .cr-context-degree { min-width: 0; }
+  .cr-context-bar .cr-context-degree select { min-width: 0; max-width: 225px; }
+}
+

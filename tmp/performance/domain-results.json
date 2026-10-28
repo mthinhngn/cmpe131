@@ -1,0 +1,42 @@
+{
+  "node": "v24.16.0",
+  "platform": "win32",
+  "method": "median of 7 warmed batches, milliseconds per call; synthetic scheduling fixture",
+  "results": [
+    {
+      "name": "path traversal, current CMPE catalog",
+      "beforeMs": 0.0099,
+      "afterMs": 0.0092,
+      "speedup": 1.08,
+      "equivalent": true
+    },
+    {
+      "name": "path traversal, 121 edges",
+      "beforeMs": 0.4607,
+      "afterMs": 0.4091,
+      "speedup": 1.13,
+      "equivalent": true
+    },
+    {
+      "name": "schedule candidates, 32 sections / 5000 branch budget",
+      "beforeMs": 214.1704,
+      "afterMs": 19.6507,
+      "speedup": 10.9,
+      "equivalent": true
+    },
+    {
+      "name": "conflicts, 32 sections",
+      "beforeMs": 2.8288,
+      "afterMs": 0.2175,
+      "speedup": 13.01,
+      "equivalent": true
+    },
+    {
+      "name": "autonomous schedule, 32 sections / 5000 branch budget",
+      "beforeMs": 386.106,
+      "afterMs": 46.8172,
+      "speedup": 8.25,
+      "equivalent": true
+    }
+  ]
+}

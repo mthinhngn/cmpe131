@@ -1,0 +1,64 @@
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ArrowUpRight, Check, GitBranch, MagnifyingGlass, Sparkle } from "@phosphor-icons/react";
+import { useCatalog } from "./CatalogContext";
+import { computerEngineeringCatalog } from "./data";
+import { softwareEngineeringCatalog } from "./softwareEngineeringData";
+import { detectTimeConflicts, formatMinute, parseMeeting, WEEKDAYS } from "./schedule";
+import type { Course, CourseOffering, ProgramCatalog } from "./types";
+import "./landing.css";
+
+function CourseRow({ course }: { course: Course }) {
+  return <Link className="lr-course" to={`/courses?q=${encodeURIComponent(course.code)}`}><span><strong>{course.code}</strong><span>{course.title}</span></span><small>{course.units} units</small><ArrowUpRight size={15} aria-hidden="true" /></Link>;
+}
+
+function PathPreview({ catalog, compact = false }: { catalog: ProgramCatalog; compact?: boolean }) {
+  const end = catalog.courses.find(course => course.prerequisiteCourseIds.length && course.code === "CMPE 126") ?? catalog.courses.find(course => course.prerequisiteCourseIds.length);
+  const middle = catalog.courses.find(course => course.id === end?.prerequisiteCourseIds[0]);
+  const start = catalog.courses.find(course => course.id === middle?.prerequisiteCourseIds[0]);
+  const path = [start, middle, end].filter((course): course is Course => !!course);
+  return <div className={`lr-path ${compact ? "lr-path-small" : ""}`}><div className="lr-preview-label"><GitBranch size={16} aria-hidden="true" /> Prerequisite path <span>Catalog view</span></div><div className="lr-path-nodes">{path.map((course, index) => <div className="lr-path-step" key={course.id}>{index > 0 && <div className="lr-connector" aria-hidden="true"><ArrowRight size={17} /></div>}<Link to={`/courses?q=${encodeURIComponent(course.code)}`}><span>{course.units} units</span><strong>{course.code}</strong><p>{course.title}</p></Link></div>)}</div><div className="lr-path-note"><i /> Recorded course dependencies <span>Grade requirements also apply</span></div></div>;
+}
+
+function SemesterPreview({ catalog, compact = false }: { catalog: ProgramCatalog; compact?: boolean }) {
+  const courses = catalog.courses.filter(course => course.recommendedSemester === 2);
+  return <div className={`lr-semester ${compact ? "lr-semester-small" : ""}`}><div className="lr-preview-label">Semester 2 <span>Roadmap example</span></div><div className="lr-semester-total"><strong>{courses.reduce((sum, course) => sum + course.units, 0)}<small> named course units</small></strong><span>Year 1 / Spring</span></div>{courses.slice(0, compact ? 3 : 4).map(course => <CourseRow key={course.id} course={course} />)}<p className="lr-preview-foot">{compact && courses.length > 3 ? `Also ${courses.slice(3).map(course => `${course.code} · ${course.units} units`).join(", ")}` : "A starting point, ready for your own plan."}</p></div>;
+}
+
+function WeekPreview({ catalog, compact = false }: { catalog: ProgramCatalog; compact?: boolean }) {
+  const offerings: CourseOffering[] = [];
+  for (const course of catalog.courses.filter(course => course.recommendedSemester === 2)) {
+    const offering = catalog.offerings.find(item => item.courseCode === course.code && parseMeeting(item).patterns.length > 0 && parseMeeting(item).patterns.every(pattern => pattern.startMinute >= 480 && pattern.endMinute <= 1080) && !detectTimeConflicts([...offerings, item]).length);
+    if (offering) offerings.push(offering);
+    if (offerings.length === 3) break;
+  }
+  return <div className={`lr-week ${compact ? "lr-week-small" : ""}`}><div className="lr-preview-label">Your week, in view <span>{catalog.currentTerm.name}</span></div><div className="lr-calendar"><div className="lr-hours"><span>8 AM</span><span>10 AM</span><span>12 PM</span><span>2 PM</span><span>4 PM</span></div>{WEEKDAYS.map((day, dayIndex) => <div className="lr-day" key={day}><span>{["Mon", "Tue", "Wed", "Thu", "Fri"][dayIndex]}</span><div className="lr-day-track">{offerings.flatMap((offering, index) => parseMeeting(offering).patterns.filter(pattern => pattern.days.includes(day)).map((pattern, patternIndex) => <div className={`lr-meeting lr-meeting-${index}`} key={`${offering.classNumber}-${patternIndex}`} style={{ top: `${(pattern.startMinute - 480) / 600 * 100}%`, height: `${(pattern.endMinute - pattern.startMinute) / 600 * 100}%` }} title={`${offering.courseCode} · ${formatMinute(pattern.startMinute)}–${formatMinute(pattern.endMinute)}`}><strong>{offering.courseCode}</strong>{!compact && pattern.endMinute - pattern.startMinute >= 60 && <span>{formatMinute(pattern.startMinute)}</span>}</div>))}</div></div>)}</div><p className="lr-preview-foot">Illustrative selection · listed sections, not live enrollment</p></div>;
+}
+
+export default function Landing() {
+  const { program, selectProgram } = useCatalog();
+  const catalog = program === "software-engineering" ? softwareEngineeringCatalog : computerEngineeringCatalog;
+  const [query, setQuery] = useState("");
+  const [replay, setReplay] = useState(0);
+  const page = useRef<HTMLDivElement>(null);
+  const results = catalog.courses.filter(course => `${course.code} ${course.title}`.toLowerCase().includes(query.toLowerCase())).slice(0, 3);
+  useEffect(() => {
+    document.title = "Course Radar — See the path. Plan what’s next.";
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("lr-in-view"); observer.unobserve(entry.target); } }), { threshold: 0.12 });
+    page.current?.querySelectorAll(".lr-reveal").forEach(element => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+  return <div className="lr" id="top" ref={page}>
+    <a className="lr-skip" href="#landing-content">Skip to content</a>
+    <header className="lr-header lr-wrap"><Link className="lr-brand" to="/" aria-label="Course Radar home"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true"><rect x="3" y="3" width="10" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" /><rect x="17" y="19" width="10" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" /><path d="M8 11v12h9m-4-4 4 4-4 4" stroke="#d75c34" strokeWidth="1.5" /></svg>Course Radar<span className="lr-brand-dot">.</span></Link><nav aria-label="Landing navigation"><a href="#explore">Explore</a><a href="#your-path">Your path</a><a href="#your-week">Your week</a></nav><Link className="lr-button lr-header-cta" to="/overview">Open workspace <ArrowUpRight size={16} aria-hidden="true" /></Link></header>
+    <main id="landing-content">
+      <section className="lr-hero lr-wrap"><div className="lr-hero-copy"><h1>See the path.<br />Plan what’s<br /><span>next.</span></h1><p>From your first prerequisite to your final semester. Bring your SJSU courses, degree roadmap, and weekly schedule into one clearer picture.</p><div className="lr-actions"><Link className="lr-button" to="/courses">Explore your courses <ArrowRight size={17} aria-hidden="true" /></Link><a className="lr-button lr-button-outline" href="#your-path">See how it connects</a></div><span className="lr-hero-note">Made for SJSU’s next generation of engineers.</span></div><div className="lr-hero-art" key={replay} aria-label="Course Radar product previews"><div className="lr-hero-path"><PathPreview catalog={catalog} compact /></div><div className="lr-hero-semester"><SemesterPreview catalog={catalog} compact /></div><div className="lr-hero-week"><WeekPreview catalog={catalog} compact /></div><button className="lr-replay" onClick={() => setReplay(value => value + 1)}>Replay the connections <ArrowRight size={14} aria-hidden="true" /></button></div></section>
+      <section className="lr-scope lr-wrap" aria-label="Supported academic scope"><p>A focused starting point.<br /><span>San José State University</span></p><div className="lr-programs" aria-label="Preview a degree program">{[["computer-engineering", "Computer Engineering"], ["software-engineering", "Software Engineering"]].map(([value, label]) => <button key={value} aria-pressed={program === value} onClick={() => selectProgram(value)}><span>Bachelor of Science</span>{label}{program === value && <Check size={16} aria-hidden="true" />}</button>)}</div><p className="lr-scope-catalog">{catalog.catalogYear}<span>Catalog roadmaps</span></p></section>
+      <section id="explore" className="lr-band"><div className="lr-wrap lr-explore lr-reveal"><div className="lr-section-copy"><h2>Less searching.<br />More understanding.</h2><p>Course codes are only the beginning. Explore what you’ll learn, check the units, and find the requirements behind each next step.</p><Link className="lr-text-link" to="/courses">Meet your courses <ArrowUpRight size={18} aria-hidden="true" /></Link></div><div className="lr-explorer"><div className="lr-preview-label">Course explorer <span>{catalog.abbreviation} / {catalog.catalogYear}</span></div><label className="lr-search"><MagnifyingGlass size={18} aria-hidden="true" /><input aria-label="Try searching the course preview" placeholder="Try a course code or a subject…" value={query} onChange={event => setQuery(event.target.value)} /></label><div className="lr-search-results" aria-live="polite">{results.length ? results.map(course => <CourseRow key={course.id} course={course} />) : <p className="lr-no-results">No matches. Try “CMPE” or “Calculus”.</p>}</div><div className="lr-explorer-foot"><span>Course details. Recorded prerequisites. Official sources.</span><ArrowRight size={18} aria-hidden="true" /></div></div></div></section>
+      <section id="your-path" className="lr-path-section lr-wrap lr-reveal"><div className="lr-section-top"><h2>Every next step<br />has a before.</h2><div><p>A prerequisite isn’t just a box to check. It’s a connection to what comes next. Follow the dependencies and see where a course can take you.</p><Link className="lr-text-link" to="/prerequisite-chart">Follow your course connections <ArrowUpRight size={18} aria-hidden="true" /></Link></div></div><PathPreview catalog={catalog} /><p className="lr-caption">One path from the {catalog.name} catalog. Open the map for all recorded relationships and course requirements.</p></section>
+      <section className="lr-band lr-plan-band"><div className="lr-wrap lr-plan-layout lr-reveal"><div className="lr-plan-art"><SemesterPreview catalog={catalog} /><div className="lr-next-semester"><span>Semester 3</span><p>Make room for<br />what comes next.</p><Link to="/planner" aria-label="Open semester planner"><ArrowUpRight size={24} /></Link></div></div><div className="lr-section-copy"><h2>A long-term view.<br />A plan that’s yours.</h2><p>Start with the degree roadmap. Mark what you’ve completed, give upcoming courses a semester, and keep the bigger picture in sight.</p><Link className="lr-text-link" to="/planner">Map your semesters <ArrowUpRight size={18} aria-hidden="true" /></Link><p className="lr-small-note">Your workspace is a session draft. Plans reset on refresh.</p></div></div></section>
+      <section id="your-week" className="lr-week-section lr-wrap lr-reveal"><div className="lr-section-copy"><h2>A semester on paper.<br />A week that works.</h2><p>Bring listed sections into a weekly view. See where classes fit, spot time conflicts, and make room for life between lectures.</p><Link className="lr-text-link" to="/courses">Build your week <ArrowUpRight size={18} aria-hidden="true" /></Link><div className="lr-assistant-note"><Sparkle size={21} aria-hidden="true" /><div><h3>A second perspective, when you need it.</h3><p>Ask the AI assistant to propose schedules around your plan and availability. Review the options. You make the call.</p><Link to="/recommendations">Meet your scheduling assistant <ArrowRight size={16} aria-hidden="true" /></Link></div></div></div><WeekPreview catalog={catalog} /></section>
+      <section className="lr-close"><div className="lr-wrap lr-reveal"><span className="lr-close-mark" aria-hidden="true"><GitBranch size={35} weight="light" /></span><h2>Your next semester<br />starts with a clearer view.</h2><p>Find your courses. Follow the connections. Make your next move.</p><Link className="lr-button" to="/overview">Open your workspace <ArrowRight size={18} aria-hidden="true" /></Link></div></section>
+    </main><footer className="lr-footer lr-wrap"><div><Link className="lr-brand" to="/">Course Radar<span className="lr-brand-dot">.</span></Link><p>Built for the path ahead.</p></div><div><p>A student planning reference, not an official degree audit.<br />Verify requirements and enrollment with SJSU. Section data is a dated snapshot.</p><a href={catalog.programUrl} target="_blank" rel="noreferrer">Official SJSU program guide <ArrowUpRight size={14} aria-hidden="true" /></a></div><a href="#top">Back to top ↑</a></footer>
+  </div>;
+}

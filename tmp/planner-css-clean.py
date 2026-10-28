@@ -1,0 +1,2 @@
+from pathlib import Path
+p=Path('src/semester-planner.css');s=p.read_text();a=s.index('.sp-selection{');b=s.index('.sp-catalog{',a);s=s[:a]+s[b:];s=s.replace('.sp-catalog{padding-top:42px;scroll-margin-top:20px}', '.sp-catalog{padding-top:22px;scroll-margin-top:20px}');s=s.replace('.sp-selection-courses{grid-template-columns:repeat(3,minmax(0,1fr))}', '');s=s.replace('.sp-selection-courses{grid-template-columns:repeat(2,minmax(0,1fr))}', '');s=s.replace('.sp-selection{padding-top:15px}', '');p.write_text(s)

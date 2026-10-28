@@ -1,0 +1,18 @@
+from pathlib import Path
+p=Path('src/SemesterPlanner.tsx');s=p.read_text()
+s=s.replace('useState<"all" | "suggested">("suggested")','useState<"planned" | "all" | "suggested">("planned")')
+s=s.replace('  const results = remaining.filter(c => `${c.code} ${c.title}`.toLowerCase().includes(query.toLowerCase()) && (filter === "all" || c.recommendedSemester === semester));','  const results = (filter === "planned" ? activeCourses : remaining).filter(c => `${c.code} ${c.title}`.toLowerCase().includes(query.toLowerCase()) && (filter !== "suggested" || c.recommendedSemester === semester));')
+s=s.replace(' courses <span>·</span> ', ' courses <span>/</span> ')
+a=s.index('      <section className="sp-selection"')
+b=s.index('      <section id="sp-workbench"',a)
+s=s[:a]+s[b:]
+s=s.replace('<div><h2>Course library</h2><p>{remaining.length} courses ready to plan</p></div>', '<div><h2>Course library</h2><p>{activeCourses.length} in Semester {semester} / {remaining.length} left to plan</p></div>')
+s=s.replace('<div className="sp-catalog-tabs" role="group" aria-label="Filter course library"><button aria-pressed={filter === "suggested"}', '<div className="sp-catalog-tabs" role="group" aria-label="Filter course library"><button aria-pressed={filter === "planned"} onClick={() => setFilter("planned")}>In Semester {semester}</button><button aria-pressed={filter === "suggested"}')
+s=s.replace('>All courses</button><Link to="/courses">', '>All unplanned</button><Link to="/courses">')
+s=s.replace('<article key={c.id}><button className="sp-catalog-course"', '<article key={c.id} draggable={filter === "planned"} onDragStart={e => { if (filter === "planned") { e.dataTransfer.setData("text/plain", c.id); setDragged(c.id); } }} onDragEnd={() => setDragged(null)}><button className="sp-catalog-course"')
+s=s.replace('<button className="sp-plus" aria-label={`Add ${c.code} to Semester ${semester}`} onClick={() => change(c, semester)}><Plus size={17}/></button></article>', '{filter === "planned" ? <button className="sp-plus" aria-label={`Remove ${c.code} from plan`} onClick={() => remove(c)}><Trash2 size={15}/></button> : <button className="sp-plus" aria-label={`Add ${c.code} to Semester ${semester}`} onClick={() => change(c, semester)}><Plus size={17}/></button>}</article>')
+s=s.replace('{query ? "No matching courses" : !remaining.length ? "Every catalog course is in your plan." : "All suggested courses are in your plan."}', '{query ? "No matching courses" : filter === "planned" ? `No courses in Semester ${semester} yet.` : !remaining.length ? "Every catalog course is in your plan." : "All suggested courses are in your plan."}')
+s=s.replace('{query ? "Try another course code or name." : !remaining.length ? "Select a semester above to review or adjust courses." : "Browse all courses for more options."}', '{query ? "Try another course code or name." : filter === "planned" ? "Choose from the recommended courses to start this semester." : !remaining.length ? "Select a semester above to review or adjust courses." : "Browse all courses for more options."}')
+s=s.replace('{remaining.length > 0 && <button onClick={() => { setQuery(""); setFilter("all"); }}>Browse all courses <ArrowRight size={14}/></button>}', '{remaining.length > 0 && <button onClick={() => { setQuery(""); setFilter(filter === "planned" ? "suggested" : "all"); }}>Browse {filter === "planned" ? "recommended" : "all"} courses <ArrowRight size={14}/></button>}')
+s=s.replace('>Semester {n}</strong><small>{inSemester(n).length} courses', '>Semester {n}</strong><small>{inSemester(n).length} courses')
+p.write_text(s)

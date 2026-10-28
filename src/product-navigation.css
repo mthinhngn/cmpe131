@@ -1,0 +1,35 @@
+/* Equal side columns keep desktop navigation centered across every route. */
+@media (min-width:1000px) {
+  .site-shell[class] .site-header,.ov3-page[class] .ov3-header,.sp-page[class] .sp-header,.workspace[class] .workspace-header {
+    width:100%; max-width:1344px; height:72px; min-height:72px; margin:0 auto; padding:0 32px;
+    display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; column-gap:16px; border-bottom:1px solid #e3e3e3;
+    box-sizing:border-box;
+  }
+  .site-shell[class] .site-header .primary-nav,.ov3-page[class] .ov3-header .ov3-nav,.sp-page[class] .sp-header nav,.workspace[class] .workspace-header nav {
+    grid-column:2; grid-row:1; justify-self:center; width:max-content;
+    display:flex; align-items:stretch; align-self:stretch; gap:27px; margin:0; padding:0;
+    border:0; border-radius:0; background:transparent; box-shadow:none;
+  }
+  .site-shell[class] .site-header > :first-child,.ov3-page[class] .ov3-header > :first-child,.sp-page[class] .sp-header > :first-child,.workspace[class] .workspace-header > :first-child {
+    grid-column:1; grid-row:1; justify-self:start;
+  }
+  .site-shell[class] .site-header > :not(nav):not(:first-child),.ov3-page[class] .ov3-header > :not(nav):not(:first-child),.sp-page[class] .sp-header > :not(nav):not(:first-child),.workspace[class] .workspace-header > :not(nav):not(:first-child) {
+    grid-column:3; grid-row:1; justify-self:end;
+  }
+  .site-shell[class] .site-header .primary-nav a,.ov3-page[class] .ov3-header .ov3-nav a,.sp-page[class] .sp-header nav a,.workspace[class] .workspace-header nav a {
+    position:relative; display:flex; align-items:center; min-height:0; padding:0;
+    border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; box-shadow:none;
+    box-sizing:border-box; height:72px;
+    color:#585858; font:400 14px/1.5 Inter,Arial,sans-serif; letter-spacing:-.015em;
+    white-space:nowrap; text-decoration:none; transform:none;
+    transition:color 150ms ease;
+  }
+  .workspace[class] .workspace-header nav a svg { display:none; }
+  .site-shell[class] .site-header .primary-nav a[aria-current=page],.ov3-page[class] .ov3-header .ov3-nav a.active,.sp-page[class] .sp-header nav a[aria-current=page],.workspace[class] .workspace-header nav a.active {
+    color:#101010; border-bottom-color:#168873; background:transparent; box-shadow:none; text-decoration:none;
+  }
+  .site-shell[class] .site-header .primary-nav a[aria-current=page]:after,.ov3-page[class] .ov3-header .ov3-nav a.active:after,.sp-page[class] .sp-header nav a[aria-current=page]:after,.workspace[class] .workspace-header nav a.active:after {
+    content:none; display:none;
+  }
+}
+

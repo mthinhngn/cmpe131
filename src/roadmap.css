@@ -1,0 +1,133 @@
+/* Desktop Degree Roadmap. Shared data and course-detail interactions stay in CatalogContext. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+.workspace-roadmap { --paper:#fff; --canvas:#f6f8f6; --ink:var(--cr-ink); --quiet:var(--cr-muted); --accent:var(--cr-teal); --line:var(--cr-line); background:#fff; font-family:Inter,Arial,sans-serif; }
+.workspace-roadmap .workspace-header,.workspace-roadmap .workspace-context,.workspace-roadmap .workspace-content,.workspace-roadmap .workspace-footer,.workspace-roadmap .data-message { width:min(1280px,calc(100% - 80px)); max-width:none; margin-inline:auto; }
+.workspace-roadmap .workspace-header { min-height:80px; padding:0; background:#fff; border-bottom:1px solid #e3e3e3; gap:24px; }
+.workspace-roadmap .workspace-original-brand { display:none; }
+.workspace-roadmap .ov-brand { display:flex; gap:8px; align-items:center; font:500 17px Inter,Arial,sans-serif; letter-spacing:-.04em; white-space:nowrap; }
+.workspace-roadmap .ov-brand>span { display:none; }
+.workspace-roadmap .workspace-header nav { background:transparent; padding:0; gap:4px; }
+.workspace-roadmap .workspace-header nav a { font:400 14px Inter,Arial,sans-serif; padding:10px; border-radius:4px; }
+.workspace-roadmap .workspace-header nav a svg { display:none; }
+.workspace-roadmap .workspace-header nav a.active { background:#edf3ef; color:#175b46; box-shadow:none; }
+.workspace-roadmap .program-source { border-color:#dce3de; border-radius:4px; font:400 14px Inter,Arial,sans-serif; }
+.workspace-roadmap .workspace-context { padding:14px 0; min-height:56px; background:white; border-bottom:1px solid #e3e3e3; }
+.workspace-roadmap .workspace-context select { font:400 14px Inter,Arial,sans-serif; }
+.workspace-roadmap .data-message { padding:8px 0 0; background:transparent; border:0; font-size:14px; color:var(--cr-muted); }
+.workspace-roadmap .workspace-content { padding:0; }
+.workspace-roadmap .workspace-footer { padding:24px 0; background:#fff; font-size:14px; }
+.workspace-roadmap :focus-visible { outline:2px solid #168873; outline-offset:4px; }
+.workspace-roadmap ::selection { background:#bfe2d2; color:#143c2e; }
+.degree-page,.degree-page * { box-sizing:border-box; }
+.degree-page { --route-green:var(--cr-teal); --route-mint:var(--cr-cyan); --ease-out:cubic-bezier(.23,1,.32,1); color:var(--cr-ink); font:400 14px/1.5 Inter,Arial,sans-serif; padding:0 0 32px; }
+.degree-page h1,.degree-page h2,.degree-page h3,.degree-page p { margin:0; }
+.degree-page button,.degree-page input { font:inherit; }
+.degree-page button { cursor:pointer; }
+.degree-hero { display:grid; grid-template-columns:1.3fr 1fr; align-items:end; padding:48px 0 40px; gap:60px; }
+.degree-hero h1 { font:500 clamp(48px,4.8vw,72px)/1.03 Inter,Arial,sans-serif; letter-spacing:-.04em; }
+.degree-hero h1>span { color:var(--cr-secondary); }
+.degree-hero-copy { justify-self:end; padding-bottom:3px; }
+.degree-hero-copy p { color:var(--cr-muted); line-height:1.75; font-size:14px; margin-bottom:22px; }
+.degree-action { display:inline-flex; align-items:center; gap:26px; padding:12px 16px; background:var(--cr-ink); color:white; border-radius:4px; font-size:14px; text-decoration:none; }
+.degree-edition { display:flex; justify-content:space-between; align-items:center; font-size:14px; padding:17px 0; border-top:1px solid #dfe4e0; }
+.degree-edition a,.degree-source a { display:inline-flex; gap:8px; align-items:center; color:#275b46; text-decoration:none; }
+.degree-separator { color:#a6afa8; margin:0 12px; }
+.degree-map { border:1px solid var(--cr-line); border-radius:6px; overflow:hidden; background:var(--cr-paper); }
+.degree-map-top { padding:22px 28px; display:flex; align-items:center; justify-content:space-between; background:#fff; }
+.degree-map-top h2 { font-size:18px; font-weight:500; letter-spacing:-.025em; }
+.degree-map-top>span { display:flex; align-items:center; gap:14px; color:var(--cr-muted); font-size:14px; }
+.degree-progress { width:90px; height:4px; background:#e6ece7; overflow:hidden; border-radius:2px; }
+.degree-progress i { display:block; height:100%; background:#267455; transform-origin:left; }
+.degree-route { display:grid; grid-template-columns:repeat(4,1fr); background:var(--cr-teal); padding:28px 28px 30px; position:relative; gap:0; }
+.degree-route:before { content:''; position:absolute; top:49px; left:50px; right:65px; height:1px; background:var(--cr-teal-line); }
+.degree-route button { position:relative; display:flex; flex-direction:column; align-items:flex-start; border:0; padding:0 18px 0 0; background:transparent; text-align:left; color:var(--cr-on-teal-muted); }
+.degree-route-node { width:42px; height:42px; display:grid; place-items:center; background:var(--cr-teal); border:1px solid #7b9e8d; border-radius:50%; font-size:14px; position:relative; margin-bottom:18px; transition:background-color 160ms ease,color 160ms ease; }
+.degree-route [aria-current=step] .degree-route-node { background:var(--cr-cyan); color:#163f31; border-color:var(--cr-cyan); outline:5px solid var(--cr-teal); }
+.degree-route-copy { display:flex; flex-direction:column; gap:5px; }
+.degree-route-copy small { color:var(--cr-on-teal-muted); font-size:14px; }
+.degree-route-copy strong { color:var(--cr-on-teal); font-size:16px; font-weight:500; letter-spacing:-.025em; }
+.degree-route-copy>span { color:var(--cr-on-teal-muted); font-size:14px; }
+.degree-route [aria-current=step] strong { color:var(--cr-cyan); }
+.degree-tools { display:flex; align-items:center; justify-content:space-between; padding:16px 28px; border-bottom:1px solid var(--cr-line); background:#fff; gap:20px; }
+.degree-filters { display:flex; gap:4px; }
+.degree-filters button { font-size:14px; padding:8px 12px; border:0; border-radius:4px; background:transparent; color:#606f65; }
+.degree-filters button[aria-pressed=true] { background:var(--cr-mist); color:#225e46; }
+.degree-search { display:flex; align-items:center; gap:9px; color:#66756c; width:280px; }
+.degree-search input { font-size:14px; border:0; background:transparent; color:#253d2e; width:100%; min-width:0; outline-offset:5px; caret-color:var(--cr-teal); }
+.degree-search input::placeholder { color:#66756c; }
+.degree-search button { border:0; background:transparent; display:flex; }
+.degree-year-title { display:flex; align-items:center; justify-content:space-between; padding:28px 28px 22px; }
+.degree-year-title h2 { font-size:26px; letter-spacing:-.035em; font-weight:500; line-height:1.2; }
+.degree-year-title p { color:var(--cr-muted); font-size:14px; margin-top:6px; }
+.degree-legend { display:flex; gap:8px; align-items:center; font-size:14px; color:#5a6a5f; }
+.degree-legend i { width:7px; height:7px; border-radius:50%; background:#378166; margin-left:10px; }
+.degree-legend i.choice { border:1px solid #7e9284; background:transparent; }
+.degree-terms { display:grid; grid-template-columns:1fr 1fr; gap:36px; padding:0 28px 24px; }
+.degree-term { min-width:0; }
+.degree-term>header { display:flex; align-items:center; gap:12px; padding:0 0 18px; border-bottom:1px solid var(--cr-line); }
+.degree-term-number { display:grid; place-items:center; width:32px; height:32px; color:#446d58; border:1px solid #c2d6c8; border-radius:50%; font-size:14px; }
+.degree-term h3 { font-size:19px; letter-spacing:-.025em; font-weight:500; }
+.degree-term header div>span { color:#66766a; font-size:14px; }
+.degree-term-units { margin-left:auto; font-size:16px; font-weight:500; text-align:right; }
+.degree-term-units small { display:block; font-weight:400; font-size:14px; color:#6a796d; }
+.degree-records { position:relative; padding:16px 0 0 18px; display:flex; flex-direction:column; gap:8px; }
+.degree-records:before { content:''; position:absolute; top:0; bottom:42px; left:0; width:1px; background:var(--cr-connector); }
+.degree-course,.degree-choice { position:relative; background:#fff; border:1px solid #dce5dd; border-radius:4px; color:#243b2c; width:100%; text-align:left; }
+.degree-course { display:flex; align-items:center; gap:14px; padding:14px 15px; min-height:81px; transition:border-color 160ms ease,background-color 160ms ease,box-shadow 160ms ease; }
+.degree-port { position:absolute; left:-23px; top:calc(50% - 4px); width:9px; height:9px; border:1px solid #488064; border-radius:50%; background:var(--cr-paper); display:grid; place-items:center; }
+.degree-port:after { position:absolute; content:''; height:1px; background:var(--cr-connector); width:14px; left:8px; }
+.degree-course-body { min-width:0; flex:1; }
+.degree-course-top { display:flex; align-items:center; gap:10px; justify-content:space-between; margin-bottom:4px; }
+.degree-course-top>strong { font-size:14px; font-weight:600; }
+.degree-course-top>span { font-size:14px; color:#62776a; max-width:66%; text-align:right; }
+.degree-course-title { display:block; font-size:14px; line-height:1.4; }
+.degree-course-note { display:block; margin-top:5px; color:#637568; font-size:14px; }
+.degree-units { font-size:18px; font-weight:500; text-align:right; line-height:1.2; min-width:26px; font-variant-numeric:tabular-nums; }
+.degree-units small { display:block; font-weight:400; color:#6c7b70; font-size:14px; margin-top:3px; }
+.degree-course-arrow { color:#5d806b; }
+.degree-course.is-related { background:var(--cr-mist); border-color:#83b79b; }
+.degree-course.is-complete .degree-port { background:#216c4f; color:white; }
+.degree-course.is-complete .degree-course-title { text-decoration:line-through; }
+.degree-choice { border-style:dashed; background:var(--cr-peach-soft); }
+.degree-choice summary { cursor:pointer; list-style:none; display:flex; align-items:center; padding:12px 15px; min-height:68px; gap:12px; position:relative; }
+.degree-choice summary::-webkit-details-marker { display:none; }
+.degree-choice summary small { display:block; font-size:14px; color:#667662; margin-bottom:3px; }
+.degree-choice summary strong { display:block; font-size:14px; font-weight:500; }
+.degree-choice-plus { margin-left:auto; font-size:20px; color:#74826e; }
+.degree-choice[open] .degree-choice-plus { transform:rotate(45deg); }
+.degree-choice p { padding:0 15px 14px; font-size:14px; color:#52674e; }
+.degree-term-note { padding:15px 0 0 18px; font-size:14px; line-height:1.6; color:#64766a; }
+.degree-map-footer { padding:18px 28px; border-top:1px solid var(--cr-line); display:flex; align-items:center; justify-content:space-between; background:#fff; gap:20px; font-size:14px; color:#65766a; }
+.degree-map-footer button,.degree-empty button { display:inline-flex; align-items:center; gap:20px; border:0; background:transparent; color:var(--cr-teal); font-size:14px; padding:4px 0; }
+.degree-empty { padding:56px 28px; text-align:center; }
+.degree-empty h3 { font-size:22px; font-weight:500; }
+.degree-empty p { margin:8px 0 20px; color:var(--cr-muted); }
+.degree-source { display:grid; grid-template-columns:1.3fr 1fr; gap:100px; padding:48px 0 20px; }
+.degree-source h2 { font-size:30px; line-height:1.2; letter-spacing:-.03em; font-weight:500; margin-bottom:16px; }
+.degree-source h2 span { color:#7a847d; }
+.degree-source p { font-size:14px; color:#637168; max-width:470px; line-height:1.8; }
+.degree-source>div:last-child { padding-top:4px; }
+.degree-source strong { display:block; font-size:14px; font-weight:500; margin-bottom:10px; }
+.degree-source a { font-size:14px; margin-top:20px; }
+@starting-style { .degree-terms { opacity:0; transform:translateY(6px); } }
+.degree-terms { transition:opacity 200ms var(--ease-out),transform 200ms var(--ease-out); }
+@media (hover:hover) and (pointer:fine) { .degree-course:hover { background:var(--cr-mist); border-color:#8fb49c; box-shadow:0 4px 10px #173b2810; } .degree-route button:hover .degree-route-node { background:var(--cr-cyan); color:var(--cr-teal); } .degree-action:hover { background:var(--cr-teal); } }
+.workspace-roadmap .degree-brand { display:inline-flex; align-items:center; gap:9px; font:600 15px Inter,Arial,sans-serif; letter-spacing:-.04em; white-space:nowrap; }
+.workspace-roadmap .degree-brand-light { font-weight:400; color:#717171; }
+/* The line joins recommended semester stops; it does not imply a course prerequisite. */
+.degree-terms { position:relative; }
+.degree-term>header { position:relative; }
+.degree-term>header:after { content:''; position:absolute; left:16px; bottom:-1px; width:1px; height:17px; background:var(--cr-connector); }
+.degree-course:active { background:var(--cr-mist); }
+
+/* The source sidebar was removed at the user's request. */
+.degree-source { grid-template-columns:1fr; gap:0; }
+/* Roadmap keeps every recommended year open; these controls jump, never reveal. */
+.degree-all-years { padding-top:4px; }
+.degree-year-section { scroll-margin-top:100px; }
+.degree-year-section + .degree-year-section { border-top:1px solid #ccdcd0; }
+.degree-year-section + .degree-year-section .degree-year-title { padding-top:32px; }
+.degree-year-heading-divider { color:#9caf9f; font-weight:400; padding:0 10px; }
+.degree-map-footer a { display:inline-flex; align-items:center; gap:8px; color:var(--cr-teal); text-decoration:none; }
+.degree-results { padding:20px 28px 0; color:#526b59; font-size:14px; }
+

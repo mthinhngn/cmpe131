@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useCatalog } from "./CatalogContext";
 import type { CourseOffering } from "./types";
-import { detectTimeConflicts } from "./schedule";
 
 const STORAGE_KEY = "course-radar-schedules-v1";
 
@@ -17,8 +16,9 @@ type ScheduleContextValue = {
   hasSelectedComponent: (offering: CourseOffering) => boolean;
   selectOffering: (offering: CourseOffering) => void;
   removeOffering: (classNumber: string) => void;
-  replaceSchedule: (classNumbers: string[], lockedClassNumbers?: string[]) => { ok: true } | { ok: false; error: string };
 };
+
+const emptySelection: string[] = [];
 
 const ScheduleContext = createContext<ScheduleContextValue | null>(null);
 
@@ -39,7 +39,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const { catalog, program } = useCatalog();
   const [stored, setStored] = useState<StoredSchedules>(readStoredSchedules);
   const scopeKey = `${program}:${catalog.catalogYear}:${catalog.currentTerm.id}`;
-  const selectedClassNumbers = stored.selectionsByScope[scopeKey] ?? [];
+  const selectedClassNumbers = stored.selectionsByScope[scopeKey] ?? emptySelection;
   const selectedOfferings = useMemo(() => {
     const selected = new Set(selectedClassNumbers);
     return catalog.offerings.filter((offering) => selected.has(offering.classNumber));
@@ -71,22 +71,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       return [...current.filter((classNumber) => !sameComponent.has(classNumber)), offering.classNumber];
     }),
     removeOffering: (classNumber) => updateSelection((current) => current.filter((item) => item !== classNumber)),
-    replaceSchedule: (classNumbers, lockedClassNumbers = selectedClassNumbers) => {
-      const requested = [...new Set(classNumbers)];
-      const hardLocks = new Set([...selectedClassNumbers, ...lockedClassNumbers]);
-      const missingLocks = [...hardLocks].filter((classNumber) => !requested.includes(classNumber));
-      if (missingLocks.length) return { ok: false, error: `The proposal would remove locked class ${missingLocks.join(", ")}. Remove it manually first if you want the agent to replace it.` };
-      const byClassNumber = new Map(catalog.offerings.map((offering) => [offering.classNumber, offering]));
-      const offerings = requested.flatMap((classNumber) => byClassNumber.get(classNumber) ?? []);
-      if (offerings.length !== requested.length) return { ok: false, error: "The proposal contains a section outside the current catalog snapshot." };
-      const closedNew = offerings.filter((offering) => offering.openSeats <= 0 && !hardLocks.has(offering.classNumber));
-      if (closedNew.length) return { ok: false, error: "The proposal contains a new section with no open seats." };
-      const componentKeys = offerings.map((offering) => `${offering.courseCode}:${offering.component}`);
-      if (new Set(componentKeys).size !== componentKeys.length) return { ok: false, error: "The proposal contains more than one section for the same course component." };
-      if (detectTimeConflicts(offerings).length) return { ok: false, error: "The proposal contains a confirmed meeting conflict." };
-      updateSelection(() => requested);
-      return { ok: true };
-    },
+
   }), [catalog.offerings, selectedClassNumbers, selectedOfferings, scopeKey]);
 
   return <ScheduleContext.Provider value={value}>{children}</ScheduleContext.Provider>;

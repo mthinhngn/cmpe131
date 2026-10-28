@@ -1,0 +1,3 @@
+from pathlib import Path
+p=Path('src/landing.styles.ts');s=p.read_text(encoding='utf-8');s=s.replace('cr:data-[muted=true]:opacity-70','cr:data-[muted=true]:bg-transparent cr:data-[muted=true]:border-dashed cr:data-[muted=true]:text-radar-steel');s=s.replace('cr:[&>span]:text-radar-steel cr:[&_strong]','cr:[&>span]:text-radar-steel cr:[&_strong]');p.write_text(s,encoding='utf-8')
+p=Path('work/check.cjs');s=p.read_text(encoding='utf-8-sig').replace("page.getByRole('status')","page.locator('#explore [role=status]')").replace("await page.screenshot({path:'work/plan.png'});","await page.locator('#your-plan').evaluate(e=>window.scrollTo(0,e.offsetTop));await page.waitForTimeout(800);await page.screenshot({path:'work/plan.png'});");p.write_text(s,encoding='utf-8')

@@ -1,0 +1,50 @@
+[
+  {
+    "route": "health",
+    "http": 200,
+    "medianMs": 11.1,
+    "samplesMs": [
+      108.0,
+      11.0,
+      11.1,
+      9.7,
+      12.4
+    ],
+    "database": "connected",
+    "courses": null,
+    "groups": null,
+    "offerings": null
+  },
+  {
+    "route": "bootstrap?program=computer-engineering",
+    "http": 200,
+    "medianMs": 111.4,
+    "samplesMs": [
+      134.1,
+      85.8,
+      111.4,
+      86.9,
+      121.0
+    ],
+    "database": null,
+    "courses": 31,
+    "groups": 8,
+    "offerings": 414
+  },
+  {
+    "route": "bootstrap?program=software-engineering",
+    "http": 200,
+    "medianMs": 85.3,
+    "samplesMs": [
+      106.5,
+      100.0,
+      68.5,
+      73.1,
+      85.3
+    ],
+    "database": null,
+    "courses": 30,
+    "groups": 8,
+    "offerings": 414
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "antipattern": "design-system-font",
+    "name": "Font outside DESIGN.md",
+    "description": "A font is used that is not declared in DESIGN.md typography. Use the documented type system or update DESIGN.md if this is an intentional brand addition.",
+    "severity": "warning",
+    "category": "quality",
+    "file": "C:\\Users\\thinh\\CMPE131\\src\\product-context.css",
+    "line": 1,
+    "snippet": "font-family: Radar Context Inter is not declared in DESIGN.md typography",
+    "ignoreValue": "Radar Context Inter"
+  },
+  {
+    "antipattern": "design-system-radius",
+    "name": "Radius outside DESIGN.md",
+    "description": "A border-radius value is outside the DESIGN.md rounded scale. Use a documented radius token or update the design system if the new shape is intentional.",
+    "severity": "advisory",
+    "category": "quality",
+    "file": "C:\\Users\\thinh\\CMPE131\\src\\product-context.css",
+    "line": 9,
+    "snippet": "border-radius: 3px is outside the DESIGN.md rounded scale",
+    "advisory": true,
+    "ignoreValue": "3px"
+  },
+  {
+    "antipattern": "design-system-color",
+    "name": "Color outside DESIGN.md",
+    "description": "A literal color is outside the DESIGN.md palette and sidecar tonal ramps. This may be legitimate, but it should be an intentional design-system addition rather than drift.",
+    "severity": "advisory",
+    "category": "quality",
+    "file": "C:\\Users\\thinh\\CMPE131\\src\\product-context.css",
+    "line": 13,
+    "snippet": "Undocumented color #168873 is outside DESIGN.md colors",
+    "advisory": true,
+    "ignoreValue": "#168873"
+  }
+]

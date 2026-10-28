@@ -2,10 +2,6 @@ x-api-environment: &api-environment
   DATABASE_URL: postgresql://course_radar:course_radar@postgres:5432/course_radar?schema=public
   PORT: 3001
   WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:5173}
-  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-  GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.1-flash-lite}
-  AGENT_MAX_TOOL_CALLS: ${AGENT_MAX_TOOL_CALLS:-6}
-  AGENT_MAX_COMBINATIONS: ${AGENT_MAX_COMBINATIONS:-5000}
 
 services:
   postgres:
