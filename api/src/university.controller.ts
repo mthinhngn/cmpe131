@@ -2,6 +2,14 @@ import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { PrismaService } from "./prisma/prisma.service";
 import type { Course, CourseOffering } from "./course-types";
 import { courseDependencies } from "./course-dependencies";
+import type { CalendarData } from "./schedule-sync";
+
+export async function universityCalendar(db: PrismaService): Promise<CalendarData | null> {
+  const row = await db.sharedAcademicCalendar.findUnique({ where: { id: "sjsu-regular-calendar-v1" } });
+  const value = row?.evidence as unknown as CalendarData | undefined;
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  return value?.status === "verified" && value.as_of <= today && today <= value.valid_until ? value : null;
+}
 
 export async function universityCourses(db: PrismaService): Promise<Course[]> {
   const rows = await db.$queryRaw<Array<{ id: string; code: string; title: string; units: number | null; unitsText: string; description: string | null; prerequisiteText: string | null; corequisiteText?: string | null; prerequisiteCodes?: string[]; corequisiteCodes?: string[]; sourceUrl: string }>>`
@@ -36,5 +44,6 @@ export async function universitySections(db: PrismaService, term: string) {
 @Controller("university")
 export class UniversityController {
   constructor(private readonly db: PrismaService) {}
+  @Get("terms") async terms() { return await universityCalendar(this.db) ?? { status: "unavailable", current_term: null, message: "Academic calendar needs a new verified snapshot." }; }
   @Get("sections") sections(@Query("term") term = "fall-2026") { return universitySections(this.db, term); }
 }

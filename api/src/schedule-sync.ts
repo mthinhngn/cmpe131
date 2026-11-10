@@ -11,12 +11,6 @@ export const termFor = (start: string | null | undefined, slot: PlanSlot | undef
   const n = Number(year) * 2 + Number(season === "fall" || season === "summer") + slot - 1;
   return `${n % 2 ? "fall" : "spring"}-${Math.floor(n / 2)}`;
 };
-export async function sourceData(path: string) {
-  const base = (process.env.AGENT_SERVICE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
-  const response = await fetch(`${base}/agent/${path}`, { signal: AbortSignal.timeout(65000) });
-  if (!response.ok) throw new Error("Official sections could not be verified. Try again later.");
-  return response.json();
-}
 const fail = (message: string): never => { throw new BadRequestException(message); };
 
 /** Apply the planner and its selected section snapshots in the same workspace transaction. */

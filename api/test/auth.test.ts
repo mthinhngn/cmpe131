@@ -11,7 +11,7 @@ test("incomplete signed-in profiles cannot initialize, read, or edit a workspace
   let calls = 0;
   let user: any = { id: "student", name: "", major: "", startingSemester: "", workspaceKey: newToken() };
   const auth: any = { current: async () => user, users: {} };
-  const service: any = { create: async () => ++calls, read: async () => ++calls, execute: async () => ++calls };
+  const service: any = { create: async () => ++calls, read: async () => ++calls, execute: async () => ++calls, guest: async () => ++calls };
   const controller = new WorkspaceController(service, auth);
   for (const request of [() => controller.create("", "", "student"), () => controller.read("", "", "student"), () => controller.execute("", "", "student", {})]) {
     await assert.rejects(request, /Complete your profile/);
@@ -65,7 +65,10 @@ test("real PostgreSQL account lifecycle, isolation, sessions and workspace sync"
     const guestWorkspace = await call("workspace", {});
     assert.equal(guestWorkspace.status, 201);
     const guestCourse = guestWorkspace.body.state.catalog.courses[0];
-    await call("workspace/operations", { requestId: newToken(), version: guestWorkspace.body.version, kind: "setPlan", args: { id: guestCourse.id, semester: 2 } });
+    const guestDraft = { ...guestWorkspace.body.state, catalog: undefined };
+    const guestEdit = await call("workspace/operations", { requestId: newToken(), version: guestWorkspace.body.version, kind: "setPlan", args: { id: guestCourse.id, semester: 2 }, guestState: guestDraft });
+    assert.equal(guestEdit.status, 201);
+    assert.equal(guestEdit.body.state.plans["computer-engineering"][guestCourse.id].semester, 2);
     const attempts = await Promise.all([call("auth/verify", { token }), call("auth/verify", { token })]);
     assert.deepEqual(attempts.map(a => a.status).sort(), [201, 401]);
     const login = attempts.find(a => a.status === 201)!;
@@ -119,7 +122,7 @@ test("real PostgreSQL account lifecycle, isolation, sessions and workspace sync"
     assert.equal((await call("auth/me", undefined, cookie)).status, 401);
     assert.equal((await call("workspace", undefined, "", id)).status, 401, "signed-out tabs must not fall back to guest writes");
     const restoredGuest = await call("workspace");
-    assert.equal(restoredGuest.body.state.plans["computer-engineering"][guestCourse.id].semester, 2);
+    assert.deepEqual(restoredGuest.body.state.plans, {}, "guests have no server-side saved plan");
     const expiredToken = newToken();
     await users.loginToken.create({ data: { tokenHash: hashToken(expiredToken), email, expiresAt: new Date(Date.now() - 1000) } });
     assert.equal((await call("auth/verify", { token: expiredToken })).status, 401);

@@ -1,0 +1,23 @@
+FROM node:24-alpine AS build
+RUN apk add --no-cache openssl
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY src/ ./src/
+COPY prisma/ ./prisma/
+COPY users/ ./users/
+COPY scripts/ ./scripts/
+COPY tsconfig.json nest-cli.json ./
+RUN npm run build && npm prune --omit=dev
+
+FROM node:24-alpine
+RUN apk add --no-cache openssl
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=80
+EXPOSE 80
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/generated ./generated
+COPY --from=build /app/dist ./dist
+CMD ["node", "dist/main.js"]

@@ -41,6 +41,7 @@ test("schedule writes verify the calendar and load the imported section snapshot
       : { term: "fall-2026", status: "available", offerings: [] });
   });
   const db = {
+    sharedAcademicCalendar: { findUnique: async () => ({ evidence: { status: "verified", current_term: { season: "fall", year: 2026 }, next_term: { season: "spring", year: 2027 }, as_of: "2026-01-01", valid_until: "2026-12-31" } }) },
     $queryRaw: async (_query: TemplateStringsArray, term: string) => { sectionTerms.push(term); return []; },
     personalWorkspace: { findUnique: async () => ({ id: "calendar-contract", state: { program: "computer-engineering" } }) },
     $transaction: async () => { throw new Error("Stop before database writes."); },
@@ -51,7 +52,7 @@ test("schedule writes verify the calendar and load the imported section snapshot
     requestId: "calendar-contract", version: 0, kind: "syncPlan",
     args: { baseKind: "setPlan", baseArgs: { id: "course", semester: 1 }, term: "fall-2026", selected: [] },
   }), /PostgreSQL could not confirm/);
-  assert.deepEqual(requests, ["/agent/schedule/terms"]);
+  assert.deepEqual(requests, [], "manual scheduling does not depend on the AI service");
   assert.deepEqual(sectionTerms, ["fall-2026"]);
 });
 

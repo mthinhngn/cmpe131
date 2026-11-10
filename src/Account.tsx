@@ -274,7 +274,7 @@ function SessionSection() {
   const { logout } = useAuth();
   const { busy, error, message, run } = useAction();
   return <Section title="Session" sub="Signed in on this browser.">
-    <p className="acct-muted">Signing out returns this browser to its guest plan.</p>
+    <p className="acct-muted">Signing out returns to guest mode. Your account plan stays saved.</p>
     <button className="acct-btn acct-btn-line" disabled={busy} onClick={() => void run(logout)}>{busy ? "Signing out…" : "Sign out"}</button>
     <Feedback error={error} message={message} />
   </Section>;
@@ -293,15 +293,15 @@ function GuestWorkspace() {
       const result = await planningStore.command(kind, args);
       if (result.status === "error") throw Error(result.message);
     }
-    return "Guest workspace saved.";
+    return "Guest settings updated for this tab.";
   }); };
   return <section className="acct-guest" aria-labelledby="acct-guest-heading">
     <h2 id="acct-guest-heading">Guest workspace</h2>
-    <p className="acct-muted">Saved in this browser · {catalog.catalogYear} catalog · {catalog.currentTerm.name} sections</p>
+    <p className="acct-muted">Temporary in this tab · Close the tab to discard · {catalog.catalogYear} catalog · {catalog.currentTerm.name} sections</p>
     <form onSubmit={save}>
       <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} />
       <div className="acct-field"><span>First semester</span><SelectionMenu label="First semester" value={start} onChange={setStart} disabled={busy} options={[{ slug:"", title:"Not set" }, ...Array.from({ length:21 }, (_,i) => thisYear - 10 + i).flatMap(y => ["spring", "summer", "fall", "winter"].map(t => ({ slug:`${t}-${y}`, title:`${t[0].toUpperCase() + t.slice(1)} ${y}` })))]} /></div>
-      <button className="acct-btn acct-btn-line" disabled={busy}>{busy ? "Saving…" : "Save guest settings"}</button>
+      <button className="acct-btn acct-btn-line" disabled={busy}>{busy ? "Updating…" : "Apply guest settings"}</button>
     </form>
     <Feedback error={error} message={message} />
   </section>;

@@ -8,6 +8,7 @@ import { flushSync } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowUp, BookOpen, CalendarMinus, CalendarPlus, ChevronDown, SquarePen } from "lucide-react";
 import { useCatalog } from "./CatalogContext";
+import { useAuth } from "./AuthContext";
 import { CourseDetail } from "./CourseDetail";
 import { AgentError, agentFetch, agentSession, contextRevision, type AgentContext, type AgentRequest, type BrowserAction, type ConversationItem, type Receipt, type AgentSession } from "./agent-client";
 import { staticPreview } from "./static-preview";
@@ -18,6 +19,7 @@ import "./chat-widget.css";
 
 /** The single assistant surface; both agents use the same browser action transport. */
 export function ChatWidget() {
+  const { user } = useAuth();
   const prompts = useChatPrompts();
   const catalog = useCatalog();
   const schedule = useSchedule();
@@ -355,7 +357,7 @@ export function ChatWidget() {
           {error && <div className="cr-chat-error"><p role="alert">{error}</p><button type="button" onClick={() => { void checkConnection(); }}>Check connection</button><button type="button" onClick={newConversation}>New conversation</button></div>}
           <div ref={end}/>
         </div>
-        <p className="cr-chat-preview-note">{pending ? `${pending} request${pending === 1 ? "" : "s"} in progress. ` : ""}{health ? "Personal plan saved to your workspace. Verify official requirements." : "Assistant offline. Check the connection to continue."}</p>
+        <p className="cr-chat-preview-note">{pending ? `${pending} request${pending === 1 ? "" : "s"} in progress. ` : ""}{health ? user ? "Personal plan saved to your account. Verify official requirements." : "Guest plan is temporary in this tab. Sign in for a saved account plan." : "Assistant offline. Check the connection to continue."}</p>
       </section>
       {!companion && <form className="cr-chat-composer" onSubmit={event => { event.preventDefault(); void sendMessage(query); }}>
         <label className="cr-chat-sr-only" htmlFor="cr-chat-message">Message Course Radar</label>

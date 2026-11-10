@@ -3,7 +3,6 @@ import { staticPreview } from "./static-preview";
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useCatalog } from "./CatalogContext";
 import { nextRegularTerm, requiredComponents, scheduleScope, termForSlot, termName } from "./scheduleTerms";
-import { agentFetch } from "./agent-client";
 import type { CourseOffering } from "./types";
 import type { ActionResult } from "./planning";
 import type { PlanCoordinator } from "./PersistentPlanningStore";
@@ -44,7 +43,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const busy = useRef(false), generation = useRef(0);
   const refreshCalendar = () => {
     if (staticPreview) return Promise.resolve(null);
-    calendarRequest.current = agentFetch<Calendar>("/schedule/terms").then(value => { setCalendar(value); latest.current.calendar = value; return value; })
+    calendarRequest.current = fetch(apiEndpoint("university/terms")).then(async response => { if (!response.ok) throw Error("Calendar unavailable"); return await response.json() as Calendar; }).then(value => { setCalendar(value); latest.current.calendar = value; return value; })
       .catch(() => { setCalendar(null); latest.current.calendar = null; return null; });
     return calendarRequest.current;
   };

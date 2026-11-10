@@ -1,9 +1,13 @@
-# The frontend imports these shared modules; keep them available at build time.
-api/*
-!api/src/
-api/src/*
-!api/src/course-category.ts
-!api/src/course-types.ts
-!api/src/planning-engine.ts
-!api/src/requirement-choices.ts
+# Ship backend sources, but never local secrets, generated clients or test output.
+api/.env*
+api/generated/
+api/node_modules/
+api/dist/
+api/test/
 .references/
+.agents/
+.venv/
+tmp/
+/data/
+backups/
+dumps/

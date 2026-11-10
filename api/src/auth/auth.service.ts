@@ -93,7 +93,7 @@ export class AuthService {
       await this.users.loginToken.deleteMany({ where: { tokenHash: hashToken(token) } });
       throw error;
     }
-    return { message: "Check your inbox for a Course Radar sign-in link. It expires in 15 minutes. Check Spam if it does not appear, and open it on this computer while Course Radar is running." };
+    return { message: "Check your inbox for a Course Radar sign-in link. It expires in 15 minutes. Check Spam if it does not appear." };
   }
   async verify(input: unknown) {
     if (typeof input !== "string" || !/^[a-f0-9]{64}$/.test(input)) throw new UnauthorizedException("This sign-in link is invalid or expired. Request a new link.");

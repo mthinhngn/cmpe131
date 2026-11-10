@@ -17,16 +17,19 @@ export class WorkspaceController {
     return user ? { credential: `Bearer ${user.workspaceKey}`, storage: this.auth.users as unknown as PrismaService, major: user.major, startingSemester: user.startingSemester } : { credential: guest, storage: undefined, major: undefined, startingSemester: undefined };
   }
   @Header("Cache-Control", "no-store")
-  @Post() async create(@Headers("cookie") cookie: unknown, @Headers("authorization") guest: unknown, @Headers("x-workspace-user") expected: unknown) {
-    const owner = await this.owner(cookie, guest, expected); return this.workspaces.create(owner.credential, owner.storage, owner.major);
+  @Post() async create(@Headers("cookie") cookie: unknown, @Headers("authorization") guest: unknown, @Headers("x-workspace-user") expected: unknown, @Body() body?: { guestState?: unknown }) {
+    const owner = await this.owner(cookie, guest, expected);
+    return owner.storage ? this.workspaces.create(owner.credential, owner.storage, owner.major) : this.workspaces.guest(body?.guestState);
   }
   @Header("Cache-Control", "no-store")
   @Get() async read(@Headers("cookie") cookie: unknown, @Headers("authorization") guest: unknown, @Headers("x-workspace-user") expected: unknown) {
-    const owner = await this.owner(cookie, guest, expected); return this.workspaces.read(owner.credential, owner.storage);
+    const owner = await this.owner(cookie, guest, expected);
+    return owner.storage ? this.workspaces.read(owner.credential, owner.storage) : this.workspaces.guest();
   }
   @Header("Cache-Control", "no-store")
   @Post("operations") async execute(@Headers("cookie") cookie: unknown, @Headers("authorization") guest: unknown, @Headers("x-workspace-user") expected: unknown, @Body() body: unknown) {
     const owner = await this.owner(cookie, guest, expected);
+    if (!owner.storage) return this.workspaces.executeGuest(body);
     if (owner.storage && (body as { kind?: unknown })?.kind === "importLegacy") throw new BadRequestException("Account workspaces do not import guest data.");
     return this.workspaces.execute(owner.credential, body, owner.storage, owner.startingSemester);
   }

@@ -1,4 +1,4 @@
-import { universitySections } from "./university.controller";
+import { universityCalendar, universitySections } from "./university.controller";
 import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException, ServiceUnavailableException, UnauthorizedException } from "@nestjs/common";
 import { createHash } from "node:crypto";
 import { Prisma } from "@prisma/client";
@@ -8,7 +8,7 @@ import { PlanningStore, type State, type Proposal, type ActionResult, validSlot 
 import { applyAgentAction } from "./agent-action";
 import { applyAgentSections } from "./agent-sections";
 import type { ProgramCatalog } from "./course-types";
-import { sourceData, syncPlan, termFor, type CalendarData, type SectionData } from "./schedule-sync";
+import { syncPlan, termFor, type CalendarData, type SectionData } from "./schedule-sync";
 
 const json = (value: unknown) => JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 const object = (v: unknown): v is Record<string, any> => !!v && typeof v === "object" && !Array.isArray(v);
@@ -74,6 +74,63 @@ export class WorkspaceService {
     }
   }
   private async catalog(program: string, additional: unknown = []) { return new BootstrapController(this.db).compose(program, additional); }
+  private async guestStore(value: any) {
+    if (!object(value) || typeof value.program !== "string" || !/^[a-z0-9-]{1,120}$/.test(value.program) ||
+        !Number.isSafeInteger(value.revision) || value.revision < 0 || !Array.isArray(value.completed) ||
+        !["plans", "counts", "terms", "views", "schedules"].every(key => object(value[key])) || JSON.stringify(value).length > 500000) fail("Invalid guest workspace.");
+    const catalog = await this.catalog(value.program, value.additionalPrograms?.[value.program]);
+    const store = new PlanningStore(value.program, catalog);
+    store.restore({ ...value, catalog, messages: {} } as State);
+    return store;
+  }
+  async guest(draft?: unknown) {
+    if (draft !== undefined) return { state: (await this.guestStore(draft)).getState(), version: 0 };
+    const catalog = await this.catalog("computer-engineering");
+    return { state: new PlanningStore("computer-engineering", catalog).getState(), version: 0 };
+  }
+  // Guest state travels with the request and is never written to either database.
+  async executeGuest(input: unknown) {
+    const command = validateCommand(input);
+    const draft = (input as any).guestState;
+    try {
+      const store = await this.guestStore(draft), before = structuredClone(store.getState());
+      let result: ActionResult = { status: "success", message: "Updated for this visit. Guest changes are not saved." };
+      const a = command.args;
+      if (command.kind === "undo") {
+        if (before.undoRevision !== before.revision || a.revision !== before.revision) fail("No guest change to undo.");
+        const previous = (await this.guestStore((input as any).undoState)).getState();
+        store.restore({ ...previous, revision: before.revision + 1, undoRevision: undefined, undoRequestId: undefined });
+      } else if (command.kind === "view") {
+        if (!store.validSlot(a.semester) || (a.selectedCourseId !== null && !before.catalog.courses.some(c => c.id === a.selectedCourseId))) fail("Invalid planner view.");
+        store.restore({ ...before, views: { ...before.views, [before.program]: { semester: a.semester, selectedCourseId: a.selectedCourseId } } });
+      } else if (command.kind === "apply") {
+        if (typeof a.reviewed !== "boolean" || !object(a.proposal)) fail("Invalid proposal.");
+        result = store.apply(a.proposal as Proposal, a.reviewed);
+        if (result.status === "error") fail(result.message);
+      } else {
+        const catalogs: Record<string, ProgramCatalog> = { [before.program]: before.catalog };
+        if (command.kind === "selectProgram") catalogs[a.program] = await this.catalog(a.program, a.additionalPrograms ?? before.additionalPrograms?.[a.program]);
+        let sections: SectionData | null = null, calendar: CalendarData | null = null;
+        const term = command.kind === "syncPlan" ? a.term : command.kind === "agentAction" && a.action?.kind === "set_course_sections" ? a.action.term : undefined;
+        if (term !== undefined) {
+          if (typeof term !== "string" || !/^(fall|spring|winter|summer)-(19|20|21)\d{2}$/.test(term)) fail("Invalid section term.");
+          sections = await universitySections(this.db, term);
+          if (command.kind === "syncPlan") {
+            calendar = await universityCalendar(this.db);
+          }
+        }
+        if (command.kind === "syncPlan") syncPlan(store, a, calendar, sections, undefined, (kind, payload) => applyManual(store, kind, payload, catalogs));
+        else applyManual(store, command.kind, a, catalogs, sections);
+      }
+      if (!["view", "undo"].includes(command.kind) && store.getState().revision !== before.revision) {
+        store.restore({ ...store.getState(), revision: before.revision + 1, undoRevision: before.revision + 1, undoRequestId: command.requestId });
+      }
+      return { state: store.getState(), version: command.version + 1, result: { ...result, revision: store.getState().revision } };
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new BadRequestException("Invalid guest operation. No account data was changed.");
+    }
+  }
   async create(authorization: unknown, storage: PrismaService = this.db, initialProgram = "computer-engineering") {
     const tokenHash = workspaceHash(authorization);
     return this.safe(async () => {
@@ -115,7 +172,7 @@ export class WorkspaceService {
       let calendar: CalendarData | null = null, sections: SectionData | null = null;
       if (command.kind === "syncPlan" && command.args.term) {
         if (typeof command.args.term !== "string" || !/^(fall|spring|winter|summer)-(19|20|21)\d{2}$/.test(command.args.term)) fail("Invalid schedule semester.");
-        try { calendar = await sourceData("schedule/terms"); } catch { /* Schedule validation will reject an unverified term. */ }
+        calendar = await universityCalendar(this.db);
         try { sections = await universitySections(this.db, command.args.term); }
         catch { sections = { term: command.args.term, status: "unavailable", offerings: [] }; }
       }
