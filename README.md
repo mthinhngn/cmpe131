@@ -1,94 +1,120 @@
 # Course Radar
 
-Course Radar supports SJSU Computer Engineering and Software Engineering, catalog 2026-2027 only. Its academic workspace brings together a personal overview, course explorer, degree roadmap, prerequisite chart, session-based semester planner, and manual schedule builder.
+Course Radar helps SJSU students explore catalog courses, track completed courses, plan semesters, and choose sections for a weekly schedule. Plans are personal planning aids; official SJSU requirements and enrollment information remain authoritative.
 
-## Current scope
+Live site: https://cmpe131.vercel.app
 
-- Computer Engineering and Software Engineering, selected on the main page.
-- 2026-2027 roadmap and course details.
-- Fall 2026 sections, meeting times, modes, locations, dates, and open-seat counts, including rows with zero open seats.
-- Prerequisite relationships stored in PostgreSQL through Prisma.
-- NestJS read API.
-- Instructor names and Rate My Professors search links (not verified profile matches).
-- A session-only eight-semester course planner that resets on refresh.
-- A separate Fall 2026 schedule builder in Course Explorer: manually select sections, view an hourly weekly calendar, and see overlapping-time warnings. Schedule selections persist in browser `localStorage`; there is no authentication, cross-device sync, or registration action.
+## Scope
 
-## Run the project after cloning
+| Page | URL | What it does |
+| --- | --- | --- |
+| Home | `/` | Product introduction with an animated preview |
+| Overview | `/overview` | Program progress at a glance |
+| Schedule | `/schedule` | Browse sections and build a weekly calendar |
+| Planner | `/planner` | Place courses into semesters |
+| Roadmap | `/roadmap` | Prerequisite map and requirement choices |
+| Account | `/account` | Profile, program preferences, and sign-in |
 
-Prerequisites: Node.js 24+, npm, and Docker Desktop with the Linux container engine running.
+- Covers SJSU catalog and program data, with dated section snapshots (not live seat availability).
+- Guest mode works without an account; guest and account workspaces are kept separate.
+- One in-app assistant (`ChatWidget`) can answer questions and make planner changes.
 
-Install the frontend dependencies:
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite, plain CSS, React Flow |
+| Backend API | NestJS, Prisma |
+| Databases | PostgreSQL 17: one for catalog and guest data, one for accounts |
+| Assistant | Python, FastAPI, LangGraph, Groq (model), Tavily (web search) |
+| Local infrastructure | Docker Compose (databases) |
+| Hosting | Vercel |
+
+## Run it locally
+
+### 1. Requirements
+
+- Node.js 24+
+- Docker Desktop (running)
+- Python 3.11+ (only for the assistant)
+
+### 2. Install
+
+From the project root:
 
 ```powershell
 npm install
+npm --prefix api install
+python -m pip install -r agent_service/requirements.txt   # optional, assistant only
 ```
 
-Start PostgreSQL and the NestJS backend. Docker Compose builds the API image, waits for PostgreSQL, applies committed Prisma migrations, seeds both program catalogs and Fall 2026 sections, and then starts the API:
+### 3. Environment files
 
 ```powershell
-docker compose up --build -d
-docker compose ps
-Invoke-RestMethod http://localhost:3001/api/v1/health
+Copy-Item .env.example .env
+Copy-Item api/.env.example api/.env
 ```
 
-Start the frontend in a separate terminal:
+In `api/.env`, set the database URLs to match the Docker containers:
+
+```
+DATABASE_URL="postgresql://course_radar:course_radar@localhost:5432/course_radar?schema=public"
+USER_DATABASE_URL="postgresql://course_radar_users:course_radar_users@localhost:5433/course_radar_users?schema=public"
+```
+
+For the assistant, set `GROQ_API_KEY` and `TAVILY_API_KEY` in the root `.env`. Never commit `.env` files or put secrets in `VITE_` variables.
+
+### 4. Database (first time only)
 
 ```powershell
-npm run dev
+docker compose up -d --wait postgres users-postgres
+cd api
+npm run clients:generate
+npx prisma migrate deploy
+npm run users:migrate
+npm run prisma:seed
+cd ..
 ```
 
-Open `http://localhost:5173`. All frontend entries use `/api/v1`; Vite proxies `/api` to `http://localhost:3001` during development and preview. Overview and the full prerequisite map consume the same bootstrap catalog as the planner, course explorer, and roadmap. The Home preview remains illustrative. If the API is unavailable, catalog screens fall back to the reviewed 2026-2027 dataset bundled with the frontend.
+This starts both databases, creates the tables, and loads the SJSU catalog data. You don't need to repeat it on later runs.
 
-- Home: `http://localhost:5173/`
-- Overview: `http://localhost:5173/overview`
-- Course explorer: `http://localhost:5173/courses`
-- Roadmap: `http://localhost:5173/roadmap`
-- Prerequisite map: `http://localhost:5173/prerequisites` (`/prerequisite-chart` is an alias)
-- Catalog prerequisite workspace: `http://localhost:5173/catalog-prerequisites`
-- Semester planner: `http://localhost:5173/planner`
+### 5. Start the app
 
-Useful backend commands:
+One command starts everything (databases, API, assistant, frontend):
 
 ```powershell
-docker compose logs -f api
-docker compose restart api
-docker compose down
+npm run dev:all
 ```
 
-`docker compose down` preserves PostgreSQL data in the named volume. To deliberately reset the local database, run `docker compose down -v`, then start the stack again. This deletes the local Course Radar database volume.
+Open **http://localhost:5175**. Press Ctrl+C to stop.
 
-## Backend data flow
+Or run each part in its own terminal:
 
-```text
-Official SJSU 2026-2027 catalog -> structured catalog data -> Prisma seed/import -> PostgreSQL -> NestJS API -> React
-```
+| Part | Command | Port |
+| --- | --- | --- |
+| Databases | `docker compose up -d postgres users-postgres` | 5432, 5433 |
+| Backend API | `npm --prefix api run dev` | 3004 |
+| Assistant (optional) | `npm run agent:dev` | 8000 |
+| Frontend | `npm run dev -- --port 5175 --strictPort` | 5175 |
 
-The reviewed structured dataset is in `src/data.ts`. It is imported by the seed script; nobody needs to type individual SQL rows manually. The source of truth for this version is the [official 2026-2027 Computer Engineering roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19250&returnto=8647), with each linked course page used to check prerequisite wording.
+The frontend needs the backend API running; the assistant is optional.
 
-Fall 2026 offerings are generated from the [official SJSU Fall 2026 class schedule](https://www.sjsu.edu/classes/schedules/fall-2026.php):
+## Tests
 
 ```powershell
-npm run data:fall-2026
+npm test                  # frontend logic
+npm run build             # type check and production build
+npm --prefix api test     # backend
+npm run agent:test        # assistant
 ```
 
-The importer keeps lecture/lab components, rows with `0` open seats, and instructor names. Clicking a section reveals SJSU-scoped Rate My Professors name-search links.
+## Troubleshooting
 
-The manual schedule builder consumes the same offering records returned by `/api/v1/bootstrap` (or the generated fixture when the API is unavailable).
+- **Port already in use:** another copy of the service is running. Stop it, or reuse it.
+- **Database connection error:** make sure Docker Desktop is running and the URLs in `api/.env` match step 3.
+- **Page shows HTML instead of data (`Unexpected token '<'`):** the API isn't reachable. Start it with `npm run dev:all`.
 
-## API
+## More documentation
 
-- `GET /api/v1/bootstrap?program=software-engineering` (defaults to `computer-engineering`)
-- `GET /api/v1/health`
-
-
-Software Engineering data lives in `src/softwareEngineeringData.ts`, based on the [official SE roadmap](https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19349&returnto=8647). Two math/statistics pairs are explicitly marked choose-one; open-ended electives remain placeholders. Shared course IDs retain separate program-specific course versions in Prisma. Docker Compose imports both programs automatically through the idempotent seed step; direct backend setups must run `npm --prefix api run prisma:seed` explicitly.
-
-## API deployment configuration
-
-For a frontend hosted separately from NestJS, set `VITE_API_URL` to the deployed HTTPS API base, including `/api/v1`, before building. Set backend `WEB_ORIGIN` to that frontend's exact origin. `.env.example` documents the frontend variable. The Vercel project remains a frontend-only deployment: its SPA rewrite does not host PostgreSQL or NestJS. Without a deployed API URL, a static deployment uses the reviewed catalog snapshot.
-
-The active API surface is `GET /api/v1/health` and `GET /api/v1/bootstrap?program=computer-engineering|software-engineering`. Bootstrap carries course details, recorded prerequisites/corequisites, requirement choices, term information and section snapshots. The unused standalone program/requirements/course-detail endpoint modules have been removed. Database migrations and catalog provenance remain intact; this cleanup does not drop existing database data.
-
-Overview reports listed core-course progress rather than claiming a complete degree audit. Placeholder requirements are retained in the roadmap and are not counted as completed courses. Completed courses and the selected program are personal drafts kept in sessionStorage for the current tab across document navigation and refresh. Semester plans remain React-memory drafts and reset on document navigation/refresh. No account or server-side personal-plan persistence is introduced.
-
-Recommendations and its scheduling-agent backend have been removed. The legacy `/recommendations` URL redirects to `/courses`. Catalog/bootstrap, health, manual scheduling and planner persistence remain available.
+- [PRODUCT.md](PRODUCT.md): product behavior and constraints
+- [DESIGN.md](DESIGN.md): visual design system

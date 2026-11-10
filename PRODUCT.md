@@ -1,50 +1,24 @@
-# Product
+# Course Radar product
 
-<!-- impeccable:product-schema 1 -->
+## Purpose
 
-## Platform
+Help SJSU students inspect catalog requirements, understand recorded prerequisites, track course completion, plan personal terms, and compare listed sections. Personal plans are planning aids, not official degree audits or university enrollment records.
 
-web
+## Current behavior
 
-## Users
+- Home introduces the product with an illustrative animated preview. Its data and scripted assistant replies are separate from real accounts.
+- Overview, Schedule, Planner, Roadmap, and Account use the same catalog and PostgreSQL-backed planning state. Supported program choices come from the imported catalog; evidence coverage may be incomplete.
+- Account owns saved profile/program preferences and the first academic term. Signed-in users finish setup before entering their personal workspace. Guest and account workspaces remain separate.
+- Completion is explicit. Choosing a semester or completing a prerequisite never automatically completes a course. A completed course retains its saved placement and can be moved.
+- Planner supports numbered Fall/Spring terms and persisted Winter/Summer terms, including empty terms. Deleting a term removes its placements and associated meetings while preserving completion and official requirements.
+- Course-only plan edits save without section prompts. Section choices belong to explicit Schedule actions. Moving terms preserves grouped courses/statuses, recalculates dates, and clears meetings for changed dates.
+- Roadmap course cards expose saved completion controls. GE, technical, and university requirement cards expose a course-only picker with recorded eligibility filters. Choice and suggested placement save atomically; personal choices do not rewrite official requirements.
+- A GE candidate requires captured satisfaction evidence. Missing catalog data must not be filled with invented eligibility. Minimum-grade, consent, equivalency, and degree-credit claims need official review.
+- One `ChatWidget` serves every workspace page. Kimi coordinates Course Action and Web Search. Intent, deterministic authorization, API execution, and acknowledgement remain separate. Never acknowledge a saved action before the authenticated workspace API accepts it.
+- Account persistence, request replay, conflict handling, retry, and Undo protect saved work. Failed saves remain visible and recoverable.
 
-SJSU students planning degree progress and term schedules. The user confirmed this audience and primary job on 2026-10-25.
+## Boundaries
 
-## Product Purpose
+Sections, meeting times, instructor matches, and seat availability are dated records, not live enrollment guarantees. Unmatched instructors are not linked to guessed review profiles. Program sequences must retain official evidence or be labeled drafts. Students must verify requirements, grades, course availability, and enrollment against official SJSU sources.
 
-Course Radar helps students inspect a degree roadmap, understand recorded course prerequisites, explore catalog courses, track a personal course plan, and compare listed sections for a term. Success means students can make a clearer personal plan while keeping official SJSU requirements and enrollment information as the authority.
-
-## Positioning
-
-Open: no comparative or unique-market claim has been confirmed.
-
-## Operating Context
-
-The current web app offers Computer Engineering and Software Engineering degree views against the 2026-2027 catalog, plus Fall 2026 section information. Students can mark courses as completed, organize courses into personal semester slots, inspect recorded prerequisite and corequisite relationships, and select listed sections into a weekly schedule.
-
-## Capabilities and Constraints
-
-- Roadmap and course records include official source links, units, recommended semesters, and recorded prerequisite details.
-- Course completion is a personal draft remembered in the current browser tab session across navigation and refresh, together with the selected program. Semester plans remain React-memory drafts and reset on refresh. Neither is an official degree audit or an authenticated student record.
-- Listed sections and seat availability are a dated snapshot, not live enrollment. The interface distinguishes database data from its reviewed local snapshot.
-- Personal plans are planning aids. Students must verify requirements, grades, course availability, and enrollment details against official SJSU sources.
-- The available program views are Computer Engineering — BS and Software Engineering — BS.
-
-## Brand Commitments
-
-The product name is Course Radar. No additional confirmed verbal identity or competitive claim is recorded.
-
-## Evidence on Hand
-
-The repository contains reviewed course, roadmap, prerequisite, and Fall 2026 offering data in `src/data.ts` and `src/fall2026Offerings.generated.ts`, with source URLs attached to records. Do not invent student outcomes, partner logos, testimonials, enrollment guarantees, or graduation metrics.
-
-## Product Principles
-
-- Keep official catalog information and source links easy to find.
-- Make planning state visibly personal and provisional.
-- Preserve recorded course relationships and section details when presenting options.
-- Make the limits of snapshots and incomplete degree-audit coverage clear.
-
-## Landing Experience
-
-The landing route introduces the product through a selected, interactive portion of the prerequisite graph. Students can switch between the two available programs, inspect recorded course conditions, add a course to their session plan, search the program catalog, and continue to the full workspace. The page demonstrates the planning process while clearly labeling illustrative schedule content. Its first job is to make course relationships useful, not to promise graduation outcomes.
+Desktop is the required verification target. Preserve the current approved screens, shared navigation, intended motion, accessibility behavior, and a single assistant surface. Visual guidance is in [DESIGN.md](DESIGN.md).
