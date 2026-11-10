@@ -16,5 +16,12 @@
 }
 .map-scroll,.map-canvas-footer { display:contents; }
 @keyframes landing-window-arrive { from {opacity:.65;transform:translateX(3%)} to {opacity:1;transform:translateX(0)} }
-@media(prefers-reduced-motion:reduce) { .landing-home .product-frame.hero-window-shell {animation-name:landing-window-fade} }
+
 @keyframes landing-window-fade { from {opacity:.85} to {opacity:1} }
+
+/* The host reserves the desktop preview viewport before the iframe loads. */
+html:has(.landing-map-embed), body:has(.landing-map-embed) { overflow:hidden; background:transparent; }
+@media (min-width:901px) {
+ .landing-map-embed .hero-product-column { height:calc(100dvh - 96px); }
+ .landing-map-embed .product-frame.hero-window-shell { height:100%; min-height:0; }
+}

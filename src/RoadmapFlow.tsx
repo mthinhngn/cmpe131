@@ -1,12 +1,14 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Background, BackgroundVariant, Handle, MarkerType, Position, ReactFlow, useNodesState, type Edge, type ReactFlowInstance, type Node, type NodeProps } from "@xyflow/react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { Background, BackgroundVariant, Handle, MarkerType, NodeToolbar, Position, ReactFlow, useNodesState, type Edge, type ReactFlowInstance, type Node, type NodeProps } from "@xyflow/react";
+import { RoadmapCourseActions, RoadmapRequirementPicker } from "./RoadmapCourseActions";
 
 import { getHighlightedPath, type GraphEdge } from "./prerequisiteGraph";
 import { roadmapStatusLabels, type RoadmapStatus } from "./roadmapStatus";
+import { subjectTone } from "./courseSubject";
 import "@xyflow/react/dist/style.css";
 import "./roadmap-flow.css";
 
-type FlowCourse = { id: string; code: string; title: string; term: string; status: string; x: number; y: number; prerequisites: string[]; corequisites?: string[]; credits: number; detail?: string; sourceUrl?: string };
+type FlowCourse = { id: string; requirementId?: string; plannerCategory?: string; code: string; title: string; term: string; status: string; x: number; y: number; prerequisites: string[]; prerequisiteOptions?: string[]; corequisites?: string[]; corequisiteOptions?: string[]; credits: number; detail?: string; sourceUrl?: string };
 type Row = { year: string; term: string; count: number; credits: number; y: number };
 type CourseNodeData = { course: FlowCourse; focused: boolean; related: boolean; shaded: boolean };
 type CourseNode = Node<CourseNodeData, "course">;
@@ -25,7 +27,7 @@ const courseGrid = <Background variant={BackgroundVariant.Lines} gap={26} color=
 
 const CourseContent = memo(function CourseContent({ course }: { course: FlowCourse }) {
   return <>
-    <header><strong>{course.code}</strong><span>{course.credits} u</span></header>
+    <header><strong title={course.code}>{course.code}</strong><span>{course.credits} u</span></header>
     <p>{course.title}</p>
     <footer><i />{roadmapStatusLabels[course.status as RoadmapStatus] ?? "Check requirements"}</footer>
   </>;
@@ -33,7 +35,8 @@ const CourseContent = memo(function CourseContent({ course }: { course: FlowCour
 
 const CourseCard = memo(function CourseCard({ data }: NodeProps<CourseNode>) {
   const { course, focused, related, shaded } = data;
-  return <article className={`rf-course-card${focused ? " is-focused" : ""}${related ? " is-related" : ""}${shaded ? " is-shaded" : ""}${course.status === "choice" ? " is-choice" : ""}`}>
+  const tone = course.plannerCategory ? { "--c": `var(--s-${course.plannerCategory})`, "--c-ink": course.plannerCategory === "writing" ? "#fff" : "#000" } as CSSProperties : subjectTone(course.status === "choice" ? "" : course.code);
+  return <article style={tone} className={`rf-course-card${focused ? " is-focused" : ""}${related ? " is-related" : ""}${shaded ? " is-shaded" : ""}${course.status === "choice" ? " is-choice" : ""}`}>
     {courseHandles}<CourseContent course={course} />{bottomHandle}
   </article>;
 }, (previous, next) => previous.data.course === next.data.course
@@ -68,17 +71,27 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
   }, [flow, width, zoom]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [inspectionId, setInspectionId] = useState<string | null>(null);
+  const [requirementId, setRequirementId] = useState<string | null>(null);
+  const inspected = courses.find(course => course.id === inspectionId);
   const [dismissedQuery, setDismissedQuery] = useState<string | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<RoadmapNode>([]);
   const graphEdges = useMemo<GraphEdge[]>(() => {
     const byId = new Map(courses.map(course => [course.id, course]));
     return courses.flatMap(course => [
     ...course.prerequisites.map(from => ({ from, to: course.id, kind: "prerequisite" as const })),
+    ...(course.prerequisiteOptions ?? []).map(from => ({ from, to: course.id, kind: "prerequisite" as const, conditional: true })),
+    ...(course.corequisiteOptions ?? []).map(from => ({ from, to: course.id, kind: "corequisite" as const, conditional: true })),
     ...(course.corequisites ?? []).filter(from => !byId.get(from)?.corequisites?.includes(course.id) || from < course.id).map(from => ({ from, to: course.id, kind: "corequisite" as const })),
-    ]);
+    ]).filter(edge => edge.from !== edge.to && byId.has(edge.from));
   }, [courses]);
   const focus = hoveredId ?? (query.trim() && query !== dismissedQuery ? selectedId : focusedId);
-  const clearFocus = useCallback(() => { setHoveredId(null); setFocusedId(null); setDismissedQuery(query); }, [query]);
+  const closeInspection = useCallback(() => {
+    const node = shellRef.current?.querySelectorAll<HTMLElement>(".react-flow__node-course");
+    Array.from(node ?? []).find(element => element.dataset.id === inspectionId)?.focus({ preventScroll: true });
+    setInspectionId(null);
+  }, [inspectionId]);
+  const clearFocus = useCallback(() => { setHoveredId(null); setFocusedId(null); setInspectionId(null); setDismissedQuery(query); }, [query]);
   const path = useMemo(() => getHighlightedPath(focus, graphEdges), [focus, graphEdges]);
 
   useEffect(() => {
@@ -97,7 +110,7 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
         return {
           ...old, id: course.id, type: "course", position: old?.position ?? { x: 156 + ((course.x - 140) / 165) * 192, y: ((course.y - 65) / 178) * 186 + 32 },
           data, selected: data.focused, zIndex: data.focused ? 30 : data.related ? 20 : 0,
-          ariaLabel: `${course.code}, ${course.title}. Select to inspect its course path.`, deletable: false,
+          ariaLabel: `${course.code}, ${course.title}. ${course.status === "choice" ? "Choose a course for this requirement." : "Open course completion controls."}`, deletable: false,
         };
       });
       return [...semesters, ...cards];
@@ -116,7 +129,12 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
 
   const onNodeMouseEnter = useCallback((_: unknown, node: RoadmapNode) => { if (node.type === "course") setHoveredId(node.id); }, []);
   const onNodeMouseLeave = useCallback(() => setHoveredId(null), []);
-  const onNodeClick = useCallback((_: unknown, node: RoadmapNode) => { if (node.type === "course") { setFocusedId(node.id); onSelect(node.id); } }, [onSelect]);
+  const openCourse = useCallback((course: FlowCourse) => {
+    setFocusedId(course.id); onSelect(course.id);
+    if (course.status === "choice") { setInspectionId(null); setRequirementId(course.requirementId ?? course.id); }
+    else { setRequirementId(null); setInspectionId(course.id); }
+  }, [onSelect]);
+  const onNodeClick = useCallback((_: unknown, node: RoadmapNode) => { if (node.type === "course") openCourse(node.data.course); }, [openCourse]);
 
   const positions = new Map(nodes.map(node => [node.id, node.position.x]));
   const corequisiteDirections = graphEdges.filter(edge => edge.kind === "corequisite")
@@ -128,12 +146,17 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
     const active = path.connectionIds.has(id);
     const corequisite = edge.kind === "corequisite";
     const leftToRight = !corequisite || corequisiteDirections[corequisiteIndex++] === "1";
-    return { sourceHandle: corequisite ? `corequisite-${leftToRight ? "right" : "left"}-source` : "prerequisite-source", targetHandle: corequisite ? `corequisite-${leftToRight ? "left" : "right"}-target` : "prerequisite-target", id, source: edge.from, target: edge.to, type: corequisite ? "smoothstep" : "default", markerEnd: { type: MarkerType.ArrowClosed, color: edge.kind === "corequisite" ? "#aa8954" : "#168873", width: 14, height: 14 }, animated: false, selectable: false, zIndex: active ? 10 : 0, className: `${corequisite ? "rf-corequisite " : ""}${active ? "rf-path-active" : focus ? "rf-path-shaded" : ""}`, style: { stroke: edge.kind === "corequisite" ? "#aa8954" : "#629889", strokeWidth: active ? 2.8 : 1.3 } };
+    return { sourceHandle: corequisite ? `corequisite-${leftToRight ? "right" : "left"}-source` : "prerequisite-source", targetHandle: corequisite ? `corequisite-${leftToRight ? "left" : "right"}-target` : "prerequisite-target", id, source: edge.from, target: edge.to, type: corequisite ? "smoothstep" : "default", markerEnd: { type: MarkerType.ArrowClosed, color: edge.kind === "corequisite" ? "#aa8954" : "#168873", width: 14, height: 14 }, animated: false, selectable: false, zIndex: active ? 10 : 0, label: edge.conditional && active && (edge.to === focus || corequisite && edge.from === focus) ? "Conditional" : undefined, labelStyle: { fontSize: 10, fill: "#725b33" }, labelBgStyle: { fill: "#fffdf7" }, ariaLabel: `${edge.conditional ? "Conditional course reference" : edge.kind} from ${edge.from} to ${edge.to}`, className: `${corequisite ? "rf-corequisite " : ""}${active ? "rf-path-active" : focus ? "rf-path-shaded" : ""}`, style: { stroke: edge.kind === "corequisite" ? "#aa8954" : "#629889", strokeWidth: active ? 2.8 : 1.3 } };
     });
   }, [graphEdges, path, focus, corequisiteDirections]);
 
-  return <div ref={shellRef} className="rf-roadmap" style={{ height: canvasHeight }} onKeyDown={event => { if (event.key === "Escape") clearFocus(); }}>
-    <div className="rf-map-help">Drag any course to rearrange · Hover to follow a path · Click to keep it selected</div>
+  return <div ref={shellRef} className="rf-roadmap" style={{ height: canvasHeight }} onKeyDownCapture={event => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const id = (event.target as HTMLElement).closest<HTMLElement>(".react-flow__node-course")?.dataset.id;
+    const course = courses.find(course => course.id === id);
+    if (course) { event.preventDefault(); event.stopPropagation(); openCourse(course); }
+  }} onKeyDown={event => { if (event.key === "Escape") clearFocus(); }}>
+    <div className="rf-map-help">Drag to rearrange · Hover to follow a path · Click to mark completion or choose an elective</div>
     <ReactFlow<RoadmapNode> nodes={displayedNodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange}
       onNodeMouseEnter={onNodeMouseEnter}
       onNodeMouseLeave={onNodeMouseLeave}
@@ -141,7 +164,15 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
       onInit={setFlow} onPaneClick={clearFocus} minZoom={.1} maxZoom={1.8}
       proOptions={proOptions} nodesDraggable nodesConnectable={false} edgesReconnectable={false} deleteKeyCode={null} selectionOnDrag={false} panOnDrag zoomOnPinch zoomOnScroll preventScrolling={false}>
       {courseGrid}
-      
+      {inspected && <NodeToolbar nodeId={inspected.id} isVisible position={inspected.y === Math.max(...courses.map(course => course.y)) ? Position.Top : Position.Bottom} align={inspected.x === Math.max(...courses.map(course => course.x)) ? "end" : "center"} offset={12}>
+        <RoadmapCourseActions key={inspected.id} courseId={inspected.id} requirementId={inspected.requirementId} onClose={closeInspection} onChoose={() => { setRequirementId(inspected.requirementId ?? null); setInspectionId(null); }}/>
+      </NodeToolbar>}
     </ReactFlow>
+    {requirementId && <RoadmapRequirementPicker key={requirementId} requirementId={requirementId}
+      onClose={() => {
+        Array.from(shellRef.current?.querySelectorAll<HTMLElement>(".react-flow__node-course") ?? []).find(node => node.dataset.id === focusedId)?.focus({ preventScroll: true });
+        setRequirementId(null); setInspectionId(null); setFocusedId(null); setHoveredId(null);
+      }}
+      onChosen={id => { setRequirementId(null); setInspectionId(id); setFocusedId(id); setHoveredId(null); onSelect(id); }}/>}
   </div>;
 }

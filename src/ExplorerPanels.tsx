@@ -1,14 +1,10 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowsInSimple } from "@phosphor-icons/react/dist/csr/ArrowsInSimple";
-import { ArrowsOutSimple } from "@phosphor-icons/react/dist/csr/ArrowsOutSimple";
-import { Check } from "@phosphor-icons/react/dist/csr/Check";
-import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import type { GroupImperativeHandle, Layout } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
 
 export type ExplorerView = "split" | "catalog" | "week";
-const STORAGE_KEY = "course-radar-explorer-split-v1";
-const DEFAULT_LAYOUT: Layout = { catalog: 41, week: 59 };
+const STORAGE_KEY = "course-radar-explorer-graphite-split-v1";
+const DEFAULT_LAYOUT: Layout = { catalog: 27.6, week: 72.4 };
 
 function readLayout(): Layout {
   try {
@@ -18,13 +14,9 @@ function readLayout(): Layout {
   return DEFAULT_LAYOUT;
 }
 
-export function ExplorerPanels({ term, view, onViewChange, sectionCount, conflictCount, untimedCount, catalog, week }: {
-  term: string;
+export function ExplorerPanels({ view, onViewChange, catalog, week }: {
   view: ExplorerView;
   onViewChange: (view: ExplorerView) => void;
-  sectionCount: number;
-  conflictCount: number;
-  untimedCount: number;
   catalog: ReactNode;
   week: ReactNode;
 }) {
@@ -57,14 +49,8 @@ export function ExplorerPanels({ term, view, onViewChange, sectionCount, conflic
   };
 
   return <>
-    <div className="cx-workbench-heading">
-      <span><i /> {term} <b>/</b> Schedule workspace{view === "split" && <small>Drag the divider to make room.</small>}{view === "catalog" && <small className={`cx-collapsed-summary${conflictCount || untimedCount ? " needs-review" : ""}`} role="status">{sectionCount ? conflictCount || untimedCount ? <WarningCircle size={14} /> : <Check size={14} /> : null}{sectionCount} {sectionCount === 1 ? "section" : "sections"}{conflictCount ? ` · ${conflictCount} time ${conflictCount === 1 ? "conflict" : "conflicts"}` : untimedCount ? " · Meeting times need review" : sectionCount ? " · No overlaps" : " · Preview a section to start"}</small>}</span>
-      <div className="cx-layout-actions">
-        {view !== "catalog" && <button type="button" aria-pressed={view === "week"} onClick={() => onViewChange(view === "week" ? "split" : "week")}>{view === "week" ? <ArrowsInSimple size={15} /> : <ArrowsOutSimple size={15} />}{view === "week" ? "Show catalog" : "Focus on your week"}</button>}
-      </div>
-    </div>
     <div ref={workbench} className={`cx-workbench cx-desktop-workbench cx-layout-${visibleView}`}>
-      <ResizablePanelGroup className="cx-panel-group" style={{ overflow: "visible", height: 820 }} groupRef={group} defaultLayout={initialLayout} orientation="horizontal" resizeTargetMinimumSize={{ fine: 48, coarse: 48 }} onLayoutChange={layout => {
+      <ResizablePanelGroup className="cx-panel-group" style={{ overflow: "visible", height: "max(640px, calc(100vh - 180px))", flex: "none" }} groupRef={group} defaultLayout={initialLayout} orientation="horizontal" resizeTargetMinimumSize={{ fine: 48, coarse: 48 }} onLayoutChange={layout => {
         setVisibleView(layout.catalog <= .01 ? "week" : layout.week <= .01 ? "catalog" : "split");
       }} onLayoutChanged={(layout, meta) => {
         if (!meta.isUserInteraction) return;

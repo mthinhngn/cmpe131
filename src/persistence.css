@@ -1,0 +1,8 @@
+.persistence-status{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:8px 16px;background:#edf5f1;color:#183933;font:12px/1.5 Inter,Arial,sans-serif;min-height:36px}
+.persistence-status[data-status=error]{background:#fff0eb;color:#853d24}
+.persistence-status button{font:inherit;min-height:32px;padding:4px 10px;background:white;color:inherit;border:1px solid currentColor;border-radius:4px;cursor:pointer}
+.persistence-status button:focus-visible{outline:2px solid #168873;outline-offset:3px}
+.persistence-content{display:contents;border:0;padding:0;margin:0;min-width:0}
+.persistence-content:disabled{opacity:1}
+
+.persistence-status{position:fixed;bottom:16px;left:16px;z-index:120;max-width:min(620px,calc(100vw - 32px));border:1px solid #d9e5e0;border-radius:4px}

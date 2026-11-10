@@ -1,0 +1,61 @@
+const pickTerm = async (page, title) => { await page.getByRole('button',{name:'Schedule semester',exact:true}).click(); await page.getByRole('option',{name:title,exact:true}).click(); };
+const {chromium}=require(require('node:path').join(require('node:os').homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'));
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const credential=require('node:crypto').randomBytes(32).toString('hex');
+ const headers={Authorization:`Bearer ${credential}`,'X-Workspace-User':'guest',Origin:'http://127.0.0.1:5175','Content-Type':'application/json'};
+ const base='http://127.0.0.1:5175/api/v1';
+ const b=await (await page.request.get(base+'/bootstrap')).json();
+ console.log('bootstrap',b.catalog.courses.length,'degree',b.catalog.roadmapCourseIds.length,'terms',b.catalog.availableTerms);
+ assert(b.catalog.courses.length>=3460);assert.equal(b.catalog.roadmapCourseIds.length,31);
+ let response=await page.request.post(base+'/workspace',{headers});assert(response.ok(),await response.text());let w=await response.json();
+ response=await page.request.post(base+'/workspace/operations',{headers,data:{requestId:require('node:crypto').randomUUID(),version:w.version,kind:'setStartingTerm',args:{term:'fall-2026'}}});assert(response.ok(),await response.text());
+ await page.addInitScript(c=>localStorage.setItem('course-radar-workspace-credential-v1',c),credential);
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:5175/schedule');
+ await page.getByLabel('Search courses by code or title').waitFor({timeout:60000});
+ await page.getByLabel('Search courses by code or title').fill('BUS1 20');
+ await page.locator('.cx-course-trigger').first().click();
+ await page.locator('.cx-section').first().waitFor();
+ console.log('BUS1 20 sections',await page.locator('.cx-section').count());
+ await page.waitForTimeout(1200);
+ await page.screenshot({path:'tmp/university-schedule-desktop.png'});
+ await page.locator('.cx-section .cx-add').first().click();
+ if(await page.getByLabel('Choose course sections').isVisible()){
+  for(const group of await page.locator('.cr-chat-section-choice fieldset').all()) await group.locator('input').first().check();
+  await page.getByRole('button',{name:'Confirm sections',exact:true}).click();
+ }
+ await page.waitForTimeout(2000);
+ console.log('notice',await page.locator('.cx-week-footer').innerText());
+ response=await page.request.get(base+'/workspace',{headers});w=await response.json();console.log('saved plan',w.state.plans[w.state.program]);
+ assert(Object.keys(w.state.plans[w.state.program]||{}).some(id=>id==='sjsu-bus1-20'));
+ await pickTerm(page, 'Winter 2027');
+ await page.getByLabel('Search courses by code or title').fill('AMS 10');
+ await page.locator('.cx-course-trigger').first().click();
+ await page.locator('.cx-section').first().waitFor();
+ console.log('winter sections',await page.locator('.cx-section').count());
+ await page.locator('.cx-section .cx-add').first().click();
+ if(await page.getByLabel('Choose course sections').isVisible()){
+  for(const group of await page.locator('.cr-chat-section-choice fieldset').all()) await group.locator('input').first().check();
+  await page.getByRole('button',{name:'Confirm sections',exact:true}).click();
+ }
+ await page.waitForTimeout(1800);
+ response=await page.request.get(base+'/workspace',{headers});w=await response.json();
+ const ams=w.state.catalog.courses.find(c=>c.code==='AMS 10');
+ assert.equal(w.state.plans[w.state.program][ams.id].semester,'winter-2027');
+ await page.reload();await page.getByLabel('Search courses by code or title').waitFor();
+ await pickTerm(page, 'Winter 2027');
+ await page.getByLabel('Search courses by code or title').fill('AMS 10');
+ await page.locator('.cx-saved-sections').getByText('AMS 10',{exact:true}).waitFor();
+ await page.waitForTimeout(1200);
+ await page.screenshot({path:'tmp/university-winter-desktop.png'});
+ await pickTerm(page, 'Spring 2027');
+ await page.getByLabel('Search courses by code or title').fill('BUS1 20');
+ await page.locator('.cx-course-trigger').first().click();
+ await page.locator('.cx-section').first().waitFor();
+ console.log('Spring 2027 sections',await page.locator('.cx-section').count());
+ assert.deepEqual(errors,[]);
+ await browser.close();console.log('PASS desktop university search, section load, and authenticated workspace save');
+})().catch(e=>{console.error(e);process.exit(1)});

@@ -1,6 +1,6 @@
 import type { Course } from "./types";
 
-type Plans = Record<string, { status: "planned" | "in-progress"; semester: number }>;
+type Plans = Record<string, { status: "planned" | "in-progress"; semester: number | string }>;
 export type RoadmapStatus = "complete" | "current" | "available" | "needs-prerequisites" | "review" | "choice";
 
 export const roadmapStatusLabels: Record<RoadmapStatus, string> = {

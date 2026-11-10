@@ -10,15 +10,36 @@ import { MapPin } from "@phosphor-icons/react/dist/csr/MapPin";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { UsersThree } from "@phosphor-icons/react/dist/csr/UsersThree";
 import { X } from "@phosphor-icons/react/dist/csr/X";
+import { parseSlot, slotLabel } from "./academicProfile";
 import { useCatalog } from "./CatalogContext";
-import type { Course } from "./types";
+import type { Course, CourseOffering } from "./types";
 import { useSchedule } from "./ScheduleContext";
+import { ProfessorReviewLink } from "./ProfessorReviewLink";
 
 export function CourseDetail({ course, onClose, variant, animateEntry = true }: { course: Course; onClose: () => void; variant?: "roadmap"; animateEntry?: boolean }) {
   const isRoadmap = variant === "roadmap";
-  const { catalog, courseById, takenCourseIds, toggleTakenCourse, plans, setPlan, removePlan, semesterCount } = useCatalog();
-  const { isSelected, hasSelectedComponent, selectOffering, removeOffering } = useSchedule();
+  const { catalog, courseById, takenCourseIds, toggleTakenCourse, plans, setPlan, removePlan, termOrder, startingTerm } = useCatalog();
+  const { isSelected, hasSelectedComponent, selectOffering, removeOffering, offerings: importedOfferings, termLabel, pending } = useSchedule();
   const dialog = useRef<HTMLElement>(null);
+  const handingOff = useRef(false);
+  const sectionLock = useRef(false);
+  const [changingSection, setChangingSection] = useState<string | null>(null);
+  const [sectionFeedback, setSectionFeedback] = useState<{ id: string; message: string; error: boolean } | null>(null);
+  const changeSection = async (offering: CourseOffering) => {
+    if (sectionLock.current || pending) return;
+    sectionLock.current = true;
+    setChangingSection(offering.classNumber);
+    setSectionFeedback(null);
+    try {
+      const result = await (isSelected(offering.classNumber) ? removeOffering(offering.classNumber) : selectOffering(offering));
+      setSectionFeedback({ id: offering.classNumber, message: result.message, error: result.status === "error" });
+    } catch {
+      setSectionFeedback({ id: offering.classNumber, message: "The section could not be saved. Please try again.", error: true });
+    } finally { sectionLock.current = false; setChangingSection(null); }
+  };
+  useEffect(() => {
+    if (sectionFeedback) dialog.current?.querySelector(".detail-schedule-feedback[role]")?.scrollIntoView({ block: "nearest" });
+  }, [sectionFeedback]);
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dismiss = () => {
@@ -29,9 +50,9 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
       const style = getComputedStyle(sheet);
       const from = { transform: style.transform, opacity: style.opacity };
       sheet.getAnimations().forEach(animation => animation.cancel());
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       const curve = style.getPropertyValue("--ease-out").trim() || "cubic-bezier(.23,1,.32,1)";
-      sheet.animate([from, { transform: reduce ? "none" : "translateX(28px)", opacity: 0 }], { duration: 200, easing: curve, fill: "forwards" });
+      sheet.animate([from, { transform: "translateX(28px)", opacity: 0 }], { duration: 200, easing: curve, fill: "forwards" });
       const layer = sheet.parentElement;
       if (layer) {
         const opacity = getComputedStyle(layer).opacity;
@@ -46,10 +67,10 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
   useLayoutEffect(() => {
     const sheet = dialog.current;
     if (!isRoadmap || !animateEntry || !sheet) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const curve = getComputedStyle(sheet).getPropertyValue("--ease-out").trim() || "cubic-bezier(.23,1,.32,1)";
     const arrival = sheet.animate([
-      { transform: reduce ? "none" : "translateX(28px)", opacity: 0 },
+      { transform: "translateX(28px)", opacity: 0 },
       { transform: "translateX(0)", opacity: 1 },
     ], { duration: 250, easing: curve });
     const backdrop = sheet.parentElement?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: curve });
@@ -57,6 +78,11 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
   }, [isRoadmap, animateEntry]);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
+  useEffect(() => {
+    if (pending?.courseId !== course.id) return;
+    handingOff.current = true;
+    closeRef.current();
+  }, [pending?.courseId, course.id]);
   useEffect(() => {
     const origin = document.activeElement as HTMLElement | null;
     const oldOverflow = document.body.style.overflow;
@@ -71,21 +97,20 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     };
     document.addEventListener("keydown", listener);
-    return () => { document.body.style.overflow = oldOverflow; document.removeEventListener("keydown", listener); origin?.focus(); };
+    return () => { document.body.style.overflow = oldOverflow; document.removeEventListener("keydown", listener); if (!handingOff.current) origin?.focus(); };
   }, []);
   const isTaken = takenCourseIds.has(course.id);
   const requirementNote = catalog.requirementGroups.flatMap(group => group.items).find(item => item.courseId === course.id)?.description;
-  const [selectedTerm, setSelectedTerm] = useState(catalog.currentTerm.name);
-  const hasTermData = selectedTerm === catalog.currentTerm.name;
-  const semesterChoices = Array.from({ length: 5 }, (_, index) => 2026 - index)
-    .flatMap((year) => [`Fall ${year}`, `Spring ${year}`]);
+  const [selectedTerm, setSelectedTerm] = useState(termLabel);
+  const hasTermData = selectedTerm === termLabel;
+  const semesterChoices = (catalog.availableTerms ?? [catalog.currentTerm.id]).map(t => t.replace(/^(\w+)-(\d+)$/, (_, season, year) => `${season[0].toUpperCase()}${season.slice(1)} ${year}`));
   const prerequisites = course.prerequisiteCourseIds
     .map((id) => courseById.get(id))
     .filter((item): item is Course => Boolean(item));
   const corequisites = course.corequisiteCourseIds
     .map((id) => courseById.get(id))
     .filter((item): item is Course => Boolean(item));
-  const offerings = hasTermData ? catalog.offerings.filter((offering) => offering.courseCode === course.code) : [];
+  const offerings = hasTermData ? importedOfferings.filter((offering) => offering.courseCode === course.code) : [];
   const scheduleSnapshotDate = catalog.currentTerm.fetchedAt
     ? new Date(catalog.currentTerm.fetchedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : "Not available";
@@ -96,26 +121,26 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
         <header className="drawer-header">
           <div className="drawer-title"><span className="course-code">{course.code}</span><h2 id="course-title">{course.title}</h2></div>
           <button className="icon-button" onClick={(event) => { if (event.detail === 0) onClose(); else dismiss(); }} aria-label="Close course details"><X size={20} /></button>
-          {isRoadmap && <div className="detail-summary"><span><strong>{course.units}</strong> {course.units === 1 ? "unit" : "units"}</span><span>Recommended <strong>Semester {course.recommendedSemester}</strong></span><a href={course.sourceUrl} target="_blank" rel="noreferrer">SJSU catalog <ArrowSquareOut size={13}/></a></div>}
+          {isRoadmap && <div className="detail-summary"><span><strong>{course.unitsText === "" ? "TBA" : course.unitsText ?? course.units}</strong> {course.units === 1 ? "unit" : "units"}</span>{course.recommendedSemester > 0 && <span>Recommended <strong>Semester {course.recommendedSemester}</strong></span>}<a href={course.sourceUrl} target="_blank" rel="noreferrer">SJSU source <ArrowSquareOut size={13}/></a></div>}
         </header>
         <div className="drawer-content">
           {isRoadmap && <section className="detail-about"><h3>What you’ll study</h3><p>{course.description}</p>{requirementNote && <p>{requirementNote}</p>}</section>}
           {isRoadmap && <div className="detail-plan-heading"><h3>Your plan</h3><span>{isTaken ? "Completed" : plans[course.id] ? plans[course.id].status === "in-progress" ? "In progress" : "Planned" : "Not planned"}</span></div>}
           <section className="taken-control" aria-label="Course completion">
-            <button type="button" aria-pressed={isTaken} onClick={() => { if (!isTaken) removePlan(course.id); toggleTakenCourse(course.id); }}>
+            <button type="button" aria-pressed={isTaken} onClick={() => { toggleTakenCourse(course.id); }}>
               <CheckCircle size={19} weight={isTaken ? "fill" : "regular"} />
               {isRoadmap ? isTaken ? "Completed · Undo" : "Mark complete" : isTaken ? "Already taken · Undo" : "Mark as already taken"}
             </button>
-            <p role="status">{isRoadmap ? isTaken ? "This course is marked complete on your roadmap." : "Track this course in your degree plan." : <>{isTaken ? "Marked with a red line on your chart." : "Mark this course to cross it out on your chart."} Marks reset when you refresh.</>}</p>
+            <p role="status">{isRoadmap ? isTaken ? "This course is marked complete on your roadmap." : "Track this course in your degree plan." : <>{isTaken ? "Marked with a red line on your chart." : "Mark this course to cross it out on your chart."} Marks save with your workspace.</>}</p>
           </section>
           <section className="plan-controls" aria-label="Plan this course">
-            <label>Plan semester<select value={plans[course.id]?.semester ?? ""} onChange={event => { if (event.target.value) setPlan(course.id, Number(event.target.value), plans[course.id]?.status); else removePlan(course.id); }}><option value="">Not planned</option>{Array.from({ length: semesterCount }, (_, index) => <option key={index + 1} value={index + 1}>Semester {index + 1}</option>)}</select></label>
+            <label>Plan semester<select value={plans[course.id]?.semester ?? ""} onChange={event => { if (event.target.value) setPlan(course.id, parseSlot(event.target.value), plans[course.id]?.status); else removePlan(course.id); }}><option value="">Not planned</option>{termOrder.map(slot => <option key={slot} value={slot}>{slotLabel(slot)}</option>)}</select></label>
             {plans[course.id] && <label>Course status<select value={plans[course.id].status} onChange={event => setPlan(course.id, plans[course.id].semester, event.target.value as "planned" | "in-progress")}><option value="planned">Planned</option><option value="in-progress">In progress</option></select></label>}
             {!isRoadmap && <p>Session draft · Changes reset on refresh. Planning does not enroll you.</p>}
           </section>
           {!isRoadmap && <><div className="course-facts">
             <span><BookOpen size={17} />{course.units} {course.units === 1 ? "unit" : "units"}</span>
-            <span><GraduationCap size={17} />Recommended semester {course.recommendedSemester}</span>
+            {course.recommendedSemester > 0 && <span><GraduationCap size={17} />Recommended semester {course.recommendedSemester}</span>}
           </div>
           <p>{course.description}</p>
           {requirementNote && <p>{requirementNote}</p>}</>}
@@ -175,15 +200,17 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                     <div><dt><UsersThree size={15} />Professor</dt><dd>{offering.instructors?.join(", ") || "Not announced"}</dd></div>
                   </dl>
                   <div className="offering-schedule-action">
-                    <button type="button" aria-pressed={selectedForSchedule} onClick={() => selectedForSchedule ? removeOffering(offering.classNumber) : selectOffering(offering)}>
+                    <button type="button" aria-pressed={selectedForSchedule} disabled={!!changingSection || !!pending || offering.scheduleReview} onClick={() => { void changeSection(offering); }}>
                       {selectedForSchedule ? <CheckCircle size={17} weight="fill" /> : <Plus size={17} />}
-                      {selectedForSchedule ? "Added to schedule" : replacesComponent ? `Replace ${offering.component} section` : "Add to schedule"}
+                      {changingSection === offering.classNumber ? "Saving…" : selectedForSchedule ? "Added to schedule" : replacesComponent ? `Replace ${offering.component} section` : "Add to schedule"}
                     </button>
+                    {offering.scheduleReview && <p className="detail-schedule-feedback">Verify this section with SJSU before selecting it.</p>}
+                    {sectionFeedback?.id === offering.classNumber && <p className="detail-schedule-feedback" role={sectionFeedback.error ? "alert" : "status"}>{sectionFeedback.message}{sectionFeedback.error && !startingTerm && <> <a href="/account">Set your first semester in Account</a>.</>}</p>}
                   </div>
                   <details className="professor-links">
                     <summary>{isRoadmap ? "Professor reviews" : `Section ${offering.sectionNumber} · Rate My Professors`}</summary>
                     {offering.instructors?.length ? offering.instructors.map((name) => (
-                      <a key={name} href={`https://www.ratemyprofessors.com/search/professors/881?q=${encodeURIComponent(name)}`} target="_blank" rel="noreferrer">Find {name} <ArrowSquareOut size={14} /></a>
+                      <div key={name}><span>{name} · </span><ProfessorReviewLink name={name} /></div>
                     )) : <p>SJSU has not announced a professor for this section.</p>}
                   </details>
                 </article>;

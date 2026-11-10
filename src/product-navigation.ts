@@ -1,8 +1,7 @@
 /** Shared labels and destinations for every product header. */
 export const productNavigation = [
   { to: "/overview", label: "Overview" },
-  { to: "/courses", label: "Schedule" },
-  { to: "/roadmap", label: "Course" },
+  { to: "/schedule", label: "Schedule" },
   { to: "/planner", label: "Planner" },
-  { to: "/prerequisites", label: "Roadmap" },
+  { to: "/roadmap", label: "Roadmap" },
 ];

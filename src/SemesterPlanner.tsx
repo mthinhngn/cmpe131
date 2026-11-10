@@ -1,108 +1,245 @@
-import { productNavigation } from "./product-navigation";
-import { CourseRadarBrand } from "./CourseRadarBrand";
-import { ProductContextBar } from "./ProductContextBar";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight, Check, Plus, Search, Trash2, Undo2 } from "lucide-react";
+import { ProductPageHeading } from "./ProductPageHeading";
+import { slotLabel, parseSlot, derivedTermSlots, type PlanSlot } from "./academicProfile";
+import { ProductHeader } from "./ProductHeader";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent } from "react";
+import { useSearchParams } from "react-router-dom";
+import { ArrowUpRight, Layers, Plus, X } from "lucide-react";
 import { useCatalog } from "./CatalogContext";
-import { CourseDetail } from "./CourseDetail";
 import type { Course } from "./types";
-import "./semester-planner.css";
+import { PlanningStore, type Plan, type Plans } from "./planning";
+import { CourseDetail } from "./CourseDetail";
+import "./planner-blocks.css";
+import { courseSubject } from "./courseSubject";
+import { PlannerCommandBar } from "./PlannerCommandBar";
+import { plannerPlacements } from "./plannerData";
+
+const LIBRARY_BATCH = 40;
+
+const subjects = [
+  { key: "major", label: "Major", codes: ["CMPE", "CS", "SE"] },
+  { key: "math", label: "Math", codes: ["MATH"] },
+  { key: "science", label: "Science", codes: ["PHYS", "BIOL", "CHEM"] },
+  { key: "eng", label: "Engineering", codes: ["ENGR", "EE", "ISE"] },
+  { key: "writing", label: "Writing", codes: ["ENGL"] },
+  { key: "university", label: "University electives", codes: [] },
+  { key: "technical", label: "Technical electives", codes: [] },
+];
+const short = (s: PlanSlot) => typeof s === "number" ? `S${s}` : slotLabel(s);
 
 export default function SemesterPlanner() {
-  const { catalog, program, selectProgram, plans, takenCourseIds, courseById, setPlan, removePlan, semesterCount, addSemester, removeLastSemester } = useCatalog();
-  const [semester, setSemester] = useState(1);
+  const [params] = useSearchParams();
+  const { catalog, allCourses, program, plans: savedPlans, takenCourseIds, courseById, setPlan, removePlan, semesterSlots, namedTerms, termOrder, planningStore, termToSlot: savedTermToSlot, startingTerm } = useCatalog();
+  const [termPreview, setTermPreview] = useState<{ program: string; slots: PlanSlot[]; removed?: PlanSlot; plans?: Plans; termToSlot?: Record<string, number> } | null>(null);
+  const termToSlot = termPreview?.program === program && termPreview.termToSlot ? termPreview.termToSlot : savedTermToSlot;
+  const semesters = useMemo<PlanSlot[]>(() => termPreview?.program === program ? termPreview.slots : termOrder, [termPreview, program, termOrder]);
+  const [optimistic, setOptimistic] = useState<{ program: string; id: string; plan: Plan | null } | null>(null);
+  // Only Planner previews the edit; shared data and assistant receipts await the saved result.
+  const plans = useMemo(() => {
+    if (termPreview?.program === program && termPreview.plans) return termPreview.plans;
+    const removed = termPreview?.program === program ? termPreview.removed : undefined;
+    if ((!optimistic || optimistic.program !== program) && removed === undefined) return savedPlans;
+    const next = { ...savedPlans };
+    if (removed !== undefined) for (const [id, plan] of Object.entries(next)) if (plan.semester === removed) delete next[id];
+    if (optimistic?.program === program) {
+      if (optimistic.plan) next[optimistic.id] = optimistic.plan;
+      else delete next[optimistic.id];
+    }
+    return next;
+  }, [savedPlans, optimistic, termPreview, program]);
+  const changedCourses = useRef(new Set<string>());
+  const roadmapIds = useMemo(() => new Set(catalog.courses.map(c => c.id)), [catalog.courses]);
+  const subjectOf = (c: Course) => subjects.find(s => s.key === (c.plannerCategory ?? courseSubject(c.code, roadmapIds.has(c.id), program)))!;
+  const tone = (c: Course): CSSProperties => ({ "--c": `var(--s-${subjectOf(c).key})`, "--c-ink": subjectOf(c).key === "writing" ? "#fff" : "#000", "--u": c.units } as CSSProperties);
+  const [semester, setSemester] = useState<PlanSlot>(5);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"planned" | "all" | "suggested">("planned");
+  const [subject, setSubject] = useState<string | null>(null);
   const [selected, setSelected] = useState<Course | null>(null);
-  const [message, setMessage] = useState("");
-  const [undo, setUndo] = useState<null | (() => void)>(null);
-  const [dragged, setDragged] = useState<string | null>(null);
-  const chartScroll = useRef<HTMLDivElement>(null);
-  const timelineScroll = useRef<HTMLElement>(null);
-  useEffect(() => { document.title = "Semester Planner · Course Radar"; }, []);
-  useEffect(() => { setSemester(1); setQuery(""); setFilter("planned"); setUndo(null); setMessage(""); setSelected(null); }, [program]);
-  useEffect(() => { setSemester(current => Math.min(current, semesterCount)); }, [semesterCount]);
+  const [fullDetails, setFullDetails] = useState<Course | null>(null);
+  const [target, setTarget] = useState<PlanSlot>(5);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [dropOn, setDropOn] = useState<PlanSlot | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const labels = useRef<HTMLDivElement>(null);
+  const chart = useRef<HTMLDivElement>(null);
+  const draggingTerm = useRef<PlanSlot | null>(null);
+  const dragging = useRef<{ id: string; program: string; planned: boolean } | null>(null);
+  const libraryKey = JSON.stringify([program, semester, query, subject]);
+  const [libraryPage, setLibraryPage] = useState({ key: libraryKey, limit: LIBRARY_BATCH });
+  const libraryLimit = libraryPage.key === libraryKey ? libraryPage.limit : LIBRARY_BATCH;
   useEffect(() => {
-    for (const container of [chartScroll.current, timelineScroll.current]) {
-      const active = container?.querySelector<HTMLElement>('[aria-pressed="true"]');
-      if (!container || !active) continue;
-      const viewport = container.getBoundingClientRect();
-      const target = active.getBoundingClientRect();
-      if (target.left < viewport.left) container.scrollLeft += target.left - viewport.left;
-      else if (target.right > viewport.right) container.scrollLeft += target.right - viewport.right;
-    }
-  }, [semester, semesterCount]);
-  const semesters = Array.from({ length: semesterCount }, (_, i) => i + 1);
-  const canRemoveSemester = semesterCount > catalog.requirementGroups.length && !Object.values(plans).some(plan => plan.semester === semesterCount);
-  const extendPlan = () => {
-    addSemester();
-    setSemester(semesterCount + 1);
-    setFilter("planned");
-    setQuery("");
-    setMessage(`Semester ${semesterCount + 1} added.`);
-    setUndo(null);
+    setLibraryPage(previous => previous.key === libraryKey ? previous : { key: libraryKey, limit: LIBRARY_BATCH });
+    document.getElementById("pb-pills")?.scrollTo({ top: 0 });
+  }, [libraryKey]);
+  useEffect(() => { document.title = "Semester Planner · Course Radar"; }, []);
+  useEffect(() => { changedCourses.current.clear(); setSemester(semesterSlots.includes(5) ? 5 : semesterSlots[0] ?? namedTerms[0] ?? 1); setQuery(""); setSubject(null); setError(""); setSelected(null); setFullDetails(null); }, [program]);
+  useEffect(() => {
+    const slot = parseSlot(params.get("semester") ?? "");
+    if (typeof slot === "number" && semesterSlots.includes(slot) || typeof slot === "string" && namedTerms.includes(slot)) setSemester(slot);
+  }, [params, semesterSlots, program, namedTerms]);
+  useEffect(() => { if (!semesters.includes(semester)) setSemester(semesters[0] ?? 1); }, [semesters, semester]);
+  useEffect(() => {
+    if (selected) dialog.current?.showModal();
+    else dialog.current?.close();
+  }, [selected]);
+  useEffect(() => {
+    const container = chart.current;
+    const active = container?.querySelector<HTMLElement>('[aria-current="true"]');
+    if (!container || !active) return;
+    const viewport = container.getBoundingClientRect(), column = active.getBoundingClientRect();
+    if (column.left < viewport.left) container.scrollLeft += column.left - viewport.left;
+    else if (column.right > viewport.right) container.scrollLeft += column.right - viewport.right;
+    if (labels.current) labels.current.scrollLeft = container.scrollLeft;
+  }, [semester, semesters]);
+  const placements = useMemo(() => plannerPlacements(allCourses, plans, takenCourseIds, semesters), [allCourses, plans, takenCourseIds, semesters]);
+  const planned = useMemo(() => placements.filter(p => !p.completed).map(p => p.course), [placements]);
+  const coursesIn = (s: PlanSlot) => planned.filter(c => plans[c.id].semester === s);
+  const completedIn = (s: PlanSlot) => placements.filter(p => p.completed && p.semester === s).map(p => p.course);
+  const units = (cs: Course[]) => cs.reduce((n, c) => n + c.units, 0);
+  const remaining = useMemo(() => allCourses.filter(c => !plans[c.id]), [allCourses, plans]);
+  const results = useMemo(() => remaining.filter(c => `${c.code} ${c.title}`.toLowerCase().includes(query.toLowerCase()) && (!subject || subjectOf(c).key === subject))
+    .sort((a, b) => Number(b.recommendedSemester === semester) - Number(a.recommendedSemester === semester) || a.recommendedSemester - b.recommendedSemester), [remaining, query, subject, semester, roadmapIds]);
+  const appendLibrary = () => setLibraryPage(previous => ({ key: libraryKey, limit: Math.min(results.length, (previous.key === libraryKey ? previous.limit : LIBRARY_BATCH) + LIBRARY_BATCH) }));
+  const term = (s: PlanSlot) => typeof s === "string" ? slotLabel(s) : Object.entries(termToSlot).find(([, n]) => n === s)?.[0]?.replace(/^(\w+)-(\d+)$/, (_, season, year) => `${season[0].toUpperCase()}${season.slice(1)} ${year}`) ?? `${s % 2 ? "Fall" : "Spring"} · Year ${Math.ceil(s / 2)}`;
+  // Warnings describe recorded ordering only; they never authorize or rewrite a plan.
+  const issues = (c: Course, s: PlanSlot) => {
+    const before = (id: string, same = false) => {
+      if (takenCourseIds.has(id)) return true;
+      const prerequisiteSlot = plans[id]?.semester;
+      if (!prerequisiteSlot) return false;
+      if (typeof s === "number" && typeof prerequisiteSlot === "number") return same ? prerequisiteSlot <= s : prerequisiteSlot < s;
+      const date = (slot: PlanSlot) => typeof slot === "string" ? slot : Object.entries(termToSlot).find(([, n]) => n === slot)?.[0];
+      const a = date(prerequisiteSlot), b = date(s);
+      if (!a || !b) return false;
+      const index = (t: string) => Number(t.split("-")[1]) * 4 + ["winter", "spring", "summer", "fall"].indexOf(t.split("-")[0]);
+      return same ? index(a) <= index(b) : index(a) < index(b);
+    };
+    return [...c.prerequisiteCourseIds.filter(id => !before(id)).map(id => `Prerequisite: ${courseById.get(id)?.code ?? id}`), ...c.corequisiteCourseIds.filter(id => !before(id, true)).map(id => `Corequisite: ${courseById.get(id)?.code ?? id}`)];
   };
-  const planned = useMemo(() => catalog.courses.filter(c => plans[c.id] && !takenCourseIds.has(c.id)), [catalog.courses, plans, takenCourseIds]);
-  const bySemester = useMemo(() => {
-    const groups = new Map<number, Course[]>();
-    for (const course of planned) {
-      const n = plans[course.id].semester;
-      const bucket = groups.get(n);
-      if (bucket) bucket.push(course); else groups.set(n, [course]);
-    }
-    return groups;
-  }, [planned, plans]);
-  const inSemester = (n: number) => bySemester.get(n) ?? [];
-  const units = (courses: Course[]) => courses.reduce((sum, c) => sum + c.units, 0);
-  const total = units(planned);
-  const activeCourses = inSemester(semester);
-  const remaining = catalog.courses.filter(c => !takenCourseIds.has(c.id) && !plans[c.id]);
-  const results = (filter === "planned" ? activeCourses : remaining).filter(c => `${c.code} ${c.title}`.toLowerCase().includes(query.toLowerCase()) && (filter !== "suggested" || c.recommendedSemester === semester));
-  const maxUnits = Math.max(20, ...semesters.map(n => units(inSemester(n))));
-  const change = (course: Course, target: number) => {
-    const previous = plans[course.id];
-    setPlan(course.id, target, previous?.status);
-    setMessage(`${course.code} ${previous ? "moved" : "added"} to Semester ${target}.`);
-    setUndo(() => () => { if (previous) setPlan(course.id, previous.semester, previous.status); else removePlan(course.id); });
+  const notifyError = (error: unknown) => setError(error instanceof Error ? error.message : "Unable to save. Please try again.");
+  const change = async (course: Course, slot: PlanSlot) => {
+    const previous = savedPlans[course.id];
+    changedCourses.current.add(course.id);
+    setOptimistic({ program, id: course.id, plan: { semester: slot, status: previous?.status ?? "planned" } });
+    try {
+      const saved = takenCourseIds.has(course.id)
+        ? (await planningStore.moveCompletedCourse(course.id, slot)).status !== "error"
+        : await setPlan(course.id, slot, previous?.status);
+      if (!saved) throw Error(planningStore.getState().storageError || "Could not save the course. Please try again.");
+      return true;
+    } catch (error) { notifyError(error); return false; }
+    finally { setOptimistic(null); }
   };
-  const remove = (course: Course) => {
-    const previous = plans[course.id]; removePlan(course.id);
-    setMessage(`${course.code} removed from your plan.`);
-    setUndo(() => () => setPlan(course.id, previous.semester, previous.status));
+  const remove = async (course: Course) => {
+    if (!savedPlans[course.id]) return;
+    changedCourses.current.add(course.id);
+    setOptimistic({ program, id: course.id, plan: null });
+    try {
+      if (!await removePlan(course.id)) throw Error(planningStore.getState().storageError || "Could not remove the course. Please try again.");
+      setSelected(null);
+    } finally { setOptimistic(null); }
   };
-  const useRoadmap = () => {
-    const added = remaining.filter(c => semesters.includes(c.recommendedSemester));
-    added.forEach(c => setPlan(c.id, c.recommendedSemester));
-    setMessage(`${added.length} catalog courses placed in their recommended semesters.`);
-    setUndo(() => () => added.forEach(c => removePlan(c.id)));
+  const run = async (action: () => Promise<unknown>) => { if (busy) return; setBusy(true); setError(""); try { await action(); } catch (error) { notifyError(error); } finally { setBusy(false); } };
+  const open = (c: Course) => { setTarget(plans[c.id]?.semester ?? semester); setSelected(c); };
+  const drag = (e: DragEvent, c: Course) => { dragging.current = { id: c.id, program, planned: !!plans[c.id] }; e.dataTransfer.setData("text/plain", c.id); e.dataTransfer.effectAllowed = "move"; };
+  const endDrag = () => { draggingTerm.current = null; dragging.current = null; setDropOn(null); };
+  const drop = (e: DragEvent, s: PlanSlot) => { e.preventDefault(); e.stopPropagation(); if (draggingTerm.current !== null) { const from = draggingTerm.current; endDrag(); void moveTerm(from, s); return; } endDrag(); const c = courseById.get(e.dataTransfer.getData("text/plain")); if (c) void run(() => change(c, s)); };
+  const canRemoveDrop = (e: DragEvent) => !busy && dragging.current?.planned && dragging.current.program === program && !(e.target as Element).closest(".pb-plot");
+  const dropOutside = (e: DragEvent) => {
+    if (!canRemoveDrop(e)) return;
+    e.preventDefault();
+    const course = courseById.get(dragging.current!.id);
+    endDrag();
+    if (course && plans[course.id]) void run(() => remove(course));
   };
-  return <div className="sp-page">
-    <a className="sp-skip" href="#sp-main">Skip to planner</a>
-    <header className="sp-header">
-      <CourseRadarBrand />
-      <nav aria-label="Main navigation">{productNavigation.map(item => <Link key={item.to} reloadDocument={item.to === "/overview" || item.to === "/prerequisites"} to={item.to} aria-current={item.to === "/planner" ? "page" : undefined}>{item.label}</Link>)}</nav>
-    </header>
-    <ProductContextBar page="Planner" edition={catalog.catalogYear} program={program} onProgramChange={selectProgram} />
-    <main id="sp-main" className="sp-main" style={{ "--sp-semester-count": semesterCount } as CSSProperties}>
-      <section className="sp-intro"><div><h1>A little structure.<br/><span>A clearer path ahead.</span></h1></div><div className="sp-intro-action"><span>Semester planner</span><button className="sp-button sp-dark" onClick={useRoadmap} disabled={!remaining.length}>Use recommended roadmap <ArrowUpRight size={16}/></button></div></section>
-
-      <section className="sp-overview" aria-label="Semester workload overview">
-        <div className="sp-overview-copy"><h2>Find your<br/>own balance.</h2><p>{planned.length ? `${planned.length} courses. ${total} units. One plan you can make your own.` : "Start with the roadmap, or build your plan one course at a time."}</p><div className="sp-chart-key"><i/> Other semesters <i/> Selected semester</div></div>
-        <div className="sp-chart"><div className="sp-chart-top"><span>Units per semester</span><span>Click a semester to edit</span></div><div className="sp-chart-scroll" ref={chartScroll} role="region" aria-label="Semester workload chart" tabIndex={0}><div className="sp-chart-wide"><div className="sp-chart-plot"><div className="sp-gridlines" aria-hidden="true">{[maxUnits, maxUnits / 2, 0].map(n => <div key={n}><span>{Math.round(n)}</span></div>)}</div><div className="sp-bars">{semesters.map(n => <button key={n} className={`sp-bar-column ${n === semester ? "is-active" : ""}`} aria-label={`Edit Semester ${n}, ${units(inSemester(n))} units`} aria-pressed={n === semester} onClick={() => setSemester(n)}><span className="sp-bar-value">{units(inSemester(n))}<small>u</small></span><span className="sp-bar-stack">{inSemester(n).map(c => <span key={c.id} title={`${c.code} · ${c.units} units · ${plans[c.id].status === "in-progress" ? "In progress" : "Planned"}`} style={{ height: `${c.units / maxUnits * 150}px` }}/>) }{!inSemester(n).length && <span className="sp-bar-empty"/>}</span><span className="sp-bar-label">S{n}</span></button>)}</div></div><div className="sp-chart-years">{semesters.filter(n => n % 2).map(n => <span key={n} style={{ gridColumn: `span ${Math.min(2, semesterCount - n + 1)}` }}>Year {Math.ceil(n / 2)}</span>)}</div></div></div></div>
+  const extend = () => run(async () => {
+    const slot = planningStore.nextSemester;
+    setTermPreview({ program, slots: [...semesters, slot] }); setSemester(slot);
+    try { const result = await planningStore.addSemester(); if (result.status === "error") throw Error(result.message); }
+    finally { setTermPreview(null); }
+  });
+  const addOptional = (season: "winter" | "summer") => run(async () => {
+    const base = typeof semester === "string" ? semester : Object.keys(termToSlot).find(t => termToSlot[t] === semester) ?? catalog.currentTerm.id;
+    let year = Number(base.split("-")[1]) + Number(season === "winter" && base.startsWith("fall-"));
+    while (semesters.includes(`${season}-${year}`)) year++;
+    const slot = `${season}-${year}`;
+    setTermPreview({ program, slots: [...semesters, slot] }); setSemester(slot);
+    try { const result = await planningStore.addNamedTerm(slot); if (result.status === "error") throw Error(result.message); }
+    finally { setTermPreview(null); }
+  });
+  const removeSemester = () => run(async () => {
+    const slots = semesters.filter(s => s !== semester);
+    setTermPreview({ program, slots, removed: semester }); setSelected(null);
+    try { const result = await planningStore.removeSemester(semester); if (result.status === "error") throw Error(result.message); }
+    finally { setTermPreview(null); }
+  });
+  const moveTerm = (from: PlanSlot, to: PlanSlot) => run(async () => {
+    if (from === to) return;
+    const preview = new PlanningStore(program, planningStore.getState().catalog);
+    preview.restore(planningStore.getState());
+    const moved = preview.moveSemester(from, to, startingTerm);
+    for (const [id, plan] of Object.entries(preview.plans)) if (plan.semester !== savedPlans[id]?.semester) changedCourses.current.add(id);
+    setTermPreview({ program, slots: preview.termOrder, plans: preview.plans, termToSlot: Object.fromEntries(Object.entries(derivedTermSlots(startingTerm, preview.semesterCount)).filter(([, slot]) => preview.semesterSlots.includes(slot))) }); setSemester(moved);
+    try { const result = await planningStore.moveSemester(from, to); if (result.status === "error") throw Error(result.message); }
+    finally { setTermPreview(null); }
+  });
+  const maxUnits = Math.max(22, ...semesters.map(s => [...coursesIn(s), ...completedIn(s)].reduce((n, c) => n + Math.max(2, c.units), 0)));
+  const warningCount = planned.filter(c => issues(c, plans[c.id].semester).length).length;
+  const heavy = semesters.filter(s => units(coursesIn(s)) > 17);
+  return <div className="pb-page" onDragOver={e => { if (canRemoveDrop(e)) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; } }} onDrop={dropOutside}>
+    <a className="pb-skip" href="#pb-main">Skip to planner</a>
+    <ProductHeader activePath="/planner" />
+    <main className="pb-wrap" id="pb-main">
+      <ProductPageHeading title="Planner" />
+      {error && <p className="pb-error" role="alert">{error}</p>}
+      <section className="pb-chart" aria-label="Semester workload overview" aria-busy={busy}>
+        <div className="pb-chart-head"><h2><Layers size={16}/>Units per semester · each block is one course</h2><div className="pb-legend">{subjects.map(s => <span key={s.key}><i style={{ background: `var(--s-${s.key})` }}/>{s.label}</span>)}<span><i className="pb-done-key"/>Completed</span></div></div>
+        <div className="pb-plot" ref={chart} role="region" aria-label="Units per semester, course blocks" tabIndex={0} style={{ "--plot-units": maxUnits } as CSSProperties} onScroll={e => { if (labels.current) labels.current.scrollLeft = e.currentTarget.scrollLeft; }}>
+          <div className="pb-target"><span>15u TYPICAL FULL LOAD</span></div>
+          {semesters.map((s, ci) => <div key={s} className={`pb-column${dropOn === s ? " drop-on" : ""}`} aria-current={s === semester} onDragOver={e => { e.preventDefault(); setDropOn(s); }} onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDropOn(null); }} onDrop={e => drop(e, s)}>
+            {completedIn(s).map(c => <div key={c.id} className="pb-block pb-done" draggable={!busy} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={{ ...tone(c), "--d": "0ms" } as CSSProperties}><button onClick={() => open(c)} aria-label={`${c.code}, completed`}>{c.code}</button><small>{c.units}</small></div>)}
+            {coursesIn(s).map((c, i) => <div key={c.id} className={`pb-block${issues(c, s).length ? " pb-warn" : ""}`} title={issues(c, s).join(" · ") || c.title} draggable={!busy} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={{ ...tone(c), "--d": changedCourses.current.has(c.id) ? "0ms" : `${ci * 50 + i * 60 + 100}ms` } as CSSProperties}><button onClick={() => open(c)}>{c.code}</button><small>{c.units}</small></div>)}
+          </div>)}
+        </div>
+        <div className="pb-labels" ref={labels}>{semesters.map(s => <button key={s} draggable={!busy} title="Drag to move this term; Alt + Left/Right also moves it" onDragStart={e => { e.stopPropagation(); draggingTerm.current = s; dragging.current = null; e.dataTransfer.setData("application/x-course-radar-term", String(s)); e.dataTransfer.effectAllowed = "move"; }} onDragEnd={endDrag} onDragOver={e => { if (draggingTerm.current !== null) e.preventDefault(); }} onDrop={e => drop(e, s)} onKeyDown={e => {
+          if (!busy && e.altKey && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+            e.preventDefault(); const destination = semesters[semesters.indexOf(s) + (e.key === "ArrowLeft" ? -1 : 1)];
+            if (destination !== undefined) void moveTerm(s, destination);
+          }
+        }} aria-pressed={s === semester} aria-label={`Edit ${slotLabel(s)}, ${units(coursesIn(s))} units`} onClick={() => setSemester(s)}><b>{short(s)} · {units(coursesIn(s))}u</b><small>{term(s).split(" \u00b7 ")[0].toUpperCase()}{units(coursesIn(s)) ? ` · ${units(coursesIn(s)) > 17 ? "HEAVY LOAD" : units(coursesIn(s)) >= 12 ? "TYPICAL LOAD" : "LIGHTER LOAD"}` : completedIn(s).length ? " · DONE" : ""}</small></button>)}</div>
+        <div className="pb-tools"><button className="pb-ghost" disabled={busy || planningStore.nextSemester > 100} onClick={extend}><Plus size={16}/>Semester</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("summer")}><Plus size={16}/>Summer term</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("winter")}><Plus size={16}/>Winter term</button><button className="pb-ghost" disabled={busy || !semesters.length} aria-label={`Delete ${slotLabel(semester)}`} title="Returns planned courses to the library" onClick={removeSemester}><X size={16}/>Delete selected term</button></div>
+        {!semesters.length && <p className="pb-note">Add a semester, Winter or Summer term to start planning.</p>}
+        <p className="pb-note">{heavy.length > 0 && <><b>{heavy.map(short).join(", ")}</b> above 17 units. </>}{warningCount > 0 && <><b>{warningCount}</b> course{warningCount !== 1 ? "s" : ""} may be out of prerequisite order. </>}Drag blocks between columns to rebalance, or outside the chart to remove. Drag term labels to move whole columns, or use Alt + Left/Right. Names and dates recalculate from their new position; later terms follow in sequence. Section choices for changed dates are cleared. Select a column, then find a course in the bar below (press /).{!planned.length && " Your plan is empty. Add a course from the bar below."}</p>
       </section>
-
-      <div className="sp-plan-tools"><span>{semesterCount} semesters</span><div>{semesterCount > catalog.requirementGroups.length && <button type="button" className="sp-remove-semester" aria-label={`Remove Semester ${semesterCount}`} disabled={!canRemoveSemester} title={canRemoveSemester ? "Remove the last empty semester" : `Move courses out of Semester ${semesterCount} before removing it`} onClick={() => { removeLastSemester(); setSemester(current => Math.min(current, semesterCount - 1)); }}><Trash2 size={13}/> Remove Semester {semesterCount}</button>}<button type="button" className="sp-button" onClick={extendPlan}><Plus size={15}/> Add semester</button></div></div>
-      <section className="sp-timeline" ref={timelineScroll} aria-label="Choose a semester">{semesters.map(n => <button key={n} aria-pressed={n === semester} className={n === semester ? "is-active" : ""} onClick={() => setSemester(n)} onDragOver={e => { if (dragged) e.preventDefault(); }} onDrop={e => { e.preventDefault(); const course = courseById.get(e.dataTransfer.getData("text/plain")); if (course) change(course, n); setDragged(null); }}><span>Year {Math.ceil(n / 2)}</span><strong>Semester {n}</strong><small>{inSemester(n).length} courses <span>/</span> {units(inSemester(n))} units</small></button>)}</section>
-
-      <section id="sp-workbench" className="sp-catalog" aria-label="Course library">
-        <div className="sp-catalog-head"><div><h2>Course library</h2><p>{activeCourses.length} in Semester {semester} / {remaining.length} left to plan</p></div><label className="sp-search"><Search size={17}/><input aria-label="Search course library" type="search" placeholder="Search code or course name" value={query} onChange={e => setQuery(e.target.value)}/></label></div>
-        <div className="sp-catalog-tabs" role="group" aria-label="Filter course library"><button aria-pressed={filter === "planned"} onClick={() => setFilter("planned")}>In Semester {semester}</button><button aria-pressed={filter === "suggested"} onClick={() => setFilter("suggested")}>For Semester {semester}</button><button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>All unplanned</button><Link to="/courses">Explore sections & weekly schedule <ArrowUpRight size={14}/></Link></div>
-        <div className="sp-catalog-grid">{results.map(c => <article key={c.id} draggable={filter === "planned"} onDragStart={e => { if (filter === "planned") { e.dataTransfer.setData("text/plain", c.id); setDragged(c.id); } }} onDragEnd={() => setDragged(null)}><button className="sp-catalog-course" onClick={() => setSelected(c)}><strong>{c.code}</strong><span>{c.title}</span><small>{c.units} units</small></button>{filter === "planned" ? <button className="sp-plus" aria-label={`Remove ${c.code} from plan`} onClick={() => remove(c)}><Trash2 size={15}/></button> : <button className="sp-plus" aria-label={`Add ${c.code} to Semester ${semester}`} onClick={() => change(c, semester)}><Plus size={17}/></button>}</article>)}{!results.length && <div className="sp-catalog-empty"><h3>{query ? "No matching courses" : filter === "planned" ? `No courses in Semester ${semester} yet.` : !remaining.length ? "Every catalog course is in your plan." : "All suggested courses are in your plan."}</h3><p>{query ? "Try another course code or name." : filter === "planned" ? (semester > catalog.requirementGroups.length ? "Browse unplanned courses to build this semester." : "Choose from the recommended courses to start this semester.") : !remaining.length ? "Select a semester above to review or adjust courses." : "Browse all courses for more options."}</p>{remaining.length > 0 && <button onClick={() => { setQuery(""); setFilter(filter === "planned" && semester <= catalog.requirementGroups.length ? "suggested" : "all"); }}>Browse {filter === "planned" && semester <= catalog.requirementGroups.length ? "recommended" : "all"} courses <ArrowRight size={14}/></button>}</div>}</div>
-      </section>
-      <footer className="sp-footer"><span>Course Radar <span>/</span> Built for the path ahead.</span><a href={catalog.programUrl} target="_blank" rel="noreferrer">Official SJSU requirements <ArrowUpRight size={13}/></a></footer>
     </main>
-    {message && <div className="sp-feedback" role="status"><Check size={16}/><span>{message}</span>{undo && <button onClick={() => { undo(); setUndo(null); setMessage("Change undone."); }}><Undo2 size={14}/> Undo</button>}<button aria-label="Dismiss notification" onClick={() => setMessage("")}>×</button></div>}
-    {selected && <CourseDetail course={selected} onClose={() => setSelected(null)}/>}
+    <footer className="pb-footer"><div className="pb-wrap"><span>CourseRadar · {catalog.name}, {catalog.catalogYear} roadmap</span><span><a href={catalog.programUrl} target="_blank" rel="noreferrer">Official program page</a> · A planning aid, not a degree audit</span></div></footer>
+    <PlannerCommandBar
+      target={semesters.length ? slotLabel(semester) : "a new term"}
+      unplanned={remaining.length}
+      query={query} onQuery={setQuery}
+      subjects={subjects} subject={subject} onSubject={setSubject}
+      subjectTitle={key => key === "technical" ? "From the department technical-elective list for your major" : key === "university" ? "Other courses outside your roadmap; verify university elective credit" : undefined}
+      note={subject === "technical" || subject === "university" ? <small className="pb-elective-note" role="status">{subject === "technical" ? "Department-listed technical electives for your major. Verify catalog and section restrictions." : "Other university courses outside your roadmap. Confirm elective credit with your program."}</small> : undefined}
+      resultCount={results.length}
+      emptyText={query ? "No matching courses. Try another code or name, or switch to Ask." : remaining.length ? "Nothing to add here. Choose another subject." : "Every catalog course is in your plan."}
+      canAdd={!busy && !!semesters.length}
+      onAddTop={async () => {
+        const course = results[0];
+        if (!course || busy || !semesters.length) return null;
+        let added = false;
+        await run(async () => { added = await change(course, semester); });
+        return added ? course.code : null;
+      }}
+      onNearEnd={() => { if (libraryLimit < results.length) appendLibrary(); }}
+      pills={results.slice(0, libraryLimit).map(c => <span className={`pb-pill${takenCourseIds.has(c.id) ? " pb-done" : ""}`} key={c.id} draggable={!busy && !!semesters.length} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={tone(c)}><button className="pb-pill-open" onClick={() => open(c)}>{c.code}</button><small>{c.units}u · {takenCourseIds.has(c.id) ? "Completed" : `S${c.recommendedSemester}`}</small><button className="pb-add" disabled={busy || !semesters.length} aria-label={`Add ${c.code} to ${slotLabel(semester)}`} onClick={() => run(() => change(c, semester))}><Plus size={13}/></button></span>)}
+    />
+    <dialog ref={dialog} className="pb-dialog" aria-labelledby="pb-course-title" onCancel={() => setSelected(null)} onClick={e => { if (e.target === e.currentTarget) { const r = e.currentTarget.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) setSelected(null); } }} onClose={() => setSelected(null)}>{selected && <><header><small>{subjectOf(selected).label.toUpperCase()} · {selected.units} UNITS{takenCourseIds.has(selected.id) ? " · COMPLETED" : ""}</small><h2 id="pb-course-title">{selected.code}</h2><p>{selected.title}</p><button className="pb-icon" aria-label="Close course details" onClick={() => setSelected(null)}><X size={16}/></button></header>{!takenCourseIds.has(selected.id) && issues(selected, target).length > 0 && <p className="pb-warning">{issues(selected, target).join(" · ")}. Review recorded requirements before enrolling.</p>}<section><h3>About this course</h3><p>{selected.description}</p><h3>Recorded prerequisites</h3><p>{selected.prerequisiteText || "No additional prerequisite text recorded."}</p><a href={selected.sourceUrl} target="_blank" rel="noreferrer">Official course requirements <ArrowUpRight size={14}/></a></section><footer><button className="pb-ghost pb-completion" aria-pressed={takenCourseIds.has(selected.id)} disabled={busy} onClick={() => run(async () => {
+      const course = selected;
+      const result = await planningStore.toggleTakenCourse(course.id);
+      if (result.status === "error") throw Error(result.message);
+      setSelected(null);
+    })}>{takenCourseIds.has(selected.id) ? "Mark incomplete" : "Mark completed"}</button><button className="pb-ghost" onClick={() => { setFullDetails(selected); setSelected(null); }}>Listed sections &amp; full details<ArrowUpRight size={14}/></button><><label>Semester<select aria-label="Move or add to semester" value={target} onChange={e => setTarget(parseSlot(e.target.value))}>{semesters.map(s => <option key={s} value={s}>{slotLabel(s)} · {term(s)}</option>)}</select></label><button className="pb-btn" disabled={busy || !semesters.includes(target) || plans[selected.id]?.semester === target} onClick={() => run(async () => { const course = selected; setSelected(null); await change(course, target); })}>{plans[selected.id] ? "Move course" : "Add course"}</button>{plans[selected.id] && <button className="pb-ghost" disabled={busy} onClick={() => run(() => remove(selected))}>Remove from plan</button>}</></footer></>}</dialog>
+    {fullDetails && <CourseDetail course={fullDetails} onClose={() => setFullDetails(null)}/>}
+
   </div>;
 }

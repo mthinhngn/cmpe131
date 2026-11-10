@@ -1,12 +1,16 @@
 export type Course = {
+  plannerCategory?: import("../api/src/course-category").CourseCategory;
   id: string;
   code: string;
   title: string;
   units: number;
+  unitsText?: string;
   description: string;
   recommendedSemester: number;
   prerequisiteCourseIds: string[];
+  prerequisiteOptionCourseIds?: string[];
   corequisiteCourseIds: string[];
+  corequisiteOptionCourseIds?: string[];
   prerequisiteText?: string;
   sourceUrl: string;
 };
@@ -23,6 +27,9 @@ export type CourseOffering = {
   location: string;
   dates: string;
   openSeats: number;
+  seatsKnown?: boolean;
+  scheduleReview?: boolean;
+  notes?: string;
 };
 
 export type RequirementItem = {
@@ -42,8 +49,11 @@ export type RequirementGroup = {
 };
 
 export type ProgramCatalog = {
-  name: "Computer Engineering" | "Software Engineering";
-  abbreviation: "BSCMPE" | "BSSE";
+  name: string;
+  abbreviation: string;
+  sequenceKind?: "official" | "draft";
+  selectedPrograms?: { slug: string; title: string; kind: string; sourceUrl: string }[];
+  requirementEvidence?: { program: string; title: string; text: string; units: number; choice: boolean; courses: { code: string; title: string; units: number }[] }[];
   catalogYear: string;
   dataVersion: string;
   dataStatus: "draft-unverified" | "reviewed";
@@ -56,6 +66,8 @@ export type ProgramCatalog = {
     sourceUrl: string;
     fetchedAt: string;
   };
+  availableTerms?: string[];
+  roadmapCourseIds?: string[];
   offerings: CourseOffering[];
   courses: Course[];
   requirementGroups: RequirementGroup[];

@@ -1,0 +1,220 @@
+/* Roadmap (/prerequisites) chrome: context row, sticky semester stepper and motion.
+   Graphite mint / glide, selected 2026-11-05. The React Flow board keeps roadmap-flow.css. */
+
+.prereq-shell.is-stepper {
+  --rv-page: #f3f4f2;
+  --rv-frame: #f9fbf9;
+  --rv-frame-line: #d9e1dc;
+  --rv-panel: #fff;
+  --rv-rail: #fbfdfc;
+  --rv-line: #e3ebe7;
+  --rv-ink: #183933;
+  --rv-soft: #5e736b;
+  --rv-faint: #7d8e88;
+  --rv-accent: #168873;
+  --rv-accent-ink: #0f5f50;
+  --rv-accent-soft: #eaf6f0;
+  --rv-track: #e3ede8;
+  --rv-done: #21a778;
+  --rv-font: Inter, "Helvetica Neue", Arial, sans-serif;
+  --rv-mono: "DM Mono", ui-monospace, monospace;
+  --rv-radius: 8px;
+  --rv-ease: cubic-bezier(.23, 1, .32, 1);
+}
+.prereq-shell.is-stepper ::selection { background: var(--rv-accent); color: #fff; }
+.prereq-shell.is-stepper .prereq-full-page { background: var(--rv-page); }
+
+/* Sticky rail needs a non-scrolling clip and a natural-height frame. */
+.prereq-shell.is-stepper .prereq-map-frame .radar-app { height: auto; overflow: clip; }
+.prereq-shell.is-stepper .prereq-product-frame { overflow: clip; }
+.site-shell.prereq-shell.is-stepper { overflow: clip visible; overflow-x: clip; overflow-y: visible; }
+.prereq-shell.is-stepper .prereq-map-frame { background: var(--rv-frame); border-color: var(--rv-frame-line); }
+.prereq-shell.is-stepper .radar-app--full-plan .radar-workspace { grid-template-columns: 252px minmax(0, 1fr); align-items: start; }
+
+/* ---------- Context row ---------- */
+.rv-context { box-sizing: border-box; width: min(1280px, calc(100% - 64px)); margin: 0 auto; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 10px 0; color: var(--rv-soft); font: 400 14px/1.45 var(--rv-font); }
+.rv-context * { box-sizing: border-box; }
+.rv-context-lead { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.rv-crumb { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.rv-crumb strong { color: var(--rv-ink); font-weight: 400; }
+.rv-title { display: none; margin: 0; }
+.rv-context-meta { display: flex; align-items: center; gap: 20px; }
+.rv-stat { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.rv-stat-value { color: var(--rv-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.rv-stat-meter { position: relative; width: 72px; height: 4px; border-radius: 4px; background: var(--rv-track); overflow: hidden; }
+.rv-stat-meter i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: var(--rv-accent); }
+.rv-stat-label { font-size: 13px; font-variant-numeric: tabular-nums; }
+.rv-program-select { display: flex; align-items: center; gap: 8px; }
+.rv-program-select i { width: 6px; height: 6px; border-radius: 50%; background: var(--rv-accent); }
+.rv-program-select select { min-height: 32px; padding: 5px 30px 5px 10px; border: 1px solid #dcdcdc; border-radius: 4px; background-color: #fff; color: #101010; font: inherit; cursor: pointer; transition: border-color 150ms ease; }
+.rv-program-select select:hover { border-color: #b8c4bf; }
+.rv-program { display: inline-flex; padding: 3px; gap: 2px; border-radius: 9px; background: var(--rv-track); }
+.rv-program button { min-height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--rv-soft); font: 500 13px/1 var(--rv-font); cursor: pointer; transition: background-color 180ms var(--rv-ease), color 180ms var(--rv-ease), box-shadow 180ms var(--rv-ease); }
+.rv-program button:hover { color: var(--rv-ink); }
+.rv-program button[aria-checked="true"] { background: var(--rv-panel); color: var(--rv-ink); box-shadow: 0 1px 2px rgba(16, 32, 28, .1), 0 2px 8px rgba(16, 32, 28, .05); }
+.rv-program-short { display: none; }
+.rv-edition { white-space: nowrap; color: var(--rv-soft); }
+
+/* ---------- Frame header ---------- */
+.prereq-shell.is-stepper .prereq-map-frame-topline { font-size: 11px; letter-spacing: .08em; }
+.prereq-shell.is-stepper .radar-appbar { min-height: 56px; padding: 0 20px; background: var(--rv-panel); border-bottom-color: var(--rv-line); }
+.prereq-shell.is-stepper .appbar-overline { font-size: 11px; letter-spacing: .1em; color: var(--rv-faint); }
+.prereq-shell.is-stepper .degree-path-label { gap: 10px; }
+.prereq-shell.is-stepper .degree-path-label strong { font-size: 15px; font-weight: 500; color: var(--rv-ink); }
+.prereq-shell.is-stepper .appbar-divider { font-size: 15px; }
+.prereq-shell.is-stepper .degree-chip { font-size: 11px; padding: 3px 6px; }
+.prereq-shell.is-stepper .app-orbit-mark { width: 22px; height: 22px; }
+
+/* ---------- Planning rail ---------- */
+.prereq-shell.is-stepper .rv-rail { position: sticky; top: 12px; align-self: start; box-sizing: border-box; display: flex; flex-direction: column; gap: 0; max-height: calc(100vh - 24px); overflow-y: auto; scrollbar-width: thin; padding: 20px 14px 16px; border-right: 1px solid var(--rv-line); background: var(--rv-rail); color: var(--rv-ink); font: 400 14px/1.4 var(--rv-font); }
+.rv-rail nav { display: block; }
+.rv-progress { padding: 14px 14px 12px; border: 1px solid var(--rv-line); border-radius: var(--rv-radius); background: var(--rv-panel); }
+.rv-progress-head { display: flex; align-items: baseline; justify-content: space-between; color: var(--rv-soft); font-size: 13px; }
+.rv-progress-head strong { color: var(--rv-ink); font-size: 20px; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.rv-progress-track { display: flex; gap: 2px; height: 6px; margin: 10px 0 9px; }
+.rv-progress-track i { flex-basis: 0; border-radius: 2px; background: var(--rv-track); }
+.rv-progress-track i.is-partial { background: linear-gradient(90deg, var(--rv-done) 0 50%, var(--rv-track) 50%); }
+.rv-progress-track i.is-done { background: var(--rv-done); }
+.rv-progress-foot { display: flex; justify-content: space-between; gap: 8px; color: var(--rv-faint); font-size: 12px; font-variant-numeric: tabular-nums; }
+.rv-rail-heading { display: flex; justify-content: space-between; margin: 22px 4px 8px; color: var(--rv-faint); font: 500 11px/1.2 var(--rv-mono); letter-spacing: .08em; text-transform: uppercase; }
+.rv-terms, .rv-year ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rv-term { position: relative; width: 100%; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; grid-template-areas: "i c u" ". m m"; align-items: center; column-gap: 8px; row-gap: 7px; padding: 10px 10px 11px 8px; border: 0; border-radius: 6px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background-color 180ms var(--rv-ease), color 180ms var(--rv-ease); }
+.rv-term:hover { background: rgba(22, 136, 115, .06); }
+.rv-term:active { transform: scale(.99); }
+.rv-term.is-active { background: var(--rv-accent-soft); }
+.rv-term-index { grid-area: i; color: var(--rv-faint); font: 400 13px/1 var(--rv-mono); font-variant-numeric: tabular-nums; }
+.rv-term.is-active .rv-term-index { color: var(--rv-accent); }
+.rv-term-copy { grid-area: c; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rv-term-copy strong { color: var(--rv-ink); font-size: 14px; font-weight: 500; line-height: 1.25; }
+.rv-term-copy small { color: var(--rv-faint); font-size: 12px; white-space: nowrap; }
+.rv-term-units { grid-area: u; display: none; color: var(--rv-soft); font: 400 12px/1 var(--rv-mono); font-variant-numeric: tabular-nums; }
+.rv-term-meter { grid-area: m; position: relative; height: 2px; border-radius: 2px; background: var(--rv-track); overflow: hidden; }
+.rv-term-meter i { position: absolute; inset: 0 auto 0 0; background: var(--rv-done); }
+.rv-rail-note { margin: 18px 4px 0; color: var(--rv-faint); font-size: 12px; line-height: 1.5; }
+.rv-year h3 { display: flex; justify-content: space-between; align-items: baseline; margin: 14px 4px 6px; color: var(--rv-ink); font: 600 13px/1.2 var(--rv-font); }
+.rv-year h3 span { color: var(--rv-faint); font: 400 11px/1 var(--rv-mono); }
+
+
+/* =========================================================
+   T2 · Command stepper — full-width board, sticky semester stepper
+   ========================================================= */
+.prereq-shell.is-stepper { --rv-page: #fff; --rv-frame: #fff; --rv-frame-line: #e6e8e7; --rv-ink: #101312; --rv-soft: #5b625f; --rv-faint: #7c8481; --rv-line: #ebedec; --rv-track: #eef0ef; --rv-rail: #fff; --rv-accent-soft: #101312; --rv-radius: 10px; }
+.prereq-shell.is-stepper .rv-context { min-height: 88px; padding: 18px 0 14px; }
+.prereq-shell.is-stepper .rv-context-lead { flex-direction: column; align-items: flex-start; gap: 4px; }
+.prereq-shell.is-stepper .rv-crumb { font-size: 13px; gap: 8px; }
+.prereq-shell.is-stepper .rv-title { display: block; color: var(--rv-ink); font: 600 26px/1.15 var(--rv-font); letter-spacing: -.03em; }
+.prereq-shell.is-stepper .rv-title span { color: #9aa19e; font-weight: 500; }
+.prereq-shell.is-stepper .rv-stat { flex-direction: row-reverse; padding-right: 20px; border-right: 1px solid var(--rv-line); }
+.prereq-shell.is-stepper .rv-stat-value { font-size: 15px; }
+.prereq-shell.is-stepper .rv-stat-meter { width: 88px; }
+.prereq-shell.is-stepper .rv-stat-meter i { background: var(--rv-ink); }
+.prereq-shell.is-stepper .prereq-full-page { padding-top: 4px; }
+.prereq-shell.is-stepper .prereq-map-frame-topline, .prereq-shell.is-stepper .radar-appbar { display: none; }
+.prereq-shell.is-stepper .prereq-map-frame { padding: 0; border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 24px 60px -24px rgba(16, 19, 18, .18); }
+.prereq-shell.is-stepper .prereq-map-frame > .radar-app { border: 0; }
+.prereq-shell.is-stepper .prereq-map-frame-footer { padding: 12px 20px; border-top: 1px solid var(--rv-line); }
+.prereq-shell.is-stepper .radar-app--full-plan .radar-workspace { display: flex; flex-direction: column; align-items: stretch; }
+.prereq-shell.is-stepper .rv-rail { order: 2; align-self: stretch; top: 0; z-index: 8; max-height: none; overflow: visible; flex-direction: row; align-items: stretch; gap: 16px; padding: 10px 16px; border-right: 0; border-bottom: 1px solid var(--rv-line); background: rgba(255, 255, 255, .9); backdrop-filter: saturate(1.4) blur(10px); }
+.prereq-shell.is-stepper .radar-main { display: contents; }
+.prereq-shell.is-stepper .rf-roadmap, .prereq-shell.is-stepper .course-detail-strip, .prereq-shell.is-stepper .course-list-view { order: 3; }
+.prereq-shell.is-stepper .rv-progress, .prereq-shell.is-stepper .rv-rail-heading, .prereq-shell.is-stepper .rv-rail-note { display: none; }
+.prereq-shell.is-stepper .rv-rail nav { flex: 1; }
+.prereq-shell.is-stepper .rv-terms { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.prereq-shell.is-stepper .rv-term { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "i c u" "m m m"; column-gap: 7px; row-gap: 8px; padding: 9px 10px 8px; border: 1px solid var(--rv-line); border-radius: 9px; }
+.prereq-shell.is-stepper .rv-term:hover { background: #f6f7f6; }
+.prereq-shell.is-stepper .rv-term.is-active { border-color: var(--rv-ink); background: var(--rv-ink); }
+.prereq-shell.is-stepper .rv-term.is-active :is(.rv-term-index, strong, .rv-term-units) { color: #fff; }
+.prereq-shell.is-stepper .rv-term.is-active .rv-term-meter { background: rgba(255, 255, 255, .2); }
+.prereq-shell.is-stepper .rv-term-index { font-size: 12px; }
+.prereq-shell.is-stepper .rv-term-copy small { display: none; }
+.prereq-shell.is-stepper .rv-term-copy strong { font-size: 13px; }
+.prereq-shell.is-stepper .rv-term-units { display: block; }
+.prereq-shell.is-stepper .rv-context :focus-visible, .prereq-shell.is-stepper .rv-rail :focus-visible { outline-color: var(--rv-ink); }
+
+/* =========================================================
+   Command stepper family (t2, t2a, t2b, t2c)
+   One composition; palettes and motion differ through tokens.
+   ========================================================= */
+.prereq-shell.is-stepper {
+  --s-page: #fff; --s-panel: #fff; --s-ink: #101312; --s-soft: #5b625f; --s-faint: #7c8481; --s-line: #ebedec;
+  --s-track: #eef0ef; --s-hover: #f6f7f6; --s-thumb: #101312; --s-thumb-ink: #fff; --s-thumb-soft: rgba(255, 255, 255, .62);
+  --s-seg-thumb: #fff; --s-seg-ink: #101312; --s-accent: #101312; --s-done: #21a778; --s-glass: rgba(255, 255, 255, .9);
+  --s-title-soft: #9aa19e; --s-search: #f7f8f7; --s-shadow: rgba(16, 19, 18, .18);
+  --m-ease: cubic-bezier(.23, 1, .32, 1); --m-dur: 260ms; --m-rise: 0px; --m-blur: 0px; --m-scale: 1; --m-stagger: 0ms; --m-enter: 0ms;
+  --rv-ink: var(--s-ink); --rv-soft: var(--s-soft); --rv-faint: var(--s-faint); --rv-line: var(--s-line); --rv-track: var(--s-track);
+  --rv-panel: var(--s-panel); --rv-rail: var(--s-panel); --rv-done: var(--s-done); --rv-accent: var(--s-accent);
+  background: var(--s-page);
+}
+.prereq-shell.is-stepper .prereq-full-page { background: var(--s-page); }
+.prereq-shell.is-stepper .rv-context { color: var(--s-soft); }
+.prereq-shell.is-stepper .rv-title span { color: var(--s-title-soft); }
+.prereq-shell.is-stepper .rv-stat-meter i { background: var(--s-accent); }
+.prereq-shell.is-stepper .prereq-map-frame { background: var(--s-panel); border-color: var(--s-line); box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 24px 60px -24px var(--s-shadow); }
+.prereq-shell.is-stepper .prereq-map-frame .radar-app { background: var(--s-panel); }
+.prereq-shell.is-stepper .prereq-map-frame-footer { color: var(--s-soft); }
+.prereq-shell.is-stepper .rv-rail { background: var(--s-glass); transition: box-shadow 320ms var(--m-ease), background-color 320ms var(--m-ease); }
+.prereq-shell.is-stepper .rv-rail.is-stuck { box-shadow: 0 14px 30px -18px var(--s-shadow); }
+
+/* Sliding selection: one thumb per control */
+.prereq-shell.is-stepper :is(.rv-terms, .rv-program) { position: relative; isolation: isolate; }
+.prereq-shell.is-stepper .rv-thumb { position: absolute; z-index: -1; top: 0; left: 0; width: var(--thumb-w, 0); height: var(--thumb-h, 0); transform: translate(var(--thumb-x, 0), var(--thumb-y, 0)); opacity: var(--thumb-o, 0); pointer-events: none; list-style: none; }
+.prereq-shell.is-stepper [data-thumb="ready"] > .rv-thumb { transition: transform var(--m-dur) var(--m-ease), width var(--m-dur) var(--m-ease), height var(--m-dur) var(--m-ease), opacity 200ms ease; }
+.prereq-shell.is-stepper .rv-terms > .rv-thumb { border-radius: 9px; background: var(--s-thumb); box-shadow: 0 6px 16px -8px var(--s-shadow); }
+.prereq-shell.is-stepper .rv-program > .rv-thumb { border-radius: 7px; background: var(--s-seg-thumb); box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 2px 8px rgba(0, 0, 0, .05); }
+.prereq-shell.is-stepper .rv-term.is-active { border-color: transparent; background: transparent; }
+.prereq-shell.is-stepper .rv-term.is-active :is(.rv-term-index, strong, .rv-term-units) { color: var(--s-thumb-ink); }
+.prereq-shell.is-stepper .rv-term.is-active .rv-term-index { color: var(--s-thumb-soft); }
+.prereq-shell.is-stepper .rv-term { transition: color 220ms var(--m-ease), border-color 220ms var(--m-ease), background-color 220ms var(--m-ease), transform 220ms var(--m-ease); }
+.prereq-shell.is-stepper .rv-term :is(.rv-term-index, strong, .rv-term-units) { transition: color 220ms var(--m-ease); }
+.prereq-shell.is-stepper .rv-term:not(.is-active):hover { background: var(--s-hover); transform: translateY(-1px); }
+.prereq-shell.is-stepper .rv-term:active { transform: scale(.97); }
+.prereq-shell.is-stepper .rv-program button[aria-checked="true"] { background: transparent; box-shadow: none; color: var(--s-seg-ink); }
+.prereq-shell.is-stepper .rv-program { background: var(--s-track); }
+.prereq-shell.is-stepper .rv-program button { color: var(--s-faint); }
+.prereq-shell.is-stepper .rv-program button:hover:hover { color: var(--s-ink); }
+.prereq-shell.is-stepper .rv-term-meter i, .prereq-shell.is-stepper .rv-stat-meter i { transition: width 600ms var(--m-ease); }
+.prereq-shell.is-stepper :is(.rv-context, .rv-rail) :focus-visible { outline: 2px solid var(--s-accent); outline-offset: 2px; }
+
+/* Arrival: the row a jump lands on is marked once */
+.prereq-shell.is-stepper .rf-semester-label { position: relative; }
+.prereq-shell.is-stepper .rf-semester-label::before { content: ""; position: absolute; inset: -2px -10px 6px -12px; z-index: -1; border-radius: 10px; background: color-mix(in srgb, var(--s-accent) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--s-accent) 30%, transparent); opacity: 0; }
+.prereq-shell.is-stepper .rf-semester-label.rv-arrive::before { animation: rv-arrive 1.3s var(--m-ease) both; }
+@keyframes rv-arrive { 0% { opacity: 0; transform: scale(.94); } 18% { opacity: 1; transform: scale(1); } 70% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Entrance and content changes; variants opt in through --m-enter */
+@keyframes rv-enter { from { opacity: 0; transform: translateY(var(--m-rise)) scale(var(--m-scale)); filter: blur(var(--m-blur)); } }
+@keyframes rv-grow { from { transform: scaleX(0); } }
+@keyframes rv-tick { from { opacity: 0; transform: translateY(.45em); } }
+@keyframes rv-swap { from { opacity: 0; transform: translateY(6px); } }
+.prereq-shell.is-stepper :is(.rv-crumb, .rv-title, .rv-context-meta > *) { animation: rv-enter var(--m-enter) var(--m-ease) both; }
+.prereq-shell.is-stepper .rv-title { animation-delay: 50ms; }
+.prereq-shell.is-stepper .rv-context-meta > :nth-child(1) { animation-delay: 110ms; }
+.prereq-shell.is-stepper .rv-context-meta > :nth-child(2) { animation-delay: 150ms; }
+.prereq-shell.is-stepper .rv-context-meta > :nth-child(3) { animation-delay: 190ms; }
+.prereq-shell.is-stepper .prereq-map-frame .radar-app { animation: rv-enter calc(var(--m-enter) + 120ms) var(--m-ease) 160ms both; }
+.prereq-shell.is-stepper .rv-terms > li:not(.rv-thumb) { animation: rv-enter var(--m-enter) var(--m-ease) both; animation-delay: calc(300ms + var(--i) * var(--m-stagger)); }
+.prereq-shell.is-stepper .rv-stat-meter i { transform-origin: left; animation: rv-grow 900ms var(--m-ease) 350ms both; }
+.prereq-shell.is-stepper .rv-stat-value { display: inline-block; animation: rv-tick 360ms var(--m-ease) both; }
+.prereq-shell.is-stepper :is(.course-list-view, .course-detail-strip) { animation: rv-swap 280ms var(--m-ease) both; }
+
+/* ---------- A · Graphite mint — glide ---------- */
+.prereq-shell.is-stepper {
+  --s-ink: #0f1412; --s-accent: #168873; --s-done: #21a778; --s-thumb: #0f1412; --s-thumb-soft: #7fd2b4;
+  --s-track: #f0f2f1; --s-search: #f6f8f7; --s-title-soft: #9aa3a0;
+  --m-ease: cubic-bezier(.22, 1, .36, 1); --m-dur: 440ms; --m-rise: 10px; --m-stagger: 35ms; --m-enter: 560ms;
+}
+.prereq-shell.is-stepper .rv-terms > .rv-thumb::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 5px; height: 2px; border-radius: 2px; background: #3fbf94; }
+.prereq-shell.is-stepper .rv-term.is-active .rv-term-meter { opacity: 0; }
+
+.prereq-shell.is-stepper .rv-u { display: none; }
+
+/* Keep official requirements with the semester map they explain. */
+.prereq-shell.is-stepper .radar-workspace > .program-requirements {
+  order: 2; margin: 0; padding: 10px 18px; border-bottom: 1px solid var(--rv-line);
+  background: var(--rv-panel); color: var(--rv-soft); font: 400 13px/1.6 var(--rv-font);
+}
+.prereq-shell.is-stepper .program-requirements summary { width: fit-content; padding: 3px 0; color: var(--rv-accent-ink); }
+.prereq-shell.is-stepper .program-requirements summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+.prereq-shell.is-stepper .program-requirements summary:focus-visible { outline: 2px solid var(--rv-accent); outline-offset: 4px; border-radius: 2px; }
+.prereq-shell.is-stepper .program-requirements > p { margin: 0 0 8px; }
+.prereq-shell.is-stepper .program-requirement-evidence { margin: 10px 0 4px; box-shadow: none; }

@@ -1,106 +1,73 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { computerEngineeringCatalog } from "./data";
-import { softwareEngineeringCatalog } from "./softwareEngineeringData";
-import type { Course, ProgramCatalog } from "./types";
-import { apiEndpoint } from "./api";
-import { progressStorage, readProgressSession, writeProgressSession } from "./progressSession";
+import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { flushSync } from "react-dom";
+import { authRequest, useAuth } from "./AuthContext";
+import { PersistentPlanningStore } from "./PersistentPlanningStore";
+import { derivedTermSlots, type PlanSlot } from "./academicProfile";
+import "./persistence.css";
+import { PageLoading } from "./PageLoading";
 
-type CatalogContextValue = {
-  plans: Record<string, { status: "planned" | "in-progress"; semester: number }>;
-  setPlan: (id: string, semester: number, status?: "planned" | "in-progress") => void;
-  removePlan: (id: string) => void;
-  semesterCount: number;
-  addSemester: () => void;
-  removeLastSemester: () => void;
-  retry: () => void;
-  takenCourseIds: Set<string>;
-  toggleTakenCourse: (id: string) => void;
-  program: string;
-  selectProgram: (program: string) => void;
-  catalog: ProgramCatalog;
-  courseById: Map<string, Course>;
-  mode: "loading" | "database" | "fixture";
-};
-
-const CatalogContext = createContext<CatalogContextValue | null>(null);
-
-export function CatalogProvider({ children }: { children: ReactNode }) {
-  const [savedProgress] = useState(() => readProgressSession(progressStorage()));
-  const [planByProgram, setPlanByProgram] = useState<Record<string, Record<string, { status: "planned" | "in-progress"; semester: number }>>>({});
-  const [semesterCountByProgram, setSemesterCountByProgram] = useState<Record<string, number>>({});
-  const [attempt, setAttempt] = useState(0);
-  const [takenCourseIds, setTakenCourseIds] = useState<Set<string>>(() => new Set(savedProgress.completedCourseIds));
-  const [program, setProgram] = useState(savedProgress.program);
-  const [catalog, setCatalog] = useState(savedProgress.program === "software-engineering" ? softwareEngineeringCatalog : computerEngineeringCatalog);
-  const [mode, setMode] = useState<CatalogContextValue["mode"]>("loading");
-
-  useEffect(() => {
-    writeProgressSession({ program, completedCourseIds: [...takenCourseIds] }, progressStorage());
-  }, [program, takenCourseIds]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fixture = program === "software-engineering" ? softwareEngineeringCatalog : computerEngineeringCatalog;
-    setCatalog(fixture);
-    setMode("loading");
-    fetch(apiEndpoint(`bootstrap?program=${encodeURIComponent(program)}`), { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error(`API returned ${response.status}`);
-        return response.json() as Promise<{ catalog: ProgramCatalog }>;
-      })
-      .then((payload) => {
-        if (controller.signal.aborted) return;
-        if (!payload.catalog?.requirementGroups?.length || payload.catalog.name !== fixture.name || payload.catalog.catalogYear !== "2026-2027" || !payload.catalog.currentTerm || !Array.isArray(payload.catalog.offerings)) throw new Error("API catalog is unavailable for this program");
-        setCatalog(payload.catalog);
-        setMode("database");
-      })
-      .catch((error: unknown) => {
-        if (controller.signal.aborted) return;
-        if (error instanceof DOMException && error.name === "AbortError") return;
-        setMode("fixture");
-      });
-    return () => controller.abort();
-  }, [program, attempt]);
-
-  const courseById = useMemo(() => new Map(catalog.courses.map(course => [course.id, course])), [catalog.courses]);
-
-  const minimumSemesterCount = catalog.requirementGroups.length;
-  const semesterCount = Math.max(minimumSemesterCount, semesterCountByProgram[program] ?? 0, ...Object.values(planByProgram[program] ?? {}).map(plan => plan.semester));
-
-  const value = useMemo(() => ({
-    plans: planByProgram[program] ?? {},
-    semesterCount,
-    addSemester: () => setSemesterCountByProgram(previous => ({ ...previous, [program]: Math.max(previous[program] ?? minimumSemesterCount, semesterCount) + 1 })),
-    removeLastSemester: () => setSemesterCountByProgram(previous => {
-      const count = Math.max(previous[program] ?? minimumSemesterCount, minimumSemesterCount);
-      if (count <= minimumSemesterCount || Object.values(planByProgram[program] ?? {}).some(plan => plan.semester === count)) return previous;
-      return { ...previous, [program]: count - 1 };
-    }),
-    setPlan: (id: string, semester: number, status: "planned" | "in-progress" = "planned") => {
-      setSemesterCountByProgram(previous => ({ ...previous, [program]: Math.max(previous[program] ?? minimumSemesterCount, semester) }));
-      setPlanByProgram(previous => ({ ...previous, [program]: { ...previous[program], [id]: { semester, status } } }));
-      setTakenCourseIds(previous => { const next = new Set(previous); next.delete(id); return next; });
+export type PlanChange = { id: string; semester?: PlanSlot; status?: "planned" | "in-progress" };
+function usePlanning() {
+  const { user, update } = useAuth();
+  const store = useMemo(() => new PersistentPlanningStore(user?.id ?? null), [user?.id]);
+  const state = useSyncExternalStore(store.subscribe, store.getState);
+  const [selectedCourseId, selectCourse] = useState<string | null>(null);
+  useEffect(() => { void store.load(); }, [store]);
+  // Publish accepted database state before callers construct their acknowledgement.
+  const command = async (kind: string, args: object = {}) => {
+    const result = await store.command(kind, args);
+    flushSync(() => {});
+    if (result.status === "error") throw Error(result.message);
+    return result;
+  };
+  const startingTerm = user?.startingSemester.trim().toLowerCase().replace(/\s+/, "-") || state.startingTerms?.[state.program] || null;
+  const courseById = useMemo(() => new Map(state.catalog.courses.map(c => [c.id, c])), [state.catalog.courses]);
+  const requirementChoices = state.requirementChoices?.[state.program] ?? {};
+  const degreeCatalog = useMemo(() => {
+    const choices = state.requirementChoices?.[state.program] ?? {};
+    const ids = new Set([...(state.catalog.roadmapCourseIds ?? state.catalog.courses.map(c => c.id)), ...Object.values(choices)]);
+    return { ...state.catalog, courses: state.catalog.courses.filter(c => ids.has(c.id)),
+      requirementGroups: state.catalog.requirementGroups.map(group => ({ ...group, items: group.items.map(item =>
+        item.type === "placeholder" && choices[item.id] ? { ...item, courseId: choices[item.id] } : item) })) };
+  }, [state.catalog, state.requirementChoices, state.program]);
+  const takenCourseIds = useMemo(() => new Set(state.completed), [state.completed]);
+  const semesterSlots = useMemo(() => store.semesterSlots, [store, state.semesterSlots, state.counts, state.plans, state.catalog, state.program]);
+  const termOrder = useMemo(() => store.termOrder, [store, semesterSlots, state.namedTerms, state.termOrder, state.program]);
+  const termToSlot = useMemo(() => Object.fromEntries(Object.entries(derivedTermSlots(startingTerm, store.semesterCount)).filter(([, slot]) => semesterSlots.includes(slot))), [startingTerm, store.semesterCount, semesterSlots]);
+  return {
+    planningStore: store, requirementChoices, hydrated: state.hydrated, storageStatus: state.storageStatus,
+    selectedCourseId, selectCourse, startingTerm,
+    setStartingTerm: async (term: string | null) => {
+      if (user) {
+        if (!term) throw Error("Set your account starting semester in My profile.");
+        const [season, year] = term.split("-");
+        const result = await authRequest("profile", { name: user.name, major: user.major, startingSemester: `${season[0].toUpperCase()}${season.slice(1)} ${year}` });
+        update(result.user);
+      } else await command("setStartingTerm", { term });
     },
-    removePlan: (id: string) => setPlanByProgram(previous => { const next = { ...previous[program] }; delete next[id]; return { ...previous, [program]: next }; }),
-    retry: () => setAttempt(previous => previous + 1),
-    takenCourseIds,
-    toggleTakenCourse: (id: string) => setTakenCourseIds((previous) => {
-      const next = new Set(previous);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    }),
-    program,
-    selectProgram: setProgram,
-    catalog,
-    courseById,
-    mode,
-  }), [catalog, courseById, mode, program, takenCourseIds, planByProgram, semesterCount, minimumSemesterCount]);
-
-  return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>;
+    termToSlot,
+    mapTerm: (term: string, slot: number | null) => { if (slot !== null && derivedTermSlots(startingTerm, store.semesterCount)[term] !== slot) throw Error("Term disagrees with saved profile."); },
+    plans: state.plans[state.program] ?? {}, semesterCount: store.semesterCount, semesterSlots, termOrder,
+    additionalPrograms: state.additionalPrograms?.[state.program] ?? [],
+    namedTerms: state.namedTerms?.[state.program] ?? [], schedules: state.schedules,
+    setPlan: async (id: string, semester: PlanSlot, status: "planned" | "in-progress" = "planned") => (await store.setPlan(id, semester, status)).status !== "error",
+    removePlan: async (id: string) => (await store.removePlan(id)).status !== "error",
+    addSemester: () => { void command("addSemester"); },
+    removeLastSemester: () => { void command("removeLastSemester"); },
+    toggleTakenCourse: (id: string) => { void command("toggleTakenCourse", { id }); },
+    program: state.program, selectProgram: (program: string) => { void command("selectProgram", { program }); },
+    catalog: degreeCatalog, allCourses: state.catalog.courses, courseById,
+    takenCourseIds, mode: (state.hydrated ? "database" : "loading") as "database" | "loading" | "fixture",
+    retry: () => { void store.retry(); }, storageError: state.storageError,
+  };
 }
-
-export function useCatalog() {
-  const context = useContext(CatalogContext);
-  if (!context) throw new Error("useCatalog must be used inside CatalogProvider");
-  return context;
+const CatalogContext = createContext<ReturnType<typeof usePlanning> | null>(null);
+export function CatalogProvider({ children }: { children: ReactNode }) {
+  const value = usePlanning();
+  if (!value.hydrated && value.storageStatus !== "error") return <PageLoading detail="Restoring your saved plan" />;
+  return <CatalogContext.Provider value={value}>
+    {value.storageStatus !== "saved" && <div className="persistence-status" data-status={value.storageStatus} role={value.storageStatus === "error" ? "alert" : "status"}>{value.storageError || (value.hydrated ? "Saving your workspace…" : "Loading your workspace…")}{value.storageStatus === "error" && <button onClick={value.retry}>Retry save</button>}</div>}
+    <fieldset className="persistence-content" disabled={!value.hydrated || value.storageStatus === "error"}>{value.hydrated ? children : null}</fieldset>
+  </CatalogContext.Provider>;
 }
+export function useCatalog() { const value = useContext(CatalogContext); if (!value) throw Error("Catalog provider missing"); return value; }

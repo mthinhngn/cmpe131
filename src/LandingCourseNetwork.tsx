@@ -5,10 +5,14 @@ import { overviewData } from "./overviewData";
 import { roadmapStatus, roadmapStatusLabels, type RoadmapStatus } from "./roadmapStatus";
 import type { ProgramCatalog } from "./types";
 import RoadmapFlow from "./RoadmapFlow";
+import { RoadmapStepper } from "./RoadmapChrome";
+import { ProgramRequirements } from "./ProgramRequirements";
 
 type CourseStatus = RoadmapStatus | "ready" | "locked";
 type Course = {
   id: string;
+  requirementId?: string;
+  plannerCategory?: string;
   code: string;
   title: string;
   term: string;
@@ -16,7 +20,9 @@ type Course = {
   x: number;
   y: number;
   prerequisites: string[];
+  prerequisiteOptions?: string[];
   corequisites?: string[];
+  corequisiteOptions?: string[];
   credits: number;
   detail?: string;
   sourceUrl?: string;
@@ -52,6 +58,8 @@ function buildPlan(catalog: ProgramCatalog, completed: Set<string>, plans: Param
       const catalogCourse = item.courseId ? planCatalog.get(item.courseId) : undefined;
       return {
         id: catalogCourse?.id ?? item.id,
+        requirementId: item.type === "placeholder" ? item.id : undefined,
+        plannerCategory: catalogCourse?.plannerCategory,
         code: catalogCourse?.code ?? shortRequirementLabel(item.label ?? "Requirement choice"),
         title: catalogCourse?.title ?? "Choose a course",
         term: `${semesterIndex % 2 === 0 ? "Fall" : "Spring"} · Year ${Math.floor(semesterIndex / 2) + 1}`,
@@ -62,17 +70,20 @@ function buildPlan(catalog: ProgramCatalog, completed: Set<string>, plans: Param
           requiredIds.has(id),
         ) ?? [],
         corequisites: catalogCourse?.corequisiteCourseIds ?? [],
-        credits: catalogCourse?.units ?? Number(item.description?.match(/\d+/)?.[0] ?? 0),
+        prerequisiteOptions: catalogCourse?.prerequisiteOptionCourseIds?.filter(id => requiredIds.has(id)),
+        corequisiteOptions: catalogCourse?.corequisiteOptionCourseIds?.filter(id => requiredIds.has(id)),
+        credits: catalogCourse?.units ?? Number(item.description?.match(/(\d+(?:\.\d+)?)\s*(?:[-?]\s*\d+(?:\.\d+)?)?\s*units?/i)?.[1] ?? 0),
         detail: catalogCourse?.prerequisiteText ?? item.description,
-        sourceUrl: catalogCourse?.sourceUrl,
+        sourceUrl: catalogCourse?.sourceUrl ?? catalog.sourceUrl,
       };
     }),
   );
+  if (!planCourses.length) planCourses.push({ id: "program-requirements-review", code: "Program requirements", title: "Review official requirements and advisor-approved choices", term: "Suggested semester 1", status: "choice", x: 140, y: 65, prerequisites: [], corequisites: [], credits: 0, detail: "See the official program requirements above. No required course list has been inferred.", sourceUrl: catalog.sourceUrl });
   const planSemesterRows = requirementGroups.map((group, index) => ({
     year: `YEAR ${Math.floor(index / 2) + 1} · SEMESTER ${index + 1}`,
     term: index % 2 === 0 ? "Fall" : "Spring",
     count: group.items.length,
-    credits: Number(group.title.match(/\((\d+) units\)/)?.[1] ?? 0),
+    credits: planCourses.filter(c => c.y === planRowY(index)).reduce((sum, c) => sum + c.credits, 0),
     y: planRowY(index),
   }));
   const planUnits = planSemesterRows.reduce((sum, row) => sum + row.credits, 0);
@@ -152,10 +163,12 @@ export default function CourseNetwork({
   variant = "default",
   density = "comfortable",
   source = "illustrative",
+  stepper = false,
 }: {
   variant?: "default" | "hero";
   density?: "comfortable" | "compact";
   source?: "illustrative" | "computer-engineering-plan";
+  stepper?: boolean;
 }) {
   const { catalog, takenCourseIds, plans } = useCatalog();
   const progress = useMemo(() => overviewData(catalog, takenCourseIds, plans), [catalog, takenCourseIds, plans]);
@@ -174,6 +187,7 @@ export default function CourseNetwork({
   const [zoom, setZoom] = useState(fullPlan ? 1 : density === "compact" ? 0.82 : 1);
   const [shareState, setShareState] = useState("Share plan");
   const compact = density === "compact";
+  const semesterStats = useMemo(() => planSemesterRows.map((row, index) => ({ term: row.term, count: row.count, credits: row.credits, done: requirementGroups[index]?.items.filter(item => item.courseId && takenCourseIds.has(item.courseId)).length ?? 0 })), [planSemesterRows, requirementGroups, takenCourseIds]);
   const cardWidth = compact ? 150 : 190;
 
   const selectedCourse = courses.find((course) => course.id === selectedId) ?? courses[0];
@@ -246,7 +260,7 @@ export default function CourseNetwork({
       </div>
 
       <div className="radar-workspace">
-        <aside className="radar-sidebar">
+        {stepper && fullPlan ? <RoadmapStepper stats={semesterStats} /> : <aside className="radar-sidebar">
           <div className="sidebar-kicker">PLANNING OVERVIEW</div>
           <div className="degree-progress-card">
             <div className="progress-heading"><span>Degree progress</span><strong>{fullPlan ? progress.percent : 64}%</strong></div>
@@ -264,10 +278,11 @@ export default function CourseNetwork({
           </ol>
           <div className="sidebar-note"><span className="note-sparkle">✳</span><span>{fullPlan ? "From the 2026–27 roadmap." : "One clear path at a time."}</span></div>
           {!fullPlan && <div className="sidebar-user"><span className="user-avatar">CM</span><span><strong>Casey Morgan</strong><small>Class of 2027</small></span><span className="user-menu">···</span></div>}
-        </aside>
+        </aside>}
 
+        {stepper && fullPlan && <ProgramRequirements />}
         <div className="radar-main">
-          <div className="map-toolbar">
+          {!stepper && <div className="map-toolbar">
             <div className="map-tabs" role="group" aria-label="Course map display">
               <button type="button" aria-pressed={view === "map"} className={view === "map" ? "is-active" : ""} onClick={() => setView("map")}>Prerequisite map</button>
               <button type="button" aria-pressed={view === "list"} className={view === "list" ? "is-active" : ""} onClick={() => setView("list")}>Course list <span>{courses.length}</span></button>
@@ -283,15 +298,15 @@ export default function CourseNetwork({
               />
               {query && <button type="button" onClick={() => updateSearch("")} aria-label="Clear course search">×</button>}
             </label>
-          </div>
+          </div>}
 
           {view === "map" ? (
             <>
               {fullPlan ? <RoadmapFlow courses={courses} rows={semesterRows} selectedId={selectedId} query={query} onSelect={setSelectedId} /> : <div className="map-canvas">
 <div className="map-scroll" tabIndex={0} role="region" aria-label="Scrollable course map">
                 <div className="map-canvas-meta"><span>{fullPlan ? "COMPUTER ENGINEERING · RECOMMENDED ROADMAP" : "CORE CURRICULUM"}</span><span>{fullPlan ? `${planCourses.length} REQUIREMENTS · ${planUnits} UNITS` : "8 COURSES · 30 CREDITS"}</span></div>
-                <svg className="desktop-prereq-map" viewBox={fullPlan ? "0 0 1130 1450" : "0 0 790 490"} role="group" aria-label={fullPlan ? "Computer Engineering eight-semester prerequisite network" : "Interactive prerequisite network arranged by semester; select a course to inspect its connections"} style={{ transform: `scale(${zoom})` }}>
-                  <title>{fullPlan ? "Computer Engineering course relationships across eight semesters" : "Course prerequisite network"}</title>
+                <svg className="desktop-prereq-map" viewBox={fullPlan ? "0 0 1130 1450" : "0 0 790 490"} role="group" aria-label={fullPlan ? `${catalog.name} prerequisite network` : "Interactive prerequisite network arranged by semester; select a course to inspect its connections"} style={{ transform: `scale(${zoom})` }}>
+                  <title>{fullPlan ? `${catalog.name} course relationships` : "Course prerequisite network"}</title>
                   <defs>
                     <linearGradient id="map-fade" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stopColor="#e4f2eb" stopOpacity="0.6" />
@@ -409,7 +424,7 @@ export default function CourseNetwork({
           )}
         </div>
       </div>
-      <div className="radar-statusbar"><span><i className="status-online-dot" />{fullPlan ? "Eight-semester roadmap" : "Plan synced"}</span><span>Requirements shown for 2026–27 <b>·</b> <a href={fullPlan ? "/roadmap" : "/#how-it-works"}>{fullPlan ? "Explore semester details" : "How paths connect"}</a></span><span className="statusbar-right">Built for the long view <i>↗</i></span></div>
+      <div className="radar-statusbar"><span><i className="status-online-dot" />{fullPlan ? `${requirementGroups.length}-semester ${catalog.sequenceKind === "draft" ? "draft sequence" : "roadmap"}` : "Plan synced"}</span><span>Requirements shown for 2026–27 <b>·</b> <a href={fullPlan ? "/planner" : "/#how-it-works"}>{fullPlan ? "Open planner" : "How paths connect"}</a></span><span className="statusbar-right">Built for the long view <i>↗</i></span></div>
     </div>
   );
 }

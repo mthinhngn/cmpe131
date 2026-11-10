@@ -4,6 +4,13 @@ import { getHighlightedPath } from "../src/prerequisiteGraph.ts";
 
 const prerequisite = (from, to) => ({ from, to, kind: "prerequisite" });
 
+test("conditional course references highlight paths without rewriting their meaning", () => {
+  const edge = { from: "math33la", to: "ee112", kind: "prerequisite", conditional: true };
+  const path = getHighlightedPath("ee112", [edge]);
+  assert.equal(path.upstreamIds.has("math33la"), true);
+  assert.equal(edge.conditional, true);
+});
+
 test("traces every upstream and downstream branch without unrelated siblings", () => {
   const path = getHighlightedPath("B", [prerequisite("A", "B"), prerequisite("B", "C"), prerequisite("B", "D"), prerequisite("D", "E"), prerequisite("A", "X")]);
   assert.deepEqual([...path.upstreamIds].sort(), ["A"]);

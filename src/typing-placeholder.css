@@ -1,0 +1,13 @@
+.cr-typing-placeholder {
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  white-space:pre;
+  pointer-events:none;
+  font:inherit;
+}
+.cr-typing-line { display:flex; flex:none; }
+.cr-typing-line > span { flex:none; }
+.cr-typing-placeholder[data-loop="true"] .cr-typing-line > span { opacity:0; }

@@ -1,9 +1,29 @@
 x-api-environment: &api-environment
   DATABASE_URL: postgresql://course_radar:course_radar@postgres:5432/course_radar?schema=public
+  USER_DATABASE_URL: postgresql://course_radar_users:course_radar_users@users-postgres:5432/course_radar_users?schema=public
+  AUTH_DELIVERY: ${AUTH_DELIVERY:-disabled}
+  AUTH_WEB_ORIGIN: ${AUTH_WEB_ORIGIN:-http://localhost:5174}
   PORT: 3001
-  WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:5173}
+  WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:5174}
 
 services:
+  users-postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: course_radar_users
+      POSTGRES_PASSWORD: course_radar_users
+      POSTGRES_DB: course_radar_users
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - course_radar_users_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U course_radar_users -d course_radar_users"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   postgres:
     image: postgres:17-alpine
     restart: unless-stopped
@@ -28,10 +48,12 @@ services:
       dockerfile: api/Dockerfile
     image: course-radar-api:local
     environment: *api-environment
-    command: ["sh", "-c", "npx prisma migrate deploy && npm run prisma:seed"]
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run users:migrate && npm run prisma:seed"]
     restart: "no"
     depends_on:
       postgres:
+        condition: service_healthy
+      users-postgres:
         condition: service_healthy
 
   api:
@@ -53,3 +75,4 @@ services:
 
 volumes:
   course_radar_pgdata:
+  course_radar_users_pgdata:

@@ -4,7 +4,7 @@ COPY api/package.json api/package-lock.json ./
 RUN npm ci
 COPY api/ ./
 COPY src/ /src/
-RUN npx prisma generate && npm run build
+RUN npx prisma generate && npm run users:generate && npm run build
 
 FROM node:24-alpine
 WORKDIR /app
@@ -13,6 +13,8 @@ COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/users ./users
+COPY --from=build /app/generated ./generated
 COPY --from=build /src /src
 EXPOSE 3001
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run users:migrate && npm run start"]

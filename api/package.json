@@ -10,7 +10,14 @@
     "test": "node --import tsx --test \"test/*.test.ts\"",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "users:generate": "prisma generate --schema users/schema.prisma",
+    "users:migrate": "prisma migrate deploy --schema users/schema.prisma",
+    "predev": "npm run clients:generate",
+    "prebuild": "npm run clients:generate",
+    "pretest": "npm run clients:generate",
+    "pretypecheck": "npm run clients:generate",
+    "clients:generate": "node scripts/generate-clients.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",
@@ -24,6 +31,7 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
     "@nestjs/testing": "^11.1.6",
+    "@types/express": "^5.0.6",
     "@types/node": "^24.3.1",
     "prisma": "6.19.0",
     "tsx": "^4.20.5",

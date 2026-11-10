@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap");
+@font-face { font-family: "DM Sans"; src: url('/fonts/dm-sans-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Inter Tight"; src: url('/fonts/inter-tight-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 
 /* Course Radar's editorial desktop system: warm paper, graphite, and a small
    persimmon accent. The layout takes its rhythm from the supplied reference. */
@@ -34,8 +35,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .workspace h1, .workspace h2, .workspace h3, .workspace-heading h1,
 .workspace .panel-heading h2, .workspace .degree-title h3,
 .workspace .future-panel h2, .workspace .chart-title-block h1,
-.workspace .page-intro h1, .workspace .schedule-pane-header h2,
-.workspace .agent-chat-header, .workspace .recommendation-preview h2 {
+.workspace .page-intro h1, .workspace .schedule-pane-header h2 {
   font-family: "Inter Tight", "DM Sans", sans-serif;
   font-weight: 400;
   letter-spacing: -.027em;
@@ -52,17 +52,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   backdrop-filter: blur(16px) saturate(180%);
 }
 .workspace-header:after { display: none; }
-.workspace-brand { align-self: center; }
-.course-radar-mark { width: 39px; height: 36px; }
-.logo-connector, .logo-arrow, .logo-copy-lines { stroke: var(--ink); }
-.logo-course { fill: var(--paper); }
-.logo-course-start { stroke: var(--ink); }
-.logo-course-focus { stroke: var(--accent); }
-.logo-node-start { fill: var(--gold); }
-.logo-node-open { fill: var(--accent); }
-.course-radar-wordmark strong { color: var(--ink); font-family: "Inter Tight", sans-serif; font-size: 22px; font-weight: 500; letter-spacing: -.045em; }
-.course-radar-wordmark strong span { color: var(--ink); }
-.course-radar-wordmark small { margin-top: 4px; color: var(--quiet); font-family: "DM Sans",sans-serif; font-size: 8px; font-weight: 600; letter-spacing: .16em; }
 .workspace-header nav { min-width: 0; min-height: 44px; margin: auto; padding: 4px; align-items: center; justify-content: center; gap: 2px; overflow: visible; border-radius: 200px; background: #f0efeb; }
 .workspace-header nav a { min-height: 36px; padding: 0 13px; border-radius: 200px; color: #54534e; font-family: "Inter Tight",sans-serif; font-size: 13px; font-weight: 400; letter-spacing: -.015em; transition: background-color 160ms ease, color 160ms ease, transform 140ms var(--ease-out); }
 .workspace-header nav a:active { transform: scale(0.97); }
@@ -560,9 +549,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 .course-hover-card dt { color: var(--quiet); }
 .course-hover-card dd { min-width: 0; margin: 0; color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
 .course-hover-card > small { display: block; margin-top: 13px; color: var(--gold); font-size: 10px; font-weight: 600; }
-@media (prefers-reduced-motion: reduce) {
-  .course-hover-card { transition-duration: 0ms; }
-}
+
 .workspace .flow-course-node-wrapper {
   width: 212px;
   height: 122px;
@@ -724,18 +711,8 @@ progress::-moz-progress-bar { background: var(--accent); }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.workspace .current-schedule-dashboard { border-color: var(--line); background: #f0efeb; }
-.workspace .current-schedule-empty { border-color: var(--line-strong); background: var(--paper); }
-.workspace .agent-chat, .workspace .availability-panel, .workspace .agent-context { border: 1px solid var(--line); border-radius: 0; background: var(--paper); }
-.workspace .agent-chat-header, .workspace .agent-composer { background: #f0efeb; }
-.workspace .agent-conversation { background: var(--paper); }
-.workspace .agent-message.assistant { border-color: var(--line); background: #f4f3ef; }
-.workspace .agent-message.user { color: #fff; background: var(--ink); }
-.workspace .starter-prompts button { border-color: var(--line); background: #f7f6f2; }
-.workspace .starter-prompts button:hover { border-color: var(--accent); background: var(--accent-soft); }
 .workspace .secondary-button { border-color: var(--ink); color: var(--ink); }
 .workspace .secondary-button:hover { color: #fff; background: var(--ink); }
-.workspace .schedule-proposal { border-color: var(--line); border-top-color: var(--accent); background: #f7f6f2; }
 @media (max-width: 1320px) {
   .workspace-header { padding-inline: 30px; grid-template-columns: 190px minmax(0,1fr) auto; gap: 12px; }
   .workspace-header nav a { padding-inline: 9px; font-size: 12px; }
@@ -861,19 +838,6 @@ progress::-moz-progress-bar { background: var(--accent); }
 .hero-plan-card>p { margin: 0 0 6px; color: var(--quiet); font-size: 10px; }
 .hero-plan-card>a { font-size: 11px; }
 .workspace .requirements-toolbar h2, .workspace .group-header h3 { color: var(--ink); font-family: "Inter Tight",sans-serif; font-weight: 400; }
-.workspace .current-schedule-intro h2 { font-family: "Inter Tight",sans-serif; font-size: 27px; font-weight: 400; }
-.workspace .current-schedule-intro p, .workspace .current-schedule-empty span { font-size: 13px; }
-.workspace .current-schedule-empty strong { font-family: "Inter Tight",sans-serif; font-size: 18px; font-weight: 500; }
-.workspace .agent-chat-header>span { color: var(--ink); font-size: 15px; font-weight: 500; }
-.workspace .agent-chat-header small { font-size: 11px; }
-.workspace .agent-message-role { color: var(--gold); font-family: "DM Sans",sans-serif; font-size: 10px; }
-.workspace .agent-message.user .agent-message-role { color: #f1c5b6; }
-.workspace .agent-message p { font-size: 13px; line-height: 1.5; }
-.workspace .starter-prompts button { min-height: 56px; font-size: 13px; }
-.workspace .agent-composer>label { font-size: 13px; }
-.workspace .agent-composer textarea { font-size: 13px; }
-.workspace .agent-composer>small, .workspace .availability-panel>p, .workspace .agent-context>p { font-size: 11px; }
-.workspace .availability-fields label { font-size: 11px; }
 .workspace .secondary-button { font-size: 12px; }
 
 /* Emil Kowalski design-engineering motion & interaction details */
@@ -908,17 +872,12 @@ progress::-moz-progress-bar { background: var(--accent); }
 .primary-button, .outline-button, .program-source,
 .workspace .drawer-footer a, .workspace .secondary-button,
 .workspace .offering-schedule-action button,
-.workspace .graph-toolbar button, .workspace .workspace-empty button,
-.workspace .proposal-confirm>button:last-child { border-radius: 8px; }
+.workspace .graph-toolbar button, .workspace .workspace-empty button { border-radius: 8px; }
 .workspace-search, .workspace select, .workspace input,
-.workspace textarea, .workspace .graph-toolbar label,
-.workspace .agent-composer>div { border-radius: 7px; }
+.workspace textarea, .workspace .graph-toolbar label { border-radius: 7px; }
 .workspace .panel, .workspace .future-panel,
-.workspace .page-intro, .workspace .recommendation-preview,
-.workspace .current-schedule-dashboard, .workspace .schedule-pane,
-.workspace .requirement-group, .workspace .chart-scroll,
-.workspace .agent-chat, .workspace .availability-panel,
-.workspace .agent-context { border-radius: 10px; }
+.workspace .page-intro, .workspace .schedule-pane,
+.workspace .requirement-group, .workspace .chart-scroll { border-radius: 10px; }
 .workspace .course-table, .workspace .semester-grid { border-radius: 10px; overflow: hidden; }
 .workspace .chart-node, .workspace .chart-node:hover, .workspace .chart-node.selected { border-radius: 10px; }
 .workspace .chart-node.state-missing-prerequisite { border: 1px dashed var(--danger); }
@@ -930,15 +889,4 @@ progress::-moz-progress-bar { background: var(--accent); }
 @media (max-width: 1050px) {
   .overview-hero { min-height: auto; max-height: none; grid-template-columns: 1fr; }
   .hero-data-cluster { width: min(100%,700px); min-height: 440px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-chart-card, .hero-completion-card, .hero-plan-card {
-    animation: none;
-  }
-  .workspace .detail-drawer, .workspace .semester-options,
-  .primary-button:active, .outline-button:active, .program-source:active,
-  .workspace-header nav a:active, .next-step:active, .compact-course:active,
-  .course-table-row:active, .workspace .course-row:active {
-    transform: none !important;
-  }
 }

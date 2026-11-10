@@ -1,0 +1,19 @@
+.ui-selection-menu { position:relative; min-width:0; }
+.ui-selection-trigger { box-sizing:border-box; width:100%; min-height:42px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 12px; border:1px solid #dedfe5; border-radius:8px; background:#fff; color:#16181d; text-align:left; cursor:pointer; font:400 14.5px/1.5 Inter,Arial,sans-serif; }
+.ui-selection-trigger span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ui-selection-trigger svg,.ui-selection-option svg { flex:none; }
+.ui-selection-trigger:hover { border-color:#c9cad2; }
+.ui-selection-trigger:disabled { cursor:default; opacity:.6; }
+.ui-selection-trigger:focus-visible,.ui-selection-options:focus-visible { outline:2px solid #168873; outline-offset:2px; }
+.ui-selection-popup { position:fixed; inset:auto; box-sizing:border-box; margin:0; padding:0; border:1px solid #dedee0; border-radius:8px; background:#fff; color:#16181d; box-shadow:0 12px 28px #16181d18; overflow:hidden; font:400 14px/1.4 Inter,Arial,sans-serif; }
+.ui-selection-options { max-height:288px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#c5c9cb transparent; padding:4px; outline-offset:-3px; }
+.ui-selection-option { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-radius:4px; cursor:pointer; overflow-wrap:anywhere; }
+.ui-selection-option.is-active { background:#f0f5f3; }
+.ui-selection-option[aria-selected=true] { color:#11684f; font-weight:500; }
+.ui-selection-group { padding:10px 10px 5px; color:#555a63; font-size:12px; font-weight:500; }
+.ui-selection-count,.ui-selection-empty { margin:0; padding:10px 14px; color:#555a63; font-size:12px; }
+.ui-selection-count { border-top:1px solid #eef0ef; }
+.ui-selection-search { padding:8px; border-bottom:1px solid #eef0ef; }
+.ui-selection-search input { box-sizing:border-box; width:100%; border:1px solid #dedfe5; border-radius:5px; padding:9px 10px; color:inherit; background:#fff; font:inherit; }
+.ui-selection-search input:focus { outline:none; border-color:#168873; }
+.ui-selection-search input::placeholder { color:#66666b; }

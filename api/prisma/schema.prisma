@@ -26,6 +26,7 @@ model Program {
 }
 
 model CatalogVersion {
+  programMetadata   Json?
   id                String             @id @default(cuid())
   programId         String
   catalogYear       String
@@ -47,8 +48,31 @@ model Course {
   versions        CourseVersion[]
   requiredByRules PrerequisiteRule[] @relation("RequiredCourse")
   sections        Section[]
+  universityRecords UniversityCourseRecord[]
+  importedSections UniversitySectionRecord[]
 
   @@unique([code, id])
+}
+
+// University course facts are independent of the two degree requirement sets.
+// Null catalog fields mean the official description has not been retrieved.
+model UniversityCourseRecord {
+  courseId          String
+  catalogYear       String
+  title             String
+  units             Float?
+  unitsText         String
+  description       String?
+  prerequisiteText  String?
+  corequisiteText   String?
+  prerequisiteCodes String[] @default([])
+  corequisiteCodes  String[] @default([])
+  sourceUrl         String
+  catalogStatus     String
+  fetchedAt         DateTime
+  course            Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, catalogYear])
 }
 
 model Term {
@@ -57,6 +81,22 @@ model Term {
   sourceUrl String
   fetchedAt DateTime
   sections  Section[]
+  importedSections UniversitySectionRecord[]
+}
+
+// Lossless source rows include iSchool fields absent from the legacy Section model.
+model UniversitySectionRecord {
+  termId      String
+  classNumber String
+  courseId    String
+  sourceUrl   String
+  evidence    Json
+  fetchedAt   DateTime
+  course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  term        Term @relation(fields: [termId], references: [id], onDelete: Cascade)
+
+  @@id([termId, classNumber])
+  @@index([courseId, termId])
 }
 
 model Section {
@@ -87,7 +127,7 @@ model CourseVersion {
   title               String
   description         String
   prerequisiteText    String?
-  units               Int
+  units               Float
   course              Course               @relation(fields: [courseId], references: [id], onDelete: Cascade)
   catalogVersion      CatalogVersion       @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
   prerequisiteRules   PrerequisiteRule[]
@@ -148,4 +188,36 @@ model SourceSnapshot {
   status           String
   checksum         String?
   catalogVersion   CatalogVersion @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
+}
+
+model PersonalWorkspace {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  version   Int      @default(0)
+  state     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  operations PersonalOperation[]
+}
+
+// Public verified term evidence. Personal semester numbers derive from profiles.
+model SharedAcademicCalendar {
+  id        String   @id
+  evidence  Json
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+// Append-only receipts and before-images make retries and Undo survive restarts.
+model PersonalOperation {
+  workspaceId String
+  requestId   String
+  fingerprint String
+  kind        String
+  before      Json
+  result      Json
+  createdAt   DateTime @default(now())
+  workspace   PersonalWorkspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([workspaceId, requestId])
+  @@index([workspaceId, createdAt])
 }

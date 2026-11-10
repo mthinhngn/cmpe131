@@ -64,6 +64,8 @@
 .cx-week .cx-view-switch button[aria-pressed=true] { color: #30333c; background: var(--cx-slate); }
 .cx-week .cx-week-meta { padding-inline: 20px; color: #686c78; font-size: 14px; background: var(--week-ground); }
 .cx-week .cx-week-meta i { background: var(--cx-slate); }
+.cx-term-menu { width:132px; }
+.cx-term-menu .ui-selection-trigger { min-height:30px; padding:4px 8px; font-size:12px; }
 .cx-week .cx-calendar-scroll, .cx-week .cx-agenda { scrollbar-color: #99a7af #f6f8f9; }
 .cx-week .cx-calendar-head { border-color: #dce2e5; background: var(--week-ground); }
 /* Only the functional calendar grid remains on the flat inset surface. */
@@ -246,3 +248,10 @@
 .cx-page .cx-week .cx-conflict { background: #f5e7df; color: #783b2b; border-color: #a45e49; }
 .workspace-explorer .cr-resizable-grip:focus-visible,
 .cx-page .cr-resizable-handle:focus-visible .cr-resizable-grip { outline-color: var(--cx-slate); }
+
+/* Native semester control retains the quiet caption typography. */
+.cx-term-notice { margin: 0; padding: 8px 18px; color: #686c78; font: 400 12px/1.5 Inter, Arial, sans-serif; }
+.cx-term-notice button, .cx-pending-courses button { color: #526b8f; background: transparent; border: 1px solid #dedfe5; border-radius: 4px; padding: 6px 10px; margin-left: 8px; cursor: pointer; font: inherit; }
+.cx-pending-courses { padding: 4px 18px 12px; font: 400 12px/1.5 Inter, Arial, sans-serif; }
+.cx-pending-courses > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #dedfe5; }
+.cx-pending-courses small { display: block; color: #686c78; }

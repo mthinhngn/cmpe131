@@ -8,5 +8,45 @@ vite.config.js
 vite.config.d.ts
 .vercel
 
+# Local screenshots, temporary verification output, and retired design exports.
+tmp/
+exports/
+work/
+.impeccable/
+.taste-skill/
+.playwright-mcp/
+.codex/
+.venv/
+*.zip
+
 # Local upstream component sources; recreate with npm run ui:sync.
 .references/
+
+# Generated user database client
+api/generated/
+
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
+
+# Retain official import source copies locally; normalized snapshots/report are tracked.
+data/sjsu/**/sources/
+data/sjsu/**/courses/
+
+# Local imports, database contents, credentials, and backups stay off GitHub.
+/data/
+backups/
+dumps/
+volumes/
+pgdata/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.dump
+*.backup
+*.bak
+*.pem
+*.key
+*.p12

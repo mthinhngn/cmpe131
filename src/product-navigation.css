@@ -31,5 +31,19 @@
   .site-shell[class] .site-header .primary-nav a[aria-current=page]:after,.ov3-page[class] .ov3-header .ov3-nav a.active:after,.sp-page[class] .sp-header nav a[aria-current=page]:after,.workspace[class] .workspace-header nav a.active:after {
     content:none; display:none;
   }
+  /* Roadmap follows the selected Overview navigation treatment. */
+  .site-shell.prereq-shell .site-header {
+    background:#edece8; border-bottom-color:#e7e5e0;
+  }
+  .site-shell.prereq-shell .site-header .primary-nav a {
+    font:400 14.5px/1.6 "Hanken Grotesk",Inter,sans-serif; letter-spacing:normal;
+  }
+  .site-shell.prereq-shell .site-header .primary-nav a[aria-current=page] {
+    color:#16181d; border-bottom-color:transparent;
+  }
+  .site-shell.prereq-shell .site-header .primary-nav a[aria-current=page]:after {
+    content:""; display:block; position:absolute; left:50%; bottom:6px;
+    width:22px; height:1.5px; transform:translateX(-50%); background:#16181d;
+  }
 }
 

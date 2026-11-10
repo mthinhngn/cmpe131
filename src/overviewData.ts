@@ -1,6 +1,6 @@
 import type { ProgramCatalog } from "./types";
 
-export function overviewData(catalog: ProgramCatalog, taken: Set<string>, plans: Record<string, { semester: number; status: "planned" | "in-progress" }>) {
+export function overviewData(catalog: ProgramCatalog, taken: Set<string>, plans: Record<string, { semester: number | string; status: "planned" | "in-progress" }>) {
   const requiredIds = new Set(catalog.requirementGroups.flatMap(group => group.items.flatMap(item => item.courseId ? [item.courseId] : [])));
   const required = catalog.courses.filter(course => requiredIds.has(course.id));
   const completed = required.filter(course => taken.has(course.id));

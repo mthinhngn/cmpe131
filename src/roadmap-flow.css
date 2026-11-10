@@ -4,7 +4,7 @@
 .rf-roadmap .react-flow__node-course { width: 164px; border: 0; background: none; }
 .rf-course-card { box-sizing: border-box; position: relative; display: flex; flex-direction: column; height: 120px; padding: 16px 12px 12px; border: 1px solid #d9e5e0; border-radius: 12px; background: #fff; transition: opacity 160ms ease; font-family: Manrope, Inter, sans-serif; }
 .rf-course-card header { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
-.rf-course-card header strong { font-size: 11px; font-weight: 700; letter-spacing: -.025em; }
+.rf-course-card header strong { min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 11px; font-weight: 700; letter-spacing: -.025em; }
 .rf-course-card header span { flex: none; font-size: 9px; color: #62776d; }
 .prereq-shell .rf-roadmap .rf-course-card p { flex: 1; margin: 7px 0; min-height: 0; font-family: Manrope, Inter, sans-serif; font-size: 10.5px; font-weight: 500; line-height: 1.35; color: #5a6f69; }
 .rf-course-card footer { display: flex; align-items: center; gap: 6px; padding-top: 6px; border-top: 1px solid #eef3f0; font-size: 8px; color: #55726a; }
@@ -32,7 +32,7 @@
 .rf-course-card::before { content: ''; position: absolute; inset: -1px; border-top: 4px solid #88b8a6; border-radius: inherit; pointer-events: none; }
 .rf-course-card.is-focused::before, .rf-course-card.is-related::before { border-top-color: #168873; }
 .rf-course-card.is-choice::before { border-top-color: #b8c9c1; }
-@media (prefers-reduced-motion: reduce) { .rf-course-card, .rf-roadmap .react-flow__edge, .rf-roadmap .react-flow__edge-path { transition-duration: 100ms; } }
+
 
 
 

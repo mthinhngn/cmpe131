@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../generated/users"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("USER_DATABASE_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  name String @default("")
+  major String @default("")
+  startingSemester String @default("")
+  workspaceKey String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+}
+
+model LoginToken {
+  tokenHash String @id
+  email String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@index([email, createdAt])
+}
+
+model Session {
+  tokenHash String @id
+  userId String
+  expiresAt DateTime
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+// Same workspace and receipt shape as the catalog database's guest workspaces.
+model PersonalWorkspace {
+  id String @id @default(cuid())
+  tokenHash String @unique
+  version Int @default(0)
+  state Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  operations PersonalOperation[]
+}
+
+model PersonalOperation {
+  workspaceId String
+  requestId String
+  fingerprint String
+  kind String
+  before Json
+  result Json
+  createdAt DateTime @default(now())
+  workspace PersonalWorkspace @relation(fields: [workspaceId], references: [id])
+  @@id([workspaceId, requestId])
+  @@index([workspaceId, createdAt])
+}

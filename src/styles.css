@@ -219,9 +219,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 30px 28px 72px; }
   .chart-legend { grid-template-columns: 1fr; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
+
 .program-picker { display: grid; gap: 8px; max-width: 360px; margin-bottom: 24px; color: #536460; font-size: 13px; font-weight: 600; }
 .program-picker select { width: 100%; padding: 12px; border: 1px solid #cad9d5; border-radius: 10px; background: white; color: #163d35; font: inherit; cursor: pointer; }
 .program-picker select:focus-visible { outline: 2px solid #078577; outline-offset: 3px; }

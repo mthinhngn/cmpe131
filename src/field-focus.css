@@ -1,0 +1,14 @@
+/* Typing focus belongs to the field's outer shape, rather than an inner rectangle. */
+html body :is(input:not([type]), input:is([type="text"], [type="search"], [type="email"], [type="url"], [type="tel"], [type="password"], [type="number"]), textarea, [contenteditable="true"]):is(:focus, :focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html body :is(.cx-search, .pb-search, .map-search, .search, .workspace-search):focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.account-page :is(input, textarea):focus {
+  border-color: #168873;
+}

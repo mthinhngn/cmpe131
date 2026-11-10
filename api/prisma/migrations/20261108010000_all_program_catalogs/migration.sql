@@ -1,0 +1,2 @@
+ALTER TABLE "CatalogVersion" ADD COLUMN "programMetadata" JSONB;
+ALTER TABLE "CourseVersion" ALTER COLUMN "units" TYPE DOUBLE PRECISION;

@@ -1,0 +1,186 @@
+/* Shared workspace chrome; graph, chart and calendar status colors stay local. */
+:root {
+  --product-font: Inter, Arial, sans-serif;
+  --product-ink: #16181d;
+  --product-muted: #555a63;
+  --product-line: #dedfe5;
+  --product-radius: 12px;
+  --product-control-radius: 8px;
+  --product-gap: 16px;
+  --product-frame-pad: 20px;
+  --product-gutter: 24px;
+  --product-max: 1380px;
+}
+html body :is(.bo-page, .pb-page, .workspace, .prereq-shell, .account-page) {
+  --canvas: #fff;
+  --paper: #fff;
+  --ink: var(--product-ink);
+  --soft: var(--product-muted);
+  --line: var(--product-line);
+  --sans: var(--product-font);
+  --display: var(--product-font);
+  --mono: var(--product-font);
+  --label-font: var(--product-font);
+  background: #fff;
+  color: var(--product-ink);
+  font-family: var(--product-font);
+}
+html body .bo-page .cr-product-header[class], html body .cr-product-header[class] {
+  background: #fff;
+  padding-inline: max(var(--product-gutter), calc((100% - var(--product-max)) / 2));
+  font-family: var(--product-font);
+}
+html body .cr-product-header[class] .cr-product-account {
+  border-radius: var(--product-control-radius);
+  font-family: var(--product-font);
+}
+html body .cr-page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0 0 24px;
+  min-height: 40px;
+  color: var(--product-ink);
+  font-family: var(--product-font);
+}
+html body .cr-page-heading h1 {
+  margin: 0;
+  font: 500 32px/1.25 var(--product-font);
+  color: var(--product-ink);
+  letter-spacing: -.035em;
+}
+html body .cr-page-heading h1 span { color: var(--product-muted); font-weight: 400; }
+html body :is(.bo-wrap, .pb-page main.pb-wrap) { padding-top: 28px; }
+html body .workspace.workspace-explorer[class] .workspace-content { padding-top: 28px; }
+html body .prereq-shell.is-stepper .prereq-full-page { padding-top: 28px; background: #fff; }
+html body .bo-page { --gap: var(--product-gap); --pad: 20px; --radius: var(--product-radius); }
+html body :is(.bo-page .bo-tile, .pb-page .pb-chart) {
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-radius);
+  box-shadow: none;
+  background: #fff;
+  padding: var(--product-frame-pad);
+  font-family: var(--product-font);
+}
+html body .bo-tile:hover { box-shadow: none; }
+html body :is(.bo-th, .pb-chart-head) { min-height: 36px; margin-bottom: 16px; gap: 12px; }
+html body :is(.bo-page .bo-th h2, .pb-page .pb-chart-head h2, .workspace.workspace-explorer[class] .cx-week-title h2) {
+  font: 600 16px/1.4 var(--product-font);
+  letter-spacing: -.02em;
+}
+html body :is(.bo-page .bo-ghost, .pb-page .pb-ghost, .workspace.workspace-explorer[class] .cx-focus-button) {
+  box-sizing: border-box;
+  min-height: 36px;
+  height: 36px;
+  padding: 7px 12px;
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-control-radius);
+  font: 500 13px/1.5 var(--product-font);
+}
+html body :is(.bo-search, .pb-search) { border-radius: var(--product-control-radius); }
+html body .bo-segc { border-radius: var(--product-control-radius); }
+html body .workspace.workspace-explorer[class] { min-width: 0; }
+html body .workspace.workspace-explorer[class] .cx-workbench.cx-desktop-workbench { border-radius: var(--product-radius); box-shadow: none; }
+html body .workspace.workspace-explorer[class] .cx-desktop-workbench :is(.cx-week-frame, .cx-week) { border-radius: var(--product-radius); }
+html body .prereq-shell.is-stepper .prereq-map-frame { border-radius: var(--product-radius); border-color: var(--product-line); box-shadow: none; }
+html body .prereq-shell.is-stepper .prereq-product-frame { border: 0; border-radius: calc(var(--product-radius) - 1px) calc(var(--product-radius) - 1px) 0 0; }
+html body .workspace.workspace-explorer[class] :is(.cx-page, .cx-catalog, .cx-week) { font-family: var(--product-font); }
+/* Long titles and status badges must share the available width, never overlap. */
+html body .bo-dtop { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+html body .bo-dtop h3 { min-width: 0; font: 500 24px/1.3 var(--product-font); letter-spacing: -.025em; overflow-wrap: anywhere; }
+html body .bo-dtop h3 .g { display: block; margin-top: 4px; font-size: 18px; color: var(--product-muted); }
+html body .bo-stag { justify-self: start; max-width: 100%; white-space: normal; }
+html body .bo-nlist button { grid-template-columns: 10px minmax(0, 1fr) auto; align-items: start; }
+html body .bo-nlist button > span { min-width: 0; overflow-wrap: anywhere; line-height: 1.5; }
+html body .bo-nlist b { display: block; white-space: nowrap; }
+html body .bo-nlist button > i { margin-top: 6px; }
+html body .bo-nlist small { white-space: nowrap; }
+html body :is(.bo-page, .pb-page, .workspace, .prereq-shell) :is(input, button, select) { font-family: var(--product-font); }
+html body :is(.bo-page, .pb-page) .mono { font-family: var(--product-font); font-variant-numeric: tabular-nums; }
+html body :is(.bo-page, .pb-page, .workspace, .prereq-shell, .account-page) :focus-visible {
+  outline: 2px solid #168873;
+  outline-offset: 3px;
+}
+html body :is(.bo-search, .pb-search, .cx-search):focus-within { border-color: #168873; }
+@media (min-width: 1000px) {
+  :root { --product-gutter: 44px; }
+  html body :is(.bo-wrap, .pb-wrap, .workspace.workspace-explorer[class] .workspace-content, .prereq-full-page > .cr-page-heading) {
+    box-sizing: border-box;
+    width: min(calc(100% - 88px), 1380px);
+    max-width: none;
+    margin-inline: auto;
+  }
+  html body .prereq-full-page > .cr-page-heading { width: min(100%, 1380px); }
+}
+@media (max-width: 999px) {
+  html body :is(.bo-wrap, .pb-page main.pb-wrap, .workspace.workspace-explorer[class] .workspace-content) {
+    width: calc(100% - 2 * var(--product-gutter));
+    margin-inline: auto;
+    padding-inline: 0;
+  }
+  html body .prereq-shell.is-stepper .prereq-full-page { padding-inline: var(--product-gutter); }
+}
+@media (max-width: 760px) {
+  html body .cr-page-heading h1 { font-size: 24px; }
+  html body .cr-page-heading h1 span { display: block; margin-top: 4px; font-size: 16px; }
+}
+@media (max-width: 480px) { :root { --product-gutter: 20px; } }
+
+@media (min-width: 1000px) {
+  html body .prereq-shell.is-stepper .prereq-full-page > .cr-page-heading { width: min(100%, 1380px); }
+}
+html body .pb-page .pb-tray { border-radius: var(--product-radius); }
+
+/* Reference palette for categorical units and course visualizations. */
+:root {
+  --chart-blue: #2876db;
+  --chart-yellow: #f8b817;
+  --chart-green: #00a615;
+  --chart-red: #e52d35;
+  --chart-gray: #c7c7c4;
+  --chart-blue-deep: #174e9e;
+}
+html body :is(.bo-page, .pb-page, .workspace, .prereq-shell) {
+  --s-major: var(--chart-blue);
+  --s-math: var(--chart-yellow);
+  --s-science: var(--chart-green);
+  --s-eng: var(--chart-red);
+  --s-writing: var(--chart-blue-deep);
+  --s-choice: var(--chart-gray);
+  --s-university: #a9aca8; /* ash */
+  --s-technical: #b8a5e5; /* lavender */
+}
+html body .workspace-explorer[class] .cx-week :is(.cx-meeting, .cx-saved-section) {
+  background: var(--course-fill);
+  color: var(--course-ink);
+  border-color: var(--course-edge);
+}
+/* Use the ring's full subject colors for course blocks; retain status patterns. */
+html body .bo-page .bo-chart[data-colour="subject"] .bo-blk,
+html body .pb-page :is(.pb-block, .pb-pill) {
+  background: var(--c);
+  border-color: color-mix(in srgb, var(--c) 75%, black);
+  color: var(--c-ink, #000);
+}
+html body .pb-page .pb-block { border-color: transparent; }
+html body .bo-page .bo-chart[data-colour="subject"] .bo-blk.done,
+html body .pb-page :is(.pb-block, .pb-pill).pb-done {
+  background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 20%) 0 5px, transparent 5px 10px);
+}
+html body .bo-page .bo-chart[data-colour="subject"] .bo-blk.remaining { border-style: dashed; }
+html body .bo-page .bo-chart[data-colour="subject"] .bo-blk small,
+html body .pb-page :is(.pb-block, .pb-pill) small { opacity: 1; }
+
+html body .prereq-shell .rf-course-card::before { border-top-color: var(--c); }
+html body .prereq-shell .rf-course-card:is(.is-focused, .is-related) { border-color: var(--c); }
+html body .prereq-shell .rf-course-card.is-focused { background: color-mix(in srgb, var(--c) 8%, white); }
+html body .workspace-explorer .cx-week .cx-conflict { box-shadow: inset 0 0 0 2px #8b3c19; }
+.program-requirements { margin:0 0 20px; color:var(--product-muted); font:400 13px/1.6 var(--product-font); }
+.program-requirements p { margin:0 0 10px; }
+.program-requirements summary { cursor:pointer; color:var(--product-ink); padding-block:6px; }
+.program-requirement-evidence { margin-top:12px; max-height:480px; overflow:auto; padding:16px 20px; border:1px solid var(--product-line); border-radius:var(--product-radius); background:#fff; }
+.program-requirement-evidence h3 { color:var(--product-ink); font-size:14px; margin:18px 0 8px; }
+.program-requirement-evidence a { text-decoration:underline; text-underline-offset:3px; }
+.program-draft { padding:10px 14px; background:#f6f7f9; border-radius:var(--product-control-radius); }

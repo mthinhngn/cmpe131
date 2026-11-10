@@ -1,4 +1,4 @@
-export type GraphEdge = { from: string; to: string; kind: "prerequisite" | "corequisite" };
+export type GraphEdge = { from: string; to: string; kind: "prerequisite" | "corequisite"; conditional?: boolean };
 
 /** Trace ancestry and descendants independently, keeping corequisites symmetric. */
 export function getHighlightedPath(highlightedCourseId: string | null, edges: GraphEdge[]) {

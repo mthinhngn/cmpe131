@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Showcase · A · Glide, live colors</title>
+<link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./base.css">
+<style>
+  /* Glide motion, dressed in the live product: shared product tokens (src/product-surfaces.css),
+     Inter throughout, white surfaces, #dedfe5 lines, 12px radius and the reference chart palette. */
+  :root {
+    --ink: #16181d; --soft: #555a63; --faint: #6b7079; --line: #dedfe5;
+    --s-major: #2876db; --s-math: #f8b817; --s-science: #00a615; --s-eng: #e52d35; --s-writing: #174e9e; --s-choice: #c7c7c4;
+    --acc: #168873; --acc-w: #eef0f5;
+  }
+  .sx, .sx * { font-family: Inter, Arial, sans-serif !important; }
+  .sx-tab { font-family: "Hanken Grotesk", sans-serif !important; }
+  .sx-window { border-radius: 12px; box-shadow: 0 0 0 1px var(--line), 0 2px 4px rgba(16, 24, 40, .04), 0 40px 80px -40px rgba(16, 24, 40, .35); }
+  .sx-bar { height: 56px; border-bottom-color: var(--line); }
+  .sx-brand svg { color: var(--ink); }
+  .sx-crumb { font-size: 11.5px; letter-spacing: .02em; color: var(--soft); }
+  .sx-nav span { border-radius: 0; background: none !important; color: var(--soft); font-size: 13px; }
+  .sx-nav span.on { color: var(--ink); }
+  .sx-nav span::after { content: ""; position: absolute; left: 50%; bottom: -15px; width: 20px; height: 1.5px; margin-left: -10px; background: var(--ink); transform: scaleX(0); transition: transform 320ms var(--ease-out); }
+  .sx-nav span.on::after { transform: scaleX(1); }
+  .sx-chip { border-color: var(--line); border-radius: 8px; color: var(--ink); }
+  .sx-viewport, .sx-page { background: #fff; }
+  /* no app header inside the video: the window is just the page */
+  .sx-bar { display: none; }
+  .sx { width: min(980px, calc(100vw - 48px)); }
+  .sx-viewport { height: 560px; }
+
+  .card { border-color: var(--line); border-radius: 12px; box-shadow: none; }
+  .card h4 { font-weight: 600; font-size: 13px; }
+  .card h4 i { display: none; }
+  .pg-title { font-weight: 600; letter-spacing: -.04em; }
+  .ov-big { font-weight: 600; }
+  .nc { background: color-mix(in srgb, var(--c) 10%, white); }
+  .nc small { color: color-mix(in srgb, var(--c) 65%, black); }
+
+  /* course blocks: solid subject fill, as on Planner and Overview */
+  .blk { background: var(--c); border-color: transparent; color: #000; font-weight: 500; }
+  .blk[style*="writing"] { color: #fff; }
+  .blk.done { background-color: var(--c); background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 30%) 0 4px, transparent 4px 8px); color: #000; }
+  .load .col.now, .pl .col.now { background: linear-gradient(180deg, transparent, var(--acc-w)); }
+  .pl .col.target { background: var(--acc-w); }
+  .pl-chart::before { border-top-color: color-mix(in srgb, #34497a 50%, white); color: #34497a; }
+  .pill { background: var(--c); border-color: transparent; color: #000; }
+  .pill[style*="writing"] { color: #fff; }
+  .pill em { color: #16181d; }
+
+  /* Schedule: graphite frame with a white calendar inset */
+  .sc-wrap { background: #2b2c33; border-radius: 12px; padding: 10px; gap: 10px; }
+  .cat { background: transparent; padding: 6px 4px; }
+  .cat-search { background: #34353d; border-color: #43444d; border-radius: 8px; }
+  .cat-chips span { background: transparent; border: 1px solid #4a4b54; color: #d6d7db; border-radius: 7px; padding: 3px 8px; }
+  .cat-chips span.on { background: #fff; color: #16181d; border-color: #fff; }
+  .row em { background: none; color: #a5a7ad; }
+  .row.hot { background: #393a42; }
+  .row.hot em { background: #fff; color: #16181d; }
+  .week { border-radius: 10px; border: 0; }
+  .ev { border-left: 0; border-radius: 6px; background: var(--c); color: #000; }
+  .ev[style*="writing"] { color: #fff; }
+
+  /* Roadmap: subject edge on each card, faint green grid */
+  .rm-map { background-color: #f3faf6; border-radius: 10px; }
+  .rc { border-color: #d9e5e0; border-radius: 12px; }
+  /* Match the real roadmap: a curved border cap, rather than a flat stripe. */
+  .rc::before { inset: -1px; height: auto; border-top: 4px solid var(--c); border-radius: inherit; background: none; pointer-events: none; }
+  .rc::after { content: ""; position: absolute; top: -4px; left: calc(50% - 3.5px); width: 7px; height: 7px; border: 1px solid white; border-radius: 50%; background: #83ad9e; pointer-events: none; }
+  .rc b { color: #183933; }
+  .rc small { color: #62776d; }
+  .rc.sel { border-color: var(--c); background: color-mix(in srgb, var(--c) 8%, white); box-shadow: 0 16px 30px -18px rgba(16, 24, 40, .4); }
+  .rm-svg path { stroke: #b9cfc6; }
+  .rm-strip { border-color: var(--line); }
+
+  /* A fixed logical canvas keeps all four scenes intact inside the landing hero. */
+  html, body { width: 1040px; height: 704px; min-height: 0; overflow: hidden; background: transparent; }
+  body { display: block; padding: 24px 30px; }
+  body::before { display: none; }
+  .sx { width: 980px; }
+
+  html.embedded, html.embedded body { width: 980px; height: 560px; padding: 0; }
+  .embedded .sx-window { border-radius: 0; box-shadow: none; }
+  .embedded .sx-tabs { display: none; }
+  /* Bound repaints to the moving page and give Glide its own compositing layers. */
+  .embedded .sx-viewport { isolation: isolate; }
+  .embedded .sx-page { contain: layout paint; will-change: transform, opacity; }
+  .embedded .sx-cursor { will-change: transform; }
+</style>
+</head>
+<body>
+<div id="showcase"></div>
+
+<script>if (new URLSearchParams(location.search).has("embedded")) document.documentElement.classList.add("embedded");</script>
+<script src="./base.js"></script>
+<script>Showcase.mount(document.getElementById("showcase"), { mode: "glide", pauseOnHover: false,
+  onChange: page => parent.postMessage({ type: "course-radar-showcase-page", page }, location.origin)
+});
+addEventListener("message", event => {
+  if (event.origin !== location.origin || event.source !== parent || event.data?.type !== "course-radar-showcase-select") return;
+  const ids = ["overview", "schedule", "planner", "roadmap"];
+  const index = ids.indexOf(event.data.page);
+  if (index >= 0) document.querySelectorAll(".sx-tab")[index].click();
+});
+document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(() => {
+  parent.postMessage({ type: "course-radar-showcase-ready" }, location.origin);
+})));</script>
+</body>
+</html>
