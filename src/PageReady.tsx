@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { PageLoading } from "./PageLoading";
+import { staticPreview } from "./static-preview";
 
 /** Mount inside Suspense so confirmation starts only after the screen can render. */
 export function PageReady({ children, detail }: { children: ReactNode; detail?: string }) {
@@ -13,6 +14,6 @@ export function PageReady({ children, detail }: { children: ReactNode; detail?: 
   }, []);
   return <>
     <div className="cr-page-reveal-content" inert={phase !== "done"} aria-hidden={phase !== "done" ? true : undefined}>{children}</div>
-    {phase !== "done" && <PageLoading ready leaving={phase === "leaving"} detail={detail ?? (user ? "Saved to your account" : "Guest workspace restored")} />}
+    {phase !== "done" && <PageLoading ready leaving={phase === "leaving"} detail={detail ?? (staticPreview ? "Preview ready" : user ? "Saved to your account" : "Guest workspace restored")} />}
   </>;
 }

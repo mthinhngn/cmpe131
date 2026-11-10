@@ -3,6 +3,7 @@ import { accountResponse, apiEndpoint } from "./api";
 import "./account.css";
 import "./chat-session";
 import { PageLoading } from "./PageLoading";
+import { staticPreview } from "./static-preview";
 
 export type AccountUser = { id: string; email: string; name: string; major: string; startingSemester: string };
 export function profileComplete(user: AccountUser) {
@@ -17,11 +18,11 @@ type SignInDelivery = "log" | "resend" | "unavailable";
 const AuthContext = createContext<{ user: AccountUser | null; signInDelivery: SignInDelivery; update: (user: AccountUser) => void; logout: () => Promise<void> } | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AccountUser | null>(null);
-  const [signInDelivery, setSignInDelivery] = useState<SignInDelivery>("unavailable");
-  const [ready, setReady] = useState(false);
+  const [signInDelivery, setSignInDelivery] = useState<SignInDelivery>(staticPreview ? "resend" : "unavailable");
+  const [ready, setReady] = useState(staticPreview);
   const [error, setError] = useState("");
   const load = () => { setError(""); void authRequest("me").then(result => { setUser(result.user); setSignInDelivery(result.signInDelivery ?? "unavailable"); setReady(true); }).catch(e => setError(e.message)); };
-  useEffect(load, []);
+  useEffect(() => { if (!staticPreview) load(); }, []);
   const logout = async () => { await authRequest("logout", {}); window.location.assign("/"); };
   const needsSetup = ready && user && !profileComplete(user) && window.location.pathname.replace(/\/$/, "") !== "/account";
   useEffect(() => { if (needsSetup) window.location.replace("/account?setup=required"); }, [needsSetup]);

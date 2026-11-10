@@ -1,4 +1,5 @@
 import { apiEndpoint } from "./api";
+import { staticPreview } from "./static-preview";
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useCatalog } from "./CatalogContext";
 import { nextRegularTerm, requiredComponents, scheduleScope, termForSlot, termName } from "./scheduleTerms";
@@ -42,6 +43,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const waiting = useRef<((ids: string[] | null) => void) | null>(null);
   const busy = useRef(false), generation = useRef(0);
   const refreshCalendar = () => {
+    if (staticPreview) return Promise.resolve(null);
     calendarRequest.current = agentFetch<Calendar>("/schedule/terms").then(value => { setCalendar(value); latest.current.calendar = value; return value; })
       .catch(() => { setCalendar(null); latest.current.calendar = null; return null; });
     return calendarRequest.current;
@@ -49,6 +51,11 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   useEffect(() => { void refreshCalendar(); }, []);
   useEffect(() => { if (!terms.includes(activeTerm)) selectTerm(currentTerm); }, [currentTerm]);
   const load = (term: string, refresh = false): Promise<SectionData> => {
+    if (staticPreview) {
+      const value: SectionData = { term, status: "available", offerings: term === catalog.catalog.currentTerm.id ? catalog.catalog.offerings : [], message: "Recorded section snapshot." };
+      setData(current => ({ ...current, [term]: value }));
+      return Promise.resolve(value);
+    }
     const cached = latest.current.data[term];
     if (!refresh && cached && Date.now() - (fetched.current.get(term) ?? 0) < (cached.status === "available" ? 900000 : 60000)) return Promise.resolve(cached);
     if (requests.current.has(term)) return requests.current.get(term)!;

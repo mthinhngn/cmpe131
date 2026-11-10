@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiEndpoint } from "./api";
+import { staticPreview } from "./static-preview";
 import { SelectionMenu } from "./components/ui/selection-menu";
 
 type Program = { slug: string; title: string; kind: string };
 let directory: Promise<Program[]> | undefined;
 function loadPrograms() {
+  if (staticPreview) return Promise.resolve([
+    { slug: "computer-engineering", title: "Computer Engineering", kind: "bachelor" },
+    { slug: "software-engineering", title: "Software Engineering", kind: "bachelor" },
+  ]);
   return directory ??= fetch(apiEndpoint("bootstrap/programs"), { signal: AbortSignal.timeout(15000) }).then(async response => {
     if (!response.ok) throw Error("Could not load the SJSU program directory.");
     return (await response.json()).programs as Program[];

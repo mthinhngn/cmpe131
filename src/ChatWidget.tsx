@@ -10,6 +10,7 @@ import { ArrowUp, BookOpen, CalendarMinus, CalendarPlus, ChevronDown, SquarePen 
 import { useCatalog } from "./CatalogContext";
 import { CourseDetail } from "./CourseDetail";
 import { AgentError, agentFetch, agentSession, contextRevision, type AgentContext, type AgentRequest, type BrowserAction, type ConversationItem, type Receipt, type AgentSession } from "./agent-client";
+import { staticPreview } from "./static-preview";
 
 import { readConversation, saveConversation, readReceipt, reserveAction, saveReceipt, restoredItems, accountItems } from "./kimi-memory";
 import type { Course } from "./types";
@@ -60,8 +61,9 @@ export function ChatWidget() {
   }, [schedule.pending?.id]);
 
   const checkConnection = () => agentFetch<{ model: string; tracing: string; instance_id?: string }>("/health").then(result => { setHealth(result); setError(""); }).catch(() => { setHealth(null); setError("The assistant is offline. Start the agent service, then check the connection."); });
-  useEffect(() => { void checkConnection(); }, []);
+  useEffect(() => { if (!staticPreview) void checkConnection(); }, []);
   useEffect(() => {
+    if (staticPreview) { setMemoryReady(true); return; }
     let stopped = false;
     const restore = async (force = false) => {
       const attempt = ++generation.current;

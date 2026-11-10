@@ -1,3 +1,4 @@
+import "./static-preview";
 import "./field-focus.css";
 
 // Separate document entries keep workspace CSS out of the supplied landing.

@@ -1,6 +1,7 @@
 import { PlanningStore, type ActionResult, type Edit, type Plan, type Proposal, type State, type PlanSlot } from "./planning";
 import { computerEngineeringCatalog } from "./data";
 import { apiEndpoint } from "./api";
+import { staticPreview } from "./static-preview";
 type ViewState = State & { storageStatus: "loading" | "saved" | "saving" | "error"; storageError: string; hydrated: boolean };
 type Command = { requestId: string; version: number; kind: string; args: object; catalogVersion?: string };
 export type PlanCoordinator = (kind: string, args: Record<string, any>, save: (kind: string, args: object) => Promise<ActionResult>) => Promise<ActionResult>;
@@ -40,6 +41,10 @@ export class PersistentPlanningStore {
     this.emit({ ...payload.state, undoRevision: payload.state.undoRevision, undoRequestId: payload.state.undoRequestId, storageStatus: hydrated ? "saved" : "loading", storageError: "", hydrated });
   }
   load = () => {
+    if (staticPreview) {
+      this.emit({ ...this.engine.getState(), storageStatus: "saved", storageError: "", hydrated: true });
+      return Promise.resolve();
+    }
     if (this.loading) return this.loading;
     this.loading = (async () => {
       this.emit({ storageStatus: "loading", storageError: "" });
@@ -66,6 +71,7 @@ export class PersistentPlanningStore {
   };
   private errorText(error: unknown) { return error instanceof Error ? error.message : "Database save failed. Reload to check saved state."; }
   command(kind: string, args: object = {}): Promise<ActionResult> {
+    if (staticPreview) return Promise.resolve({ status: "unchanged", message: "Preview controls are inactive." });
     const save = (nextKind: string, nextArgs: object) => this.enqueue(nextKind, nextArgs,
       kind === "agentAction" ? (args as { action: { action_id: string } }).action.action_id : undefined);
     if (this.coordinator && ["setPlan", "removePlan", "agentAction"].includes(kind)) return this.coordinator(kind, args, save);
