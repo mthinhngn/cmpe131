@@ -1,2 +1,9 @@
-api/
+# The frontend imports these shared modules; keep them available at build time.
+api/*
+!api/src/
+api/src/*
+!api/src/course-category.ts
+!api/src/course-types.ts
+!api/src/planning-engine.ts
+!api/src/requirement-choices.ts
 .references/
