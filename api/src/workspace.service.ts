@@ -35,7 +35,7 @@ export function applyManual(store: PlanningStore, kind: string, a: Record<string
     case "moveCompletedCourse": store.moveCompletedCourse(id(), a.semester); break;
     case "moveSemester": store.moveSemester(a.from, a.to, profileStart); break;
     case "removePlan": store.removePlan(id()); break;
-    case "toggleTakenCourse": store.toggleTakenCourse(id()); break;
+    case "toggleTakenCourse": if (typeof a.id !== "string") fail("Unknown course in current program."); store.toggleTakenCourse(a.id); break;
     case "chooseRequirement": {
       if (typeof a.requirementId !== "string") fail("Unknown requirement.");
       store.chooseRequirement(a.requirementId, id()); break;
@@ -206,7 +206,7 @@ export class WorkspaceService {
         let result: ActionResult = { status: "success", message: "Saved to PostgreSQL." };
         if (command.kind === "importLegacy") {
           if (workspace.version !== 0 || before.revision !== 0) throw new ConflictException("Legacy browser data can only initialize an empty workspace.");
-          if (!["computer-engineering", "software-engineering"].includes(a.program) || !Array.isArray(a.completed) || a.completed.length > 1000 || a.completed.some((id: unknown) => typeof id !== "string" || !Object.values(catalogs).some(c => c.courses.some(course => course.id === id))) || !object(a.schedules)) fail("Existing browser draft contains invalid catalog references. Original browser data has not been changed.");
+          if (!["computer-engineering", "software-engineering"].includes(a.program) || !Array.isArray(a.completed) || a.completed.length > 1000 || a.completed.some((id: unknown) => typeof id !== "string" || !Object.values(catalogs).some(c => c.courses.some(course => course.id === id) || c.requirementGroups.some(group => group.items.some(item => item.id === id && item.type === "placeholder")))) || !object(a.schedules)) fail("Existing browser draft contains invalid catalog references. Original browser data has not been changed.");
           const schedules: Record<string, string[]> = {};
           for (const [scope, numbers] of Object.entries(a.schedules)) {
             const catalog = Object.entries(catalogs).find(([program, c]) => scope === `${program}:${c.catalogYear}:${c.currentTerm.id}`)?.[1];

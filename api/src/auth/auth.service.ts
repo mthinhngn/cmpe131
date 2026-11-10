@@ -1,11 +1,10 @@
-import { BadRequestException, Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { createHash, randomBytes } from "node:crypto";
 import { PrismaService } from "../prisma/prisma.service";
 import { BootstrapController } from "../bootstrap.controller";
 import { PlanningStore, type State } from "../planning-engine";
 import type { ProgramCatalog } from "../course-types";
 import { UsersService } from "./users.service";
-import { deliverySettings, sendSignInEmail, validateRecipient } from "./email-delivery";
 
 export const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
 export const newToken = () => randomBytes(32).toString("hex");
@@ -27,10 +26,6 @@ export function sessionToken(cookie: unknown) {
 @Injectable()
 export class AuthService {
   constructor(readonly users: UsersService, private readonly catalogDb: PrismaService) {}
-  private readonly logger = new Logger(AuthService.name);
-  signInDelivery() {
-    try { return deliverySettings().mode; } catch { return "unavailable"; }
-  }
   publicUser(user: { id: string; email: string; name: string; major: string; startingSemester: string }) {
     return { id: user.id, email: user.email, name: user.name, major: user.major, startingSemester: user.startingSemester };
   }
@@ -64,46 +59,25 @@ export class AuthService {
       return this.publicUser(await tx.user.update({ where: { id: user.id }, data: fields }));
     });
   }
-  async requestLink(input: unknown) {
-    const email = emailAddress(input);
-    const delivery = deliverySettings();
-    validateRecipient(delivery, email);
-    const token = newToken();
-    const issued = await this.users.$transaction(async tx => {
-      // Serializes requests for the same email, including concurrent first requests.
-      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${email}))::text`;
-      const recent = await tx.loginToken.count({ where: { email, createdAt: { gt: new Date(Date.now() - 60_000) } } });
-      if (recent) return false;
-      await tx.loginToken.deleteMany({ where: { email } });
-      await tx.loginToken.create({ data: { tokenHash: hashToken(token), email, expiresAt: new Date(Date.now() + 15 * 60_000) } });
-      return true;
-    });
-    if (!issued) return { message: "A link was requested recently. Wait one minute before requesting another link." };
-    const url = new URL("/account", delivery.origin);
-    url.hash = `token=${token}`;
-    if (delivery.mode === "log") {
-      this.logger.log(`LOCAL DEVELOPMENT ONLY — sign-in link: ${url.href}`);
-      return { message: "Local development: open the sign-in link in the API server logs. You can request another link after one minute." };
-    }
-    try {
-      await sendSignInEmail(delivery, email, url);
-    } catch (error) {
-      // Remove only this failed attempt; a concurrent newer request is untouched.
-      // A failed send must not leave an active link or block immediate retry.
-      await this.users.loginToken.deleteMany({ where: { tokenHash: hashToken(token) } });
-      throw error;
-    }
-    return { message: "Check your inbox for a Course Radar sign-in link. It expires in 15 minutes. Check Spam if it does not appear." };
-  }
-  async verify(input: unknown) {
-    if (typeof input !== "string" || !/^[a-f0-9]{64}$/.test(input)) throw new UnauthorizedException("This sign-in link is invalid or expired. Request a new link.");
+  async googleSignIn(identity: { subject: string; email: string; name?: string; authoritativeEmail: boolean }) {
     return this.users.$transaction(async tx => {
-      const tokenHash = hashToken(input);
-      const token = await tx.loginToken.findUnique({ where: { tokenHash } });
-      if (!token || token.expiresAt <= new Date()) throw new UnauthorizedException("This sign-in link is invalid or expired. Request a new link.");
-      const used = await tx.loginToken.deleteMany({ where: { tokenHash, expiresAt: { gt: new Date() } } });
-      if (used.count !== 1) throw new UnauthorizedException("This sign-in link has already been used.");
-      const user = await tx.user.upsert({ where: { email: token.email }, create: { email: token.email, workspaceKey: newToken() }, update: {} });
+      // Match a stable Google subject first; an email change must not create a second account.
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${`google:${identity.subject}`}))::text`;
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${identity.email}))::text`;
+      let user = await tx.user.findUnique({ where: { googleSubject: identity.subject } });
+      if (user && user.email !== identity.email) {
+        if (!identity.authoritativeEmail || await tx.user.findUnique({ where: { email: identity.email } })) throw new UnauthorizedException("The updated Google email cannot be linked automatically.");
+        user = await tx.user.update({ where: { id: user.id }, data: { email: identity.email } });
+      }
+      if (!user) {
+        const existing = await tx.user.findUnique({ where: { email: identity.email } });
+        if (existing?.googleSubject || (existing && !identity.authoritativeEmail)) {
+          throw new UnauthorizedException("This email already belongs to an account that cannot be linked automatically. Use its original sign-in method.");
+        }
+        user = existing
+          ? await tx.user.update({ where: { id: existing.id }, data: { googleSubject: identity.subject } })
+          : await tx.user.create({ data: { email: identity.email, googleSubject: identity.subject, workspaceKey: newToken(), name: identity.name?.slice(0, 100) || "" } });
+      }
       const session = newToken();
       await tx.session.create({ data: { tokenHash: hashToken(session), userId: user.id, expiresAt: new Date(Date.now() + 30 * 86400_000) } });
       return { user: this.publicUser(user), session };

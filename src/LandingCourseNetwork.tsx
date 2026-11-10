@@ -5,6 +5,7 @@ import { overviewData } from "./overviewData";
 import { roadmapStatus, roadmapStatusLabels, type RoadmapStatus } from "./roadmapStatus";
 import type { ProgramCatalog } from "./types";
 import RoadmapFlow from "./RoadmapFlow";
+import { useRoadmapTakenIds } from "./roadmapCompletion";
 import { RoadmapStepper } from "./RoadmapChrome";
 import { ProgramRequirements } from "./ProgramRequirements";
 
@@ -12,6 +13,7 @@ type CourseStatus = RoadmapStatus | "ready" | "locked";
 type Course = {
   id: string;
   requirementId?: string;
+  done?: boolean;
   plannerCategory?: string;
   code: string;
   title: string;
@@ -59,6 +61,7 @@ function buildPlan(catalog: ProgramCatalog, completed: Set<string>, plans: Param
       return {
         id: catalogCourse?.id ?? item.id,
         requirementId: item.type === "placeholder" ? item.id : undefined,
+        done: item.type === "placeholder" && completed.has(item.id),
         plannerCategory: catalogCourse?.plannerCategory,
         code: catalogCourse?.code ?? shortRequirementLabel(item.label ?? "Requirement choice"),
         title: catalogCourse?.title ?? "Choose a course",
@@ -170,7 +173,8 @@ export default function CourseNetwork({
   source?: "illustrative" | "computer-engineering-plan";
   stepper?: boolean;
 }) {
-  const { catalog, takenCourseIds, plans } = useCatalog();
+  const { catalog, plans } = useCatalog();
+  const takenCourseIds = useRoadmapTakenIds();
   const progress = useMemo(() => overviewData(catalog, takenCourseIds, plans), [catalog, takenCourseIds, plans]);
   const { requirementGroups } = catalog;
   const { planCourses, planSemesterRows, planUnits } = useMemo(() => buildPlan(catalog, takenCourseIds, plans), [catalog, takenCourseIds, plans]);
@@ -393,7 +397,7 @@ export default function CourseNetwork({
                 </div>
               </div>
 </div>}
-              <div className="course-detail-strip" aria-live="polite">
+              {!fullPlan && <div className="course-detail-strip" aria-live="polite">
                 <div className={`detail-state detail-${selectedCourse.status}`}><span />{statusLabels[selectedCourse.status]}</div>
                 <div className="detail-course"><strong>{selectedCourse.code}</strong><span>{selectedCourse.title}</span></div>
                 <div className="detail-requirements">
@@ -402,7 +406,7 @@ export default function CourseNetwork({
                   ) : <span className="detail-label">No prerequisites · {selectedCourse.credits} credits</span>}
                 </div>
                 {fullPlan && selectedCourse.sourceUrl ? <a className="detail-term" href={selectedCourse.sourceUrl} target="_blank" rel="noopener noreferrer">Official course ↗</a> : <span className="detail-term">{selectedCourse.term}</span>}
-              </div>
+              </div>}
             </>
           ) : (
             <div className="course-list-view" role="region" aria-label="Course list">
@@ -410,10 +414,10 @@ export default function CourseNetwork({
                 const prerequisites = course.prerequisites.map((id) => courses.find((item) => item.id === id)?.code).filter(Boolean);
                 return (
                   <button className={`course-list-row${course.id === selectedId ? " is-selected" : ""}`} type="button" key={course.id} onClick={() => { setSelectedId(course.id); setView("map"); }}>
-                    <span className={`list-status-dot ${course.status}`} />
+                    <span className={`list-status-dot ${course.done ? "complete" : course.status}`} />
                     <strong>{course.code}</strong>
                     <span className="list-course-name">{course.title}</span>
-                    <span className="list-prerequisites">{prerequisites.length ? prerequisites.join(" · ") : fullPlan ? course.status === "choice" ? "Requirement choice" : "See catalog conditions" : "Foundation"}</span>
+                    <span className="list-prerequisites">{prerequisites.length ? prerequisites.join(" · ") : fullPlan ? course.done ? "Completed" : course.status === "choice" ? "Requirement choice" : "See catalog conditions" : "Foundation"}</span>
                     <span className="list-course-credits">{course.credits} cr</span>
                     <span className="list-course-term">{course.term}</span>
                   </button>
@@ -424,7 +428,7 @@ export default function CourseNetwork({
           )}
         </div>
       </div>
-      <div className="radar-statusbar"><span><i className="status-online-dot" />{fullPlan ? `${requirementGroups.length}-semester ${catalog.sequenceKind === "draft" ? "draft sequence" : "roadmap"}` : "Plan synced"}</span><span>Requirements shown for 2026–27 <b>·</b> <a href={fullPlan ? "/planner" : "/#how-it-works"}>{fullPlan ? "Open planner" : "How paths connect"}</a></span><span className="statusbar-right">Built for the long view <i>↗</i></span></div>
+      {!fullPlan && <div className="radar-statusbar"><span><i className="status-online-dot" />{fullPlan ? `${requirementGroups.length}-semester ${catalog.sequenceKind === "draft" ? "draft sequence" : "roadmap"}` : "Plan synced"}</span><span>Requirements shown for 2026–27 <b>·</b> <a href={fullPlan ? "/planner" : "/#how-it-works"}>{fullPlan ? "Open planner" : "How paths connect"}</a></span><span className="statusbar-right">Built for the long view <i>↗</i></span></div>}
     </div>
   );
 }

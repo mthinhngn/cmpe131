@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Header, Headers, Post, Res, UseGuards, CanActivate, ExecutionContext, ForbiddenException, Injectable, HttpException } from "@nestjs/common";
+import { Body, Controller, Get, Header, Headers, Post, Query, Res, UseGuards, CanActivate, ExecutionContext, ForbiddenException, Injectable, HttpException } from "@nestjs/common";
 import type { Response } from "express";
 import { AuthService } from "./auth.service";
+import { GoogleAuthService, googleSettings, googleStateCookie } from "./google-auth.service";
+
+const sessionOptions = () => ({ httpOnly: true, sameSite: "lax" as const, secure: process.env.NODE_ENV === "production", path: "/api/v1", maxAge: 30 * 86400_000 });
+const googleCookieOptions = () => ({ httpOnly: true, sameSite: "lax" as const, secure: process.env.NODE_ENV === "production", path: "/" });
 
 @Injectable()
 export class AuthOriginGuard implements CanActivate {
@@ -10,7 +14,7 @@ export class AuthOriginGuard implements CanActivate {
     if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return true;
     const allowed = (process.env.WEB_ORIGIN || "http://localhost:5175,http://127.0.0.1:5175").split(",");
     if (typeof req.headers.origin !== "string" || !allowed.includes(req.headers.origin) || !req.is("application/json")) throw new ForbiddenException("Request must come from the configured Course Radar website.");
-    if (/\/auth\/(link|verify)$/.test(req.path)) {
+    if (/\/auth\/(google\/start)$/.test(req.path)) {
       const now = Date.now();
       for (const [key, value] of this.attempts) if (value.until <= now) this.attempts.delete(key);
       const key = req.ip || "local";
@@ -25,17 +29,28 @@ export class AuthOriginGuard implements CanActivate {
 @Controller("auth")
 @UseGuards(AuthOriginGuard)
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
-  @Post("link") @Header("Cache-Control", "no-store")
-  link(@Body() body: { email?: unknown } | null) { return this.auth.requestLink(body?.email); }
-  @Post("verify") @Header("Cache-Control", "no-store")
-  async verify(@Body() body: { token?: unknown } | null, @Res({ passthrough: true }) res: Response) {
-    const result = await this.auth.verify(body?.token);
-    res.cookie("cr_session", result.session, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/api/v1", maxAge: 30 * 86400_000 });
-    return { user: result.user };
+  constructor(private readonly auth: AuthService, private readonly google: GoogleAuthService) {}
+  @Post("google/start") @Header("Cache-Control", "no-store")
+  async googleStart(@Res({ passthrough: true }) res: Response) {
+    const attempt = await this.google.start();
+    res.cookie(googleStateCookie(), attempt.state, { ...googleCookieOptions(), maxAge: 10 * 60_000 });
+    return { url: attempt.url };
+  }
+  @Get("google/callback") @Header("Cache-Control", "no-store") @Header("Referrer-Policy", "no-referrer")
+  async googleCallback(@Query() query: { state?: unknown; code?: unknown; error?: unknown }, @Headers("cookie") cookie: unknown, @Res() res: Response) {
+    const { origin } = googleSettings();
+    res.clearCookie(googleStateCookie(), googleCookieOptions());
+    try {
+      const result = await this.google.finish(query, cookie);
+      res.cookie("cr_session", result.session, sessionOptions());
+      return res.redirect(303, `${origin}/account`);
+    } catch {
+      // Keep codes, provider errors and credentials out of redirects and logs.
+      return res.redirect(303, `${origin}/account?google_error=${query.error === "access_denied" ? "canceled" : "failed"}`);
+    }
   }
   @Get("me") @Header("Cache-Control", "no-store")
-  async me(@Headers("cookie") cookie: unknown) { const user = await this.auth.current(cookie); return { user: user ? this.auth.publicUser(user) : null, signInDelivery: this.auth.signInDelivery() }; }
+  async me(@Headers("cookie") cookie: unknown) { const user = await this.auth.current(cookie); return { user: user ? this.auth.publicUser(user) : null }; }
   @Post("profile") @Header("Cache-Control", "no-store")
   async profile(@Headers("cookie") cookie: unknown, @Body() body: unknown) {
     const user = await this.auth.requireUser(cookie);

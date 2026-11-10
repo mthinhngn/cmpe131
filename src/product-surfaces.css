@@ -85,7 +85,7 @@ html body .workspace.workspace-explorer[class] { min-width: 0; }
 html body .workspace.workspace-explorer[class] .cx-workbench.cx-desktop-workbench { border-radius: var(--product-radius); box-shadow: none; }
 html body .workspace.workspace-explorer[class] .cx-desktop-workbench :is(.cx-week-frame, .cx-week) { border-radius: var(--product-radius); }
 html body .prereq-shell.is-stepper .prereq-map-frame { border-radius: var(--product-radius); border-color: var(--product-line); box-shadow: none; }
-html body .prereq-shell.is-stepper .prereq-product-frame { border: 0; border-radius: calc(var(--product-radius) - 1px) calc(var(--product-radius) - 1px) 0 0; }
+html body .prereq-shell.is-stepper .prereq-product-frame { border: 0; border-radius: calc(var(--product-radius) - 1px); }
 html body .workspace.workspace-explorer[class] :is(.cx-page, .cx-catalog, .cx-week) { font-family: var(--product-font); }
 /* Long titles and status badges must share the available width, never overlap. */
 html body .bo-dtop { grid-template-columns: minmax(0, 1fr); gap: 12px; }

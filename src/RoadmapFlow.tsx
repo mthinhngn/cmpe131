@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Background, BackgroundVariant, Handle, MarkerType, NodeToolbar, Position, ReactFlow, useNodesState, type Edge, type ReactFlowInstance, type Node, type NodeProps } from "@xyflow/react";
 import { RoadmapCourseActions, RoadmapRequirementPicker } from "./RoadmapCourseActions";
+import { clearRoadmapCompletionError, useRoadmapCompletionError } from "./roadmapCompletion";
 
 import { getHighlightedPath, type GraphEdge } from "./prerequisiteGraph";
 import { roadmapStatusLabels, type RoadmapStatus } from "./roadmapStatus";
@@ -8,7 +9,7 @@ import { subjectTone } from "./courseSubject";
 import "@xyflow/react/dist/style.css";
 import "./roadmap-flow.css";
 
-type FlowCourse = { id: string; requirementId?: string; plannerCategory?: string; code: string; title: string; term: string; status: string; x: number; y: number; prerequisites: string[]; prerequisiteOptions?: string[]; corequisites?: string[]; corequisiteOptions?: string[]; credits: number; detail?: string; sourceUrl?: string };
+type FlowCourse = { id: string; requirementId?: string; done?: boolean; plannerCategory?: string; code: string; title: string; term: string; status: string; x: number; y: number; prerequisites: string[]; prerequisiteOptions?: string[]; corequisites?: string[]; corequisiteOptions?: string[]; credits: number; detail?: string; sourceUrl?: string };
 type Row = { year: string; term: string; count: number; credits: number; y: number };
 type CourseNodeData = { course: FlowCourse; focused: boolean; related: boolean; shaded: boolean };
 type CourseNode = Node<CourseNodeData, "course">;
@@ -29,14 +30,14 @@ const CourseContent = memo(function CourseContent({ course }: { course: FlowCour
   return <>
     <header><strong title={course.code}>{course.code}</strong><span>{course.credits} u</span></header>
     <p>{course.title}</p>
-    <footer><i />{roadmapStatusLabels[course.status as RoadmapStatus] ?? "Check requirements"}</footer>
+    <footer><i />{course.done ? "Completed" : roadmapStatusLabels[course.status as RoadmapStatus] ?? "Check requirements"}</footer>
   </>;
 });
 
 const CourseCard = memo(function CourseCard({ data }: NodeProps<CourseNode>) {
   const { course, focused, related, shaded } = data;
   const tone = course.plannerCategory ? { "--c": `var(--s-${course.plannerCategory})`, "--c-ink": course.plannerCategory === "writing" ? "#fff" : "#000" } as CSSProperties : subjectTone(course.status === "choice" ? "" : course.code);
-  return <article style={tone} className={`rf-course-card${focused ? " is-focused" : ""}${related ? " is-related" : ""}${shaded ? " is-shaded" : ""}${course.status === "choice" ? " is-choice" : ""}`}>
+  return <article style={tone} className={`rf-course-card${focused ? " is-focused" : ""}${related ? " is-related" : ""}${shaded ? " is-shaded" : ""}${course.status === "choice" ? " is-choice" : ""}${course.done ? " is-done" : ""}`}>
     {courseHandles}<CourseContent course={course} />{bottomHandle}
   </article>;
 }, (previous, next) => previous.data.course === next.data.course
@@ -70,6 +71,7 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
     if (width && flow) void flow.setViewport({ x: 20, y: 56 - 32 * zoom, zoom });
   }, [flow, width, zoom]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const completionError = useRoadmapCompletionError();
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [inspectionId, setInspectionId] = useState<string | null>(null);
   const [requirementId, setRequirementId] = useState<string | null>(null);
@@ -156,6 +158,7 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
     const course = courses.find(course => course.id === id);
     if (course) { event.preventDefault(); event.stopPropagation(); openCourse(course); }
   }} onKeyDown={event => { if (event.key === "Escape") clearFocus(); }}>
+    {completionError && <div className="rf-map-error" role="alert"><span>{completionError}</span><button type="button" aria-label="Dismiss error" onClick={clearRoadmapCompletionError}>×</button></div>}
     <div className="rf-map-help">Drag to rearrange · Hover to follow a path · Click to mark completion or choose an elective</div>
     <ReactFlow<RoadmapNode> nodes={displayedNodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange}
       onNodeMouseEnter={onNodeMouseEnter}

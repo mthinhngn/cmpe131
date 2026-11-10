@@ -1,98 +1,60 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { randomBytes, createHash } from "node:crypto";
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { homedir } from "node:os";
 const require = createRequire(new URL("../api/package.json", import.meta.url));
 require("dotenv").config({ path: new URL("../api/.env", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"), quiet: true });
 const { PrismaClient } = require("./generated/users");
 const db = new PrismaClient();
-const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || "playwright");
-const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
+let playwright;
+try { playwright = require("playwright"); } catch { playwright = require(join(homedir(), ".cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright")); }
+const browser = await playwright.chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || "msedge" });
 const origin = process.env.ACCOUNT_PREVIEW || "http://localhost:5175";
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
-context.setDefaultTimeout(20000);
 const page = await context.newPage();
 const errors = []; page.on("pageerror", e => errors.push(e.message));
-const email = `browser-test-${randomBytes(8).toString("hex")}@example.com`;
-const makeLink = async () => {
-  const token = randomBytes(32).toString("hex");
-  await db.loginToken.create({ data: { tokenHash: createHash("sha256").update(token).digest("hex"), email, expiresAt: new Date(Date.now() + 60000) } });
-  return `${origin}/account#token=${token}`;
-};
-const saved = async p => { await p.waitForFunction(() => document.querySelector(".persistence-content")?.disabled === false, undefined, { timeout: 20000 }); };
-const workspace = p => p.evaluate(async () => {
-  const me = await (await fetch("/api/v1/auth/me")).json();
-  return (await fetch("/api/v1/workspace", { headers: { Authorization: `Bearer ${localStorage.getItem("course-radar-workspace-credential-v1")}`, "X-Workspace-User": me.user?.id || "guest" } })).json();
-});
+const token = randomBytes(32).toString("hex"), email = `browser-test-${token.slice(0, 16)}@gmail.com`;
+const hash = value => createHash("sha256").update(value).digest("hex");
+let user;
+mkdirSync("tmp", { recursive: true });
 try {
+  let unavailable = true;
+  await page.route("**/api/v1/auth/google/start", route => route.fulfill({ status: unavailable ? 503 : 201, json: unavailable ? { message: "Google sign-in is not configured yet." } : { url: "https://accounts.google.com/o/oauth2/v2/auth?client_id=browser-fixture&scope=openid%20email%20profile" } }));
+  await page.route("https://accounts.google.com/**", route => route.fulfill({ contentType: "text/html", body: "<h1>Google redirect reached</h1>" }));
   await page.goto(`${origin}/account`);
-  await page.getByLabel("Email address", { exact: true }).fill(email);
-  await page.screenshot({ path: "tmp/account-signin.png", fullPage: true });
-  await page.getByRole("button", { name: "Get a sign-in link" }).click();
-  await page.getByRole("status").filter({ hasText: "API server logs" }).waitFor();
-  console.log("PASS email sign-in request and development delivery message");
-  await page.goto(`${origin}/planner`); await saved(page); console.log("PASS guest planner loaded");
-  await page.getByRole("button", { name: "All unplanned", exact: true }).click();
-  await page.getByRole("button", { name: "Add CMPE 50 to Semester 1", exact: true }).click(); await saved(page);
-  assert.ok(Object.keys((await workspace(page)).state.plans["computer-engineering"]).length);
-  await page.goto(await makeLink());
-  await page.getByRole("button", { name: "Continue with sign-in link" }).click();
-  await page.getByLabel("Name", { exact: true }).fill("Student Preview");
-  await page.getByLabel("Major", { exact: true }).selectOption("software-engineering");
-  await page.getByLabel("Year", { exact: true }).fill("2024");
-  await page.getByRole("button", { name: "Save profile", exact: true }).click();
-  await page.getByRole("status").filter({ hasText: "Your profile is saved" }).waitFor();
-  assert.ok(!page.url().includes("token="));
-  await page.screenshot({ path: "tmp/account-profile.png", fullPage: true });
-  await page.setViewportSize({ width: 390, height: 844 });
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-  await page.screenshot({ path: "tmp/account-mobile.png", fullPage: true });
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.getByRole("link", { name: "Go to my planner", exact: true }).click(); await saved(page);
-  let state = await workspace(page);
-  assert.equal(state.state.program, "software-engineering"); assert.deepEqual(state.state.plans, {});
-  console.log("PASS profile setup, responsive form, new account starts empty without importing guest plan");
-  await page.getByRole("button", { name: "All unplanned", exact: true }).click();
-  const accountCourse = state.state.catalog.courses[0];
-  assert.ok(accountCourse, "account program has a course to plan");
-  await page.getByRole("button", { name: `Add ${accountCourse.code} to Semester 1`, exact: true }).click(); await saved(page);
-  state = await workspace(page);
-  assert.ok(Object.keys(state.state.plans["software-engineering"]).length);
-  const otherContext = await browser.newContext(); const otherPage = await otherContext.newPage();
-  await otherPage.goto(await makeLink()); await otherPage.getByRole("button", { name: "Continue with sign-in link" }).click();
-  await otherPage.getByLabel("Name", { exact: true }).waitFor(); assert.equal(await otherPage.getByLabel("Name", { exact: true }).inputValue(), "Student Preview");
-  await otherPage.goto(`${origin}/planner`); await saved(otherPage);
-  assert.deepEqual((await workspace(otherPage)).state.plans, state.state.plans);
-  console.log("PASS second browser session restores account profile and planner");
-  for (const route of ["/", "/overview", "/roadmap", "/schedule", "/planner"]) {
-    await page.goto(`${origin}${route}`); await saved(page);
-    assert.equal(await page.getByRole("link", { name: "My profile", exact: true }).count(), 1);
-  }
-  await page.goto(`${origin}/account`); await page.getByRole("button", { name: "Sign out", exact: true }).click();
-  await page.waitForURL(`${origin}/`); await saved(page);
-  const guest = await workspace(page);
-  assert.equal(guest.state.program, "computer-engineering");
-  assert.ok(Object.keys(guest.state.plans["computer-engineering"]).length);
-  assert.deepEqual(guest.state.plans["software-engineering"] || {}, {});
-  console.log("PASS all six header entry points and sign-out restores isolated guest plan");
-  // Check delivery-specific copy and failure recovery without sending real mail.
-  const emailContext = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
-  const emailPage = await emailContext.newPage();
-  emailPage.on("pageerror", e => errors.push(e.message));
-  await emailPage.route("**/api/v1/auth/me", route => route.fulfill({ json: { user: null, signInDelivery: "resend" } }));
-  let failDelivery = true;
-  await emailPage.route("**/api/v1/auth/link", route => route.fulfill({ status: failDelivery ? 503 : 201, json: { message: failDelivery ? "The sign-in email could not be confirmed. Please request a new link." : "Check your inbox for a Course Radar sign-in link. It expires in 15 minutes." } }));
-  await emailPage.goto(`${origin}/account`);
-  await emailPage.getByText("Your sign-in link will arrive by email.", { exact: false }).waitFor();
-  assert.equal(await emailPage.getByText("sign-in links appear in the API server logs", { exact: false }).count(), 0);
-  await emailPage.getByLabel("Email address", { exact: true }).fill("own-inbox@example.com");
-  await emailPage.getByRole("button", { name: "Get a sign-in link" }).click();
-  await emailPage.getByRole("alert").filter({ hasText: "could not be confirmed" }).waitFor();
-  failDelivery = false;
-  await emailPage.getByRole("button", { name: "Get a sign-in link" }).click();
-  await emailPage.getByRole("status").filter({ hasText: "Check your inbox" }).waitFor();
-  assert.equal(await emailPage.getByRole("alert").count(), 0);
-  await emailPage.screenshot({ path: "tmp/account-email-status.png", fullPage: true });
-  await emailContext.close();
-  console.log("PASS email delivery instructions, failed-send feedback and retry (mocked delivery responses)");
+  const google = page.getByRole("button", { name: "Continue with Google", exact: true });
+  await google.waitFor();
+  await page.locator(".cr-page-loading").waitFor({ state: "hidden" });
+  assert.equal(await page.locator('input[type="email"]').count(), 0);
+  assert.equal(await page.getByText("Email me a sign-in link", { exact: true }).count(), 0);
+  await page.getByRole("link", { name: "Continue as guest", exact: true }).waitFor();
+  await page.screenshot({ path: "tmp/account-google-only.png", fullPage: true });
+  await google.click();
+  await page.getByRole("alert").filter({ hasText: "Google sign-in is not configured yet." }).waitFor();
+  unavailable = false;
+  await google.click();
+  await page.waitForURL("https://accounts.google.com/**");
+  await page.goto(`${origin}/account?google_error=canceled`);
+  await page.getByRole("alert").filter({ hasText: "Google sign-in was canceled" }).waitFor();
+  assert.equal(new URL(page.url()).search, "");
+  console.log("PASS Google-only UI, failure recovery, redirect and canceled-login feedback (provider mocked)");
+  // Seed only a test session; Google authentication itself is covered by the API tests.
+  user = await db.user.create({ data: { email, googleSubject: `browser-${token}`, workspaceKey: randomBytes(32).toString("hex"), name: "Browser Student", major: "computer-engineering", startingSemester: "Fall 2026" } });
+  await db.session.create({ data: { tokenHash: hash(token), userId: user.id, expiresAt: new Date(Date.now() + 600000) } });
+  await context.addCookies([{ name: "cr_session", value: token, domain: new URL(origin).hostname, path: "/api/v1", httpOnly: true, sameSite: "Lax", secure: origin.startsWith("https:") }]);
+  await page.goto(`${origin}/account`);
+  await page.getByText(email, { exact: true }).first().waitFor();
+  assert.equal((await (await page.request.get(`${origin}/api/v1/auth/me`)).json()).user.id, user.id);
   assert.deepEqual(errors, []);
-} catch (error) { await page.screenshot({ path: "tmp/account-browser-failure.png", fullPage: true }); throw error; } finally { await browser.close(); await db.$disconnect(); }
+  console.log("PASS existing account settings and session; no browser runtime errors");
+} finally {
+  await browser.close();
+  if (user) {
+    const workspace = await db.personalWorkspace.findUnique({ where: { tokenHash: hash(user.workspaceKey) } });
+    if (workspace) { await db.personalOperation.deleteMany({ where: { workspaceId: workspace.id } }); await db.personalWorkspace.delete({ where: { id: workspace.id } }); }
+    await db.user.delete({ where: { id: user.id } });
+  }
+  await db.$disconnect();
+}

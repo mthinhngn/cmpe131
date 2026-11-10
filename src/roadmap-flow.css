@@ -2,6 +2,8 @@
 .rf-roadmap .react-flow { width: 100%; height: 100%; }
 .rf-map-help { position: absolute; z-index: 5; top: 15px; left: 18px; font: 12px/1.4 Inter, sans-serif; color: #576e64; pointer-events: none; }
 .rf-roadmap .react-flow__node-course { width: 164px; border: 0; background: none; }
+.rf-map-error { position: absolute; z-index: 6; top: 10px; right: 14px; display: flex; align-items: center; gap: 10px; max-width: min(420px, 60%); padding: 7px 8px 7px 12px; border: 1px solid #f1c4bf; border-radius: 8px; background: #fff5f4; color: #9b3026; font: 500 12px/1.4 Inter, sans-serif; }
+.rf-map-error button { border: 0; background: transparent; color: inherit; font-size: 16px; line-height: 1; cursor: pointer; }
 .rf-course-card { box-sizing: border-box; position: relative; display: flex; flex-direction: column; height: 120px; padding: 16px 12px 12px; border: 1px solid #d9e5e0; border-radius: 12px; background: #fff; transition: opacity 160ms ease; font-family: Manrope, Inter, sans-serif; }
 .rf-course-card header { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
 .rf-course-card header strong { min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 11px; font-weight: 700; letter-spacing: -.025em; }
@@ -11,6 +13,8 @@
 .rf-course-card footer i { width: 5px; height: 5px; border-radius: 50%; background: #168873; }
 .rf-course-card.is-choice { border-style: dashed; }
 .rf-course-card.is-choice footer i { background: #b98e48; }
+.rf-course-card.is-done { border-style: solid; }
+.rf-course-card.is-done footer i { background: #14532d; }
 .rf-course-card.is-related { border-color: #73ad98; }
 .rf-course-card.is-focused { border-color: #168873; background: #f6fffa; box-shadow: 0 8px 18px #18393320; }
 .rf-course-card.is-shaded { opacity: .2; }

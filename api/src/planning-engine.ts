@@ -75,7 +75,7 @@ export class PlanningStore {
   setCatalog(catalog: ProgramCatalog) { this.update({ catalog }); }
   invalidate() { this.update({}); }
   toggleTakenCourse(id: string) {
-    if (!this.state.catalog.courses.some(c => c.id === id)) throw new Error("Unknown course.");
+    if (!this.state.catalog.courses.some(c => c.id === id) && !this.state.catalog.requirementGroups.some(group => group.items.some(item => item.id === id && item.type === "placeholder"))) throw new Error("Unknown course.");
     const completed = new Set(this.state.completed);
     if (completed.has(id)) completed.delete(id); else completed.add(id);
     this.update({ completed: [...completed] });

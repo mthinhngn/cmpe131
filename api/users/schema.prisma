@@ -11,6 +11,7 @@ datasource db {
 model User {
   id String @id @default(cuid())
   email String @unique
+  googleSubject String? @unique
   name String @default("")
   major String @default("")
   startingSemester String @default("")
@@ -20,12 +21,12 @@ model User {
   sessions Session[]
 }
 
-model LoginToken {
-  tokenHash String @id
-  email String
+model GoogleLoginAttempt {
+  stateHash String @id
+  nonce String
+  verifier String
   expiresAt DateTime
-  createdAt DateTime @default(now())
-  @@index([email, createdAt])
+  @@index([expiresAt])
 }
 
 model Session {

@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, X } from "lucide-react";
 import { useCatalog } from "./CatalogContext";
-import { NativeSelect } from "./components/ui/native-select";
+import { useRoadmapTakenIds, useToggleRoadmapCompletion } from "./roadmapCompletion";
+import { SelectionMenu } from "./components/ui/selection-menu";
 import "./components/ui/ui.css";
 import { requirementCategory, requirementMatches, geAreas } from "../api/src/requirement-choices";
 import "./roadmap-course-actions.css";
@@ -10,32 +11,21 @@ import "./roadmap-course-actions.css";
 export function RoadmapCourseActions({ courseId, requirementId, onClose, onChoose }: {
   courseId: string; requirementId?: string; onClose: () => void; onChoose: () => void;
 }) {
-  const { courseById, takenCourseIds, planningStore, storageStatus } = useCatalog();
+  const { courseById, storageStatus } = useCatalog();
+  const takenIds = useRoadmapTakenIds();
+  const toggle = useToggleRoadmapCompletion();
   const course = courseById.get(courseId);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(false);
-  const [attemptedCompletion, setAttemptedCompletion] = useState<boolean | null>(null);
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => { first.current?.focus({ preventScroll: true }); }, []);
   if (!course) return null;
-  const completed = takenCourseIds.has(courseId);
+  const completed = takenIds.has(courseId);
   return <section className="rm-course-actions nodrag nopan" role="dialog" aria-label={`${course.code} course actions`} onKeyDown={event => {
     if (event.key === "Escape") { event.stopPropagation(); onClose(); }
   }}>
     <header><div><strong>{course.code}</strong><h3>{course.title}</h3></div><button type="button" aria-label="Close course actions" onClick={onClose}><X size={16}/></button></header>
     <p>{course.units} units{completed ? " · Completed" : " · Not completed"}</p>
-    <button ref={first} className="rm-primary" type="button" aria-pressed={completed} disabled={busy || storageStatus !== "saved"} onClick={async () => {
-      setBusy(true); setMessage(""); setError(false); setAttemptedCompletion(!completed);
-      try {
-        const result = await planningStore.command("toggleTakenCourse", { id: courseId });
-        if (result.status === "error") throw Error(result.message);
-        setMessage(completed ? "Marked not completed. Saved to your workspace." : "Marked completed. Saved to your workspace.");
-      } catch (error) { setError(true); setMessage(error instanceof Error ? error.message : "Could not save. Try again."); }
-      finally { setBusy(false); }
-    }}><Check size={16}/>{busy ? "Saving…" : completed ? "Mark not completed" : "Mark completed"}</button>
-    {requirementId && <button className="rm-secondary" type="button" disabled={busy} onClick={onChoose}>Change elective</button>}
-    {message && <p role={error && completed !== attemptedCompletion ? "alert" : "status"}>{error && completed === attemptedCompletion ? "Saved to your workspace." : message}</p>}
+    <button ref={first} className="rm-primary rm-completion" type="button" aria-pressed={completed} disabled={storageStatus !== "saved"} onClick={() => { toggle(courseId); onClose(); }}><Check size={16}/>{completed ? "Mark incomplete" : "Mark completed"}</button>
+    {requirementId && <button className="rm-secondary" type="button" onClick={onChoose}>Change elective</button>}
   </section>;
 }
 
@@ -50,6 +40,8 @@ export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const attempted = useRef<string | null>(null);
+  const takenIds = useRoadmapTakenIds();
+  const toggleCompletion = useToggleRoadmapCompletion();
   const candidates = useMemo(() => requirement ? allCourses.filter(course => requirementMatches(course, requirement, catalog)) : [], [allCourses, requirement, catalog]);
   const subjects = useMemo(() => [...new Set(candidates.map(course => course.code.split(" ")[0]))].sort(), [candidates]);
   const filtered = candidates.filter(course => (!subject || course.code.startsWith(`${subject} `)) && `${course.code} ${course.title}`.toLowerCase().includes(query.trim().toLowerCase()));
@@ -63,11 +55,13 @@ export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: {
   }, []);
   if (!requirement) return null;
   const category = requirementCategory(requirement);
+  const slotDone = takenIds.has(requirementId);
   return createPortal(<dialog ref={dialog} className="rm-picker" aria-labelledby="rm-picker-title" onCancel={event => { event.preventDefault(); if (!busy) onClose(); }}>
     <header><div><h2 id="rm-picker-title">Choose {requirement.label ?? "an elective"}</h2></div><button type="button" aria-label="Close course picker" disabled={!!busy} onClick={onClose}><X size={20}/></button></header>
-    <p>{requirement.description}</p>
+    <div className="rm-picker-summary"><p>{requirement.description}{slotDone ? " · Completed" : ""}</p>
+      <button className="rm-completion" type="button" aria-pressed={slotDone} disabled={!!busy || storageStatus !== "saved"} onClick={() => { toggleCompletion(requirementId); onClose(); }}>{slotDone ? "Mark incomplete" : "Mark completed"}</button></div>
     <div className="rm-picker-filters"><label>Search courses<input autoFocus type="search" placeholder="Course code or title" value={query} onChange={event => { setQuery(event.target.value); setLimit(40); }}/></label>
-      <label>Subject<NativeSelect value={subject} onChange={event => { setSubject(event.target.value); setLimit(40); }}><option value="">All subjects</option>{subjects.map(value => <option key={value}>{value}</option>)}</NativeSelect></label>
+      <div className="rm-picker-field"><span>Subject</span><SelectionMenu label="Subject" value={subject} onChange={value => { setSubject(value); setLimit(40); }} options={[{ slug: "", title: "All subjects" }, ...subjects.map(value => ({ slug: value, title: value }))]}/></div>
     </div>
     <div className="rm-picker-caption"><span>{category === "ge" || category === "review" ? requirement.label : category === "technical" ? "Technical electives" : "University electives"}</span><span>{filtered.length} {filtered.length === 1 ? "course" : "courses"}</span></div>
     <p className="rm-picker-note">{category === "ge" ? "Matches recorded GE satisfaction statements. " : "Verify your program’s credit and elective restrictions. "}Choosing a course saves it to your plan. This is a personal selection, not a degree audit.</p>

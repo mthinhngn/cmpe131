@@ -1,9 +1,8 @@
 import { ProductPageHeading } from "./ProductPageHeading";
 import { ProductHeader } from "./ProductHeader";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import CourseNetwork from "./LandingCourseNetwork";
 import { useCatalog } from "./CatalogContext";
-import { overviewData } from "./overviewData";
 
 function Reveal({
   children,
@@ -49,8 +48,7 @@ function Reveal({
 }
 
 export default function Prerequisites() {
-  const { catalog, program, mode, retry, takenCourseIds, plans } = useCatalog();
-  const progress = useMemo(() => overviewData(catalog, takenCourseIds, plans), [catalog, takenCourseIds, plans]);
+  const { catalog, program } = useCatalog();
 
   return (
     <div className="site-shell prereq-shell is-stepper" id="top" >
@@ -67,10 +65,6 @@ export default function Prerequisites() {
             </div>
             <div className="prereq-product-frame">
               <CourseNetwork key={`${program}:${catalog.dataVersion}`} density="compact" source="computer-engineering-plan" stepper />
-            </div>
-            <div className="prereq-map-frame-footer">
-              <span>{progress.completed.length}/{progress.required.length} listed core courses completed ({progress.percent}%) · {progress.completedUnits}/{progress.coreUnits} core units. {catalog.requirementGroups.length} semesters from the {catalog.name} {catalog.sequenceKind === "draft" ? "draft sequence" : "roadmap"}. Elective choices and non-course conditions require review.</span>
-              <span role="status">{mode === "database" ? "Database catalog" : mode === "loading" ? "Connecting to catalog…" : <>Reviewed local snapshot · <button type="button" onClick={retry}>Retry connection</button></>} · <a href="/planner">Open planner</a></span>
             </div>
           </Reveal>
         </section>
