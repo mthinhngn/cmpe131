@@ -30,7 +30,7 @@ try {
   await ready('/overview', '/overview', 'Overview');
   await ready('/planner', '/planner', 'Planner');
   await page.goto(base + '/account');
-  await page.locator('input[type="email"]').waitFor({ timeout: 90000 });
+  await page.getByRole("button", { name: "Continue with Google", exact: true }).waitFor({ timeout: 90000 });
   console.log('PASS Home preview controls/assets, Overview, Planner and Account');
 
   await ready('/roadmap', '/roadmap', 'Roadmap');

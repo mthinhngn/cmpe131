@@ -8,9 +8,8 @@ import { authRequest, profileComplete, useAuth, type AccountUser } from "./AuthC
 import { CatalogProvider, useCatalog } from "./CatalogContext";
 import { PageReady } from "./PageReady";
 
-// Capture once, remove from the address bar before rendering or making requests.
-const loginToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
-if (loginToken) window.history.replaceState(null, "", window.location.pathname);
+const googleError = new URLSearchParams(window.location.search).get("google_error");
+if (googleError) window.history.replaceState(null, "", window.location.pathname);
 
 const terms = ["Spring", "Summer", "Fall", "Winter"] as const;
 const thisYear = new Date().getFullYear();
@@ -40,8 +39,6 @@ function Feedback({ error, message }: { error: string; message: string }) {
 
 const GoogleIcon = () => <svg className="acct-g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" /><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" /><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z" /><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" /></svg>;
 const ChevronIcon = () => <svg className="acct-chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg>;
-// Google sign-in and transcript reading are designed but not connected to the API yet.
-const GOOGLE_PENDING = "Google sign-in is coming soon. Use an email link for now.";
 const TRANSCRIPT_PENDING = "Transcript upload is coming soon. Enter your details to finish setting up.";
 
 /** Local PDF picker; the file is not sent anywhere until the transcript API exists. */
@@ -76,64 +73,26 @@ const BackIcon = () => <svg width="14" height="14" viewBox="0 0 16 16" fill="non
 export default function Account() {
   const { user } = useAuth();
   const needsSetup = !!user && !profileComplete(user);
-  const [token, setToken] = useState(loginToken);
   return <div className="account-page">
     {needsSetup ? <header className="account-header"><CourseRadarBrand /></header> : <ProductHeader activePath="/account" />}
     {user ? needsSetup ? <ProfileSetup user={user} /> : <AccountSettings user={user} />
-      : token ? <FinishSignIn token={token} onCancel={() => setToken(null)} /> : <SignIn />}
+      : <SignIn />}
   </div>;
 }
 
 function SignIn() {
-  const { signInDelivery } = useAuth();
   const { busy, error, message, run } = useAction();
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState("");
-  const [googleNote, setGoogleNote] = useState(false);
-  const request = (e?: FormEvent) => { e?.preventDefault(); void run(async () => { const result = await authRequest("link", { email }); setSent(result.message); }); };
-  const unavailable = signInDelivery === "unavailable";
-
-  if (sent) return <main className="acct-desk">
-    <button type="button" className="acct-back" onClick={() => setSent("")}><BackIcon />Back</button>
-    <h1>Check your email</h1>
-    <p className="acct-lede">{signInDelivery === "log"
-      ? <>Local development: the sign-in link for <b>{email}</b> is in the API server log. It works once and expires in 15 minutes.</>
-      : <>We sent a sign-in link to <b>{email}</b>. Open it on this computer. It works once and expires in 15 minutes.</>}</p>
-    <p className="acct-note">{sent}</p>
-    <div className="acct-after"><span>No email after a minute?</span><button type="button" className="acct-textlink" disabled={busy} onClick={() => request()}>{busy ? "Sending…" : "Send a new link"}</button></div>
-    <Feedback error={error} message={message} />
-    <PageReady detail="Account details loaded">{null}</PageReady>
-  </main>;
+  const startGoogle = () => { void run(async () => { const result = await authRequest("google/start", {}); window.location.assign(result.url); }); };
 
   return <main className="acct-desk">
     <h1>Sign in</h1>
     <p className="acct-lede">Keep your courses, semester plans and schedule with your account.</p>
-    <button type="button" className="acct-btn acct-btn-line acct-btn-block" onClick={() => setGoogleNote(true)}><GoogleIcon />Continue with Google</button>
-    <p className="acct-hint acct-center">Use your @sjsu.edu account.</p>
-    {googleNote && <p className="acct-pending" role="status">{GOOGLE_PENDING}</p>}
-    <div className="acct-divider">or</div>
-    <form onSubmit={request}>
-      <label className="acct-field"><span>Email address</span><input className="acct-input" type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@sjsu.edu" maxLength={254} required disabled={busy || unavailable} /></label>
-      <button className="acct-btn acct-btn-primary acct-btn-block" disabled={busy || unavailable}>{busy ? "Sending link…" : "Email me a sign-in link"}</button>
-    </form>
-    <p className="acct-hint">{signInDelivery === "resend" ? "During testing, use the same email address as your Resend account." : signInDelivery === "log" ? "Local development: sign-in links appear in the API server log." : "Email sign-in is not configured yet. You can continue as a guest."}</p>
+    <button type="button" className="acct-btn acct-btn-line acct-btn-block" onClick={startGoogle} disabled={busy}><GoogleIcon />{busy ? "Connecting…" : "Continue with Google"}</button>
+    <p className="acct-hint acct-center">Use your Google account.</p>
+    {googleError && <p className="acct-error" role="alert">{googleError === "canceled" ? "Google sign-in was canceled. You can try again." : "Google sign-in could not be completed. Please try again."}</p>}
     <Feedback error={error} message={message} />
     <div className="acct-after"><span>New accounts start with an empty plan.</span><a href="/schedule">Continue as guest</a></div>
     <CatalogProvider key="guest"><PageReady><GuestWorkspace /></PageReady></CatalogProvider>
-  </main>;
-}
-
-function FinishSignIn({ token, onCancel }: { token: string; onCancel: () => void }) {
-  const { update } = useAuth();
-  const { busy, error, message, run } = useAction();
-  const verify = () => void run(async () => { const result = await authRequest("verify", { token }); update(result.user); });
-  return <main className="acct-desk">
-    <h1>Finish signing in</h1>
-    <p className="acct-lede">This single-use link expires 15 minutes after it was requested.</p>
-    <button className="acct-btn acct-btn-primary acct-btn-block" disabled={busy} onClick={verify}>{busy ? "Signing in…" : "Continue with sign-in link"}</button>
-    <button className="acct-btn acct-btn-ghost acct-btn-block acct-gap" disabled={busy} onClick={onCancel}>Request a different link</button>
-    <Feedback error={error} message={message} />
-    <PageReady detail="Account details loaded">{null}</PageReady>
   </main>;
 }
 

@@ -1,4 +1,4 @@
-// Canonical desktop integration: real sign-in and workspace PostgreSQL, no alternate app/server.
+// Canonical desktop integration: a seeded test session and real workspace PostgreSQL.
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const path = require('node:path');
@@ -16,15 +16,15 @@ let user,browser;
 (async()=>{
  try {
   user=await db.user.create({data:{email,workspaceKey,name:'Thinh Test',major:'computer-engineering',startingSemester:'Spring 2026'}});
-  await db.loginToken.create({data:{tokenHash:hash(token),email,expiresAt:new Date(Date.now()+600000)}});
+  await db.session.create({data:{tokenHash:hash(token),userId:user.id,expiresAt:new Date(Date.now()+600000)}});
   browser=await pw.chromium.launch({channel:'msedge',headless:true});
   const page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(45000);
   page.on('response',r=>{if(r.url().includes('/workspace/operations') || r.url().endsWith('/action-results')) console.log('Action HTTP',r.status());if(r.status()>=400)console.error('HTTP',r.status(),r.url());});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   page.on('console',m=>{if(m.type()==='error')console.error('BROWSER:',m.text());});
   page.on('requestfailed',r=>console.error('NETWORK:',r.url(),r.failure()?.errorText));
-  await page.goto(base+'/account#token='+token);
-  await page.getByRole('button',{name:'Continue with sign-in link'}).click();
+  await page.context().addCookies([{name:'cr_session',value:token,url:base+'/api/v1',httpOnly:true,sameSite:'Lax'}]);
+  await page.goto(base+'/account');
   await page.getByRole('button',{name:'Sign out',exact:true}).waitFor();
   console.log('Account verified.');
   await page.goto(base+'/planner');
@@ -116,6 +116,6 @@ let user,browser;
   if(browser)await browser.close();
   if(user){const workspace=await db.personalWorkspace.findUnique({where:{tokenHash:hash(workspaceKey)}});if(workspace){await db.personalOperation.deleteMany({where:{workspaceId:workspace.id}});await db.personalWorkspace.delete({where:{id:workspace.id}});}await db.session.deleteMany({where:{userId:user.id}});await db.user.delete({where:{id:user.id}});
    execFileSync('python',['-c',"import sys; from agent_service.catalog import database_url; import psycopg; c=psycopg.connect(database_url()); c.execute('DELETE FROM kimi_memory WHERE owner=%s',(sys.argv[1],)); c.commit(); c.close()",'account:'+user.id]);}
-  await db.loginToken.deleteMany({where:{email}});await db.$disconnect();
+  await db.$disconnect();
  }
 })().catch(e=>{console.error(e);process.exitCode=1;});
