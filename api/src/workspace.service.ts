@@ -10,6 +10,8 @@ import { applyAgentSections } from "./agent-sections";
 import type { ProgramCatalog } from "./course-types";
 import { syncPlan, termFor, type CalendarData, type SectionData } from "./schedule-sync";
 
+const CATALOG_CACHE_MS = 5 * 60_000;
+
 const json = (value: unknown) => JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 const object = (v: unknown): v is Record<string, any> => !!v && typeof v === "object" && !Array.isArray(v);
 const fail = (message: string): never => { throw new BadRequestException(message); };
@@ -73,7 +75,20 @@ export class WorkspaceService {
       throw new ServiceUnavailableException("PostgreSQL could not confirm this operation. No temporary plan was saved. Retry the same operation or reload to check its saved status.");
     }
   }
-  private async catalog(program: string, additional: unknown = []) { return new BootstrapController(this.db).compose(program, additional); }
+  // Catalog data only changes on import, so reuse each composed catalog briefly instead of re-querying on every save.
+  private static catalogCache = new Map<string, { expires: number; value: Promise<ProgramCatalog> }>();
+  private async catalog(program: string, additional: unknown = []) {
+    const key = JSON.stringify([program, additional]), now = Date.now();
+    let entry = WorkspaceService.catalogCache.get(key);
+    if (!entry || entry.expires <= now) {
+      const value = new BootstrapController(this.db).compose(program, additional);
+      entry = { expires: now + CATALOG_CACHE_MS, value };
+      WorkspaceService.catalogCache.set(key, entry);
+      value.catch(() => { if (WorkspaceService.catalogCache.get(key)?.value === value) WorkspaceService.catalogCache.delete(key); });
+      if (WorkspaceService.catalogCache.size > 50) WorkspaceService.catalogCache.delete(WorkspaceService.catalogCache.keys().next().value!);
+    }
+    return structuredClone(await entry.value);
+  }
   private async guestStore(value: any) {
     if (!object(value) || typeof value.program !== "string" || !/^[a-z0-9-]{1,120}$/.test(value.program) ||
         !Number.isSafeInteger(value.revision) || value.revision < 0 || !Array.isArray(value.completed) ||

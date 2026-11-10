@@ -1,7 +1,7 @@
 import { ProductPageHeading } from "./ProductPageHeading";
 import { slotLabel, parseSlot, derivedTermSlots, type PlanSlot } from "./academicProfile";
 import { ProductHeader } from "./ProductHeader";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowUpRight, Layers, Plus, X } from "lucide-react";
 import { useCatalog } from "./CatalogContext";
@@ -12,7 +12,6 @@ import "./planner-blocks.css";
 import { courseSubject } from "./courseSubject";
 import { PlannerCommandBar } from "./PlannerCommandBar";
 import { plannerPlacements } from "./plannerData";
-import { PlannerEdits } from "./PlannerEdits";
 
 const LIBRARY_BATCH = 40;
 
@@ -29,34 +28,20 @@ const short = (s: PlanSlot) => typeof s === "number" ? `S${s}` : slotLabel(s);
 
 export default function SemesterPlanner() {
   const [params] = useSearchParams();
-  const { catalog, allCourses, program, plans: savedPlans, takenCourseIds: savedTakenCourseIds, courseById, setPlan, removePlan, semesterSlots, namedTerms, termOrder, planningStore, termToSlot: savedTermToSlot, startingTerm } = useCatalog();
+  const { catalog, allCourses, program, plans: savedPlans, takenCourseIds: savedTakenCourseIds, courseById, semesterSlots, namedTerms, termOrder, planningStore, termToSlot: savedTermToSlot, startingTerm } = useCatalog();
   const [termPreview, setTermPreview] = useState<{ program: string; slots: PlanSlot[]; removed?: PlanSlot; plans?: Plans; termToSlot?: Record<string, number> } | null>(null);
   const termToSlot = termPreview?.program === program && termPreview.termToSlot ? termPreview.termToSlot : savedTermToSlot;
   const semesters = useMemo<PlanSlot[]>(() => termPreview?.program === program ? termPreview.slots : termOrder, [termPreview, program, termOrder]);
-  const edits = useMemo(() => new PlannerEdits(), [program, planningStore]);
-  const pending = useSyncExternalStore(edits.subscribe, edits.getState);
-  const hasPending = Object.keys(pending).length > 0;
-  // Only Planner previews the edit; shared data and assistant receipts await the saved result.
+  // Course changes appear at once through the planning store's save queue.
   const plans = useMemo(() => {
     if (termPreview?.program === program && termPreview.plans) return termPreview.plans;
     const removed = termPreview?.program === program ? termPreview.removed : undefined;
-    if (!hasPending && removed === undefined) return savedPlans;
+    if (removed === undefined) return savedPlans;
     const next = { ...savedPlans };
-    if (removed !== undefined) for (const [id, plan] of Object.entries(next)) if (plan.semester === removed) delete next[id];
-    for (const [id, edit] of Object.entries(pending)) {
-      if (edit.plan === null) delete next[id];
-      else if (edit.plan) next[id] = edit.plan;
-    }
+    for (const [id, plan] of Object.entries(next)) if (plan.semester === removed) delete next[id];
     return next;
-  }, [savedPlans, pending, hasPending, termPreview, program]);
-  const takenCourseIds = useMemo(() => {
-    const next = new Set(savedTakenCourseIds);
-    for (const [id, edit] of Object.entries(pending)) {
-      if (edit.completed === true) next.add(id);
-      else if (edit.completed === false) next.delete(id);
-    }
-    return next;
-  }, [savedTakenCourseIds, pending]);
+  }, [savedPlans, termPreview, program]);
+  const takenCourseIds = savedTakenCourseIds;
   const changedCourses = useRef(new Set<string>());
   const roadmapIds = useMemo(() => new Set(catalog.courses.map(c => c.id)), [catalog.courses]);
   const subjectOf = (c: Course) => subjects.find(s => s.key === (c.plannerCategory ?? courseSubject(c.code, roadmapIds.has(c.id), program)))!;
@@ -132,36 +117,31 @@ export default function SemesterPlanner() {
   };
   const change = async (course: Course, slot: PlanSlot) => {
     if (busy) return false;
-    const previous = savedPlans[course.id];
     setError("");
     changedCourses.current.add(course.id);
-    return edits.run(course.id, { plan: { semester: slot, status: previous?.status ?? "planned" } }, async () => {
-      const saved = savedTakenCourseIds.has(course.id)
-        ? (await planningStore.moveCompletedCourse(course.id, slot)).status !== "error"
-        : await setPlan(course.id, slot, previous?.status);
-      if (!saved) throw Error(planningStore.getState().storageError || "Could not save the course. Please try again.");
-    }, notifyError);
+    const result = savedTakenCourseIds.has(course.id)
+      ? await planningStore.moveCompletedCourse(course.id, slot)
+      : await planningStore.setPlan(course.id, slot, savedPlans[course.id]?.status);
+    if (result.status === "error") { notifyError(Error(result.message || "Could not save the course. Please try again.")); return false; }
+    return true;
   };
   const remove = async (course: Course) => {
     if (busy || !savedPlans[course.id]) return false;
     setError("");
     changedCourses.current.add(course.id);
     setSelected(null);
-    return edits.run(course.id, { plan: null }, async () => {
-      if (!await removePlan(course.id)) throw Error(planningStore.getState().storageError || "Could not remove the course. Please try again.");
-    }, notifyError);
+    const result = await planningStore.removePlan(course.id);
+    if (result.status === "error") { notifyError(Error(result.message || "Could not remove the course. Please try again.")); return false; }
+    return true;
   };
   const complete = (course: Course) => {
-    if (busy || pending[course.id]) return;
+    if (busy) return;
     setError("");
     changedCourses.current.add(course.id);
     setSelected(null);
-    void edits.run(course.id, { completed: !savedTakenCourseIds.has(course.id) }, async () => {
-      const result = await planningStore.toggleTakenCourse(course.id);
-      if (result.status === "error") throw Error(result.message);
-    }, notifyError);
+    void planningStore.toggleTakenCourse(course.id).then(result => { if (result.status === "error") notifyError(Error(result.message)); });
   };
-  const run = async (action: () => Promise<unknown>) => { if (busy || Object.keys(edits.getState()).length) return; setBusy(true); setError(""); try { await action(); } catch (error) { notifyError(error); } finally { setBusy(false); } };
+  const run = async (action: () => Promise<unknown>) => { if (busy) return; setBusy(true); setError(""); try { await action(); } catch (error) { notifyError(error); } finally { setBusy(false); } };
   const open = (c: Course) => { setTarget(plans[c.id]?.semester ?? semester); setSelected(c); };
   const drag = (e: DragEvent, c: Course) => { dragging.current = { id: c.id, program, planned: !!plans[c.id] }; e.dataTransfer.setData("text/plain", c.id); e.dataTransfer.effectAllowed = "move"; };
   const endDrag = () => { draggingTerm.current = null; dragging.current = null; setDropOn(null); };
@@ -214,22 +194,22 @@ export default function SemesterPlanner() {
     <main className="pb-wrap" id="pb-main">
       <ProductPageHeading title="Planner" />
       {error && <p className="pb-error" role="alert">{error}</p>}
-      <section className="pb-chart" aria-label="Semester workload overview" aria-busy={busy || hasPending}>
+      <section className="pb-chart" aria-label="Semester workload overview" aria-busy={busy}>
         <div className="pb-chart-head"><h2><Layers size={16}/>Units per semester · each block is one course</h2><div className="pb-legend">{subjects.map(s => <span key={s.key}><i style={{ background: `var(--s-${s.key})` }}/>{s.label}</span>)}<span><i className="pb-done-key"/>Completed</span></div></div>
         <div className="pb-plot" ref={chart} role="region" aria-label="Units per semester, course blocks" tabIndex={0} style={{ "--plot-units": maxUnits } as CSSProperties} onScroll={e => { if (labels.current) labels.current.scrollLeft = e.currentTarget.scrollLeft; }}>
           <div className="pb-target"><span>15u TYPICAL FULL LOAD</span></div>
           {semesters.map((s, ci) => <div key={s} className={`pb-column${dropOn === s ? " drop-on" : ""}`} aria-current={s === semester} onDragOver={e => { e.preventDefault(); setDropOn(s); }} onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDropOn(null); }} onDrop={e => drop(e, s)}>
-            {completedIn(s).map(c => <div key={c.id} className="pb-block pb-done" draggable={!busy && !pending[c.id]} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={{ ...tone(c), "--d": "0ms" } as CSSProperties}><button onClick={() => open(c)} aria-label={`${c.code}, completed`}>{c.code}</button><small>{c.units}</small></div>)}
-            {coursesIn(s).map((c, i) => <div key={c.id} className={`pb-block${issues(c, s).length ? " pb-warn" : ""}`} title={issues(c, s).join(" · ") || c.title} draggable={!busy && !pending[c.id]} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={{ ...tone(c), "--d": changedCourses.current.has(c.id) ? "0ms" : `${ci * 50 + i * 60 + 100}ms` } as CSSProperties}><button onClick={() => open(c)}>{c.code}</button><small>{c.units}</small></div>)}
+            {completedIn(s).map(c => <div key={c.id} className="pb-block pb-done" draggable={!busy} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={{ ...tone(c), "--d": "0ms" } as CSSProperties}><button onClick={() => open(c)} aria-label={`${c.code}, completed`}>{c.code}</button><small>{c.units}</small></div>)}
+            {coursesIn(s).map((c, i) => <div key={c.id} className={`pb-block${issues(c, s).length ? " pb-warn" : ""}`} title={issues(c, s).join(" · ") || c.title} draggable={!busy} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={{ ...tone(c), "--d": changedCourses.current.has(c.id) ? "0ms" : `${ci * 50 + i * 60 + 100}ms` } as CSSProperties}><button onClick={() => open(c)}>{c.code}</button><small>{c.units}</small></div>)}
           </div>)}
         </div>
-        <div className="pb-labels" ref={labels}>{semesters.map(s => <button key={s} draggable={!busy && !hasPending} title="Drag to move this term; Alt + Left/Right also moves it" onDragStart={e => { e.stopPropagation(); draggingTerm.current = s; dragging.current = null; e.dataTransfer.setData("application/x-course-radar-term", String(s)); e.dataTransfer.effectAllowed = "move"; }} onDragEnd={endDrag} onDragOver={e => { if (draggingTerm.current !== null) e.preventDefault(); }} onDrop={e => drop(e, s)} onKeyDown={e => {
-          if (!busy && !hasPending && e.altKey && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+        <div className="pb-labels" ref={labels}>{semesters.map(s => <button key={s} draggable={!busy} title="Drag to move this term; Alt + Left/Right also moves it" onDragStart={e => { e.stopPropagation(); draggingTerm.current = s; dragging.current = null; e.dataTransfer.setData("application/x-course-radar-term", String(s)); e.dataTransfer.effectAllowed = "move"; }} onDragEnd={endDrag} onDragOver={e => { if (draggingTerm.current !== null) e.preventDefault(); }} onDrop={e => drop(e, s)} onKeyDown={e => {
+          if (!busy && e.altKey && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
             e.preventDefault(); const destination = semesters[semesters.indexOf(s) + (e.key === "ArrowLeft" ? -1 : 1)];
             if (destination !== undefined) void moveTerm(s, destination);
           }
         }} aria-pressed={s === semester} aria-label={`Edit ${slotLabel(s)}, ${units(coursesIn(s))} units`} onClick={() => setSemester(s)}><b>{short(s)} · {units(coursesIn(s))}u</b><small>{term(s).split(" \u00b7 ")[0].toUpperCase()}{units(coursesIn(s)) ? ` · ${units(coursesIn(s)) > 17 ? "HEAVY LOAD" : units(coursesIn(s)) >= 12 ? "TYPICAL LOAD" : "LIGHTER LOAD"}` : completedIn(s).length ? " · DONE" : ""}</small></button>)}</div>
-        <div className="pb-tools"><button className="pb-ghost" disabled={busy || hasPending || planningStore.nextSemester > 100} onClick={extend}><Plus size={16}/>Semester</button><button className="pb-ghost" disabled={busy || hasPending} onClick={() => addOptional("summer")}><Plus size={16}/>Summer term</button><button className="pb-ghost" disabled={busy || hasPending} onClick={() => addOptional("winter")}><Plus size={16}/>Winter term</button><button className="pb-ghost" disabled={busy || hasPending || !semesters.length} aria-label={`Delete ${slotLabel(semester)}`} title="Returns planned courses to the library" onClick={removeSemester}><X size={16}/>Delete selected term</button></div>
+        <div className="pb-tools"><button className="pb-ghost" disabled={busy || planningStore.nextSemester > 100} onClick={extend}><Plus size={16}/>Semester</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("summer")}><Plus size={16}/>Summer term</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("winter")}><Plus size={16}/>Winter term</button><button className="pb-ghost" disabled={busy || !semesters.length} aria-label={`Delete ${slotLabel(semester)}`} title="Returns planned courses to the library" onClick={removeSemester}><X size={16}/>Delete selected term</button></div>
         {!semesters.length && <p className="pb-note">Add a semester, Winter or Summer term to start planning.</p>}
         <p className="pb-note">{heavy.length > 0 && <><b>{heavy.map(short).join(", ")}</b> above 17 units. </>}{warningCount > 0 && <><b>{warningCount}</b> course{warningCount !== 1 ? "s" : ""} may be out of prerequisite order. </>}Drag blocks between columns to rebalance, or outside the chart to remove. Drag term labels to move whole columns, or use Alt + Left/Right. Names and dates recalculate from their new position; later terms follow in sequence. Section choices for changed dates are cleared. Select a column, then find a course in the bar below (press /).{!planned.length && " Your plan is empty. Add a course from the bar below."}</p>
       </section>
@@ -252,9 +232,9 @@ export default function SemesterPlanner() {
         return added ? course.code : null;
       }}
       onNearEnd={() => { if (libraryLimit < results.length) appendLibrary(); }}
-      pills={results.slice(0, libraryLimit).map(c => <span className={`pb-pill${takenCourseIds.has(c.id) ? " pb-done" : ""}`} key={c.id} draggable={!busy && !pending[c.id] && !!semesters.length} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={tone(c)}><button className="pb-pill-open" onClick={() => open(c)}>{c.code}</button><small>{c.units}u · {takenCourseIds.has(c.id) ? "Completed" : `S${c.recommendedSemester}`}</small><button className="pb-add" disabled={busy || !!pending[c.id] || !semesters.length} aria-label={`Add ${c.code} to ${slotLabel(semester)}`} onClick={() => { void change(c, semester); }}><Plus size={13}/></button></span>)}
+      pills={results.slice(0, libraryLimit).map(c => <span className={`pb-pill${takenCourseIds.has(c.id) ? " pb-done" : ""}`} key={c.id} draggable={!busy && !!semesters.length} onDragStart={e => drag(e, c)} onDragEnd={endDrag} style={tone(c)}><button className="pb-pill-open" onClick={() => open(c)}>{c.code}</button><small>{c.units}u · {takenCourseIds.has(c.id) ? "Completed" : `S${c.recommendedSemester}`}</small><button className="pb-add" disabled={busy || !semesters.length} aria-label={`Add ${c.code} to ${slotLabel(semester)}`} onClick={() => { void change(c, semester); }}><Plus size={13}/></button></span>)}
     />
-    <dialog ref={dialog} className="pb-dialog" aria-labelledby="pb-course-title" onCancel={() => setSelected(null)} onClick={e => { if (e.target === e.currentTarget) { const r = e.currentTarget.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) setSelected(null); } }} onClose={() => setSelected(null)}>{selected && <><header><small>{subjectOf(selected).label.toUpperCase()} · {selected.units} UNITS{takenCourseIds.has(selected.id) ? " · COMPLETED" : ""}</small><h2 id="pb-course-title">{selected.code}</h2><p>{selected.title}</p><button className="pb-icon" aria-label="Close course details" onClick={() => setSelected(null)}><X size={16}/></button></header>{!takenCourseIds.has(selected.id) && issues(selected, target).length > 0 && <p className="pb-warning">{issues(selected, target).join(" · ")}. Review recorded requirements before enrolling.</p>}<section><h3>About this course</h3><p>{selected.description}</p><h3>Recorded prerequisites</h3><p>{selected.prerequisiteText || "No additional prerequisite text recorded."}</p><a href={selected.sourceUrl} target="_blank" rel="noreferrer">Official course requirements <ArrowUpRight size={14}/></a></section><footer><button className="pb-ghost pb-completion" aria-pressed={takenCourseIds.has(selected.id)} disabled={busy || !!pending[selected.id]} onClick={() => complete(selected)}>{takenCourseIds.has(selected.id) ? "Mark incomplete" : "Mark completed"}</button><button className="pb-ghost" onClick={() => { setFullDetails(selected); setSelected(null); }}>Listed sections &amp; full details<ArrowUpRight size={14}/></button><><label>Semester<select aria-label="Move or add to semester" value={target} onChange={e => setTarget(parseSlot(e.target.value))}>{semesters.map(s => <option key={s} value={s}>{slotLabel(s)} · {term(s)}</option>)}</select></label><button className="pb-btn" disabled={busy || !!pending[selected.id] || !semesters.includes(target) || plans[selected.id]?.semester === target} onClick={() => { const course = selected; setSelected(null); void change(course, target); }}>{plans[selected.id] ? "Move course" : "Add course"}</button>{plans[selected.id] && <button className="pb-ghost" disabled={busy || !!pending[selected.id]} onClick={() => { void remove(selected); }}>Remove from plan</button>}</></footer></>}</dialog>
+    <dialog ref={dialog} className="pb-dialog" aria-labelledby="pb-course-title" onCancel={() => setSelected(null)} onClick={e => { if (e.target === e.currentTarget) { const r = e.currentTarget.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) setSelected(null); } }} onClose={() => setSelected(null)}>{selected && <><header><small>{subjectOf(selected).label.toUpperCase()} · {selected.units} UNITS{takenCourseIds.has(selected.id) ? " · COMPLETED" : ""}</small><h2 id="pb-course-title">{selected.code}</h2><p>{selected.title}</p><button className="pb-icon" aria-label="Close course details" onClick={() => setSelected(null)}><X size={16}/></button></header>{!takenCourseIds.has(selected.id) && issues(selected, target).length > 0 && <p className="pb-warning">{issues(selected, target).join(" · ")}. Review recorded requirements before enrolling.</p>}<section><h3>About this course</h3><p>{selected.description}</p><h3>Recorded prerequisites</h3><p>{selected.prerequisiteText || "No additional prerequisite text recorded."}</p><a href={selected.sourceUrl} target="_blank" rel="noreferrer">Official course requirements <ArrowUpRight size={14}/></a></section><footer><button className="pb-ghost pb-completion" aria-pressed={takenCourseIds.has(selected.id)} disabled={busy} onClick={() => complete(selected)}>{takenCourseIds.has(selected.id) ? "Mark incomplete" : "Mark completed"}</button><button className="pb-ghost" onClick={() => { setFullDetails(selected); setSelected(null); }}>Listed sections &amp; full details<ArrowUpRight size={14}/></button><><label>Semester<select aria-label="Move or add to semester" value={target} onChange={e => setTarget(parseSlot(e.target.value))}>{semesters.map(s => <option key={s} value={s}>{slotLabel(s)} · {term(s)}</option>)}</select></label><button className="pb-btn" disabled={busy || !semesters.includes(target) || plans[selected.id]?.semester === target} onClick={() => { const course = selected; setSelected(null); void change(course, target); }}>{plans[selected.id] ? "Move course" : "Add course"}</button>{plans[selected.id] && <button className="pb-ghost" disabled={busy} onClick={() => { void remove(selected); }}>Remove from plan</button>}</></footer></>}</dialog>
     {fullDetails && <CourseDetail course={fullDetails} onClose={() => setFullDetails(null)}/>}
 
   </div>;

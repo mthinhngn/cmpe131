@@ -64,9 +64,16 @@ function usePlanning() {
 const CatalogContext = createContext<ReturnType<typeof usePlanning> | null>(null);
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const value = usePlanning();
+  const store = value.planningStore;
+  // Queued changes show before they are saved; warn before the tab closes and drops them.
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => { if (store.hasQueuedChanges) event.preventDefault(); };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [store]);
   if (!value.hydrated && value.storageStatus !== "error") return <PageLoading detail="Restoring your saved plan" />;
   return <CatalogContext.Provider value={value}>
-    {value.storageStatus !== "saved" && <div className="persistence-status" data-status={value.storageStatus} role={value.storageStatus === "error" ? "alert" : "status"}>{value.storageError || (value.hydrated ? "Saving your workspace…" : "Loading your workspace…")}{value.storageStatus === "error" && <button onClick={value.retry}>Retry save</button>}</div>}
+    {!["saved", "saving"].includes(value.storageStatus) && <div className="persistence-status" data-status={value.storageStatus} role={value.storageStatus === "error" ? "alert" : "status"}>{value.storageError || (value.hydrated ? "Saving your workspace…" : "Loading your workspace…")}{value.storageStatus === "error" && <button onClick={value.retry}>Retry save</button>}</div>}
     <fieldset className="persistence-content" disabled={!value.hydrated || value.storageStatus === "error"}>{value.hydrated ? children : null}</fieldset>
   </CatalogContext.Provider>;
 }

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, X } from "lucide-react";
 import { useCatalog } from "./CatalogContext";
-import { useRoadmapTakenIds, useToggleRoadmapCompletion } from "./roadmapCompletion";
+import { reportRoadmapError, useRoadmapTakenIds, useToggleRoadmapCompletion } from "./roadmapCompletion";
 import { SelectionMenu } from "./components/ui/selection-menu";
 import "./components/ui/ui.css";
 import { requirementCategory, requirementMatches, geAreas } from "../api/src/requirement-choices";
@@ -24,7 +24,7 @@ export function RoadmapCourseActions({ courseId, requirementId, onClose, onChoos
   }}>
     <header><div><strong>{course.code}</strong><h3>{course.title}</h3></div><button type="button" aria-label="Close course actions" onClick={onClose}><X size={16}/></button></header>
     <p>{course.units} units{completed ? " · Completed" : " · Not completed"}</p>
-    <button ref={first} className="rm-primary rm-completion" type="button" aria-pressed={completed} disabled={storageStatus !== "saved"} onClick={() => { toggle(courseId); onClose(); }}><Check size={16}/>{completed ? "Mark incomplete" : "Mark completed"}</button>
+    <button ref={first} className="rm-primary rm-completion" type="button" aria-pressed={completed} disabled={["loading", "error"].includes(storageStatus)} onClick={() => { toggle(courseId); onClose(); }}><Check size={16}/>{completed ? "Mark incomplete" : "Mark completed"}</button>
     {requirementId && <button className="rm-secondary" type="button" onClick={onChoose}>Change elective</button>}
   </section>;
 }
@@ -56,10 +56,11 @@ export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: {
   if (!requirement) return null;
   const category = requirementCategory(requirement);
   const slotDone = takenIds.has(requirementId);
+  const unavailable = ["loading", "error"].includes(storageStatus);
   return createPortal(<dialog ref={dialog} className="rm-picker" aria-labelledby="rm-picker-title" onCancel={event => { event.preventDefault(); if (!busy) onClose(); }}>
     <header><div><h2 id="rm-picker-title">Choose {requirement.label ?? "an elective"}</h2></div><button type="button" aria-label="Close course picker" disabled={!!busy} onClick={onClose}><X size={20}/></button></header>
     <div className="rm-picker-summary"><p>{requirement.description}{slotDone ? " · Completed" : ""}</p>
-      <button className="rm-completion" type="button" aria-pressed={slotDone} disabled={!!busy || storageStatus !== "saved"} onClick={() => { toggleCompletion(requirementId); onClose(); }}>{slotDone ? "Mark incomplete" : "Mark completed"}</button></div>
+      <button className="rm-completion" type="button" aria-pressed={slotDone} disabled={!!busy || unavailable} onClick={() => { toggleCompletion(requirementId); onClose(); }}>{slotDone ? "Mark incomplete" : "Mark completed"}</button></div>
     <div className="rm-picker-filters"><label>Search courses<input autoFocus type="search" placeholder="Course code or title" value={query} onChange={event => { setQuery(event.target.value); setLimit(40); }}/></label>
       <div className="rm-picker-field"><span>Subject</span><SelectionMenu label="Subject" value={subject} onChange={value => { setSubject(value); setLimit(40); }} options={[{ slug: "", title: "All subjects" }, ...subjects.map(value => ({ slug: value, title: value }))]}/></div>
     </div>
@@ -83,15 +84,11 @@ export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: {
           {takenCourseIds.has(course.id) && <small>Completed</small>}
           {otherRequirement && <small>Selected for another requirement</small>}
           <a href={course.sourceUrl} target="_blank" rel="noreferrer">Official course</a></div>
-          <button className="rm-secondary" type="button" aria-label={`Choose ${course.code}`} disabled={!!busy || storageStatus !== "saved" || otherRequirement} onClick={async () => {
-            setBusy(course.id); setError(""); attempted.current = course.id;
-            try {
-              const result = await planningStore.command("chooseRequirement", { requirementId, id: course.id });
-              if (result.status === "error") throw Error(result.message);
-              onChosen(course.id);
-            } catch (error) { setError(error instanceof Error ? error.message : "Could not save this choice. Try again."); }
-            finally { setBusy(null); }
-          }}>{busy === course.id ? "Saving…" : selected ? "Selected" : "Choose course"}</button></article>;
+          <button className="rm-secondary" type="button" aria-label={`Choose ${course.code}`} disabled={!!busy || unavailable || otherRequirement} onClick={() => {
+            setError(""); attempted.current = course.id;
+            void planningStore.command("chooseRequirement", { requirementId, id: course.id }).then(result => { if (result.status === "error") reportRoadmapError(result.message || "Could not save this choice. Try again."); });
+            onChosen(course.id);
+          }}>{selected ? "Selected" : "Choose course"}</button></article>;
       })}
       {!filtered.length && <p>No matching courses with recorded eligibility. Try another search or subject. Check the official requirements for missing catalog details.</p>}
       {filtered.length > limit && <button className="rm-secondary" type="button" onClick={() => setLimit(value => value + 40)}>Show more courses</button>}

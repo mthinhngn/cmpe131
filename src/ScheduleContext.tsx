@@ -5,7 +5,7 @@ import { useCatalog } from "./CatalogContext";
 import { nextRegularTerm, requiredComponents, scheduleScope, termForSlot, termName } from "./scheduleTerms";
 import type { CourseOffering } from "./types";
 import type { ActionResult } from "./planning";
-import type { PlanCoordinator } from "./PersistentPlanningStore";
+import type { PlanCoordinator, PlanPreview } from "./PersistentPlanningStore";
 
 type SectionData = { term: string; status: "available" | "unavailable"; offerings: CourseOffering[]; sourceUrl?: string; message: string };
 export type SectionChoice = { id: string; courseId: string; code: string; term: string; stage: "loading" | "sections"; offerings: CourseOffering[]; otherOfferings: CourseOffering[]; selected: string[]; message: string };
@@ -71,6 +71,15 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     ...(term === latest.current.catalog.catalog.currentTerm.id ? latest.current.catalog.catalog.offerings : []),
     ...(latest.current.data[term]?.offerings ?? []),
   ].map(o => [o.classNumber, o])).values()];
+  /** Show confirmed sections for one course right away, replacing its earlier sections in that term. */
+  const sectionPreview = (term: string, code: string, chosen: CourseOffering[], removed: string[] = []): PlanPreview => store => {
+    const state = store.getState(), scope = scheduleScope(state.program, state.catalog.catalogYear, term);
+    const records = [...(state.scheduleOfferings?.[scope] ?? []), ...(term === state.catalog.currentTerm.id ? state.catalog.offerings : []), ...(latest.current.data[term]?.offerings ?? [])];
+    const drop = new Set([...removed, ...(chosen.length ? records.filter(o => o.courseCode === code).map(o => o.classNumber) : [])]);
+    const ids = [...new Set([...(state.schedules[scope] ?? []).filter(n => !drop.has(n)), ...chosen.map(o => o.classNumber)])];
+    const snapshots = [...new Map([...records, ...chosen].filter(o => ids.includes(o.classNumber)).map(o => [o.classNumber, o])).values()];
+    store.restore({ ...state, schedules: { ...state.schedules, [scope]: ids }, scheduleOfferings: { ...state.scheduleOfferings, [scope]: snapshots } });
+  };
   const selectedIn = (term: string) => {
     const ids = latest.current.catalog.planningStore.getState().schedules[key(term)] ?? [];
     if (!ids.length) return [];
@@ -80,15 +89,30 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const savedOfferings = catalog.planningStore.getState().scheduleOfferings;
   const selectedOfferings = useMemo(() => selectedIn(activeTerm), [activeTerm, catalog.program, catalog.catalog.catalogYear, catalog.catalog.currentTerm.id, catalog.catalog.offerings, catalog.schedules, savedOfferings, data]);
   const selectedClassNumbers = catalog.schedules[key(activeTerm)] ?? [];
-  const stamp = () => JSON.stringify([latest.current.catalog.program, latest.current.catalog.startingTerm, latest.current.catalog.planningStore.getState().revision]);
+  // Other queued saves may land while sections are chosen; only a program or profile change cancels the choice.
+  const stamp = () => JSON.stringify([latest.current.catalog.program, latest.current.catalog.startingTerm]);
   const cancelSections = () => { generation.current++; waiting.current?.(null); waiting.current = null; setPending(null); setNotice("Canceled. Planner and Schedule are unchanged."); };
   useEffect(() => { if (busy.current) cancelSections(); }, [catalog.program, catalog.startingTerm]);
   useEffect(() => () => { generation.current++; waiting.current?.(null); }, []);
 
   const coordinate: PlanCoordinator = async (kind, args, save) => {
     if (kind === "agentAction" && ["open_course", "apply_plan_changes", "set_course_sections"].includes(args.action.kind)) return save(kind, args);
+    // Plain planner moves queue behind earlier saves; only an open section choice blocks other changes.
+    if (!args.chooseAgain) {
+      const active = latest.current.catalog;
+      const id = kind === "agentAction" ? args.action.course_id : args.id, course = active.courseById.get(id);
+      if (!course) return failure("The course is not in the active program.");
+      const removing = kind === "removePlan" || kind === "agentAction" && args.action.kind === "remove_course_from_plan";
+      if (!removing && active.takenCourseIds.has(id)) return failure("This course is marked completed. Update its completion status before scheduling it.");
+      try {
+        const result = await save("syncPlan", { baseKind: kind, baseArgs: args, selected: [] });
+        setNotice(`${course.code}: ${result.message}`);
+        return result;
+      } catch { const result = failure("The change could not be saved. Please check your connection and try again."); setNotice(result.message); return result; }
+    }
     if (busy.current) return failure("Finish or cancel the current section choice before changing another course.");
     busy.current = true;
+    let released = false;
     const initial = stamp(), token = generation.current;
     try {
       const active = latest.current.catalog;
@@ -98,12 +122,6 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       const slot = kind === "agentAction" ? args.action.semester_slot : args.semester;
       const destination = removing ? undefined : termForSlot(active.termToSlot, slot);
       if (!removing && active.takenCourseIds.has(id)) return failure("This course is marked completed. Update its completion status before scheduling it.");
-      // Planning saves courses; section choice is only an explicit Schedule action.
-      if (!args.chooseAgain) {
-        const result = await save("syncPlan", { baseKind: kind, baseArgs: args, selected: [] });
-        setNotice(`${course.code}: ${result.message}`);
-        return result;
-      }
       let cal = latest.current.calendar;
       const year = Number(destination?.split("-")[1]);
       if (destination && Math.abs(year - new Date().getFullYear()) <= 1 && !cal) cal = await calendarRequest.current;
@@ -111,7 +129,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       const windowTerms = cal?.status === "verified" && cal.current_term && cal.as_of <= day() && day() <= cal.valid_until
         ? [`${cal.current_term.season}-${cal.current_term.year}`, nextRegularTerm(`${cal.current_term.season}-${cal.current_term.year}`)] : [];
       const term = destination && (windowTerms.includes(destination) || /^(winter|summer)-/.test(destination) && (active.catalog.availableTerms ?? []).includes(destination)) ? destination : undefined;
-      let chosen: string[] = [], unavailable = false;
+      let chosen: string[] = [], chosenOfferings: CourseOffering[] = [], unavailable = false;
       if (term) {
         const current = selectedIn(term).filter(o => o.courseCode === course.code);
         setPending({ id: crypto.randomUUID(), courseId: id, code: course.code, term, stage: "loading", offerings: [], otherOfferings: [], selected: [], message: "Loading published sections…" });
@@ -133,18 +151,20 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
             if (!response) return failure("Canceled. Planner and Schedule are unchanged.");
             chosen = response;
           }
+          chosenOfferings = offerings.filter(o => chosen.includes(o.classNumber));
         }
       }
       if (stamp() !== initial || token !== generation.current) return failure("Your plan changed while choosing sections. Please try again.");
-      setPending(null);
-      const result = await save("syncPlan", { baseKind: kind, baseArgs: args, ...(term ? { term } : {}), selected: chosen });
+      // Confirmed: show the sections now, free the picker for the next course, and let the queue save it.
+      released = true; busy.current = false; waiting.current = null; setPending(null);
+      if (term) selectTerm(term);
+      const result = await save("syncPlan", { baseKind: kind, baseArgs: args, ...(term ? { term } : {}), selected: chosen }, term ? sectionPreview(term, course.code, chosenOfferings) : undefined);
       if (result.status !== "error") {
-        if (term) selectTerm(term);
         setNotice(term ? unavailable ? `${course.code} is in Planner. Sections unavailable; choose later in Schedule.` : `${course.code} saved in Planner and Schedule for ${termName(term)}.` : `${course.code}: ${result.message}`);
       } else setNotice(result.message);
       return unavailable && result.status !== "error" ? { ...result, message: `${result.message} Sections unavailable; choose later in Schedule.` } : result;
     } catch { const result = failure("The change could not be saved. Please check your connection and try again."); setNotice(result.message); return result; }
-    finally { busy.current = false; waiting.current = null; setPending(null); }
+    finally { if (!released) { busy.current = false; waiting.current = null; setPending(null); } }
   };
   const coordinator = useRef(coordinate); coordinator.current = coordinate;
   useLayoutEffect(() => { catalog.planningStore.coordinatePlan((...args) => coordinator.current(...args)); return () => catalog.planningStore.coordinatePlan(null); }, [catalog.planningStore]);
@@ -169,7 +189,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     const active = latest.current.catalog, term = latest.current.activeTerm;
     const offering = selectedIn(term).find(o => o.classNumber === id), course = active.allCourses.find(c => c.code === offering?.courseCode);
     if (!course || busy.current) return failure("Finish the pending choice before removing a section.");
-    const result = await active.planningStore.command("syncPlan", { baseKind: "removeSection", baseArgs: { id: course.id, classNumber: id }, term, selected: [] });
+    const result = await active.planningStore.command("syncPlan", { baseKind: "removeSection", baseArgs: { id: course.id, classNumber: id }, term, selected: [] }, sectionPreview(term, course.code, [], [id]));
     setNotice(result.message); return result;
   };
   const termData = data[activeTerm];

@@ -4,10 +4,22 @@ import { apiEndpoint } from "./api";
 import { staticPreview } from "./static-preview";
 type ViewState = State & { storageStatus: "loading" | "saved" | "saving" | "error"; storageError: string; hydrated: boolean };
 type Command = { requestId: string; version: number; kind: string; args: object; catalogVersion?: string };
-export type PlanCoordinator = (kind: string, args: Record<string, any>, save: (kind: string, args: object) => Promise<ActionResult>) => Promise<ActionResult>;
+export type PlanPreview = (store: PlanningStore) => void;
+export type PlanCoordinator = (kind: string, args: Record<string, any>, save: (kind: string, args: object, preview?: PlanPreview) => Promise<ActionResult>) => Promise<ActionResult>;
 class WorkspaceError extends Error { constructor(message: string, readonly status: number) { super(message); } }
 const guestDraft = (state: State) => { const { catalog: _catalog, ...draft } = state; return draft; };
 const guestKey = "course-radar-guest-tab-v1";
+type QueuedChange = { kind: string; args: Record<string, any>; preview?: (store: PlanningStore) => void };
+// Course changes the browser can preview with the shared planning engine; everything else waits for the server.
+const PREVIEWABLE = new Set(["setPlan", "removePlan", "moveCompletedCourse", "toggleTakenCourse", "chooseRequirement"]);
+function previewChange(store: PlanningStore, { kind, args, preview }: QueuedChange) {
+  if (preview) preview(store);
+  else if (kind === "setPlan") store.setPlan(args.id, args.semester, args.status ?? "planned");
+  else if (kind === "removePlan") store.removePlan(args.id);
+  else if (kind === "moveCompletedCourse") store.moveCompletedCourse(args.id, args.semester);
+  else if (kind === "toggleTakenCourse") store.toggleTakenCourse(args.id);
+  else if (kind === "chooseRequirement") store.chooseRequirement(args.requirementId, args.id);
+}
 export class PersistentPlanningStore {
   constructor(private readonly account: string | null = null) {}
   private engine = new PlanningStore("computer-engineering", computerEngineeringCatalog);
@@ -19,10 +31,29 @@ export class PersistentPlanningStore {
   private loading?: Promise<void>;
   private pending?: Command;
   private coordinator: PlanCoordinator | null = null;
+  // Changes shown immediately while they wait in the save queue, oldest first.
+  private queued: QueuedChange[] = [];
   coordinatePlan(coordinator: PlanCoordinator | null) { this.coordinator = coordinator; }
   getState = () => this.state;
   subscribe = (fn: () => void) => { this.listeners.add(fn); return () => { this.listeners.delete(fn); }; };
   private emit(patch: Partial<ViewState> = {}) { this.state = { ...this.state, ...patch }; this.listeners.forEach(fn => fn()); }
+  /** Last saved state with every queued change replayed on top. A change that no longer applies is skipped; the server decides. */
+  private shown(): State {
+    const saved = this.engine.getState();
+    if (!this.queued.length) return saved;
+    const preview = new PlanningStore(saved.program, saved.catalog);
+    preview.restore(saved);
+    for (const change of this.queued) { try { previewChange(preview, change); } catch { /* The queued save will report its own error. */ } }
+    return preview.getState();
+  }
+  private settle(change?: QueuedChange) {
+    const index = change ? this.queued.indexOf(change) : -1;
+    if (index < 0) return false;
+    this.queued.splice(index, 1);
+    return true;
+  }
+  /** True while changes are still waiting to reach the server. */
+  get hasQueuedChanges() { return this.queued.length > 0; }
   private async request(path: string, body?: unknown) {
     const response = await fetch(apiEndpoint(path), { credentials: "include", cache: "no-store", method: body ? "POST" : "GET", headers: { "X-Workspace-User": this.account || "guest", "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(75000) });
     let payload;
@@ -37,7 +68,7 @@ export class PersistentPlanningStore {
       // Temporary tab state keeps navigation usable; no guest record reaches PostgreSQL.
       try { sessionStorage.setItem(guestKey, JSON.stringify(guestDraft(payload.state))); } catch { /* Storage-disabled browsers keep the current page in memory. */ }
     }
-    this.emit({ ...payload.state, undoRevision: payload.state.undoRevision, undoRequestId: payload.state.undoRequestId, storageStatus: hydrated ? "saved" : "loading", storageError: "", hydrated });
+    this.emit({ ...this.shown(), undoRevision: payload.state.undoRevision, undoRequestId: payload.state.undoRequestId, storageStatus: hydrated ? "saved" : "loading", storageError: "", hydrated });
   }
   load = () => {
     if (staticPreview) {
@@ -60,32 +91,45 @@ export class PersistentPlanningStore {
     return this.loading;
   };
   private errorText(error: unknown) { return error instanceof Error ? error.message : "Database save failed. Reload to check saved state."; }
-  command(kind: string, args: object = {}): Promise<ActionResult> {
+  /** `preview` shows a change the browser cannot derive alone (such as chosen sections) until its save lands. */
+  command(kind: string, args: object = {}, preview?: PlanPreview): Promise<ActionResult> {
     if (staticPreview) return Promise.resolve({ status: "unchanged", message: "Preview controls are inactive." });
-    const save = (nextKind: string, nextArgs: object) => this.enqueue(nextKind, nextArgs,
-      kind === "agentAction" ? (args as { action: { action_id: string } }).action.action_id : undefined);
-    if (this.coordinator && ["setPlan", "removePlan", "agentAction"].includes(kind)) return this.coordinator(kind, args, save);
-    return save(kind, args);
+    // Show previewable course changes at once; the queue then saves them one at a time, in order.
+    const change: QueuedChange | undefined = (preview || PREVIEWABLE.has(kind)) && this.state.hydrated && !["loading", "error"].includes(this.state.storageStatus) ? { kind, args: args as Record<string, any>, preview } : undefined;
+    if (change) { this.queued.push(change); this.emit(this.shown()); }
+    const save = (nextKind: string, nextArgs: object, nextPreview?: PlanPreview) => {
+      // A coordinator can add what it learned (chosen sections) to the queued preview before saving.
+      const extra: QueuedChange | undefined = nextPreview && this.state.hydrated ? { kind: nextKind, args: nextArgs as Record<string, any>, preview: nextPreview } : undefined;
+      if (extra) { this.queued.push(extra); this.emit(this.shown()); }
+      return this.enqueue(nextKind, nextArgs, kind === "agentAction" ? (args as { action: { action_id: string } }).action.action_id : undefined, change, extra)
+        .finally(() => { if (this.settle(extra)) this.emit(this.shown()); });
+    };
+    const done = this.coordinator && ["setPlan", "removePlan", "agentAction"].includes(kind) ? this.coordinator(kind, args, save) : save(kind, args);
+    // A coordinator may decline without saving; drop that preview too.
+    return done.finally(() => { if (this.settle(change)) this.emit(this.shown()); });
   }
-  private enqueue(kind: string, args: object, requestId?: string): Promise<ActionResult> {
+  private enqueue(kind: string, args: object, requestId?: string, change?: QueuedChange, extra?: QueuedChange): Promise<ActionResult> {
     const task = async () => {
       if (["loading", "error"].includes(this.state.storageStatus)) return { status: "error", message: this.state.storageError || "Wait for the saved workspace to load." } as ActionResult;
-      return this.execute({ requestId: requestId ?? crypto.randomUUID(), version: this.version, kind, args, catalogVersion: this.state.catalog.dataVersion });
+      return this.execute({ requestId: requestId ?? crypto.randomUUID(), version: this.version, kind, args, catalogVersion: this.state.catalog.dataVersion }, change, extra);
     };
     const result = this.queue.then(task); this.queue = result.catch(() => {}); return result;
   }
-  private async execute(command: Command): Promise<ActionResult> {
+  private async execute(command: Command, change?: QueuedChange, extra?: QueuedChange): Promise<ActionResult> {
     this.pending = command; this.emit({ storageStatus: "saving" });
     try {
       const before = guestDraft(this.engine.getState());
       const response = await this.request("workspace/operations", this.account ? command : { ...command, guestState: before, undoState: this.guestUndo });
       if (!this.account && response.state.revision !== before.revision) this.guestUndo = command.kind === "undo" ? undefined : before;
+      // The saved state now contains this change; stop replaying it before showing the result.
+      this.settle(change); this.settle(extra);
       this.accept(response); this.pending = undefined; return response.result;
     }
     catch (error) {
       const message = this.errorText(error);
-      if (error instanceof WorkspaceError && error.status === 400) { this.pending = undefined; this.emit({ storageStatus: "saved", storageError: "" }); }
-      else this.emit({ storageStatus: "error", storageError: message });
+      this.settle(change); this.settle(extra);
+      if (error instanceof WorkspaceError && error.status === 400) { this.pending = undefined; this.emit({ ...this.shown(), storageStatus: "saved", storageError: "" }); }
+      else this.emit({ ...this.shown(), storageStatus: "error", storageError: message });
       return { status: "error", message };
     }
   }
