@@ -138,6 +138,7 @@ export class PersistentPlanningStore {
     return this.command("agentAction", { action, browserFresh });
   }
   setStartingTerm(term: string | null) { return this.command("setStartingTerm", { term }); }
+  importTranscript(rows: import("../api/src/transcript-import").TranscriptPlacement[]) { return this.command("importTranscript", { rows }); }
   get plans() { return this.state.plans[this.state.program] ?? {}; }
   get terms() { return this.state.terms[this.state.program] ?? {}; }
   get semesterCount() { return this.engine.semesterCount; }

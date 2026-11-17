@@ -7,6 +7,7 @@ import { BootstrapController } from "./bootstrap.controller";
 import { PlanningStore, type State, type Proposal, type ActionResult, validSlot } from "./planning-engine";
 import { applyAgentAction } from "./agent-action";
 import { applyAgentSections } from "./agent-sections";
+import { importTranscript } from "./transcript-import";
 import type { ProgramCatalog } from "./course-types";
 import { syncPlan, termFor, type CalendarData, type SectionData } from "./schedule-sync";
 
@@ -28,6 +29,7 @@ export function validateCommand(value: unknown): Command {
 export function applyManual(store: PlanningStore, kind: string, a: Record<string, any>, catalogs: Record<string, ProgramCatalog>, sections: SectionData | null = null, profileStart?: string) {
   const id = () => { if (typeof a.id !== "string" || !store.getState().catalog.courses.some(c => c.id === a.id)) fail("Unknown course in current program."); return a.id as string; };
   switch (kind) {
+    case "importTranscript": importTranscript(store, a.rows, profileStart ?? store.getState().startingTerms?.[store.getState().program] ?? ""); break;
     case "agentAction": try { if (a.action?.kind === "set_course_sections") applyAgentSections(store, a, sections, profileStart); else applyAgentAction(store, { ...a, profileStart }); } catch (error) { fail(error instanceof Error ? error.message : "Invalid agent action."); } break;
     case "setStartingTerm": {
       if (a.term !== null && (typeof a.term !== "string" || !/^(winter|spring|summer|fall)-(19|20|21)\d{2}$/.test(a.term))) fail("Invalid starting academic term.");
