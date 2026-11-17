@@ -106,6 +106,11 @@ class ActionResult(TypedDict):
 
 # Shares conversation, read evidence, and action progress between graph nodes.
 class AgentState(TypedDict):
+    verified_owner: str
+    evidence: list[dict]
+    citations: list[dict]
+    advisor_metrics: dict
+    advisor_verdicts: list[dict]
     kimi_decision: dict
     kimi_observations: list[dict]
     kimi_count: int

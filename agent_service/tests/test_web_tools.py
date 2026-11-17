@@ -1,13 +1,25 @@
 import json
 import socket
+import ssl
 import time
 import unittest
 from unittest.mock import patch
 from unittest.mock import MagicMock
+import certifi
 from agent_service.web_tools import LookupFailure, OfficialSearchTools, PublicHTTPS, resolve_doh, https_bytes
 
 
 class WebToolsTests(unittest.TestCase):
+    def test_https_adds_certifi_to_default_trust_without_disabling_verification(self):
+        context = ssl.create_default_context()
+        with patch("agent_service.web_tools.ssl.create_default_context", return_value=context), patch.object(context, "load_verify_locations", wraps=context.load_verify_locations) as load, patch("agent_service.web_tools.PublicHTTPS") as connection:
+            connection.return_value.getresponse.return_value.read.return_value = b""
+            https_bytes("https://www.sjsu.edu/classes/index.php", time.monotonic() + 10)
+        load.assert_called_once_with(cafile=certifi.where())
+        self.assertIs(connection.call_args.kwargs["context"], context)
+        self.assertEqual(context.verify_mode, ssl.CERT_REQUIRED)
+        self.assertTrue(context.check_hostname)
+
     def test_offering_uses_official_index_link_for_archived_term(self):
         source = {"url": "https://www.sjsu.edu/classes/index.php", "links": ["https://evil.org/classes/schedules/archive/fall-2025.php", "/classes/schedules/archive/fall-2025.php"]}
         with patch.object(OfficialSearchTools, "fetch", return_value=source) as fetch:

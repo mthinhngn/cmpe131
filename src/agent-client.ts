@@ -38,6 +38,7 @@ export type AgentRequest = {
   clarification?: "starting_term" | null;
   preferences?: Record<string, unknown>;
   memory_status?: "saved" | "browser_save_required" | "failed";
+  citations?: { evidence_id: string; title: string; url: string; fetched_at?: string }[];
   web_handoff?: { current_term: { season: string; year: number } | null; error_code: string | null; citations: { source_id: string; title: string; url: string; retrieved_at: string }[] } | null;
 };
 export function contextRevision(context: Omit<AgentContext, "revision">): string {

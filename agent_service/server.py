@@ -16,7 +16,7 @@ from fastapi import FastAPI, HTTPException, Query, Request, Response
 from langgraph.types import Command
 from .catalog import CatalogRepository
 from .contracts import MessageInput, ActionInput, ContextInput
-from .graph import create_graph, create_runtime_graph, request_state, MODEL_ID
+from .graph import create_graph, create_runtime_graph, request_state, OPENAI_MODEL_ID
 from .kimi_budget import Budget, active_budget
 from .kimi_contracts import KimiHistory, KimiDecision
 from .memory_repository import PostgresMemory, learn
@@ -24,6 +24,7 @@ from .identity import owner as resolve_owner
 from .telemetry import trace_event
 from .transcripts import TranscriptService
 from .transcript_routes import transcript_router
+from .evidence import progress_callback
 
 transcript_service = TranscriptService(CatalogRepository())
 
@@ -44,7 +45,7 @@ class RequestManager:
         self.guest_profiles = {}
 
     def public(self, record):
-        return {key: record.get(key) for key in ["request_id", "status", "reply", "action", "events", "trace_id", "web_handoff", "clarification", "preferences", "memory_status"]}
+        return {key: record.get(key) for key in ["request_id", "status", "reply", "action", "events", "trace_id", "web_handoff", "clarification", "preferences", "memory_status", "citations", "advisor_metrics"]}
 
     def authorize(self, thread_id, owner):
         with self.lock:
@@ -57,7 +58,7 @@ class RequestManager:
         if record.get('owner', '').startswith('guest:'):
             record['preferences'] = self.guest_profiles.get(record['owner'], record.get('preferences', {}))
         state = request_state(record['message'], context)
-        state.update(kimi_count=0, kimi_observations=[], kimi_decision={}, kimi_history=record.get('history', []), kimi_preferences=record.get('preferences', {}))
+        state.update(kimi_count=0, kimi_observations=[], kimi_decision={}, kimi_history=record.get('history', []), kimi_preferences=record.get('preferences', {}), verified_owner=record.get('owner', ''), evidence=[], citations=[], advisor_metrics={})
         return state
 
     def owned(self, request_id, thread_id):
@@ -129,6 +130,10 @@ class RequestManager:
     def advance(self, record, value):
         budget = record.get('budget', Budget()).start()
         budget_token = active_budget.set(budget)
+        def progress(entry):
+            with self.lock:
+                record['events'] = [*record['events'], entry]
+        progress_token = progress_callback.set(progress)
         started = time.monotonic()
         config = {"configurable": {"thread_id": record["thread_id"]}, "recursion_limit": 100, "metadata": {"request_id": record["request_id"], "langfuse_session_id": record["thread_id"]}}
         if isinstance(value, Command):
@@ -137,8 +142,8 @@ class RequestManager:
         if self.tracing:
             try:
                 from langfuse import get_client
-                from langfuse.langchain import CallbackHandler
-                config["callbacks"] = [CallbackHandler(trace_context={"trace_id": record["trace_id"]})]
+                # Graph/model callbacks include student context and transcript passages.
+                # Keep production traces to explicit metadata-only events; experiment data is synthetic/public.
                 scope = get_client().start_as_current_observation(name="course-radar-request", trace_context={"trace_id": record["trace_id"]}, metadata={"request_id": record["request_id"], "thread_id": record["thread_id"]})
             except Exception:
                 log.warning("Tracing configuration unavailable; execution will continue without it.")
@@ -155,6 +160,8 @@ class RequestManager:
             output = self.graph.invoke(value, config=config)
             with self.lock:
                 record["events"] = output.get("events", [])
+                record['citations'] = output.get('citations', [])
+                record['advisor_metrics'] = output.get('advisor_metrics', {})
                 record["web_handoff"] = output.get("web_handoff")
                 record["clarification"] = (output.get("pending_clarification") or {}).get("kind")
                 interrupted = output.get("__interrupt__")
@@ -183,12 +190,13 @@ class RequestManager:
             # Do not expose model/provider error payloads or database credentials.
             log.warning("Agent run failed (%s).", type(exc).__name__)
             with self.lock:
-                message = "Groq's rate limit was reached. Please wait a minute, then send the request again. No automatic retry was made." if type(exc).__name__ == "RateLimitError" else f"The agent could not complete this request ({type(exc).__name__}). Check the local service connection and try again."
+                message = "The AI provider's rate limit was reached. Please wait a minute, then send the request again. No automatic retry was made." if type(exc).__name__ == "RateLimitError" else f"The agent could not complete this request ({type(exc).__name__}). Check the local service connection and try again."
                 record.update(status="failed", reply=message, action=None)
                 self.next_request(record)
         finally:
             budget.seconds = max(0, budget.seconds - (time.monotonic() - started))
             active_budget.reset(budget_token)
+            progress_callback.reset(progress_token)
             try:
                 scope.__exit__(None, None, None)
             except Exception:
@@ -213,7 +221,7 @@ async def lifespan(app):
     memory = PostgresMemory()
     if os.getenv('KIMI_AUTH_URL'):
         memory.initialize()
-    manager = RequestManager(create_runtime_graph(CatalogRepository()), tracing=bool(os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")), memory=memory)
+    manager = RequestManager(create_runtime_graph(CatalogRepository(), transcript=transcript_service), tracing=bool(os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")), memory=memory)
     yield
     manager.pool.shutdown(wait=False, cancel_futures=True)
     if manager.tracing:
@@ -223,6 +231,34 @@ async def lifespan(app):
 
 app = FastAPI(title="Course Radar LangGraph", lifespan=lifespan)
 app.include_router(transcript_router(transcript_service))
+
+PUBLIC_PREFIX = '/api/v1'
+
+
+class PublicPrefix:
+    """Serve /api/v1/agent/* as /agent/* when a host rewrite keeps the public path (Vercel).
+
+    Mirrors the Vite dev proxy: strip the prefix on the way in and move /agent cookies
+    under /api/v1/agent on the way out, so the browser sends them back.
+    """
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        path = scope.get('path', '') if scope['type'] == 'http' else ''
+        if not path.startswith(PUBLIC_PREFIX + '/agent'):
+            return await self.app(scope, receive, send)
+        scope = {**scope, 'path': path[len(PUBLIC_PREFIX):], 'raw_path': scope.get('raw_path', b'')[len(PUBLIC_PREFIX):]}
+
+        async def public_send(message):
+            if message['type'] == 'http.response.start':
+                message = {**message, 'headers': [
+                    (k, v.replace(b'Path=/agent', b'Path=' + PUBLIC_PREFIX.encode() + b'/agent')) if k.lower() == b'set-cookie' else (k, v)
+                    for k, v in message.get('headers', [])]}
+            await send(message)
+
+        await self.app(scope, receive, public_send)
 
 
 @app.middleware('http')
@@ -263,7 +299,7 @@ def schedule_sections(term: str = Query(pattern=r"^(fall|spring)-(19|20|21)\d{2}
 
 @app.get("/agent/health")
 def health():
-    return {"status": "ok", "model": MODEL_ID, "groq_configured": bool(os.getenv("GROQ_API_KEY")), "web_search_configured": bool(os.getenv("TAVILY_API_KEY")), "agents": ["kimi", "web_search", "course_action"], "account_memory_configured": bool(os.getenv('KIMI_AUTH_URL')), "tracing": "configured" if manager.tracing else "not_configured", "instance_id": INSTANCE_ID}
+    return {"status": "ok", "provider": "openai", "model": OPENAI_MODEL_ID, "openai_configured": bool(os.getenv("OPENAI_API_KEY")), "groq_configured": bool(os.getenv("GROQ_API_KEY")), "web_search_configured": bool(os.getenv("TAVILY_API_KEY")), "agents": ["kimi", "web_search", "course_action"], "account_memory_configured": bool(os.getenv('KIMI_AUTH_URL')), "tracing": "configured" if manager.tracing else "not_configured", "instance_id": INSTANCE_ID}
 
 
 INSTANCE_ID = str(uuid4())
@@ -297,3 +333,7 @@ def action_results(data: ActionInput, request: Request):
 def graph_view():
     from .web_search_agent import create_web_search_agent
     return {"mermaid": manager.graph.get_graph(xray=True).draw_mermaid(), "web_search_mermaid": create_web_search_agent().get_graph().draw_mermaid()}
+
+
+# Production entrypoint (agent_service/Dockerfile); local `uvicorn agent_service.server:app` is unchanged.
+asgi = PublicPrefix(app)

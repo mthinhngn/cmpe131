@@ -35,7 +35,7 @@ def read_sections(term_id, tools=None):
                 continue
             seen.add(row[1])
             code = re.sub(r"([A-Z]+)\s*(\d)", r"\1 \2", match[1].upper())
-            offerings.append({"courseCode": code, "sectionNumber": match[2], "classNumber": row[1], "mode": row[2], "component": row[6], "days": row[7], "times": row[8], "instructors": [n.strip() for n in row[9].split("/") if n.strip() and n.strip().lower() not in {"staff", "tba", "tbd"}], "location": row[10], "dates": row[11], "openSeats": int(row[12]) if re.fullmatch(r"-?\d+", row[12]) else 0})
+            offerings.append({"courseCode": code, "sectionNumber": match[2], "classNumber": row[1], "mode": row[2], "attributes": row[4], "component": row[6], "days": row[7], "times": row[8], "instructors": [n.strip() for n in row[9].split("/") if n.strip() and n.strip().lower() not in {"staff", "tba", "tbd"}], "location": row[10], "dates": row[11], "openSeats": int(row[12]) if re.fullmatch(r"-?\d+", row[12]) else None, "seatsKnown": bool(re.fullmatch(r"-?\d+", row[12]))})
         if not offerings:
             raise LookupFailure("schedule_not_published", "No readable sections are published for this semester.")
         result = {"term": term.id, "status": "available", "offerings": offerings, "sourceUrl": source["url"], "fetchedAt": source["retrieved_at"], "message": ""}

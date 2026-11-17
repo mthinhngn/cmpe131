@@ -43,14 +43,17 @@ Forget memory only when requested. Application code reports durable storage outc
 """
 
 
-def create_kimi_graph(repository, model, web_agent, research=None, sections=None, today=None):
+def create_kimi_graph(repository, model, web_agent, research=None, sections=None, today=None, action_model=None, advisor=None):
     from .schedule_data import read_sections
-    planner = model.with_structured_output(KimiDecision, method='function_calling', include_raw=True)
+    planner = None if advisor is not None else model.with_structured_output(KimiDecision, method='function_calling', include_raw=True)
     research = research or ResearchAgent()
     sections = sections or read_sections
-    child = create_course_action_agent(repository, model, web_agent, **({'today': today} if today else {}))
+    action_model = action_model if action_model is not None else model
+    child = create_course_action_agent(repository, action_model, web_agent, **({'today': today} if today else {}))
 
     def decide(state):
+        if advisor is not None:
+            return advisor.run(state)
         from .kimi_budget import charge
         import time
         charge('decisions', time.monotonic() + 90)
@@ -161,7 +164,7 @@ def create_kimi_graph(repository, model, web_agent, research=None, sections=None
     def prepare_impl(state):
         d, ctx = KimiDecision.model_validate(state['kimi_decision']), state['app_context']
         if d.group != 'none':
-            action = prepare_group(repository, model, web_agent, d, ctx, today)
+            action = prepare_group(repository, action_model, web_agent, d, ctx, today)
         else:
             matches = repository.find(ctx['program_id'], d.query)
             if len(matches) != 1 or not d.section_term:

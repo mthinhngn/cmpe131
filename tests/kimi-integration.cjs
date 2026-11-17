@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 let pw;
 try { pw = require('playwright'); } catch { pw = require(path.join(os.homedir(), '.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')); }
 // The Planner hosts the assistant input inside its command bar; switch it to Ask before typing.
-const askMode = async page => { const ask = page.getByRole('button', { name: 'Ask', exact: true }); if (await ask.count() && await ask.getAttribute('aria-pressed') !== 'true') await ask.click(); };
+const askMode = async page => { const ask = page.getByRole('button', { name: 'Ask', exact: true }); await ask.waitFor(); if (await ask.getAttribute('aria-pressed') !== 'true') await ask.click(); };
 
 (async () => {
  const browser = await pw.chromium.launch({channel:'msedge',headless:true});
@@ -12,6 +12,16 @@ const askMode = async page => { const ask = page.getByRole('button', { name: 'As
  const page = await context.newPage();
  const errors=[]; page.on('pageerror',e=>errors.push(e.message));
  const base=process.env.KIMI_UI_URL || 'http://127.0.0.1:5186';
+ // Exercise the real workspace API from this isolated fixture frontend.
+ await page.route('**/api/v1/workspace**', async route => {
+   const response = await route.fetch({headers:{...route.request().headers(),origin:'http://localhost:5175'}});
+   const data = await response.json();
+   if (response.ok() && data.state) {
+     data.state.startingTerms = {'computer-engineering':'spring-2026'};
+     data.state.catalog.offerings = (await context.request.get('http://127.0.0.1:8006/agent/schedule/sections?term=fall-2026').then(r=>r.json())).offerings;
+   }
+   await route.fulfill({response,json:data});
+ });
  await page.addInitScript(()=>localStorage.setItem('course-radar-academic-profile-v1',JSON.stringify({startingTerm:'spring-2026'})));
  await page.route('**/api/v1/bootstrap*',async r=>{
    const catalog=await page.evaluate(async()=>{const m=await import('/src/data.ts');return m.computerEngineeringCatalog;});
@@ -27,10 +37,11 @@ const askMode = async page => { const ask = page.getByRole('button', { name: 'As
    await page.getByLabel('Send message',{exact:true}).click();
    await page.waitForFunction(expected=>[...document.querySelectorAll('.cr-chat-turn')].at(-1)?.textContent.includes(expected),expected);
  }
- const timeline=n=>page.locator('.sp-timeline button').nth(n-1);
+ const timeline=n=>page.getByRole('button',{name:new RegExp(`^Edit Semester ${n},`)});
  async function add(code,semester) {
    await timeline(semester).click();
-   await page.getByRole('button',{name:'All unplanned',exact:true}).click();
+   await page.getByRole('button',{name:'Courses',exact:true}).click();
+   await page.getByLabel('Search course library',{exact:true}).fill(code);
    await page.getByLabel(`Add ${code} to Semester ${semester}`,{exact:true}).click();
  }
  try {
@@ -55,21 +66,19 @@ const askMode = async page => { const ask = page.getByRole('button', { name: 'As
    assert.equal(receipts,1);
    await page.getByLabel('Minimize chat').click();
    await timeline(6).click();
-   await page.getByRole('button',{name:'In Semester 6',exact:true}).click();
-   assert.equal(await page.getByLabel('Remove CMPE 142 from plan',{exact:true}).count(),1);
+   assert.equal(await page.getByRole('button',{name:'CMPE 142',exact:true}).count(),1);
    // Refresh retains chat but must not restore/replay the memory-only plan.
    await page.reload(); await askMode(page); await page.getByLabel('Message Course Radar',{exact:true}).click();
    await page.waitForFunction(()=>document.querySelector('.cr-chat-messages')?.textContent.includes('applied and verified'));
    await page.waitForTimeout(1200); assert.equal(receipts,1);
    await page.getByLabel('Minimize chat').click();
-   await add('CMPE 131',2);
-   await page.locator('.cr-chat-section-choice fieldset').first().waitFor();
-   await page.locator('.cr-chat-section-choice fieldset').first().locator('input').first().check();
-   await page.getByRole('button',{name:'Confirm sections',exact:true}).click();
-   await page.getByLabel('Choose course sections').waitFor({state:'detached'});
-   await send('select section 91002 for CMPE131 in fall-2026','selection was applied and verified');
+   // Guest plans now persist across reloads in this tab; move the existing course.
+   await page.getByRole('button',{name:'CMPE 131',exact:true}).click();
+   await page.getByLabel('Move or add to semester').selectOption('2');
+   await page.getByRole('button',{name:'Move course',exact:true}).click();
+   await send('select section 49974 for CMPE131 in fall-2026','selection was applied and verified');
    assert.equal(lastReceipt.status,'succeeded');
-   assert.deepEqual(lastReceipt.context.selected_sections['fall-2026'],['91002']);
+   assert.deepEqual(lastReceipt.context.selected_sections['fall-2026'],['49974']);
    // Account namespaces are verified by the isolated test auth adapter, never supplied in message bodies.
    await context.addCookies([{name:'fixture_account',value:'alpha',url:base}]);
    await page.evaluate(()=>window.dispatchEvent(new Event('course-radar-auth-change')));
@@ -89,6 +98,6 @@ const askMode = async page => { const ask = page.getByRole('button', { name: 'As
    await page.screenshot({path:'tmp/kimi-chat-mobile.png'});
    assert.deepEqual(errors,[]);
    console.log('PASS: real Kimi graph + browser swap, section change, memory, preferences, owner switching, and unchanged chat styles.');
- } catch (error) { await page.screenshot({path:'tmp/kimi-integration-failure.png'}); console.error((await page.locator('.cr-chat-messages').textContent()).slice(-1800)); throw error; }
+ } catch (error) { await page.screenshot({path:'tmp/kimi-integration-failure.png'}); require('node:fs').writeFileSync('tmp/kimi-fixture-request.json',JSON.stringify(lastBody)); console.error((await page.locator('body').innerText()).slice(-1800)); throw error; }
  finally { await browser.close(); }
 })().catch(e=>{console.error(e);process.exitCode=1;});

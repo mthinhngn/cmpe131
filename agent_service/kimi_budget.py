@@ -10,7 +10,8 @@ active_budget = ContextVar('kimi_budget', default=None)
 class Budget:
     searches: int = 3
     fetches: int = 6
-    decisions: int = 6
+    decisions: int = 12
+    tool_calls: int = 10
     seconds: float = 90
     deadline: float = 0
 

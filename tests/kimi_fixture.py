@@ -17,8 +17,8 @@ from calendar_fixture import fixture_agent
 
 
 SECTIONS = [
-    {'courseCode': 'CMPE 131', 'sectionNumber': '01', 'classNumber': '91001', 'mode': 'In Person', 'component': 'LEC', 'days': 'MW', 'times': '10:00AM-11:15AM', 'instructors': ['Fixture'], 'location': 'ENG 101', 'dates': 'Fall 2026', 'openSeats': 10},
-    {'courseCode': 'CMPE 131', 'sectionNumber': '02', 'classNumber': '91002', 'mode': 'In Person', 'component': 'LEC', 'days': 'TR', 'times': '1:00PM-2:15PM', 'instructors': ['Other Fixture'], 'location': 'ENG 102', 'dates': 'Fall 2026', 'openSeats': 10},
+    {'courseCode': 'CMPE 131', 'sectionNumber': '04', 'classNumber': '47955', 'mode': 'In Person', 'component': 'LEC', 'days': 'W', 'times': '06:00PM-08:45PM', 'instructors': ['Fixture'], 'location': 'ENG 101', 'dates': 'Fall 2026', 'openSeats': 10},
+    {'courseCode': 'CMPE 131', 'sectionNumber': '05', 'classNumber': '49974', 'mode': 'In Person', 'component': 'LEC', 'days': 'TR', 'times': '09:00AM-10:15AM', 'instructors': ['Other Fixture'], 'location': 'ENG 102', 'dates': 'Fall 2026', 'openSeats': 10},
 ]
 
 
@@ -39,15 +39,13 @@ class Model:
     def invoke(self, messages):
         query = str(next(m.content for m in reversed(messages) if isinstance(m, HumanMessage))).lower()
         if query.startswith('swap'):
-            decision = KimiDecision(kind='course_action', group='swap', steps=[
-                {'kind': 'move_course_in_plan', 'course_query': 'CMPE131', 'source_semester_slot': 6, 'semester_slot': 7},
-                {'kind': 'move_course_in_plan', 'course_query': 'CMPE142', 'source_semester_slot': 7, 'semester_slot': 6}])
+            decision = KimiDecision(kind='course_action', group='swap', course_queries=['CMPE131', 'CMPE142'])
         elif query.startswith('select section'):
-            decision = KimiDecision(kind='course_action', query='CMPE131', section_term='fall-2026', section_numbers=['91002'])
+            decision = KimiDecision(kind='course_action', group='none', course_queries=[], query='CMPE131', section_term='fall-2026', section_numbers=['49974'])
         elif 'reddit' in query:
-            decision = KimiDecision(kind='answer', reply='Reddit preference observed.', signals=[{'category': 'source', 'value': 'reddit', 'evidence': 'reddit'}])
+            decision = KimiDecision(kind='answer', group='none', course_queries=[], reply='Reddit preference observed.', signals=[{'category': 'source', 'value': 'reddit', 'evidence': 'reddit'}])
         else:
-            decision = KimiDecision(kind='answer', reply='Hello from Kimi.')
+            decision = KimiDecision(kind='answer', group='none', course_queries=[], reply='Hello from Kimi.')
         return {'parsed': decision, 'parsing_error': None}
 
 

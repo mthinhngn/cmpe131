@@ -12,9 +12,15 @@
       "root": "api",
       "runtime": "container",
       "entrypoint": "Dockerfile.vercel"
+    },
+    "agent": {
+      "root": "agent_service",
+      "runtime": "container",
+      "entrypoint": "Dockerfile"
     }
   },
   "rewrites": [
+    { "source": "/api/v1/agent/(.*)", "destination": { "service": "agent" } },
     { "source": "/api/(.*)", "destination": { "service": "backend" } },
     { "source": "/(.*)", "destination": { "service": "frontend" } }
   ]

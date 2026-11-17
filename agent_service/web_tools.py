@@ -13,6 +13,8 @@ from html.parser import HTMLParser
 from io import BytesIO
 from urllib.parse import urlencode, urljoin, urlsplit, urlunsplit
 
+import certifi
+
 MAX_BYTES = 8_000_000
 OFFICIAL_HOSTS = {"www.sjsu.edu", "sjsu.edu"}
 
@@ -116,7 +118,9 @@ class PublicHTTPS(http.client.HTTPSConnection):
 
 def https_bytes(url, deadline, *, body=None, headers=None, max_bytes=MAX_BYTES):
     parts = urlsplit(url)
-    connection = PublicHTTPS(parts.hostname, timeout=remaining(deadline), context=ssl.create_default_context())
+    context = ssl.create_default_context()
+    context.load_verify_locations(cafile=certifi.where())
+    connection = PublicHTTPS(parts.hostname, timeout=remaining(deadline), context=context)
     connection.deadline = deadline
     try:
         path = urlunsplit(("", "", parts.path or "/", parts.query, ""))

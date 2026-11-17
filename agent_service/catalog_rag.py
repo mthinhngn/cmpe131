@@ -21,9 +21,11 @@ def vector_store(table, setup=False):
     from llama_index.vector_stores.postgres import PGVectorStore
     from sqlalchemy.engine import make_url
     url = make_url(database_url())
+    # asyncpg spells libpq's sslmode as ssl (hosted Postgres such as Neon requires it).
+    query = {('ssl' if k == 'sslmode' else k): v for k, v in url.query.items() if k != 'channel_binding'}
     return PGVectorStore.from_params(
         connection_string=url.set(drivername='postgresql+psycopg2').render_as_string(hide_password=False),
-        async_connection_string=url.set(drivername='postgresql+asyncpg').render_as_string(hide_password=False),
+        async_connection_string=url.set(drivername='postgresql+asyncpg', query=query).render_as_string(hide_password=False),
         table_name=table, embed_dim=1536, use_jsonb=True, perform_setup=setup)
 
 

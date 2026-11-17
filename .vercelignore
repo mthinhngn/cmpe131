@@ -11,3 +11,8 @@ tmp/
 /data/
 backups/
 dumps/
+
+# Local secrets are configured in Vercel env vars, never uploaded with the source.
+/.env
+/.env.*
+!/.env.example

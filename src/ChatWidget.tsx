@@ -347,7 +347,8 @@ export function ChatWidget() {
             <div className="cr-chat-message cr-chat-message-assistant">
               {request.reply
                 ? <Reply text={request.reply} failed={request.status === "failed"} animate={fresh.current.has(request.request_id)}/>
-                : <p className="cr-chat-working" role="status"><span className="cr-chat-dots" aria-hidden="true"><i/><i/><i/></span>{working(request.status)}</p>}
+                : <p className="cr-chat-working" role="status"><span className="cr-chat-dots" aria-hidden="true"><i/><i/><i/></span>{request.events.at(-1)?.detail || working(request.status)}</p>}
+              {!!request.citations?.length && <ul className="cr-chat-sources" aria-label="Answer sources">{request.citations.filter(source => /^https:\/\//i.test(source.url)).map(source => <li key={`${source.evidence_id}-${source.url}`}><a href={source.url} target="_blank" rel="noreferrer">{source.title || "Source"}</a>{source.fetched_at && <small> · {new Date(source.fetched_at).toLocaleString()}</small>}</li>)}</ul>}
               {!!request.web_handoff?.citations.length && <ul className="cr-chat-sources" aria-label="Official sources">{request.web_handoff.citations.map(source => <li key={source.source_id}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></li>)}</ul>}
               {request.events.length > 0 && <details className="cr-chat-run"><summary>Run details · {request.events.length} events</summary><ol>{request.events.map((entry, i) => <li key={i}><strong>{entry.node}</strong><span>{entry.detail}</span></li>)}</ol></details>}
             </div>
