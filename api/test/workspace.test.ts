@@ -13,6 +13,14 @@ test("private workspace credential and operation trust boundaries", () => {
   assert.equal(workspaceHash(token), workspaceHash(token)); assert.notEqual(workspaceHash(token), token.slice(7));
   for (const input of [null, {}, { requestId: "x", version: -1, args: {}, kind: "setPlan" }, { requestId: "x", version: 0, args: null, kind: "setPlan" }]) assert.throws(() => validateCommand(input));
 });
+
+test("transcript import uses the authenticated profile term and the normal workspace operation", () => {
+  const catalog = { courses: [{ id: "course", code: "C 1" }], requirementGroups: [{}, {}] } as ProgramCatalog;
+  const store = new PlanningStore("computer-engineering", catalog);
+  applyManual(store, "importTranscript", { rows: [{ course_id: "course", term: "spring-2026", status: "completed" }], start: "fall-2020" }, {}, null, "fall-2025");
+  assert.equal(store.plans.course.semester, 2);
+  assert.deepEqual(store.getState().completed, ["course"]);
+});
 test("manual operations validate current catalog and preserve completion rules", () => {
   const catalog = { courses: [{ id: "course", code: "C 1", recommendedSemester: 1 }], requirementGroups: Array(8).fill({}) } as ProgramCatalog;
   const store = new PlanningStore("computer-engineering", catalog);

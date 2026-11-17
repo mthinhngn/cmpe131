@@ -22,6 +22,10 @@ from .kimi_contracts import KimiHistory, KimiDecision
 from .memory_repository import PostgresMemory, learn
 from .identity import owner as resolve_owner
 from .telemetry import trace_event
+from .transcripts import TranscriptService
+from .transcript_routes import transcript_router
+
+transcript_service = TranscriptService(CatalogRepository())
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", encoding="utf-8-sig")
 log = logging.getLogger("course-radar-agent")
@@ -218,6 +222,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="Course Radar LangGraph", lifespan=lifespan)
+app.include_router(transcript_router(transcript_service))
 
 
 @app.middleware('http')

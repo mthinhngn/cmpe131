@@ -137,3 +137,7 @@ body.account-document{margin:0}
 .acct-added-programs li { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .acct-added-programs li span { min-width:0; overflow-wrap:anywhere; }
 .acct-program-fields { display:grid; gap:16px; }
+.acct-transcript-rows { max-height: 360px; overflow: auto; margin: 12px 0; border-block: 1px solid #e5e5e5; }
+.acct-transcript-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; font-size: 13px; }
+.acct-transcript-row input { margin-top: 3px; }
+.acct-transcript-row small { display: block; color: #666; margin-top: 3px; }

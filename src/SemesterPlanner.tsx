@@ -91,6 +91,7 @@ export default function SemesterPlanner() {
   const planned = useMemo(() => placements.filter(p => !p.completed).map(p => p.course), [placements]);
   const coursesIn = (s: PlanSlot) => planned.filter(c => plans[c.id].semester === s);
   const completedIn = (s: PlanSlot) => placements.filter(p => p.completed && p.semester === s).map(p => p.course);
+  const termUnits = (s: PlanSlot) => units([...coursesIn(s), ...completedIn(s)]);
   const units = (cs: Course[]) => cs.reduce((n, c) => n + c.units, 0);
   const remaining = useMemo(() => allCourses.filter(c => !plans[c.id]), [allCourses, plans]);
   const results = useMemo(() => remaining.filter(c => `${c.code} ${c.title}`.toLowerCase().includes(query.toLowerCase()) && (!subject || subjectOf(c).key === subject))
@@ -208,7 +209,7 @@ export default function SemesterPlanner() {
             e.preventDefault(); const destination = semesters[semesters.indexOf(s) + (e.key === "ArrowLeft" ? -1 : 1)];
             if (destination !== undefined) void moveTerm(s, destination);
           }
-        }} aria-pressed={s === semester} aria-label={`Edit ${slotLabel(s)}, ${units(coursesIn(s))} units`} onClick={() => setSemester(s)}><b>{short(s)} · {units(coursesIn(s))}u</b><small>{term(s).split(" \u00b7 ")[0].toUpperCase()}{units(coursesIn(s)) ? ` · ${units(coursesIn(s)) > 17 ? "HEAVY LOAD" : units(coursesIn(s)) >= 12 ? "TYPICAL LOAD" : "LIGHTER LOAD"}` : completedIn(s).length ? " · DONE" : ""}</small></button>)}</div>
+        }} aria-pressed={s === semester} aria-label={`Edit ${slotLabel(s)}, ${termUnits(s)} units`} onClick={() => setSemester(s)}><b>{short(s)} · {termUnits(s)}u</b><small>{term(s).split(" \u00b7 ")[0].toUpperCase()}{units(coursesIn(s)) ? ` · ${units(coursesIn(s)) > 17 ? "HEAVY LOAD" : units(coursesIn(s)) >= 12 ? "TYPICAL LOAD" : "LIGHTER LOAD"}` : completedIn(s).length ? " · DONE" : ""}</small></button>)}</div>
         <div className="pb-tools"><button className="pb-ghost" disabled={busy || planningStore.nextSemester > 100} onClick={extend}><Plus size={16}/>Semester</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("summer")}><Plus size={16}/>Summer term</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("winter")}><Plus size={16}/>Winter term</button><button className="pb-ghost" disabled={busy || !semesters.length} aria-label={`Delete ${slotLabel(semester)}`} title="Returns planned courses to the library" onClick={removeSemester}><X size={16}/>Delete selected term</button></div>
         {!semesters.length && <p className="pb-note">Add a semester, Winter or Summer term to start planning.</p>}
         <p className="pb-note">{heavy.length > 0 && <><b>{heavy.map(short).join(", ")}</b> above 17 units. </>}{warningCount > 0 && <><b>{warningCount}</b> course{warningCount !== 1 ? "s" : ""} may be out of prerequisite order. </>}Drag blocks between columns to rebalance, or outside the chart to remove. Drag term labels to move whole columns, or use Alt + Left/Right. Names and dates recalculate from their new position; later terms follow in sequence. Section choices for changed dates are cleared. Select a column, then find a course in the bar below (press /).{!planned.length && " Your plan is empty. Add a course from the bar below."}</p>

@@ -26,7 +26,10 @@ services:
       retries: 10
 
   postgres:
-    image: postgres:17-alpine
+    build:
+      context: .
+      dockerfile: api/postgres-vector.Dockerfile
+    image: course-radar-postgres:pg17-vector
     restart: unless-stopped
     environment:
       POSTGRES_USER: course_radar
