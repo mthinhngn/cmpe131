@@ -221,6 +221,7 @@ async def lifespan(app):
     memory = PostgresMemory()
     if os.getenv('KIMI_AUTH_URL'):
         memory.initialize()
+        transcript_service.initialize()
     manager = RequestManager(create_runtime_graph(CatalogRepository(), transcript=transcript_service), tracing=bool(os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")), memory=memory)
     yield
     manager.pool.shutdown(wait=False, cancel_futures=True)
