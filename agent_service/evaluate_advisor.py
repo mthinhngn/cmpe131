@@ -98,6 +98,18 @@ class IntentFixture:
         return {'intent': 'change', 'matches': True, 'unresolved_conditions': [], 'reason': 'Scripted explicit command.'}
 
 
+class VerdictFixture:
+    """Scripted verifier response; exercises wiring, not semantic accuracy."""
+    def __init__(self, rejected=()):
+        self.rejected = rejected
+
+    def invoke(self, messages):
+        payload = json.loads(messages[-1].content)
+        issues = [{'claim': c['text'], 'problem': 'Scripted unsupported assertion.'}
+                  for c in payload['claims'] if any(c['text'].startswith(text) for text in self.rejected)]
+        return {'verdict': 'revise' if issues else 'pass', 'issues': issues}
+
+
 def run_case(case):
     started = time.monotonic()
     repository = FixtureRepository()
@@ -109,6 +121,7 @@ def run_case(case):
         web = WebFixture()
     availability = Availability(repository, sections=lambda term: {'status': 'unavailable', 'message': 'Recorded section refresh failure.'})
     advisor = AdvisorLoop(model, availability, web, catalog=CatalogFixture(), transcript=TranscriptFixture(), reviews=ReviewFixture(),
+                          judge=VerdictFixture(case.get('rejected_claims', [])),
                           intent_judge=IntentFixture() if case.get('must_mutate') else None, today=lambda: TODAY)
     graph = create_kimi_graph(repository, model, web, advisor=advisor, action_model=ToolModel([]), today=lambda: TODAY)
     context = {'program_id': 'software-engineering', 'page': '/planner', 'selected_course_id': None,

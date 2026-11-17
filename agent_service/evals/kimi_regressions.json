@@ -1,0 +1,113 @@
+[
+  {
+    "id": "reg_correct_confirmation_destination",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 2",
+        "expect": {
+          "ends": "confirm_question",
+          "pending": true
+        }
+      },
+      {
+        "user": "Actually, use semester 6",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "reg_confirmation_becomes_question",
+    "group": "conversations",
+    "need": "course_info",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 2",
+        "expect": {
+          "ends": "confirm_question"
+        }
+      },
+      {
+        "user": "Explain what I would study first",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "pending": false,
+          "tools": [
+            "get_course"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "reg_swap_feasibility_is_discussion",
+    "group": "traps",
+    "need": "eligibility",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Can I swap CMPE 131 and CMPE 142?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "reg_failed_refresh_preserves_snapshot",
+    "group": "open",
+    "need": "availability",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "How many open seats does AMS 10 have right now?",
+        "expect": {
+          "ends": "answer",
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ],
+          "no_mutation": true,
+          "mentions_all": [
+            "AMS 10"
+          ],
+          "tools": [
+            "get_sections"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "reg_advice_picks_supported_option",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I enjoy interpreting cultural texts. Which would you suggest between AMS 10 and HIST 15, and why?",
+        "expect": {
+          "ends": "answer",
+          "rubric": [
+            "answers_question",
+            "picks_one_with_basis",
+            "no_unsupported_claims"
+          ],
+          "no_mutation": true
+        }
+      }
+    ]
+  }
+]

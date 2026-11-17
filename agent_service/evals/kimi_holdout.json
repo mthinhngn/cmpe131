@@ -1,0 +1,293 @@
+[
+  {
+    "id": "holdout_open_orientation",
+    "group": "open",
+    "need": "greeting_help",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Before I get started, could you explain the kinds of course-planning help available here?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_writing_details",
+    "group": "open",
+    "need": "course_info",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Explain ENGL 1B: what does it cover, how many units is it, and what prerequisites are listed?",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_course"],
+          "mentions_all": ["ENGL 1B"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_history_periods",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I enjoy tracing how American society changed over time. Between HIST 20A and HIST 20B for Spring 2027, which would you choose for me, and when would the other make more sense?",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_student_state", "get_course", "course_reviews"],
+          "mentions_all": ["HIST 20A", "HIST 20B"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "uses_goals", "picks_one_with_basis", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_oral_communication",
+    "group": "open",
+    "need": "requirement_options",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "ge 1c options spring 2027 pls, with the date of the list",
+        "expect": {
+          "ends": "answer",
+          "tools": ["find_courses_by_requirement"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_programming_foundation",
+    "group": "open",
+    "need": "recommendation",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want a programming foundation before attempting data structures. For Spring 2027, suggest one introductory programming course and explain why it fits that goal. You can give a conditional alternative too.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_student_state", "search_catalog", "get_course"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "uses_goals", "picks_one_with_basis", "at_most_one_follow_up", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_data_structures_seats",
+    "group": "open",
+    "need": "availability",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Check the open seats for CS 46B in Spring 2027 right now. If you only have a saved snapshot, give its timestamp and make that limitation clear.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_sections"],
+          "mentions_all": ["CS 46B"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_withdrawal_policy",
+    "group": "open",
+    "need": "policy",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you find the official catalog policy for withdrawing from a course after the normal drop period? Please cite what you find, or explain if the source does not establish the rule.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["search_catalog"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_open_employer_request",
+    "group": "open",
+    "need": "out_of_scope",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "My work shifts clash with school. Negotiate a new shift schedule with my employer for me, and tell me what course-planning help you can provide here.",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_action_writing_sixth_term",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Please place ENGL 1A into the sixth semester of my plan.",
+        "expect": {
+          "ends": "action",
+          "action": {"kind": "add_course_to_plan", "course_code": "ENGL 1A", "semester_slot": 6}
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_action_shift_existing_course",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want to spread out my workload. Move the CMPE 142 already in my plan to Fall 2027.",
+        "expect": {
+          "ends": "action",
+          "action": {"kind": "move_course_in_plan", "course_code": "CMPE 142", "semester_slot": 5}
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_action_delete_later_course",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "take cmpe142 off my plan",
+        "expect": {
+          "ends": "action",
+          "action": {"kind": "remove_course_from_plan", "course_code": "CMPE 142"}
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_conversation_transcript_limits",
+    "group": "conversations",
+    "need": "transcript",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "What completed coursework can you verify from my transcript?",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_transcript_facts"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      },
+      {
+        "user": "Given that record, can you establish that I meet the prerequisites for MATH 31 in Spring 2027? Separate anything not recorded from anything known to be unmet.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_student_state", "check_fit"],
+          "mentions_all": ["MATH 31"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_conversation_review_coverage",
+    "group": "conversations",
+    "need": "instructor_reviews",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Show me the review evidence you have for HIST 20A. Attribute the opinions and explain any coverage limits.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["course_reviews"],
+          "mentions_all": ["HIST 20A"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      },
+      {
+        "user": "Do those opinions prove that every instructor teaching it gives the same workload? Explain what the evidence can actually support.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["course_reviews"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_conversation_audit_scope",
+    "group": "conversations",
+    "need": "plan_review",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Audit my saved plan for units per semester and prerequisite ordering. Be explicit about the limits of this check.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_student_state"],
+          "mentions_all": ["CMPE 131", "CMPE 142"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      },
+      {
+        "user": "Does that audit establish that I have satisfied every requirement for graduation, or is a degree-completion check still needed?",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_student_state"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "holdout_conversation_other_planned_course",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Review the courses currently in my saved plan and identify their semesters, units, and any prerequisite-order problems.",
+        "expect": {
+          "ends": "answer",
+          "tools": ["get_student_state"],
+          "mentions_all": ["CMPE 131", "CMPE 142"],
+          "no_mutation": true,
+          "rubric": ["answers_question", "no_unsupported_claims"]
+        }
+      },
+      {
+        "user": "Keep CMPE 131 where it is. Move the other course in that plan to semester 6.",
+        "expect": {
+          "ends": "action",
+          "action": {"kind": "move_course_in_plan", "course_code": "CMPE 142", "semester_slot": 6},
+          "action_course_from_previous_reply": true
+        }
+      }
+    ]
+  }
+]

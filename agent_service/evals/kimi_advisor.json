@@ -596,6 +596,9 @@
     "must_revise": true,
     "forbidden_facts": [
       "99999"
+    ],
+    "rejected_claims": [
+      "AMS 10 has 99999 seats as of 2026-11-06T05:04:57.996515+00:00."
     ]
   },
   {
@@ -887,14 +890,29 @@
             "term": "spring-2027"
           }
         }
-      ]
+      ],
+      {
+        "name": "final_answer",
+        "args": {
+          "text": "Requirement candidates were not available from this lookup.",
+          "claims": [
+            {
+              "kind": "gap",
+              "text": "Requirement candidates were not available from this lookup.",
+              "evidence_ids": [
+                "ev_1"
+              ]
+            }
+          ]
+        }
+      }
     ],
     "required_tools": [],
     "forbidden_tools": [
       "propose_plan_change"
     ],
     "golden_facts": [
-      "lookup limit"
+      "Requirement candidates were not available"
     ],
     "must_not_mutate": true,
     "max_tool_calls": 10

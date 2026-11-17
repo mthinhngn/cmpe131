@@ -89,7 +89,7 @@ class ResearchAgent:
                 ])
                 summary = ReviewSummary.model_validate(summary)
                 row.update(summary=' '.join(summary.summary.split()[:60]), themes=summary.themes,
-                           sample_size='thin' if len(matches) < 3 else 'some', sources=[{'url': item['url'], 'title': item['title']} for item in matches])
+                           sample_size='thin' if len(matches) < 3 else 'some', sources=[{'url': item['url'], 'title': item['title'], 'excerpt': item['excerpt'], 'evidence_type': 'search_extract'} for item in matches])
             rows.append(row)
         return {'status': 'ok' if any(row['sources'] for row in rows) else 'empty', 'instructors': rows, 'coverage': coverage}
 

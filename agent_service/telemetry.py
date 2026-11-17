@@ -4,8 +4,15 @@ import logging
 import os
 
 
+_enabled = False
+
+def enable():
+    global _enabled
+    _enabled = True
+
+
 def trace_event(name, detail, *, trace_id=None, metadata=None):
-    if not (os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")):
+    if not _enabled or not (os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")):
         return
     try:
         from langfuse import get_client

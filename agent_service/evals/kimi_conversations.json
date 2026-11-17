@@ -1,0 +1,3053 @@
+[
+  {
+    "id": "open_greeting_help_direct",
+    "group": "open",
+    "need": "greeting_help",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Hello, what can you help me do?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_greeting_help_polite",
+    "group": "open",
+    "need": "greeting_help",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you explain what this advisor can help with?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_greeting_help_goal",
+    "group": "open",
+    "need": "greeting_help",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I am new here and trying to plan college. How can you help?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_greeting_help_terse",
+    "group": "open",
+    "need": "greeting_help",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "hey, what can u do?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_greeting_help_followup",
+    "group": "open",
+    "need": "greeting_help",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Hello",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "What else can you help me do here?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_course_info_direct",
+    "group": "open",
+    "need": "course_info",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "What are the topics, units and prerequisites of CMPE 131?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_course_info_polite",
+    "group": "open",
+    "need": "course_info",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you explain the content and prerequisites for CMPE 131?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_course_info_goal",
+    "group": "open",
+    "need": "course_info",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want to learn software development. What would CMPE 131 teach me, and what comes before it?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "uses_goals"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_course_info_terse",
+    "group": "open",
+    "need": "course_info",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "cmpe131 topics units prereqs?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_course_info_followup",
+    "group": "open",
+    "need": "course_info",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about CMPE 131",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "And what do I need before taking it?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_compare_courses_direct",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Compare AMS 10 and HIST 15 for me and pick one for Spring 2027.",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "get_course",
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_compare_courses_polite",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you help me choose between AMS 10 and HIST 15 for Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "get_course",
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_compare_courses_goal",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I enjoy history but work 20 hours a week. Would you pick AMS 10 or HIST 15 for me in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "get_course",
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis",
+            "uses_goals"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_compare_courses_terse",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "ams10 vs hist15 spring27, which for me?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "get_course",
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_compare_courses_followup",
+    "group": "open",
+    "need": "compare_courses",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Compare AMS 10 and HIST 15 for Spring 2027",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Which of those would you choose for me?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "get_course",
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_requirement_options_direct",
+    "group": "open",
+    "need": "requirement_options",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "List the US1 courses offered in Spring 2027.",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "find_courses_by_requirement"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_requirement_options_polite",
+    "group": "open",
+    "need": "requirement_options",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Would you show me all courses that count for US1 in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "find_courses_by_requirement"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_requirement_options_goal",
+    "group": "open",
+    "need": "requirement_options",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I need US1 and want to see the whole Spring 2027 list before deciding. What are my choices?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "find_courses_by_requirement"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_requirement_options_terse",
+    "group": "open",
+    "need": "requirement_options",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "us1 options spring27?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "find_courses_by_requirement"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_requirement_options_followup",
+    "group": "open",
+    "need": "requirement_options",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "What does US1 mean?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Which courses meet it in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "find_courses_by_requirement"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_recommendation_direct",
+    "group": "open",
+    "need": "recommendation",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Which US1 course should I take in Spring 2027? Pick one and explain.",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "find_courses_by_requirement",
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_recommendation_polite",
+    "group": "open",
+    "need": "recommendation",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you recommend a US1 course for Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "find_courses_by_requirement",
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_recommendation_goal",
+    "group": "open",
+    "need": "recommendation",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I like history and want a manageable US1 next semester alongside my job. Which course would you choose?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "find_courses_by_requirement",
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis",
+            "uses_goals",
+            "states_assumptions"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_recommendation_terse",
+    "group": "open",
+    "need": "recommendation",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "us1 rec next sem? pick 1",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "find_courses_by_requirement",
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis",
+            "states_assumptions"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_recommendation_followup",
+    "group": "open",
+    "need": "recommendation",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "What counts for US1 in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Which of those would you pick for me?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "find_courses_by_requirement",
+            "get_course"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "picks_one_with_basis"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_plan_review_direct",
+    "group": "open",
+    "need": "plan_review",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Review my plan for units per semester and prerequisite order.",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "review_plan"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_plan_review_polite",
+    "group": "open",
+    "need": "plan_review",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you check the workload and prerequisite ordering in my plan?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "review_plan"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_plan_review_goal",
+    "group": "open",
+    "need": "plan_review",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I am worried about overloading myself. Is my plan too heavy, and are prerequisites in order?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "review_plan"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_plan_review_terse",
+    "group": "open",
+    "need": "plan_review",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "my plan ok? units per sem + prereqs?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "review_plan"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_plan_review_followup",
+    "group": "open",
+    "need": "plan_review",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Read my current plan",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Are the term loads and course ordering reasonable?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "review_plan"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_eligibility_direct",
+    "group": "open",
+    "need": "eligibility",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Do my recorded courses meet the prerequisites for CMPE 131 in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "check_fit"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_eligibility_polite",
+    "group": "open",
+    "need": "eligibility",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you check whether my records show the requirements for CMPE 131 in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "check_fit"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_eligibility_goal",
+    "group": "open",
+    "need": "eligibility",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want to take CMPE 131 in Spring 2027 but do not want to miss a prerequisite. What do my records establish?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "check_fit"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_eligibility_terse",
+    "group": "open",
+    "need": "eligibility",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "cmpe131 spring27 prereqs met for me?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "check_fit"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_eligibility_followup",
+    "group": "open",
+    "need": "eligibility",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me the prerequisites for CMPE 131",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Do my recorded courses meet them for Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_student_state",
+            "check_fit"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "CMPE 131"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_availability_direct",
+    "group": "open",
+    "need": "availability",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "How many seats are open in AMS 10 for Spring 2027 right now?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_sections"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "AMS 10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_availability_polite",
+    "group": "open",
+    "need": "availability",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you check current AMS 10 seat availability for Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_sections"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "AMS 10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_availability_goal",
+    "group": "open",
+    "need": "availability",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I need a class with room. Does AMS 10 have seats in Spring 2027 right now?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_sections"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "AMS 10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_availability_terse",
+    "group": "open",
+    "need": "availability",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "ams10 spring27 seats now?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_sections"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "AMS 10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_availability_followup",
+    "group": "open",
+    "need": "availability",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about AMS 10",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Does it have open seats for Spring 2027 right now?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_sections"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ],
+          "mentions_all": [
+            "AMS 10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_instructor_reviews_direct",
+    "group": "open",
+    "need": "instructor_reviews",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "What do student course reviews say about AMS 10?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_instructor_reviews_polite",
+    "group": "open",
+    "need": "instructor_reviews",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you summarize student opinions about AMS 10?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_instructor_reviews_goal",
+    "group": "open",
+    "need": "instructor_reviews",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I prefer discussion classes. What do the available reviews say about AMS 10?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up",
+            "uses_goals"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_instructor_reviews_terse",
+    "group": "open",
+    "need": "instructor_reviews",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "ams10 student reviews?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_instructor_reviews_followup",
+    "group": "open",
+    "need": "instructor_reviews",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about AMS 10",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "What did students think of it?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_policy_direct",
+    "group": "open",
+    "need": "policy",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "What does the SJSU catalog say about grade forgiveness?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "search_catalog"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_policy_polite",
+    "group": "open",
+    "need": "policy",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you look up the catalog policy on grade forgiveness?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "search_catalog"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_policy_goal",
+    "group": "open",
+    "need": "policy",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I may repeat a class. What is the official grade forgiveness policy?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "search_catalog"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_policy_terse",
+    "group": "open",
+    "need": "policy",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "sjsu grade forgiveness policy?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "search_catalog"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_policy_followup",
+    "group": "open",
+    "need": "policy",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "I want to understand repeating courses",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "What is the official catalog policy for grade forgiveness?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "search_catalog"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_transcript_direct",
+    "group": "open",
+    "need": "transcript",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Does my confirmed transcript show that I passed MATH 30?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_transcript_facts"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_transcript_polite",
+    "group": "open",
+    "need": "transcript",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you check my uploaded transcript for MATH 30 completion?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_transcript_facts"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_transcript_goal",
+    "group": "open",
+    "need": "transcript",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I do not want to retake calculus. Does my transcript confirm MATH 30 is complete?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_transcript_facts"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_transcript_terse",
+    "group": "open",
+    "need": "transcript",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "transcript: math30 passed?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_transcript_facts"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_transcript_followup",
+    "group": "open",
+    "need": "transcript",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Can you read confirmed transcript facts?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Does mine show MATH 30 completed?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "get_transcript_facts"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_out_of_scope_direct",
+    "group": "open",
+    "need": "out_of_scope",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Enroll me directly in SJSU classes and pay my tuition.",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_out_of_scope_polite",
+    "group": "open",
+    "need": "out_of_scope",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you access MySJSU to pay my tuition?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_out_of_scope_goal",
+    "group": "open",
+    "need": "out_of_scope",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I need my tuition paid today. Can you submit payment in MySJSU?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_out_of_scope_terse",
+    "group": "open",
+    "need": "out_of_scope",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "pay my sjsu tuition pls",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_out_of_scope_followup",
+    "group": "open",
+    "need": "out_of_scope",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "What can you do here?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "Can you pay my tuition in MySJSU?",
+        "expect": {
+          "ends": "answer",
+          "tools": [],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims",
+            "at_most_one_follow_up"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_numbered_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 5",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_numbered_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you please put HIST 15 in semester 5?",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_numbered_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want to study history later in my plan. Put HIST 15 into semester 5.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_numbered_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "hist15 -> sem5 add pls",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_numbered_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about HIST 15",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Put it into semester 5",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_calendar_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Add HIST 15 to Spring 2027",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_calendar_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Please schedule HIST 15 in Spring 2027 for me.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_calendar_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I need history next spring. Add HIST 15 to Spring 2027.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_calendar_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "hist15 add spring27",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_calendar_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about HIST 15",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Add that to Spring 2027",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_next_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Add HIST 15 next semester",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_next_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Would you put HIST 15 into next semester for me?",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_next_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I have space next semester and want history. Add HIST 15 then.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_next_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "hist15 next sem pls add",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_next_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about HIST 15",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Go ahead and add it next semester",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_past_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Add the CMPE50 to Spring 2025",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          }
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "action_past_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you add CMPE 50 to Spring 2025 please?",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          }
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "action_past_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I am reconstructing my old plan. Put CMPE 50 in Spring 2025.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          }
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "action_past_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "cmpe50 spring25 add",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          }
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "action_past_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about CMPE 50",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Add it to Spring 2025",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          }
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "action_remove_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Remove CMPE 131 from my plan",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "remove_course_from_plan",
+            "course_code": "CMPE 131"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_remove_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you please take CMPE 131 out of my plan?",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "remove_course_from_plan",
+            "course_code": "CMPE 131"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_remove_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I am revising my plan and do not want CMPE 131 there. Remove it.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "remove_course_from_plan",
+            "course_code": "CMPE 131"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_remove_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "delete cmpe131 from plan",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "remove_course_from_plan",
+            "course_code": "CMPE 131"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_remove_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about CMPE 131",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Remove that from my plan",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "remove_course_from_plan",
+            "course_code": "CMPE 131"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_move_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Move CMPE 131 to semester 6",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "move_course_in_plan",
+            "course_code": "CMPE 131",
+            "semester_slot": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_move_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Please move CMPE 131 into semester 6.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "move_course_in_plan",
+            "course_code": "CMPE 131",
+            "semester_slot": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_move_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I need more time before software engineering. Move CMPE 131 to semester 6.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "move_course_in_plan",
+            "course_code": "CMPE 131",
+            "semester_slot": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_move_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "cmpe131 move sem6",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "move_course_in_plan",
+            "course_code": "CMPE 131",
+            "semester_slot": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_move_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about CMPE 131",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Move it to semester 6",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "move_course_in_plan",
+            "course_code": "CMPE 131",
+            "semester_slot": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_swap_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Swap CMPE 131 and CMPE 142",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "swap"
+          },
+          "changes": [
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3,
+              "semester_slot": 4
+            },
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 142",
+              "semester_slot": 3,
+              "previous_semester_slot": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_swap_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you swap CMPE 131 with CMPE 142 in my plan?",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "swap"
+          },
+          "changes": [
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3,
+              "semester_slot": 4
+            },
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 142",
+              "semester_slot": 3,
+              "previous_semester_slot": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_swap_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want these two courses in the opposite terms. Swap CMPE 131 and CMPE 142.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "swap"
+          },
+          "changes": [
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3,
+              "semester_slot": 4
+            },
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 142",
+              "semester_slot": 3,
+              "previous_semester_slot": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_swap_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "swap cmpe131 cmpe142",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "swap"
+          },
+          "changes": [
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3,
+              "semester_slot": 4
+            },
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 142",
+              "semester_slot": 3,
+              "previous_semester_slot": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_swap_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Compare CMPE 131 and CMPE 142",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Swap those two in my plan",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "swap"
+          },
+          "changes": [
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3,
+              "semester_slot": 4
+            },
+            {
+              "kind": "move_course_in_plan",
+              "course_code": "CMPE 142",
+              "semester_slot": 3,
+              "previous_semester_slot": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_replace_direct",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Replace CMPE 131 with CMPE 135",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "replace"
+          },
+          "changes": [
+            {
+              "kind": "remove_course_from_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3
+            },
+            {
+              "kind": "add_course_to_plan",
+              "course_code": "CMPE 135",
+              "semester_slot": 3
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_replace_polite",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you replace CMPE 131 with CMPE 135 in my plan?",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "replace"
+          },
+          "changes": [
+            {
+              "kind": "remove_course_from_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3
+            },
+            {
+              "kind": "add_course_to_plan",
+              "course_code": "CMPE 135",
+              "semester_slot": 3
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_replace_goal",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "goal",
+    "turns": [
+      {
+        "user": "I want CMPE 135 in the slot currently used by CMPE 131. Replace CMPE 131 with CMPE 135.",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "replace"
+          },
+          "changes": [
+            {
+              "kind": "remove_course_from_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3
+            },
+            {
+              "kind": "add_course_to_plan",
+              "course_code": "CMPE 135",
+              "semester_slot": 3
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_replace_terse",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "terse",
+    "turns": [
+      {
+        "user": "replace cmpe131 w cmpe135",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "replace"
+          },
+          "changes": [
+            {
+              "kind": "remove_course_from_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3
+            },
+            {
+              "kind": "add_course_to_plan",
+              "course_code": "CMPE 135",
+              "semester_slot": 3
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "action_replace_followup",
+    "group": "actions",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Compare CMPE 131 and CMPE 135",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "Replace the first with the second in my plan",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "apply_plan_changes",
+            "operation": "replace"
+          },
+          "changes": [
+            {
+              "kind": "remove_course_from_plan",
+              "course_code": "CMPE 131",
+              "previous_semester_slot": 3
+            },
+            {
+              "kind": "add_course_to_plan",
+              "course_code": "CMPE 135",
+              "semester_slot": 3
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_1_direct",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Should I add HIST 15 next semester?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_1_polite",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Would it make sense for me to add HIST 15 next semester?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_2_direct",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Don't add HIST 15, just tell me its units",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_2_polite",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Please tell me HIST 15 units without changing anything.",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_3_direct",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "What happens if I drop CMPE 131?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_3_polite",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Could you explain the consequences of removing CMPE 131, without changing my plan?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_4_direct",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "direct",
+    "turns": [
+      {
+        "user": "Can I swap CMPE 131 and CMPE 142?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "trap_4_polite",
+    "group": "traps",
+    "need": "plan_change",
+    "style": "polite",
+    "turns": [
+      {
+        "user": "Would swapping CMPE 131 and CMPE 142 be possible? I am only asking about feasibility.",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "C1",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15",
+        "expect": {
+          "ends": "question"
+        }
+      },
+      {
+        "user": "spring 2027",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C2",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add CMPE 50",
+        "expect": {
+          "ends": "question"
+        }
+      },
+      {
+        "user": "I want in Spring 2025",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          }
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "C3",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add the CMPE50 to Spring 2025",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "CMPE 50",
+            "semester_slot": 1
+          },
+          "pending": false
+        }
+      }
+    ],
+    "context": {
+      "starting_term": "spring-2025"
+    }
+  },
+  {
+    "id": "C4",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 2",
+        "expect": {
+          "ends": "confirm_question",
+          "pending": true,
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "yes",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C5",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 2",
+        "expect": {
+          "ends": "confirm_question",
+          "pending": true,
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "no",
+        "expect": {
+          "no_mutation": true,
+          "pending": false,
+          "ends_any": [
+            "answer",
+            "question"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "C6",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 2",
+        "expect": {
+          "ends": "confirm_question",
+          "pending": true,
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "no, semester 5 instead",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C7",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15 to semester 2",
+        "expect": {
+          "ends": "confirm_question",
+          "pending": true,
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "how many units is it?",
+        "expect": {
+          "ends": "answer",
+          "mentions_all": [
+            "3"
+          ],
+          "no_mutation": true,
+          "pending": false
+        }
+      },
+      {
+        "user": "yes",
+        "expect": {
+          "ends": "question",
+          "no_mutation": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "C8",
+    "group": "conversations",
+    "need": "compare_courses",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Compare AMS 10 and HIST 15",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "which one is less work?",
+        "expect": {
+          "ends": "answer",
+          "tools": [
+            "course_reviews"
+          ],
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "no_unsupported_claims"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "C9",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "What counts for US1 in Spring 2027?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "add the American studies one next semester",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "AMS 10",
+            "semester_slot": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C10",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "I like history, what's an easy US1 next semester?",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "rubric": [
+            "answers_question",
+            "picks_one_with_basis",
+            "no_unsupported_claims"
+          ]
+        }
+      },
+      {
+        "user": "ok add that",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "semester_slot": 4
+          },
+          "action_course_from_previous_reply": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "C11",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Tell me about HIST 20A",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true
+        }
+      },
+      {
+        "user": "sorry, I meant HIST 20B",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "mentions_all": [
+            "HIST 20B"
+          ],
+          "tools": [
+            "get_course"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "C12",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add a course to semester 5",
+        "expect": {
+          "ends": "question"
+        }
+      },
+      {
+        "user": "HIST 15",
+        "expect": {
+          "ends": "action",
+          "action": {
+            "kind": "add_course_to_plan",
+            "course_code": "HIST 15",
+            "semester_slot": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "C13",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "Add HIST 15",
+        "expect": {
+          "ends": "question"
+        }
+      },
+      {
+        "user": "never mind",
+        "expect": {
+          "ends": "answer",
+          "no_mutation": true,
+          "pending": false
+        }
+      }
+    ]
+  },
+  {
+    "id": "C14",
+    "group": "conversations",
+    "need": "plan_change",
+    "style": "followup",
+    "turns": [
+      {
+        "user": "yes",
+        "expect": {
+          "no_mutation": true,
+          "ends_any": [
+            "question",
+            "answer"
+          ]
+        }
+      }
+    ]
+  }
+]

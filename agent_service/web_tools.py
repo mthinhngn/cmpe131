@@ -17,7 +17,7 @@ from urllib.parse import urlencode, urljoin, urlsplit, urlunsplit
 import certifi
 
 MAX_BYTES = 8_000_000
-OFFICIAL_HOSTS = {"www.sjsu.edu", "sjsu.edu"}
+OFFICIAL_HOSTS = {"www.sjsu.edu", "sjsu.edu", "catalog.sjsu.edu"}
 
 
 class LookupFailure(Exception):

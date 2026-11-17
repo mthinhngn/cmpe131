@@ -9,6 +9,22 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parents[1] / '.env', encoding='utf-8-sig')
 
 
+def fetch_policies(urls, fetcher=None):
+    from agent_service.web_tools import OfficialSearchTools
+    fetcher = fetcher or OfficialSearchTools()
+    pages = []
+    for url in urls:
+        try:
+            page = fetcher.fetch({'url': url, 'title': 'SJSU policy'}, time.monotonic() + 30)
+            if not page.get('text', '').strip():
+                raise ValueError('Empty policy text')
+            pages.append(page)
+            print(f"Fetched policy: {url} ({len(page['text'])} characters)")
+        except Exception as exc:
+            print(f'Policy fetch failed: {url}: {exc}')
+    return pages
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     operation = parser.add_mutually_exclusive_group(required=True)
@@ -16,9 +32,11 @@ def main():
     operation.add_argument('--initialize', action='store_true', help='Initialize transcript and pgvector tables without embedding calls')
     parser.add_argument('--policy-url', action='append', default=[], help='Official SJSU policy URL to fetch and index')
     args = parser.parse_args()
+    pages = fetch_policies(args.policy_url) if args.embed else []
+    if args.policy_url and args.embed and not pages:
+        raise SystemExit('No nonempty policy pages fetched. Nothing was indexed.')
     from agent_service.catalog_rag import catalog_rows, catalog_nodes, retrieval_index, vector_store
     from agent_service.transcripts import TranscriptStore
-    from agent_service.web_tools import OfficialSearchTools
     TranscriptStore().initialize()
     for table in ('kimi_catalog', 'kimi_transcripts'):
         vector_store(table, setup=True).get_nodes(node_ids=['__initialize__'])
@@ -28,8 +46,6 @@ def main():
     rows = catalog_rows()
     if not rows:
         raise SystemExit('No imported catalog rows. Import the catalog before building its index.')
-    pages = [OfficialSearchTools().fetch({'url': url, 'title': 'SJSU policy'}, time.monotonic() + 30)
-             for url in args.policy_url]
     nodes = catalog_nodes(rows, pages)
     index = retrieval_index('kimi_catalog', setup=True)
     # Stable IDs make re-indexing replace catalog nodes instead of duplicating them.

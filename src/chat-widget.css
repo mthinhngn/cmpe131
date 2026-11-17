@@ -354,3 +354,53 @@
 .cr-chat-section-actions button:last-child:not(:first-child) { color: #fff; background: #1d1c1b; box-shadow: none; }
 .cr-chat-section-actions button:last-child:not(:first-child):hover:not(:disabled) { background: #33312f; }
 .cr-chat-section-actions button:disabled { opacity: .45; cursor: default; }
+
+/* Answer content uses normal document flow; comparison tables scroll inside the panel. */
+.cr-chat-reply { font-size: 14px; line-height: 1.65; min-width: 0; }
+.cr-chat-message-assistant .cr-chat-reply > * + * { margin-top: 16px; }
+.cr-chat-message-assistant .cr-chat-reply p { font-size: inherit; white-space: normal; }
+.cr-chat-reply :is(h3,h4,h5,h6) { margin: 22px 0 10px; font-size: 16px; line-height: 1.35; font-weight: 650; letter-spacing: -.02em; }
+.cr-chat-reply h3 { font-size: 19px; }
+.cr-chat-reply > :first-child { margin-top: 0; }
+.cr-chat-reply strong { font-weight: 650; }
+.cr-chat-reply :is(ul,ol) { padding-left: 22px; margin-bottom: 0; }
+.cr-chat-reply li + li { margin-top: 6px; }
+.cr-chat-reply li > p + p { margin-top: 8px; }
+.cr-chat-reply a { color: var(--cr-chat-ink-2); text-underline-offset: 3px; text-decoration-color: rgb(70 60 52 / 40%); }
+.cr-chat-reply a:hover { text-decoration-color: currentColor; }
+.cr-chat-table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--cr-chat-hair); border-radius: 10px; }
+.cr-chat-reply table { width: 100%; border-collapse: collapse; font-size: 12.5px; line-height: 1.5; text-align: left; }
+.cr-chat-reply :is(th,td) { min-width: 70px; padding: 11px 12px; vertical-align: top; border-bottom: 1px solid var(--cr-chat-hair); overflow-wrap: normal; }
+.cr-chat-reply th { font-weight: 650; background: rgb(70 60 52 / 5%); white-space: nowrap; }
+.cr-chat-reply tbody tr:last-child td { border-bottom: 0; }
+.cr-chat-reply blockquote { margin-inline: 0; padding: 10px 14px; border-left: 3px solid var(--cr-chat-hair); background: rgb(255 255 255 / 25%); }
+.cr-chat-reply pre { overflow-x: auto; padding: 12px; border-radius: 8px; background: rgb(70 60 52 / 5%); }
+.cr-chat-reply :is(pre,code) { font-size: 12px; }
+.cr-chat-reply hr { border: 0; border-top: 1px solid var(--cr-chat-hair); margin-block: 20px; }
+/* Inline source chips: one per claim, sitting at the end of the text it supports. */
+.cr-source { position: relative; }
+.cr-chat-reply .cr-source-chip { display: inline-block; white-space: nowrap; margin: 0 0 0 2px; padding: 0 8px; border: 0; border-radius: 999px;
+  background: var(--cr-chat-pill); box-shadow: none; color: var(--cr-chat-ink-2); font-family: inherit; font-size: 11.5px; font-weight: 500; line-height: 19px; font-style: normal; text-decoration: none; vertical-align: baseline; cursor: pointer;
+  transition: background-color 160ms var(--cr-chat-ease); }
+.cr-chat-reply .cr-source-chip:active { transform: none; }
+.cr-chat-reply .cr-source-chip:hover, .cr-chat-reply .cr-source-chip[aria-expanded="true"] { background: rgb(110 100 92 / 22%); }
+.cr-chat-reply .cr-source-chip:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.cr-source-name { white-space: nowrap; }
+.cr-source-more { margin-left: 4px; color: var(--cr-chat-muted); }
+.cr-source-pop { position: absolute; z-index: 5; top: calc(100% + 6px); left: 0; display: grid; gap: 2px; width: max-content; max-width: min(300px, 70vw); padding: 6px;
+  border: 1px solid var(--cr-chat-hair); border-radius: 12px; background: #faf8f6; box-shadow: 0 10px 30px rgb(40 30 20 / 14%); font-style: normal;
+  animation: cr-chat-lift 160ms var(--cr-chat-ease) both; }
+.cr-chat-reply .cr-source-pop a { display: grid; gap: 1px; padding: 7px 9px; border-radius: 8px; color: var(--cr-chat-ink); text-decoration: none; font-size: 12.5px; line-height: 1.4; }
+.cr-chat-reply .cr-source-pop a:hover, .cr-chat-reply .cr-source-pop a:focus-visible { background: rgb(70 60 52 / 6%); outline: none; }
+.cr-source-pop strong { font-weight: 600; }
+.cr-source-pop span, .cr-source-pop small { color: var(--cr-chat-muted); overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { .cr-source-pop { animation: none; } }
+/* Entry animations give each block its own stacking context; lift the block (and turn) holding an open list above later siblings. */
+.cr-chat-reply > :has(.cr-source-pop), .cr-chat-turn:has(.cr-source-pop) { position: relative; z-index: 6; }
+.cr-chat-source-details { margin-top: 14px; font-size: 12px; color: var(--cr-chat-muted); }
+.cr-chat-source-details summary { cursor: pointer; padding-block: 4px; }
+.cr-chat-reply :is(a, .cr-chat-table-scroll):focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.cr-chat-reply-fresh > * { animation: cr-chat-lift 220ms var(--cr-chat-ease) both; }
+@media (prefers-reduced-motion: reduce) { .cr-chat-reply-fresh > * { animation: none; } }
+
+.cr-chat-message-assistant:has(.cr-chat-table-scroll) { max-width: 100%; }

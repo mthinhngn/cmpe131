@@ -1,4 +1,5 @@
 import { useSchedule } from "./ScheduleContext";
+import { ChatReply } from "./ChatReply";
 import { ChatSectionChoice } from "./ChatSectionChoice";
 import { TypingPlaceholder } from "./TypingPlaceholder";
 import { useChatPrompts } from "./chat-prompts";
@@ -346,9 +347,9 @@ export function ChatWidget() {
             <p className="cr-chat-message-user">{text}</p>
             <div className="cr-chat-message cr-chat-message-assistant">
               {request.reply
-                ? <Reply text={request.reply} failed={request.status === "failed"} animate={fresh.current.has(request.request_id)}/>
+                ? <ChatReply text={request.reply} failed={request.status === "failed"} animate={fresh.current.has(request.request_id)}/>
                 : <p className="cr-chat-working" role="status"><span className="cr-chat-dots" aria-hidden="true"><i/><i/><i/></span>{request.events.at(-1)?.detail || working(request.status)}</p>}
-              {!!request.citations?.length && <ul className="cr-chat-sources" aria-label="Answer sources">{request.citations.filter(source => /^https:\/\//i.test(source.url)).map(source => <li key={`${source.evidence_id}-${source.url}`}><a href={source.url} target="_blank" rel="noreferrer">{source.title || "Source"}</a>{source.fetched_at && <small> · {new Date(source.fetched_at).toLocaleString()}</small>}</li>)}</ul>}
+              {!!request.citations?.length && <details className="cr-chat-source-details"><summary>Source details</summary><ul className="cr-chat-sources" aria-label="Answer sources">{request.citations.filter(source => /^https:\/\//i.test(source.url)).map(source => <li key={`${source.evidence_id}-${source.url}`}><a href={source.url} target="_blank" rel="noreferrer">{source.title || "Source"}</a>{source.fetched_at && <small> · {new Date(source.fetched_at).toLocaleString()}</small>}</li>)}</ul></details>}
               {!!request.web_handoff?.citations.length && <ul className="cr-chat-sources" aria-label="Official sources">{request.web_handoff.citations.map(source => <li key={source.source_id}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></li>)}</ul>}
               {request.events.length > 0 && <details className="cr-chat-run"><summary>Run details · {request.events.length} events</summary><ol>{request.events.map((entry, i) => <li key={i}><strong>{entry.node}</strong><span>{entry.detail}</span></li>)}</ol></details>}
             </div>
@@ -383,12 +384,4 @@ export function ChatWidget() {
     </aside>}
     {openedCourse && <CourseDetail course={openedCourse} onClose={() => { setOpenedCourse(null); setOpen(true); }}/>}
   </>;
-}
-
-/** Fresh replies resolve word by word; restored history renders as plain text. */
-function Reply({ text, failed, animate }: { text: string; failed: boolean; animate: boolean }) {
-  const className = failed ? "cr-chat-failed" : undefined;
-  if (!animate) return <p className={className}>{text}</p>;
-  let index = 0;
-  return <p className={className}>{text.split(/(\s+)/).map((part, i) => /^\s*$/.test(part) ? part : <span key={i} className="cr-chat-word" style={{ "--i": Math.min(index++, 40) } as CSSProperties}>{part}</span>)}</p>;
 }

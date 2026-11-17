@@ -1,0 +1,1487 @@
+[
+  {
+    "id": "u_open_greeting_help_direct",
+    "message": "Hello, what can you help me do?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "greeting_help"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_greeting_help_polite",
+    "message": "Could you explain what this advisor can help with?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "greeting_help"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_greeting_help_goal",
+    "message": "I am new here and trying to plan college. How can you help?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "greeting_help"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_greeting_help_terse",
+    "message": "hey, what can u do?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "greeting_help"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_greeting_help_followup",
+    "message": "What else can you help me do here?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Hello"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Hello"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "greeting_help"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_course_info_direct",
+    "message": "What are the topics, units and prerequisites of CMPE 131?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "course_info"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_course_info_polite",
+    "message": "Could you explain the content and prerequisites for CMPE 131?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "course_info"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_course_info_goal",
+    "message": "I want to learn software development. What would CMPE 131 teach me, and what comes before it?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "course_info"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_course_info_terse",
+    "message": "cmpe131 topics units prereqs?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "course_info"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_course_info_followup",
+    "message": "And what do I need before taking it?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Tell me about CMPE 131"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Tell me about CMPE 131"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "course_info"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_compare_courses_direct",
+    "message": "Compare AMS 10 and HIST 15 for me and pick one for Spring 2027.",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "compare_courses"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_compare_courses_polite",
+    "message": "Could you help me choose between AMS 10 and HIST 15 for Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "compare_courses"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_compare_courses_goal",
+    "message": "I enjoy history but work 20 hours a week. Would you pick AMS 10 or HIST 15 for me in Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "compare_courses"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_compare_courses_terse",
+    "message": "ams10 vs hist15 spring27, which for me?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "compare_courses"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_compare_courses_followup",
+    "message": "Which of those would you choose for me?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Compare AMS 10 and HIST 15 for Spring 2027"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Compare AMS 10 and HIST 15 for Spring 2027"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "compare_courses"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_requirement_options_direct",
+    "message": "List the US1 courses offered in Spring 2027.",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "requirement_options"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_requirement_options_polite",
+    "message": "Would you show me all courses that count for US1 in Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "requirement_options"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_requirement_options_goal",
+    "message": "I need US1 and want to see the whole Spring 2027 list before deciding. What are my choices?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "requirement_options"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_requirement_options_terse",
+    "message": "us1 options spring27?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "requirement_options"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_requirement_options_followup",
+    "message": "Which courses meet it in Spring 2027?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "What does US1 mean?"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: What does US1 mean?"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "requirement_options"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_recommendation_direct",
+    "message": "Which US1 course should I take in Spring 2027? Pick one and explain.",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "recommendation"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_recommendation_polite",
+    "message": "Could you recommend a US1 course for Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "recommendation"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_recommendation_goal",
+    "message": "I like history and want a manageable US1 next semester alongside my job. Which course would you choose?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "recommendation"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_recommendation_terse",
+    "message": "us1 rec next sem? pick 1",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "recommendation"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_recommendation_followup",
+    "message": "Which of those would you pick for me?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "What counts for US1 in Spring 2027?"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: What counts for US1 in Spring 2027?"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "recommendation"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_plan_review_direct",
+    "message": "Review my plan for units per semester and prerequisite order.",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_review"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_plan_review_polite",
+    "message": "Could you check the workload and prerequisite ordering in my plan?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_review"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_plan_review_goal",
+    "message": "I am worried about overloading myself. Is my plan too heavy, and are prerequisites in order?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_review"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_plan_review_terse",
+    "message": "my plan ok? units per sem + prereqs?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_review"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_plan_review_followup",
+    "message": "Are the term loads and course ordering reasonable?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Read my current plan"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Read my current plan"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_review"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_eligibility_direct",
+    "message": "Do my recorded courses meet the prerequisites for CMPE 131 in Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "eligibility"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_eligibility_polite",
+    "message": "Could you check whether my records show the requirements for CMPE 131 in Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "eligibility"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_eligibility_goal",
+    "message": "I want to take CMPE 131 in Spring 2027 but do not want to miss a prerequisite. What do my records establish?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "eligibility"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_eligibility_terse",
+    "message": "cmpe131 spring27 prereqs met for me?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "eligibility"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_eligibility_followup",
+    "message": "Do my recorded courses meet them for Spring 2027?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Tell me the prerequisites for CMPE 131"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Tell me the prerequisites for CMPE 131"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "eligibility"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_availability_direct",
+    "message": "How many seats are open in AMS 10 for Spring 2027 right now?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "availability"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_availability_polite",
+    "message": "Could you check current AMS 10 seat availability for Spring 2027?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "availability"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_availability_goal",
+    "message": "I need a class with room. Does AMS 10 have seats in Spring 2027 right now?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "availability"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_availability_terse",
+    "message": "ams10 spring27 seats now?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "availability"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_availability_followup",
+    "message": "Does it have open seats for Spring 2027 right now?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Tell me about AMS 10"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Tell me about AMS 10"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "availability"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_instructor_reviews_direct",
+    "message": "What do student course reviews say about AMS 10?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "instructor_reviews"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_instructor_reviews_polite",
+    "message": "Could you summarize student opinions about AMS 10?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "instructor_reviews"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_instructor_reviews_goal",
+    "message": "I prefer discussion classes. What do the available reviews say about AMS 10?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "instructor_reviews"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_instructor_reviews_terse",
+    "message": "ams10 student reviews?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "instructor_reviews"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_instructor_reviews_followup",
+    "message": "What did students think of it?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Tell me about AMS 10"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Tell me about AMS 10"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "instructor_reviews"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_policy_direct",
+    "message": "What does the SJSU catalog say about grade forgiveness?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "policy"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_policy_polite",
+    "message": "Could you look up the catalog policy on grade forgiveness?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "policy"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_policy_goal",
+    "message": "I may repeat a class. What is the official grade forgiveness policy?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "policy"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_policy_terse",
+    "message": "sjsu grade forgiveness policy?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "policy"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_policy_followup",
+    "message": "What is the official catalog policy for grade forgiveness?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "I want to understand repeating courses"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: I want to understand repeating courses"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "policy"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_transcript_direct",
+    "message": "Does my confirmed transcript show that I passed MATH 30?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "transcript"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_transcript_polite",
+    "message": "Could you check my uploaded transcript for MATH 30 completion?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "transcript"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_transcript_goal",
+    "message": "I do not want to retake calculus. Does my transcript confirm MATH 30 is complete?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "transcript"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_transcript_terse",
+    "message": "transcript: math30 passed?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "transcript"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_transcript_followup",
+    "message": "Does mine show MATH 30 completed?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Can you read confirmed transcript facts?"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Can you read confirmed transcript facts?"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "transcript"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_out_of_scope_direct",
+    "message": "Enroll me directly in SJSU classes and pay my tuition.",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "out_of_scope"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_out_of_scope_polite",
+    "message": "Could you access MySJSU to pay my tuition?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "out_of_scope"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_out_of_scope_goal",
+    "message": "I need my tuition paid today. Can you submit payment in MySJSU?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "out_of_scope"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_out_of_scope_terse",
+    "message": "pay my sjsu tuition pls",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "out_of_scope"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_open_out_of_scope_followup",
+    "message": "Can you pay my tuition in MySJSU?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "What can you do here?"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: What can you do here?"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "out_of_scope"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_action_numbered_direct",
+    "message": "Add HIST 15 to semester 5",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_change"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_action_numbered_polite",
+    "message": "Could you please put HIST 15 in semester 5?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_change"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_action_numbered_goal",
+    "message": "I want to study history later in my plan. Put HIST 15 into semester 5.",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_change"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_action_numbered_terse",
+    "message": "hist15 -> sem5 add pls",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_change"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_action_numbered_followup",
+    "message": "Put it into semester 5",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Tell me about HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "We are discussing this request: Tell me about HIST 15"
+      }
+    ],
+    "open_request": null,
+    "expect": {
+      "needs": [
+        "plan_change"
+      ],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_reply_confirm_1",
+    "message": "yes",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "confirm"
+    }
+  },
+  {
+    "id": "u_reply_confirm_2",
+    "message": "yep go ahead",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "confirm"
+    }
+  },
+  {
+    "id": "u_reply_confirm_3",
+    "message": "Please do it",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "confirm"
+    }
+  },
+  {
+    "id": "u_reply_confirm_4",
+    "message": "confirmed",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "confirm"
+    }
+  },
+  {
+    "id": "u_reply_confirm_5",
+    "message": "That is correct, save it",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "confirm"
+    }
+  },
+  {
+    "id": "u_reply_confirm_6",
+    "message": "sure, proceed",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "confirm"
+    }
+  },
+  {
+    "id": "u_reply_decline_1",
+    "message": "no",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "decline"
+    }
+  },
+  {
+    "id": "u_reply_decline_2",
+    "message": "never mind",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "decline"
+    }
+  },
+  {
+    "id": "u_reply_decline_3",
+    "message": "Cancel that change",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "decline"
+    }
+  },
+  {
+    "id": "u_reply_decline_4",
+    "message": "Do not save it",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "decline"
+    }
+  },
+  {
+    "id": "u_reply_decline_5",
+    "message": "No thanks",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "decline"
+    }
+  },
+  {
+    "id": "u_reply_decline_6",
+    "message": "Forget that request",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "decline"
+    }
+  },
+  {
+    "id": "u_reply_new_request_1",
+    "message": "no, semester 5 instead",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "new_request"
+    }
+  },
+  {
+    "id": "u_reply_new_request_2",
+    "message": "sure but make it fall",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "new_request"
+    }
+  },
+  {
+    "id": "u_reply_new_request_3",
+    "message": "what's that course again?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "new_request"
+    }
+  },
+  {
+    "id": "u_reply_new_request_4",
+    "message": "How many units is it?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "new_request"
+    }
+  },
+  {
+    "id": "u_reply_new_request_5",
+    "message": "Tell me about AMS 10 instead",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "new_request"
+    }
+  },
+  {
+    "id": "u_reply_new_request_6",
+    "message": "Can you review my plan?",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no."
+      }
+    ],
+    "open_request": {
+      "question": "Save HIST 15 to Semester 2 (Spring 2026)? Reply yes or no.",
+      "missing": "confirmation"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "new_request"
+    }
+  },
+  {
+    "id": "u_reply_answer_1",
+    "message": "Spring 2025",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Which term should I put HIST 15 in?"
+      }
+    ],
+    "open_request": {
+      "question": "Which term should I put HIST 15 in?",
+      "missing": "term"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "answer"
+    }
+  },
+  {
+    "id": "u_reply_answer_2",
+    "message": "spring 2027 please",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Which term should I put HIST 15 in?"
+      }
+    ],
+    "open_request": {
+      "question": "Which term should I put HIST 15 in?",
+      "missing": "term"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "answer"
+    }
+  },
+  {
+    "id": "u_reply_answer_3",
+    "message": "next semester",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Which term should I put HIST 15 in?"
+      }
+    ],
+    "open_request": {
+      "question": "Which term should I put HIST 15 in?",
+      "missing": "term"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "answer"
+    }
+  },
+  {
+    "id": "u_reply_answer_4",
+    "message": "semester 5",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Which term should I put HIST 15 in?"
+      }
+    ],
+    "open_request": {
+      "question": "Which term should I put HIST 15 in?",
+      "missing": "term"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "answer"
+    }
+  },
+  {
+    "id": "u_reply_answer_5",
+    "message": "Fall 2027",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Which term should I put HIST 15 in?"
+      }
+    ],
+    "open_request": {
+      "question": "Which term should I put HIST 15 in?",
+      "missing": "term"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "answer"
+    }
+  },
+  {
+    "id": "u_reply_answer_6",
+    "message": "Put it in semester 6",
+    "recent": [
+      {
+        "role": "user",
+        "content": "Add HIST 15"
+      },
+      {
+        "role": "assistant",
+        "content": "Which term should I put HIST 15 in?"
+      }
+    ],
+    "open_request": {
+      "question": "Which term should I put HIST 15 in?",
+      "missing": "term"
+    },
+    "expect": {
+      "needs": [],
+      "reply_to_open": "answer"
+    }
+  },
+  {
+    "id": "u_reply_none_1",
+    "message": "Hello",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_reply_none_2",
+    "message": "Which US1 course should I take?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_reply_none_3",
+    "message": "What is CMPE 131 about?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_reply_none_4",
+    "message": "Show AMS 10 seats in Spring 2027",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_reply_none_5",
+    "message": "Tell me the grade forgiveness policy",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [],
+      "reply_to_open": "none"
+    }
+  },
+  {
+    "id": "u_reply_none_6",
+    "message": "What can you do?",
+    "recent": [],
+    "open_request": null,
+    "expect": {
+      "needs": [],
+      "reply_to_open": "none"
+    }
+  }
+]

@@ -16,12 +16,12 @@ from fastapi import FastAPI, HTTPException, Query, Request, Response
 from langgraph.types import Command
 from .catalog import CatalogRepository
 from .contracts import MessageInput, ActionInput, ContextInput
-from .graph import create_graph, create_runtime_graph, request_state, OPENAI_MODEL_ID
+from .graph import create_graph, create_runtime_graph, request_state, turn_state, OPENAI_MODEL_ID
 from .kimi_budget import Budget, active_budget
 from .kimi_contracts import KimiHistory, KimiDecision
 from .memory_repository import PostgresMemory, learn
 from .identity import owner as resolve_owner
-from .telemetry import trace_event
+from .telemetry import trace_event, enable
 from .transcripts import TranscriptService
 from .transcript_routes import transcript_router
 from .evidence import progress_callback
@@ -57,9 +57,8 @@ class RequestManager:
     def initial_state(self, record, context):
         if record.get('owner', '').startswith('guest:'):
             record['preferences'] = self.guest_profiles.get(record['owner'], record.get('preferences', {}))
-        state = request_state(record['message'], context)
-        state.update(kimi_count=0, kimi_observations=[], kimi_decision={}, kimi_history=record.get('history', []), kimi_preferences=record.get('preferences', {}), verified_owner=record.get('owner', ''), evidence=[], citations=[], advisor_metrics={})
-        return state
+        return turn_state(record['message'], context, history=record.get('history', []),
+                          preferences=record.get('preferences', {}), owner=record.get('owner', ''))
 
     def owned(self, request_id, thread_id):
         record = self.requests.get(request_id)
@@ -135,6 +134,7 @@ class RequestManager:
                 record['events'] = [*record['events'], entry]
         progress_token = progress_callback.set(progress)
         started = time.monotonic()
+        output = {}
         config = {"configurable": {"thread_id": record["thread_id"]}, "recursion_limit": 100, "metadata": {"request_id": record["request_id"], "langfuse_session_id": record["thread_id"]}}
         if isinstance(value, Command):
             config["metadata"]["action_id"] = value.resume["action_id"]
@@ -194,6 +194,18 @@ class RequestManager:
                 record.update(status="failed", reply=message, action=None)
                 self.next_request(record)
         finally:
+            if not isinstance(value, Command):
+                metrics = output.get('advisor_metrics', {})
+                trace_event('kimi.turn', 'Turn completed.', trace_id=record['trace_id'], metadata={
+                    'request_id': record['request_id'], 'thread_id': record['thread_id'],
+                    'needs': metrics.get('needs', []), 'reply_to_open': metrics.get('reply_to_open', 'none'),
+                    'ended_by': 'action' if output.get('__interrupt__') else output.get('kimi_decision', {}).get('kind', 'error'),
+                    'missing': (output.get('pending_clarification') or {}).get('missing'),
+                    'model_rounds': metrics.get('model_rounds', 0), 'tool_calls': metrics.get('tool_calls', 0),
+                    'mutation_proposals': metrics.get('mutation_proposals', 0),
+                    'latency_ms': round((time.monotonic() - started) * 1000),
+                    'steps': [e['node'] for e in output.get('events', []) if e.get('node', '').startswith('kimi.')],
+                })
             budget.seconds = max(0, budget.seconds - (time.monotonic() - started))
             active_budget.reset(budget_token)
             progress_callback.reset(progress_token)
@@ -222,6 +234,8 @@ async def lifespan(app):
     if os.getenv('KIMI_AUTH_URL'):
         memory.initialize()
         transcript_service.initialize()
+    if os.getenv('LANGFUSE_PUBLIC_KEY') and os.getenv('LANGFUSE_SECRET_KEY'):
+        enable()
     manager = RequestManager(create_runtime_graph(CatalogRepository(), transcript=transcript_service), tracing=bool(os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")), memory=memory)
     yield
     manager.pool.shutdown(wait=False, cancel_futures=True)

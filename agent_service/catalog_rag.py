@@ -51,6 +51,8 @@ def catalog_nodes(rows, policies=()):
         nodes.append(TextNode(id_='catalog:' + row['course_id'], text=text, metadata=metadata))
     splitter = SentenceSplitter(chunk_size=512, chunk_overlap=64)
     for page in policies:
+        if not page.get('text', '').strip():
+            continue
         from .web_tools import official_url
         url = official_url(page['url'])
         for number, chunk in enumerate(splitter.split_text(page['text'])):
