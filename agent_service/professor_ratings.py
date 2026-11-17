@@ -1,6 +1,7 @@
 """Public, school-checked RMP metrics. No student data or model-written queries."""
 import base64
 import json
+import logging
 import re
 import time
 import unicodedata
@@ -10,7 +11,10 @@ from threading import RLock
 from .kimi_budget import active_budget
 from .web_tools import https_bytes
 
-ROOT = Path(__file__).resolve().parents[1]
+log = logging.getLogger("course-radar-agent")
+# The deployed container is built from agent_service/ alone, so the bundled copy comes first.
+DIRECTORY_PATHS = (Path(__file__).resolve().parent / 'data/sjsu-professor-directory.json',
+                   Path(__file__).resolve().parents[1] / 'data/ratemyprofessors/sjsu-directory.json')
 SCHOOL = 'U2Nob29sLTg4MQ=='
 # Tie-break only: used when several exact-name SJSU profiles exist, never to identify a person.
 DEPARTMENTS = {'CMPE': 'Computer Engineering', 'CS': 'Computer Science', 'EE': 'Electrical Engineering',
@@ -25,10 +29,23 @@ def words(name):
     return re.findall(r'[a-z]+', unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode().lower())
 
 
+def load_directory():
+    """Ratings are optional; a missing directory must never stop the advisor from starting."""
+    for path in DIRECTORY_PATHS:
+        if path.is_file():
+            try:
+                return json.loads(path.read_text(encoding='utf8'))['directory']
+            except (ValueError, KeyError, OSError):
+                log.warning('Professor directory at %s is unreadable; ratings unavailable.', path)
+                return []
+    log.warning('Professor directory not found; ratings unavailable.')
+    return []
+
+
 class ProfessorRatings:
     def __init__(self, fetch=None, directory=None):
         self.fetch = fetch or self._fetch
-        self.directory = directory if directory is not None else json.loads((ROOT / 'data/ratemyprofessors/sjsu-directory.json').read_text(encoding='utf8'))['directory']
+        self.directory = directory if directory is not None else load_directory()
         self.cache, self.lock = {}, RLock()
 
     def _fetch(self, profile_id):
