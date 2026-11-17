@@ -5,6 +5,7 @@ import http.client
 import ipaddress
 import json
 import os
+import re
 import socket
 import ssl
 import time
@@ -271,12 +272,20 @@ class OfficialSearchTools:
                 parser = PageText()
                 parser.feed(body.decode("utf-8", errors="replace"))
                 text = "".join(parser.parts)
+                source_updated_on = None
+                if "/classes/schedules/" in urlsplit(url).path:
+                    match = re.search(r"\bLast\s+Updated\b\s*:?\s*([A-Za-z]{3}\s+\d{1,2},\s+\d{4})\b", " ".join(parser.parts), re.I)
+                    if match:
+                        try:
+                            source_updated_on = datetime.strptime(match[1], "%b %d, %Y").date().isoformat()
+                        except ValueError:
+                            pass
             else:
                 text = ""
             text = " ".join(text.split())[:35000]
             remaining(deadline)
             result = {"source_id": hashlib.sha256(url.encode()).hexdigest()[:16], "url": url, "title": hit["title"], "retrieved_at": datetime.now(timezone.utc).isoformat(), "text": text, "content_hash": hashlib.sha256(body).hexdigest()}
             if content_type in {"text/html", "application/xhtml+xml", "text/plain"}:
-                result.update(links=parser.links, schedule_rows=schedule.rows, headings=schedule.headings, complete_table=bool(schedule.tables_closed and b"</html>" in body.lower() and schedule.row is None))
+                result.update(links=parser.links, schedule_rows=schedule.rows, headings=schedule.headings, sourceUpdatedOn=source_updated_on, complete_table=bool(schedule.tables_closed and b"</html>" in body.lower() and schedule.row is None))
             return result
         raise LookupFailure("redirect_limit", "An official source exceeded the redirect limit.")

@@ -100,6 +100,7 @@ class WebResult(Contract):
     target_term: Term | None = None
     course_code: str | None = None
     sections: list[dict] = Field(default_factory=list, max_length=200)
+    sourceUpdatedOn: date | None = None
     warning: str = ""
     message: str = ""
     error_code: str | None = None

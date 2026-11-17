@@ -200,7 +200,7 @@ def offering_result(tools, state):
     if not recognized:
         raise LookupFailure("schedule_not_published", "The official schedule has no readable published class rows. Course availability is unverified; no planner change was made.")
     warning = "Some listed sections are full or closed. This is a personal plan, not enrollment." if any(r["open_seats"] is not None and r["open_seats"] <= 0 for r in rows) else ""
-    return WebResult(kind="offering", status="verified" if rows else "not_offered", as_of=state["as_of"], citations=[citation(source)], target_term=term, course_code=code, sections=rows[:200], warning=warning, message="" if rows else f"{code} is not listed as an active offering in the complete official {term.season.title()} {term.year} schedule. No planner change was made.").model_dump(mode="json")
+    return WebResult(kind="offering", status="verified" if rows else "not_offered", as_of=state["as_of"], citations=[citation(source)], target_term=term, course_code=code, sections=rows[:200], sourceUpdatedOn=source.get("sourceUpdatedOn"), warning=warning, message="" if rows else f"{code} is not listed as an active offering in the complete official {term.season.title()} {term.year} schedule. No planner change was made.").model_dump(mode="json")
 
 
 def create_web_search_agent(tools=None, extractor=None, today: Callable = local_today):

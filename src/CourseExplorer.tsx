@@ -24,7 +24,8 @@ const INITIAL_COURSE_COUNT = 8;
 // N1 Graphite presentation; records and writes stay with the shared providers.
 export function Courses() {
   const { catalog, allCourses, plans, takenCourseIds, storageStatus, program, termToSlot } = useCatalog();
-  const { selectedOfferings, isSelected, hasSelectedComponent, selectOffering, removeOffering, offerings: termOfferings, activeTerm, termLabel, sourceUrl, choiceNotice, sectionStatus, retrySections } = useSchedule();
+  const { selectedOfferings, isSelected, hasSelectedComponent, selectOffering, removeOffering, offerings, activeTerm, termLabel, sourceUrl, choiceNotice, sectionStatus, retrySections } = useSchedule();
+  const termOfferings = useMemo(() => offerings.filter(o => o.listed !== false), [offerings]);
   const [params, setParams] = useSearchParams();
   const query = params.get("q") ?? "";
   const searchQuery = useDeferredValue(query).trim().toLowerCase();

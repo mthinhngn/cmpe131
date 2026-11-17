@@ -9,6 +9,10 @@ export function termName(term: string): string {
   const [season, year] = term.split("-");
   return `${season[0].toUpperCase()}${season.slice(1)} ${year}`;
 }
+
+export function scheduleSourceDate(date: string) {
+  return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+}
 export function termForSlot(mapping: Record<string, number>, slot: PlanSlot | undefined): string | undefined {
   return typeof slot === "string" ? slot : Object.keys(mapping).find(term => mapping[term] === slot);
 }

@@ -80,6 +80,10 @@ model Term {
   name      String
   sourceUrl String
   fetchedAt DateTime
+  sourceUpdatedOn DateTime? @db.Date
+  sourceSha256 String?
+  checkedAt DateTime?
+  lastImportedAt DateTime?
   sections  Section[]
   importedSections UniversitySectionRecord[]
 }
@@ -92,6 +96,7 @@ model UniversitySectionRecord {
   sourceUrl   String
   evidence    Json
   fetchedAt   DateTime
+  lastSeenAt  DateTime?
   course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   term        Term @relation(fields: [termId], references: [id], onDelete: Cascade)
 
@@ -113,6 +118,7 @@ model Section {
   dates         String
   openSeats     Int
   instructors   String[] @default([])
+  lastSeenAt    DateTime?
   term          Term   @relation(fields: [termId], references: [id], onDelete: Cascade)
   course        Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 

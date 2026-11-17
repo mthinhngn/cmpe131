@@ -14,12 +14,13 @@ import { parseSlot, slotLabel } from "./academicProfile";
 import { useCatalog } from "./CatalogContext";
 import type { Course, CourseOffering } from "./types";
 import { useSchedule } from "./ScheduleContext";
+import { scheduleSourceDate, termName } from "./scheduleTerms";
 import { ProfessorReviewLink } from "./ProfessorReviewLink";
 
 export function CourseDetail({ course, onClose, variant, animateEntry = true }: { course: Course; onClose: () => void; variant?: "roadmap"; animateEntry?: boolean }) {
   const isRoadmap = variant === "roadmap";
   const { catalog, courseById, takenCourseIds, toggleTakenCourse, plans, setPlan, removePlan, termOrder, startingTerm } = useCatalog();
-  const { isSelected, hasSelectedComponent, selectOffering, removeOffering, offerings: importedOfferings, termLabel, pending } = useSchedule();
+  const { isSelected, hasSelectedComponent, selectOffering, removeOffering, offerings: importedOfferings, termLabel, activeTerm, terms, setActiveTerm, sectionData, sectionStatus, pending } = useSchedule();
   const dialog = useRef<HTMLElement>(null);
   const handingOff = useRef(false);
   const sectionLock = useRef(false);
@@ -101,19 +102,17 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
   }, []);
   const isTaken = takenCourseIds.has(course.id);
   const requirementNote = catalog.requirementGroups.flatMap(group => group.items).find(item => item.courseId === course.id)?.description;
-  const [selectedTerm, setSelectedTerm] = useState(termLabel);
-  const hasTermData = selectedTerm === termLabel;
-  const semesterChoices = (catalog.availableTerms ?? [catalog.currentTerm.id]).map(t => t.replace(/^(\w+)-(\d+)$/, (_, season, year) => `${season[0].toUpperCase()}${season.slice(1)} ${year}`));
+  const hasTermData = sectionStatus === "available";
   const prerequisites = course.prerequisiteCourseIds
     .map((id) => courseById.get(id))
     .filter((item): item is Course => Boolean(item));
   const corequisites = course.corequisiteCourseIds
     .map((id) => courseById.get(id))
     .filter((item): item is Course => Boolean(item));
-  const offerings = hasTermData ? importedOfferings.filter((offering) => offering.courseCode === course.code) : [];
-  const scheduleSnapshotDate = catalog.currentTerm.fetchedAt
-    ? new Date(catalog.currentTerm.fetchedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-    : "Not available";
+  const offerings = importedOfferings.filter(o => o.courseCode === course.code && (o.listed !== false || isSelected(o.classNumber)));
+  const listedCount = offerings.filter(o => o.listed !== false).length;
+  const sourceDate = sectionData?.sourceUpdatedOn;
+  const scheduleUrl = sectionData?.sourceUrl ?? (activeTerm === catalog.currentTerm.id ? catalog.currentTerm.sourceUrl : undefined);
 
   return (
     <div className={`drawer-layer${isRoadmap ? " roadmap-detail-layer" : ""}`} data-closing={closing || undefined} data-motion={animateEntry ? "pointer" : "keyboard"} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && dismiss()}>
@@ -157,7 +156,7 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
           </section>
           {corequisites.length > 0 && <section className="prerequisite-section"><h3>Corequisites</h3><div className="prerequisite-list">{corequisites.map((item) => <div key={item.id}><strong>{item.code}</strong><span>{item.title}</span></div>)}</div></section>}
           <section className="offerings-section">
-            {isRoadmap && <div className="detail-section-heading"><h3>Listed sections</h3><span>{hasTermData ? `${offerings.length} ${offerings.length === 1 ? "section" : "sections"}` : "Data unavailable"}</span></div>}
+            {isRoadmap && <div className="detail-section-heading"><h3>Listed sections</h3><span>{hasTermData ? `${listedCount} ${listedCount === 1 ? "section" : "sections"}` : "Data unavailable"}</span></div>}
             <header className="offerings-header">
               <div><span className="current-term-label">Semester</span>
                 <details className="semester-picker" onKeyDown={(event) => {
@@ -165,19 +164,19 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                 }} onBlur={(event) => {
                   if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false;
                 }}>
-                  <summary>{selectedTerm} <CaretDown size={16} /></summary>
+                  <summary>{termLabel} <CaretDown size={16} /></summary>
                   <div className="semester-options" role="group" aria-label="Choose semester">
-                    {semesterChoices.map((term) => <button type="button" key={term} aria-pressed={selectedTerm === term} onClick={(event) => {
-                      setSelectedTerm(term);
+                    {terms.map((term) => <button type="button" key={term} aria-pressed={activeTerm === term} onClick={(event) => {
+                      setActiveTerm(term);
                       const picker = event.currentTarget.closest("details");
                       if (picker) { picker.open = false; picker.querySelector("summary")?.focus(); }
-                    }}><span>{term}</span>{term === catalog.currentTerm.name && <small>Current</small>}</button>)}
+                    }}><span>{termName(term)}</span>{term === catalog.currentTerm.id && <small>Current</small>}</button>)}
                   </div>
                 </details>
               </div>
-              {!isRoadmap && <span>{hasTermData ? `${offerings.length} listed` : "Data pending"}</span>}
+              {!isRoadmap && <span>{hasTermData ? `${listedCount} listed` : "Data pending"}</span>}
             </header>
-            {hasTermData && <p className="offerings-note">{isRoadmap ? `SJSU schedule snapshot · ${scheduleSnapshotDate}. Seats are not live. Choose a section to add it to your weekly schedule.` : `Choose a section to add it to your weekly schedule. All SJSU-listed sections remain visible, including sections with no open seats. Snapshot: ${scheduleSnapshotDate}.`}</p>}
+            {hasTermData && <p className="offerings-note">Open seats from SJSU’s public schedule{sourceDate && ` · SJSU updated ${scheduleSourceDate(sourceDate)}`}.</p>}
             {offerings.length ? <div className="offering-list">
               {offerings.map((offering) => {
                 const isOpen = offering.openSeats > 0;
@@ -191,7 +190,7 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                 }}>
                   <header>
                     <div><strong>Section {offering.sectionNumber}</strong><span>Class #{offering.classNumber} · {offering.component}</span></div>
-                    <span className={`seat-status ${isOpen ? "open" : "full"}`}>{isOpen ? `${offering.openSeats} open` : "0 open seats"}</span>
+                    {offering.listed !== false && <span className={`seat-status ${isOpen ? "open" : "full"}`}>{offering.seatsKnown === false ? "Seats unpublished" : isOpen ? `${offering.openSeats} open` : "0 open seats"}</span>}
                   </header>
                   <dl>
                     <div><dt><Clock size={15} />Meeting</dt><dd>{offering.days || "TBA"} · {offering.times || "TBA"}</dd></div>
@@ -200,11 +199,11 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                     <div><dt><UsersThree size={15} />Professor</dt><dd>{offering.instructors?.join(", ") || "Not announced"}</dd></div>
                   </dl>
                   <div className="offering-schedule-action">
-                    <button type="button" aria-pressed={selectedForSchedule} disabled={!!changingSection || !!pending || offering.scheduleReview} onClick={() => { void changeSection(offering); }}>
+                    <button type="button" aria-pressed={selectedForSchedule} disabled={!!changingSection || !!pending || (offering.scheduleReview && !selectedForSchedule)} onClick={() => { void changeSection(offering); }}>
                       {selectedForSchedule ? <CheckCircle size={17} weight="fill" /> : <Plus size={17} />}
                       {changingSection === offering.classNumber ? "Saving…" : selectedForSchedule ? "Added to schedule" : replacesComponent ? `Replace ${offering.component} section` : "Add to schedule"}
                     </button>
-                    {offering.scheduleReview && <p className="detail-schedule-feedback">Verify this section with SJSU before selecting it.</p>}
+                    {offering.scheduleReview && <p className="detail-schedule-feedback">{offering.listed === false ? "No longer listed by SJSU" : "Verify this section with SJSU before selecting it."}</p>}
                     {sectionFeedback?.id === offering.classNumber && <p className="detail-schedule-feedback" role={sectionFeedback.error ? "alert" : "status"}>{sectionFeedback.message}{sectionFeedback.error && !startingTerm && <> <a href="/account">Set your first semester in Account</a>.</>}</p>}
                   </div>
                   <details className="professor-links">
@@ -215,12 +214,12 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                   </details>
                 </article>;
               })}
-            </div> : <div className="no-offerings" role="status">{hasTermData ? `This course is not listed in the ${selectedTerm} schedule.` : `${selectedTerm} section data is not available yet. Choose ${catalog.currentTerm.name} to view available data.`}</div>}
+            </div> : <div className="no-offerings" role="status">{sectionStatus === "loading" ? "Loading sections…" : hasTermData ? `This course is not listed in the ${termLabel} schedule.` : `${termLabel} section data is unavailable.`}</div>}
           </section>
         </div>
         <footer className="drawer-footer">
           {isRoadmap && <span className="detail-draft-note">Session draft · Resets on refresh. Planning does not enroll you.</span>}
-          {hasTermData ? <a href={catalog.currentTerm.sourceUrl} target="_blank" rel="noreferrer">Open {catalog.currentTerm.name} schedule <ArrowSquareOut size={16} /></a> : <a href={course.sourceUrl} target="_blank" rel="noreferrer">Open course catalog <ArrowSquareOut size={16} /></a>}
+          {hasTermData && scheduleUrl ? <a href={scheduleUrl} target="_blank" rel="noreferrer">Open {termLabel} schedule <ArrowSquareOut size={16} /></a> : <a href={course.sourceUrl} target="_blank" rel="noreferrer">Open course catalog <ArrowSquareOut size={16} /></a>}
         </footer>
       </aside>
     </div>

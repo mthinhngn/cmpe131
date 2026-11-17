@@ -63,6 +63,37 @@ class AvailabilityTests(unittest.TestCase):
         self.assertIsNone(data['offerings'][0]['openSeats'])
         self.assertFalse(data['offerings'][0]['seatsKnown'])
 
+    def test_section_reads_keep_source_date_distinct_from_collection_time(self):
+        row = {'courseCode': 'CMPE 148', 'classNumber': '29301', 'openSeats': 4,
+               'sourceUpdatedOn': '2026-11-17', 'fetchedAt': '2026-11-18T12:30:00'}
+        class Saved:
+            def section_records(self, term):
+                return [{**row, 'checkedAt': '2026-11-18T13:30:00', 'lastImportedAt': row['fetchedAt']}]
+        availability = Availability(Saved(), lambda term: {**row, 'status': 'available', 'offerings': [row]})
+        saved = availability.get_sections('CMPE 148', 'spring-2027')
+        refreshed = availability.get_sections('CMPE 148', 'spring-2027', fresh=True)
+        self.assertEqual(saved['sections'], refreshed['sections'])
+        self.assertEqual(saved['sourceUpdatedOn'], refreshed['sourceUpdatedOn'])
+        self.assertEqual(saved['sourceUpdatedOn'], '2026-11-17')
+        self.assertEqual(saved['checkedAt'], '2026-11-18T13:30:00')
+        self.assertEqual(saved['lastImportedAt'], row['fetchedAt'])
+
+    def test_answer_uses_published_date_and_rejects_live_seat_claim(self):
+        from agent_service.evidence import envelope
+        from agent_service.verifier import render_claims, verify
+
+        published = envelope(1, 'get_sections', {
+            'code': 'CMPE 148', 'sections': [{'class_number': '29301', 'open_seats': 4}],
+            'sourceUpdatedOn': '2026-11-17', 'fetched_at': '2026-11-18T12:30:00Z',
+        })
+        claim = {'text': 'CMPE 148 has 4 open seats.', 'evidence_ids': ['ev_1']}
+        raw = claim['text']
+        self.assertEqual(verify(raw, [claim], [published])['verdict'], 'pass')
+        reply, _ = render_claims([claim], [published])
+        self.assertIn('SJSU last updated Nov 17, 2026', reply)
+        incorrect = 'CMPE 148 has 4 open seats checked live.'
+        self.assertEqual(verify(incorrect, [{**claim, 'text': incorrect}], [published])['verdict'], 'revise')
+
     def test_fit_checks_existing_rules_and_meeting_conflicts_without_mutation(self):
         class Fit:
             def course_details(self, code):

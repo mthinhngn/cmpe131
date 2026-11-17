@@ -22,10 +22,13 @@ export function applyAgentSections(store: PlanningStore, input: Record<string, a
   const sameIds = new Set(same.map(o => o.classNumber));
   const others = old.filter(id => !sameIds.has(id)).sort();
   if (JSON.stringify(ids.filter((id: string) => !sameIds.has(id)).sort()) !== JSON.stringify(others)) fail("Unrelated course sections must be preserved.");
-  const selected: CourseOffering[] = ids.map((id: string) => rows.find(o => o.classNumber === id) ?? fail("A selected section is no longer published."));
-  if (selected.some(o => o.scheduleReview)) fail("Section details require review with SJSU before selection.");
+  const saved = before.scheduleOfferings?.[key] ?? [];
+  const selected: CourseOffering[] = ids.map((id: string) => rows.find(o => o.classNumber === id)
+    ?? (others.includes(id) ? saved.find(o => o.classNumber === id) : undefined)
+    ?? fail("A selected section is no longer published."));
   const chosen = selected.filter(o => o.courseCode === course!.code);
-  const components = [...new Set(same.map(o => o.component))];
+  if (chosen.some(o => o.scheduleReview)) fail("Section details require review with SJSU before selection.");
+  const components = [...new Set(same.filter(o => !o.scheduleReview).map(o => o.component))];
   if (!components.length || chosen.length !== components.length || components.some(component => chosen.filter(o => o.component === component).length !== 1)) fail("Choose one section for every required component.");
   const meetings = selected.flatMap(o => {
     const days = o.days.split("/"), times = o.times.split("/");

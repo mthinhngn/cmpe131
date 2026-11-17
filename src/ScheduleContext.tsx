@@ -3,12 +3,11 @@ import { staticPreview } from "./static-preview";
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useCatalog } from "./CatalogContext";
 import { nextRegularTerm, requiredComponents, scheduleScope, termForSlot, termName } from "./scheduleTerms";
-import type { CourseOffering } from "./types";
+import type { CourseOffering, SectionData } from "./types";
 import type { ActionResult } from "./planning";
 import type { PlanCoordinator, PlanPreview } from "./PersistentPlanningStore";
 
-type SectionData = { term: string; status: "available" | "unavailable"; offerings: CourseOffering[]; sourceUrl?: string; message: string };
-export type SectionChoice = { id: string; courseId: string; code: string; term: string; stage: "loading" | "sections"; offerings: CourseOffering[]; otherOfferings: CourseOffering[]; selected: string[]; message: string };
+export type SectionChoice = { id: string; courseId: string; code: string; term: string; stage: "loading" | "sections"; offerings: CourseOffering[]; otherOfferings: CourseOffering[]; selected: string[]; message: string; sourceUpdatedOn?: string | null };
 type Calendar = { status: string; current_term: { season: string; year: number } | null; as_of: string; valid_until: string };
 type ScheduleContextValue = {
   selectionsByTerm: Record<string, string[]>; observeCalendar: (term: { season: string; year: number }) => void;
@@ -17,6 +16,7 @@ type ScheduleContextValue = {
   selectOffering: (offering: CourseOffering) => Promise<ActionResult>; removeOffering: (id: string) => Promise<ActionResult>;
   terms: string[]; activeTerm: string; setActiveTerm: (term: string) => void; termLabel: string;
   offerings: CourseOffering[]; sectionStatus: "loading" | "available" | "unavailable"; sourceUrl?: string;
+  sectionData?: SectionData;
   calendarVerified: boolean; retryCalendar: () => void; pending: SectionChoice | null; choiceNotice: string;
   chooseSection: (id: string) => void; confirmSections: () => void; cancelSections: () => void; retrySections: (id?: string) => void;
 };
@@ -144,7 +144,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
           else {
             const response = await new Promise<string[] | null>(resolve => {
               waiting.current = resolve;
-              setPending({ id: crypto.randomUUID(), courseId: id, code: course.code, term, stage: "sections", offerings,
+              setPending({ id: crypto.randomUUID(), courseId: id, code: course.code, term, stage: "sections", offerings, sourceUpdatedOn: result.sourceUpdatedOn,
                 otherOfferings: selectedIn(term).filter(o => o.courseCode !== course.code), selected: args.initialSelection ?? selected,
                 message: "Choose one section for each listed component. Your plan stays unchanged until you confirm." });
             });
@@ -183,7 +183,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     const course = active.allCourses.find(c => c.code === offering.courseCode), slot = /^(winter|summer)-/.test(term) ? term : active.termToSlot[term];
     if (!course || !slot) { const r = failure(!course ? "This course is unavailable in the current catalog." : !active.startingTerm ? "Set your first semester in Account settings before adding sections." : "This term is not mapped to your degree plan. Check your first semester in Account settings."); setNotice(r.message); return r; }
     return active.planningStore.command("setPlan", { id: course.id, semester: slot, status: active.plans[course.id]?.status, chooseAgain: true,
-      initialSelection: [...selectedIn(term).filter(o => o.courseCode === course.code && o.component !== offering.component).map(o => o.classNumber), offering.classNumber] });
+      initialSelection: [...selectedIn(term).filter(o => o.courseCode === course.code && o.component !== offering.component && !o.scheduleReview).map(o => o.classNumber), offering.classNumber] });
   };
   const removeOffering = async (id: string): Promise<ActionResult> => {
     const active = latest.current.catalog, term = latest.current.activeTerm;
@@ -198,7 +198,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   return <ScheduleContext.Provider value={{ selectionsByTerm, observeCalendar: () => { void refreshCalendar(); }, selectedClassNumbers, selectedOfferings,
     isSelected: id => selectedClassNumbers.includes(id), hasSelectedComponent: o => selectedOfferings.some(s => s.courseCode === o.courseCode && s.component === o.component), selectOffering, removeOffering,
     terms, activeTerm, setActiveTerm: term => { if (terms.includes(term)) selectTerm(term); }, termLabel: termName(activeTerm), offerings: termData?.offerings ?? [], sectionStatus: termData?.status ?? "loading", sourceUrl: termData?.sourceUrl,
-    calendarVerified: !!verified, retryCalendar: () => { void refreshCalendar(); }, pending, choiceNotice, chooseSection, confirmSections, cancelSections,
+    sectionData: termData, calendarVerified: !!verified, retryCalendar: () => { void refreshCalendar(); }, pending, choiceNotice, chooseSection, confirmSections, cancelSections,
     retrySections: id => { if (id && catalog.plans[id]) void catalog.planningStore.command("setPlan", { id, ...catalog.plans[id], chooseAgain: true }); else void load(activeTerm, true); },
   }}>{children}</ScheduleContext.Provider>;
 }

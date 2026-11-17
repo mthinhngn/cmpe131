@@ -2,7 +2,10 @@ import { BadRequestException } from "@nestjs/common";
 import type { CourseOffering } from "./course-types";
 import type { PlanningStore, PlanSlot } from "./planning-engine";
 
-export type SectionData = { term: string; status: string; offerings: CourseOffering[]; message?: string };
+export type SectionData = {
+  term: string; status: string; offerings: CourseOffering[]; message?: string; sourceUrl?: string; fetchedAt?: string;
+  sourceUpdatedOn?: string | null; checkedAt?: string | null; lastImportedAt?: string | null;
+};
 export type CalendarData = { status: string; as_of: string; valid_until: string; current_term: { season: string; year: number }; next_term: { season: string; year: number } };
 export const termFor = (start: string | null | undefined, slot: PlanSlot | undefined): string | undefined => {
   if (typeof slot === "string") return slot;

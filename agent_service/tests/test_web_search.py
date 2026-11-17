@@ -143,11 +143,16 @@ class WebSearchTests(unittest.TestCase):
         self.assertEqual([(p.id, p.start.isoformat()) for p in periods], [('fall-2026', '2026-08-19'), ('winter-2027', '2026-12-22')])
 
     def test_offering_exact_course_term_without_calendar(self):
-        tools = CalendarTools()
+        class DatedSchedule(CalendarTools):
+            def fetch(self, hit, deadline):
+                return {**super().fetch(hit, deadline), 'sourceUpdatedOn': '2026-06-01'}
+
+        tools = DatedSchedule()
         result = self.lookup(fixture_agent(tools), 'offering', target_term='summer-2026', course_code='CMPE 126')
         self.assertEqual(result['status'], 'verified')
         self.assertEqual((tools.searches, tools.schedule_fetches), (0, 1))
         self.assertEqual(result['target_term'], {'season': 'summer', 'year': 2026})
+        self.assertEqual(result['sourceUpdatedOn'], '2026-06-01')
 
     def test_absent_course_requires_complete_schedule(self):
         self.assertEqual(self.lookup(kind='offering', target_term='summer-2026', course_code='CMPE 999')['status'], 'not_offered')

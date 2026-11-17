@@ -29,7 +29,14 @@ export type CourseOffering = {
   openSeats: number;
   seatsKnown?: boolean;
   scheduleReview?: boolean;
+  listed?: boolean;
+  lastSeenAt?: string | null;
   notes?: string;
+};
+
+export type SectionData = {
+  term: string; status: "available" | "unavailable"; offerings: CourseOffering[]; message: string;
+  sourceUrl?: string; fetchedAt?: string; sourceUpdatedOn?: string | null; checkedAt?: string | null; lastImportedAt?: string | null;
 };
 
 export type RequirementItem = {

@@ -2,7 +2,7 @@ import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { PrismaService } from "./prisma/prisma.service";
 import type { Course, CourseOffering } from "./course-types";
 import { courseDependencies } from "./course-dependencies";
-import type { CalendarData } from "./schedule-sync";
+import type { CalendarData, SectionData } from "./schedule-sync";
 
 export async function universityCalendar(db: PrismaService): Promise<CalendarData | null> {
   const row = await db.sharedAcademicCalendar.findUnique({ where: { id: "sjsu-regular-calendar-v1" } });
@@ -25,20 +25,32 @@ export async function universityCourses(db: PrismaService): Promise<Course[]> {
   });
 }
 
-export async function universitySections(db: PrismaService, term: string) {
+export async function universitySections(db: PrismaService, term: string): Promise<SectionData> {
   if (!/^(fall|winter|spring|summer)-(19|20|21)\d{2}$/.test(term)) throw new BadRequestException("Invalid semester.");
-  const rows = await db.$queryRaw<Array<{ evidence: Record<string, any>; fetchedAt: Date }>>`
-    SELECT evidence,"fetchedAt" FROM "UniversitySectionRecord" WHERE "termId"=${term} ORDER BY "classNumber"`;
-  const offerings: CourseOffering[] = rows.map(({ evidence: r }) => ({
+  const rows = await db.$queryRaw<Array<{
+    evidence: Record<string, any> | null; sourceUrl: string; fetchedAt: Date; sourceUpdatedOn: Date | null;
+    checkedAt: Date | null; lastImportedAt: Date | null; lastSeenAt: Date | null; listed: boolean;
+  }>>`
+    SELECT s.evidence,t."sourceUrl",t."fetchedAt",t."sourceUpdatedOn",t."checkedAt",t."lastImportedAt",s."lastSeenAt",
+           (t."lastImportedAt" IS NULL OR s.evidence->>'sourceKind'='ischool'
+             OR COALESCE(s."lastSeenAt">=t."lastImportedAt",false)) IS TRUE AS listed
+    FROM "Term" t LEFT JOIN "UniversitySectionRecord" s ON s."termId"=t.id
+    WHERE t.id=${term} ORDER BY s."classNumber"`;
+  const offerings: CourseOffering[] = rows.flatMap(({ evidence: r, listed, lastSeenAt }) => r ? [{
     courseCode: r.courseCode, classNumber: r.classNumber, sectionNumber: r.sectionNumber,
     component: r.component || "Unlisted", mode: r.mode, days: r.days, times: r.times,
     location: r.location, dates: r.dates, instructors: r.instructors,
     openSeats: r.openSeats ?? 0, seatsKnown: r.openSeats !== null,
-    scheduleReview: !r.component || /\bcancel(?:led|ed)\b/i.test(r.notes || ""), notes: [r.mandatoryZoom, r.notes].filter(Boolean).join(" · "),
-  }));
-  return { term, status: rows.length ? "available" : "unavailable", offerings,
-    sourceUrl: `https://www.sjsu.edu/classes/schedules/${term}.php`, fetchedAt: rows[0]?.fetchedAt.toISOString(),
-    message: rows.length ? "Imported SJSU snapshot; catalog enrichment remains incomplete." : "No imported sections for this semester." };
+    listed, lastSeenAt: lastSeenAt?.toISOString() ?? null,
+    scheduleReview: !listed || !r.component || /\bcancel(?:led|ed)\b/i.test(r.notes || ""), notes: [r.mandatoryZoom, r.notes].filter(Boolean).join(" · "),
+  }] : []);
+  const snapshot = rows[0];
+  return { term, status: offerings.length ? "available" : "unavailable", offerings,
+    sourceUrl: snapshot?.sourceUrl ?? `https://www.sjsu.edu/classes/schedules/${term}.php`,
+    fetchedAt: snapshot?.fetchedAt.toISOString(),
+    sourceUpdatedOn: snapshot?.sourceUpdatedOn?.toISOString().slice(0, 10) ?? null,
+    checkedAt: snapshot?.checkedAt?.toISOString() ?? null, lastImportedAt: snapshot?.lastImportedAt?.toISOString() ?? null,
+    message: offerings.length ? "Imported SJSU public schedule." : "No imported sections for this semester." };
 }
 
 @Controller("university")

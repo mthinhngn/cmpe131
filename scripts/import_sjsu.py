@@ -2,12 +2,15 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager, nullcontext
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import sys
+from tempfile import mkdtemp
 from urllib.parse import parse_qs, urlencode, urljoin, urlsplit
 import uuid
 
@@ -47,8 +50,18 @@ def lines(element):
     return text(element).strip(" / ")
 
 
+def source_updated_on(soup):
+    match = re.search(r"\bLast\s+Updated\b\s*:?\s*([A-Za-z]{3}\s+\d{1,2},\s+\d{4})\b", text(soup), re.I)
+    if match:
+        try:
+            return datetime.strptime(match[1], "%b %d, %Y").date().isoformat()
+        except ValueError:
+            pass
+    return None
+
+
 def parse_schedule(html, term, source_url):
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "html.parser") if isinstance(html, str) else html
     expected = term.replace("-", " ") + " class schedule"
     if not any(expected in text(h).lower() for h in soup.find_all("h1")):
         raise ValueError(f"Schedule heading does not match {term}")
@@ -263,16 +276,27 @@ def collect(sources):
     return schedules, catalog, report
 
 
-def save_database(schedules, catalog, fetched_at):
+@contextmanager
+def schedule_transaction():
     load_dotenv(ROOT / "api/.env")
-    import os
-    from psycopg.types.json import Jsonb
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
         raise ValueError("DATABASE_URL is not configured")
     parts = urlsplit(database_url)
     query = {k: v[-1] for k, v in parse_qs(parts.query).items() if k != "schema"}
     url = parts._replace(query=urlencode(query)).geturl()
+    with psycopg.connect(url, connect_timeout=10) as conn:
+        conn.execute("SELECT pg_advisory_xact_lock(20261105)")
+        yield conn
+
+
+def save_database(schedules, catalog, fetched_at):
+    with schedule_transaction() as conn:
+        return save_rows(conn, schedules, catalog, fetched_at)
+
+
+def save_rows(conn, schedules, catalog, fetched_at, *, schedules_only=False):
+    from psycopg.types.json import Jsonb
     all_courses = {}
     for rows in schedules.values():
         for row in rows:
@@ -284,68 +308,154 @@ def save_database(schedules, catalog, fetched_at):
     for record in catalog.values():
         for ref, source_url in record["references"].items():
             all_courses.setdefault(ref, {"code": ref, "title": ref, "units": None, "unitsText": "", "sourceUrl": source_url})
-    with psycopg.connect(url, connect_timeout=10) as conn:
-        conn.execute("SELECT pg_advisory_xact_lock(20261105)")
-        existing = conn.execute('SELECT id, code FROM "Course"').fetchall()
-        ids = {}
-        for ident, course_code in existing:
-            if course_code in ids:
-                raise ValueError(f"Duplicate existing course identity: {course_code}")
-            ids[course_code] = ident
-        for course_code, record in sorted(all_courses.items()):
-            ident = ids.setdefault(course_code, "sjsu-" + re.sub(r"[^a-z0-9]+", "-", course_code.lower()))
-            conn.execute('INSERT INTO "Course" (id, code) VALUES (%s,%s) ON CONFLICT (id) DO NOTHING', (ident, course_code))
-            full = course_code in catalog
-            conn.execute('''INSERT INTO "UniversityCourseRecord"
-                ("courseId","catalogYear",title,units,"unitsText",description,"prerequisiteText","corequisiteText","prerequisiteCodes","corequisiteCodes","sourceUrl","catalogStatus","fetchedAt")
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT ("courseId","catalogYear") DO UPDATE SET
-                title=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' OR "UniversityCourseRecord"."catalogStatus"!='catalog-verified' THEN EXCLUDED.title ELSE "UniversityCourseRecord".title END,
-                units=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' AND EXCLUDED."catalogStatus"!='catalog-verified' THEN "UniversityCourseRecord".units ELSE COALESCE(EXCLUDED.units,"UniversityCourseRecord".units) END,
-                "unitsText"=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' AND EXCLUDED."catalogStatus"!='catalog-verified' THEN "UniversityCourseRecord"."unitsText" WHEN EXCLUDED."unitsText"!='' THEN EXCLUDED."unitsText" ELSE "UniversityCourseRecord"."unitsText" END,
-                description=COALESCE(EXCLUDED.description,"UniversityCourseRecord".description),
-                "prerequisiteText"=COALESCE(EXCLUDED."prerequisiteText","UniversityCourseRecord"."prerequisiteText"),
-                "corequisiteText"=COALESCE(EXCLUDED."corequisiteText","UniversityCourseRecord"."corequisiteText"),
-                "prerequisiteCodes"=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' THEN EXCLUDED."prerequisiteCodes" ELSE "UniversityCourseRecord"."prerequisiteCodes" END,
-                "corequisiteCodes"=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' THEN EXCLUDED."corequisiteCodes" ELSE "UniversityCourseRecord"."corequisiteCodes" END,
-                "sourceUrl"=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' OR "UniversityCourseRecord"."catalogStatus"!='catalog-verified' THEN EXCLUDED."sourceUrl" ELSE "UniversityCourseRecord"."sourceUrl" END,
-                "catalogStatus"=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' THEN "UniversityCourseRecord"."catalogStatus" ELSE EXCLUDED."catalogStatus" END,
-                "fetchedAt"=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' AND EXCLUDED."catalogStatus"!='catalog-verified' THEN "UniversityCourseRecord"."fetchedAt" ELSE EXCLUDED."fetchedAt" END''',
-                (ident, YEAR, record["title"], record["units"], record["unitsText"], record.get("description"), record.get("prerequisiteText"), record.get("corequisiteText"), record.get("prerequisiteCodes", []), record.get("corequisiteCodes", []), record.get("sourceUrl", CATALOG), "catalog-verified" if full else "catalog-pending", record.get("fetchedAt", fetched_at)))
-        stored, pending = {}, {}
-        for term, rows in schedules.items():
-            url = f"https://www.sjsu.edu/classes/schedules/{term}.php"
-            conn.execute('''INSERT INTO "Term" (id,name,"sourceUrl","fetchedAt") VALUES (%s,%s,%s,%s)
-                ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name,"sourceUrl"=EXCLUDED."sourceUrl","fetchedAt"=EXCLUDED."fetchedAt"''', (term, term.replace("-", " ").title(), url, rows[0].get("fetchedAt", fetched_at)))
-            values = []
-            with conn.cursor() as cur:
-                cur.executemany('''INSERT INTO "UniversitySectionRecord" ("termId","classNumber","courseId","sourceUrl",evidence,"fetchedAt")
-                    VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT ("termId","classNumber") DO UPDATE SET
-                    "courseId"=EXCLUDED."courseId","sourceUrl"=EXCLUDED."sourceUrl",evidence=EXCLUDED.evidence,"fetchedAt"=EXCLUDED."fetchedAt"''',
-                    [(term, row["classNumber"], ids[row["courseCode"]], row["sourceUrl"], Jsonb(row), row.get("fetchedAt", fetched_at)) for row in rows])
-            for row in rows:
-                if not row["component"] or row["openSeats"] is None or re.search(r"\bcancel(?:led|ed)\b", row["notes"], re.I):
-                    pending.setdefault(term, []).append(row["classNumber"])
-                    continue
-                values.append((str(uuid.uuid4()), term, ids[row["courseCode"]], row["classNumber"], row["sectionNumber"], row["mode"], row["component"], row["days"], row["times"], row["location"], row["dates"], row["openSeats"], row["instructors"]))
-            with conn.cursor() as cur:
-                cur.executemany('''INSERT INTO "Section" (id,"termId","courseId","classNumber","sectionNumber",mode,component,days,times,location,dates,"openSeats",instructors)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                    ON CONFLICT ("termId","classNumber") DO UPDATE SET "courseId"=EXCLUDED."courseId","sectionNumber"=EXCLUDED."sectionNumber",mode=EXCLUDED.mode,component=EXCLUDED.component,days=EXCLUDED.days,times=EXCLUDED.times,location=EXCLUDED.location,dates=EXCLUDED.dates,"openSeats"=EXCLUDED."openSeats",instructors=EXCLUDED.instructors''', values)
-            stored[term] = len(values)
+    existing = conn.execute('SELECT id, code FROM "Course"').fetchall()
+    ids = {}
+    for ident, course_code in existing:
+        if course_code in ids:
+            raise ValueError(f"Duplicate existing course identity: {course_code}")
+        ids[course_code] = ident
+    existing_records = set()
+    if schedules_only:
+        existing_records = {ident for (ident,) in conn.execute(
+            'SELECT "courseId" FROM "UniversityCourseRecord" WHERE "catalogYear"=%s', (YEAR,)
+        )}
+    for course_code, record in sorted(all_courses.items()):
+        if ids.get(course_code) in existing_records:
+            continue
+        ident = ids.setdefault(course_code, "sjsu-" + re.sub(r"[^a-z0-9]+", "-", course_code.lower()))
+        conn.execute('INSERT INTO "Course" (id, code) VALUES (%s,%s) ON CONFLICT (id) DO NOTHING', (ident, course_code))
+        full = course_code in catalog
+        conflict = "DO NOTHING" if schedules_only else '''DO UPDATE SET
+            title=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' OR "UniversityCourseRecord"."catalogStatus"!='catalog-verified' THEN EXCLUDED.title ELSE "UniversityCourseRecord".title END,
+            units=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' AND EXCLUDED."catalogStatus"!='catalog-verified' THEN "UniversityCourseRecord".units ELSE COALESCE(EXCLUDED.units,"UniversityCourseRecord".units) END,
+            "unitsText"=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' AND EXCLUDED."catalogStatus"!='catalog-verified' THEN "UniversityCourseRecord"."unitsText" WHEN EXCLUDED."unitsText"!='' THEN EXCLUDED."unitsText" ELSE "UniversityCourseRecord"."unitsText" END,
+            description=COALESCE(EXCLUDED.description,"UniversityCourseRecord".description),
+            "prerequisiteText"=COALESCE(EXCLUDED."prerequisiteText","UniversityCourseRecord"."prerequisiteText"),
+            "corequisiteText"=COALESCE(EXCLUDED."corequisiteText","UniversityCourseRecord"."corequisiteText"),
+            "prerequisiteCodes"=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' THEN EXCLUDED."prerequisiteCodes" ELSE "UniversityCourseRecord"."prerequisiteCodes" END,
+            "corequisiteCodes"=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' THEN EXCLUDED."corequisiteCodes" ELSE "UniversityCourseRecord"."corequisiteCodes" END,
+            "sourceUrl"=CASE WHEN EXCLUDED."catalogStatus"='catalog-verified' OR "UniversityCourseRecord"."catalogStatus"!='catalog-verified' THEN EXCLUDED."sourceUrl" ELSE "UniversityCourseRecord"."sourceUrl" END,
+            "catalogStatus"=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' THEN "UniversityCourseRecord"."catalogStatus" ELSE EXCLUDED."catalogStatus" END,
+            "fetchedAt"=CASE WHEN "UniversityCourseRecord"."catalogStatus"='catalog-verified' AND EXCLUDED."catalogStatus"!='catalog-verified' THEN "UniversityCourseRecord"."fetchedAt" ELSE EXCLUDED."fetchedAt" END'''
+        conn.execute('''INSERT INTO "UniversityCourseRecord"
+            ("courseId","catalogYear",title,units,"unitsText",description,"prerequisiteText","corequisiteText","prerequisiteCodes","corequisiteCodes","sourceUrl","catalogStatus","fetchedAt")
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            ON CONFLICT ("courseId","catalogYear") ''' + conflict,
+            (ident, YEAR, record["title"], record["units"], record["unitsText"], record.get("description"), record.get("prerequisiteText"), record.get("corequisiteText"), record.get("prerequisiteCodes", []), record.get("corequisiteCodes", []), record.get("sourceUrl", CATALOG), "catalog-verified" if full else "catalog-pending", record.get("fetchedAt", fetched_at)))
+    stored, pending = {}, {}
+    for term, rows in schedules.items():
+        url = f"https://www.sjsu.edu/classes/schedules/{term}.php"
+        conn.execute('''INSERT INTO "Term" (id,name,"sourceUrl","fetchedAt") VALUES (%s,%s,%s,%s)
+            ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name,"sourceUrl"=EXCLUDED."sourceUrl","fetchedAt"=EXCLUDED."fetchedAt",
+            "sourceSha256"=NULL,"sourceUpdatedOn"=NULL''', (term, term.replace("-", " ").title(), url, rows[0].get("fetchedAt", fetched_at)))
+        values = []
+        with conn.cursor() as cur:
+            cur.executemany('''INSERT INTO "UniversitySectionRecord" ("termId","classNumber","courseId","sourceUrl",evidence,"fetchedAt","lastSeenAt")
+                VALUES (%s,%s,%s,%s,%s,%s,%s) ON CONFLICT ("termId","classNumber") DO UPDATE SET
+                "courseId"=EXCLUDED."courseId","sourceUrl"=EXCLUDED."sourceUrl",evidence=EXCLUDED.evidence,
+                "fetchedAt"=EXCLUDED."fetchedAt","lastSeenAt"=EXCLUDED."lastSeenAt"''',
+                [(term, row["classNumber"], ids[row["courseCode"]], row["sourceUrl"], Jsonb(row), row.get("fetchedAt", fetched_at), fetched_at) for row in rows])
+        for row in rows:
+            if not row["component"] or row["openSeats"] is None or re.search(r"\bcancel(?:led|ed)\b", row["notes"], re.I):
+                pending.setdefault(term, []).append(row["classNumber"])
+                continue
+            values.append((str(uuid.uuid4()), term, ids[row["courseCode"]], row["classNumber"], row["sectionNumber"], row["mode"], row["component"], row["days"], row["times"], row["location"], row["dates"], row["openSeats"], row["instructors"], fetched_at))
+        with conn.cursor() as cur:
+            cur.executemany('''INSERT INTO "Section" (id,"termId","courseId","classNumber","sectionNumber",mode,component,days,times,location,dates,"openSeats",instructors,"lastSeenAt")
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT ("termId","classNumber") DO UPDATE SET "courseId"=EXCLUDED."courseId","sectionNumber"=EXCLUDED."sectionNumber",mode=EXCLUDED.mode,component=EXCLUDED.component,days=EXCLUDED.days,times=EXCLUDED.times,location=EXCLUDED.location,dates=EXCLUDED.dates,"openSeats"=EXCLUDED."openSeats",instructors=EXCLUDED.instructors,"lastSeenAt"=EXCLUDED."lastSeenAt"''', values)
+        if term in pending:
+            conn.execute('''UPDATE "Section" SET "lastSeenAt"=%s
+                WHERE "termId"=%s AND "classNumber"=ANY(%s)''', (fetched_at, term, pending[term]))
+        stored[term] = len(values)
     return {"courses": len(all_courses), "sourceSectionsStored": {t: len(rows) for t, rows in schedules.items()}, "sectionsUpserted": stored, "sectionsRequiringScheduleReview": pending,
             "note": "Upsert only; existing degree requirements, personal workspaces, and unlisted sections are preserved."}
+
+
+def refresh_term(conn, term, html, source, *, offline=False):
+    digest, observed_at = source["sha256"], source["fetchedAt"]
+    previous = None
+    if conn is not None:
+        previous = conn.execute(
+            'SELECT "sourceSha256","sourceUpdatedOn","fetchedAt","checkedAt" FROM "Term" WHERE id=%s',
+            (term,),
+        ).fetchone()
+    if previous and previous[0] == digest:
+        if not offline:
+            conn.execute('UPDATE "Term" SET "checkedAt"=GREATEST("checkedAt",%s) WHERE id=%s', (observed_at, term))
+        return {"status": "unchanged", "sourceUpdatedOn": previous[1].isoformat() if previous[1] else None}, None
+    if previous and previous[0] is not None:
+        observed = datetime.fromisoformat(observed_at).astimezone(timezone.utc).replace(tzinfo=None)
+        if observed < (previous[3] or previous[2]):
+            return {"status": "stale-source", "message": "A newer source was already checked for this term."}, None
+
+    soup = BeautifulSoup(html, "html.parser")
+    rows = parse_schedule(soup, term, source["url"])
+    updated_on = source_updated_on(soup)
+    result = {"status": "verified", "sections": len(rows), "sourceUpdatedOn": updated_on}
+    if conn is not None:
+        old_count, = conn.execute('''
+            SELECT count(*) FROM "UniversitySectionRecord" s JOIN "Term" t ON t.id=s."termId"
+            WHERE s."termId"=%s AND s.evidence->>'sourceKind' IS DISTINCT FROM 'ischool'
+              AND (t."lastImportedAt" IS NULL OR s."lastSeenAt">=t."lastImportedAt")
+        ''', (term,)).fetchone()
+        if old_count >= 100 and len(rows) * 10 < old_count * 7:
+            return {**result, "status": "shrink-guard",
+                    "message": f"Parsed {len(rows)} sections; {old_count} were previously listed."}, rows
+    for row in rows:
+        row["fetchedAt"] = observed_at
+    if conn is not None:
+        run_at = datetime.now(timezone.utc).isoformat()
+        result["database"] = save_rows(conn, {term: rows}, {}, run_at, schedules_only=True)
+        conn.execute('''UPDATE "Term" SET "sourceUpdatedOn"=%s,"sourceSha256"=%s,
+            "checkedAt"=%s,"lastImportedAt"=%s WHERE id=%s''',
+            (updated_on, digest, observed_at if not offline else None, run_at, term))
+        result["status"] = "written"
+    return result, rows
+
+
+def refresh_schedules(sources, output, write_db):
+    report = {"mode": "schedules-only", "runAt": datetime.now(timezone.utc).isoformat(),
+              "sources": sources.manifest, "issues": [], "terms": {}, "complete": True}
+    for term in TERMS:
+        url = f"https://www.sjsu.edu/classes/schedules/{term}.php"
+        try:
+            html = sources.get(url)
+            with schedule_transaction() if write_db else nullcontext() as conn:
+                result, rows = refresh_term(conn, term, html, sources.manifest[-1], offline=sources.offline)
+            if rows is not None:
+                (output / f"{term}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf8")
+        except psycopg.Error as exc:
+            result = {"status": "database-error", "message": f"{type(exc).__name__} ({exc.sqlstate or 'client error'})"}
+        except (ValueError, requests.RequestException, OSError) as exc:
+            result = {"status": "failed", "message": str(exc)}
+        report["terms"][term] = result
+        if result["status"] not in {"unchanged", "verified", "written"}:
+            report["complete"] = False
+            report["issues"].append({"term": term, "kind": result["status"], "message": result["message"]})
+        if "sourceUpdatedOn" in result and result["sourceUpdatedOn"] is None:
+            report["issues"].append({"term": term, "kind": "missing-source-date", "message": "SJSU Last Updated date is unavailable."})
+        print(f"{term}: {result['status']}" + (f" — {result['message']}" if "message" in result else ""), flush=True)
+    report_path = output / "report.json"
+    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf8")
+    print(f"Report saved to {report_path}", flush=True)
+    return 0 if report["complete"] else 3
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--offline", action="store_true", help="Use saved source files without HTTP requests")
     parser.add_argument("--write-db", action="store_true", help="Upsert into the configured catalog database")
-    parser.add_argument("--output", type=Path, default=ROOT / "data/sjsu/2026-2027")
+    parser.add_argument("--schedules-only", action="store_true", help="Refresh only the three main SJSU schedules")
+    parser.add_argument("--output", type=Path, help="Directory for raw sources, snapshots, and report.json")
     args = parser.parse_args()
+    if args.output is None:
+        args.output = Path(mkdtemp(prefix="course-radar-sjsu-")) if args.schedules_only and not args.offline else ROOT / "data/sjsu/2026-2027"
     args.output.mkdir(parents=True, exist_ok=True)
     sources = Sources(args.output / "sources", args.offline)
     try:
+        if args.schedules_only:
+            return refresh_schedules(sources, args.output, args.write_db)
         schedules, catalog, report = collect(sources)
         now = datetime.now(timezone.utc).isoformat()
         report["runAt"] = now

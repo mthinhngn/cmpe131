@@ -29,6 +29,8 @@ export type CourseOffering = {
   openSeats: number;
   seatsKnown?: boolean;
   scheduleReview?: boolean;
+  listed?: boolean;
+  lastSeenAt?: string | null;
   notes?: string;
 };
 

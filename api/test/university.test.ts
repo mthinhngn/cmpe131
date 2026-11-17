@@ -31,11 +31,26 @@ test("course references never create self prerequisites or self corequisites", a
 
 test("imported Winter sections retain unknown seats and require review when component is absent", async () => {
   const evidence = { courseCode: "INFO 200", classNumber: "12345", sectionNumber: "10", component: "", mode: "Fully Online", days: "TBA", times: "TBA", location: "ONLINE", dates: "", instructors: [], openSeats: null, mandatoryZoom: "See instructor", notes: "" };
-  const db = { $queryRaw: async () => [{ evidence, fetchedAt: new Date("2026-11-05T00:00:00Z") }] } as unknown as PrismaService;
+  const term = {
+    sourceUrl: "https://www.sjsu.edu/classes/schedules/winter-2027.php",
+    fetchedAt: new Date("2026-11-17T19:00:00Z"), sourceUpdatedOn: new Date("2026-11-17"),
+    checkedAt: new Date("2026-11-17T20:00:00Z"), lastImportedAt: new Date("2026-11-17T19:00:00Z"),
+  };
+  const db = { $queryRaw: async () => [
+    { ...term, evidence, listed: true, lastSeenAt: term.lastImportedAt },
+    { ...term, evidence: { ...evidence, classNumber: "12346", component: "LEC", openSeats: 4 }, listed: false, lastSeenAt: null },
+  ] } as unknown as PrismaService;
   const result = await universitySections(db, "winter-2027");
   assert.equal(result.status, "available");
   assert.equal(result.offerings[0].seatsKnown, false);
   assert.equal(result.offerings[0].scheduleReview, true);
   assert.match(result.offerings[0].notes!, /See instructor/);
+  assert.equal(result.sourceUpdatedOn, "2026-11-17");
+  assert.equal(result.checkedAt, "2026-11-17T20:00:00.000Z");
+  assert.equal(result.lastImportedAt, "2026-11-17T19:00:00.000Z");
+  assert.equal(result.offerings[0].listed, true);
+  assert.equal(result.offerings[0].lastSeenAt, result.lastImportedAt);
+  assert.equal(result.offerings[1].listed, false);
+  assert.equal(result.offerings[1].scheduleReview, true);
   await assert.rejects(() => universitySections(db, "not-a-term"));
 });

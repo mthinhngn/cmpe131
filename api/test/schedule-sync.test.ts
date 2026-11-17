@@ -48,6 +48,19 @@ test("moving to next or distant term clears old selections; removals clear desti
   run({ baseKind: "removePlan", baseArgs: { id: "course" }, selected: [] });
   assert.deepEqual(store.plans, {});
 });
+
+test("delisted sections remain saved and cannot be newly selected", () => {
+  const { store, run, scope, fall, offerings } = setup();
+  const select = { baseKind: "setPlan", baseArgs: { id: "course", semester: 4 }, term: fall, selected: ["1", "2"] };
+  const sections = { term: fall, status: "available", offerings: [offerings[0], { ...offerings[1], listed: false, scheduleReview: true }] };
+  assert.throws(() => run(select, sections), /no longer published/);
+  run(select);
+  const saved = structuredClone(store.getState());
+  assert.throws(() => run(select, sections), /no longer published/);
+  assert.deepEqual(store.getState(), saved);
+  run({ baseKind: "removeSection", baseArgs: { id: "course", classNumber: "2" }, term: fall }, sections);
+  assert.deepEqual(store.getState().schedules[scope(fall)], ["1"]);
+});
 test("last section removal removes the planner entry, partial removal keeps it", () => {
   const { store, run, scope, fall } = setup();
   run({ baseKind: "setPlan", baseArgs: { id: "course", semester: 4 }, term: fall, selected: ["1", "2"] });

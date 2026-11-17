@@ -90,7 +90,7 @@ TOOLS = {
     'get_student_state': (Arguments, 'Read the current student plan and completion IDs. Never send this data to public search.'),
     'find_courses_by_requirement': (Requirement, 'List ALL recorded courses for a requirement and term, including dated availability.'),
     'get_course': (Course, 'Get catalog descriptions and prerequisites. Use codes to batch up to eight candidates.'),
-    'get_sections': (Sections, 'Read sections/instructors/seats. fresh=true fetches the official schedule. Snapshot seats are dated.'),
+    'get_sections': (Sections, 'Read sections, instructors and open seats from the SJSU public class schedule. Use fresh=true for explicit seat requests. sourceUpdatedOn is the date SJSU last updated its published snapshot.'),
     'check_fit': (Fit, 'Check prerequisites and timetable fit against the student state. Use codes for a batch.'),
     'search_catalog': (CatalogSearch, 'LlamaIndex semantic catalog/policy retrieval; never establishes current seats.'),
     'get_transcript_facts': (Question, 'Read this verified account owner transcript. Exact completion questions use structured rows.'),
@@ -113,7 +113,7 @@ Only propose_plan_change can change anything. It must faithfully represent the l
 For propose_plan_change use ordered steps for ordinary actions, group=swap/replace plus course_queries=[first course, second course] for atomic exchanges/substitutions, or query+section_term+section_numbers for weekly section selection. Do not send a nested decision. Leave unused fields empty. Swap/replace MUST use group and exactly two course_queries, NEVER independent steps. For example, replacing CMPE 131 with CMPE 135 calls propose_plan_change with {"group":"replace","course_queries":["CMPE 131","CMPE 135"]}; swapping CMPE 131 and CMPE 142 uses {"group":"swap","course_queries":["CMPE 131","CMPE 142"]}.
 Preserve the user's term representation in every language: this/current or next semester uses relative_term (relation=current/next); a named season/year uses calendar_term; Semester N uses numbered_semester. Never compute a calendar year or semester number from relative wording. Today is supplied in context. A pending past_term clarification contains the proposed_actions to use only if the latest user confirms them.
 An explicit command already authorizes the requested changes: execute it without asking for confirmation or special authorization wording. Interpret ordinary language, shared verbs, synonyms and clear conversational references into ordered typed actions. Do not require a particular sentence format or repeated course codes. Use propose_plan_change directly when the intent is clear. If your proposal is rejected, correct its arguments against the original command; do not ask the user to repeat an already clear request. Ask only for genuinely missing or ambiguous information.
-Always finish via final_answer or ask_user. final_answer facts must cite evidence IDs; each factual sentence must appear verbatim as a claim. Include exact fetched_at when giving seats. Do not invent source URLs. If tools fail, ask_user or explain what couldn't be verified. Do not promise later background work.
+Always finish via final_answer or ask_user. final_answer facts must cite evidence IDs; each factual sentence must appear verbatim as a claim. Attribute open seats to SJSU's public schedule. Code appends SJSU's published update date and discloses a dated database fallback. Never describe the public schedule's seats as live or real-time. Refer students to MySJSU for current registration availability. Do not invent source URLs. If tools fail, ask_user or explain what couldn't be verified. Do not promise later background work.
 For an empty or failed observation, copy its gap_statement exactly into a claim with kind="gap" and that single evidence ID. Only kind="fact" claims may establish positive facts, and they require ok evidence. Never paraphrase a gap or cite failed evidence as a fact.
 Construct claims first, then copy their text exactly into final_answer.text. Claims are the actual sentences displayed to the user, not paraphrased annotations. For example, claims=[{text:"CMPE 131 is listed in the catalog.", evidence_ids:["ev_1"]}] requires text="CMPE 131 is listed in the catalog.". Do not add an uncited introduction or conclusion.
 For a comparison between named courses, first read get_student_state and get_course(codes=[the named courses]), and call course_reviews(codes=[ALL named courses]) once to search Reddit and Rate My Professors. Then combine catalog topics with relevant student opinions for useful advice. Do not stop after official catalog descriptions. Review gaps must not prevent a suggestion; disclose limited coverage and cite opinions as opinions, never consensus or guaranteed workload. Do not call find_courses_by_requirement, check_fit, get_sections, or review_research for this simple comparison unless the user explicitly asks about requirements/eligibility, schedule/seats, or instructors/reviews respectively. Do not add irrelevant unknowns or lookup gaps. With no stated goal, give a reasonable default suggestion framed as your advice, plus a conditional alternative; do not stop at a list of facts.
@@ -197,9 +197,20 @@ class AdvisorLoop:
         elif name in ('find_courses_by_requirement', 'get_course', 'get_sections', 'check_fit'):
             if name in ('get_course', 'check_fit') and not args.get('code'):
                 raise ValueError('Supply a course code or codes.')
-            data = self.availability.invoke(name, {k: v for k, v in args.items() if k != 'codes'}, context)
-            if name == 'get_sections' and args.get('fresh'):
+            read_args = {k: v for k, v in args.items() if k != 'codes'}
+            refreshing = name == 'get_sections' and args.get('fresh')
+            try:
+                data = self.availability.invoke(name, read_args, context)
+            except Exception:
+                if not refreshing:
+                    raise
+                data = {'status': 'failed'}
+            if refreshing:
                 kind = 'official_web'
+                if data.get('status') in ('failed', 'unavailable', 'not_verified'):
+                    data = {**self.availability.invoke(name, {**read_args, 'fresh': False}, context),
+                            'fresh_refresh': 'failed', 'snapshot': True}
+                    kind = 'database'
         elif name == 'search_catalog':
             if self.catalog is None:
                 raise ValueError('Catalog RAG is not configured.')

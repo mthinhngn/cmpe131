@@ -38,9 +38,14 @@ class CatalogRepository:
         with psycopg.connect(database_url(), connect_timeout=5, row_factory=dict_row,
                              options='-c default_transaction_read_only=on -c statement_timeout=5000') as conn:
             return [{**r['evidence'], 'course_id': r['courseId'], 'sourceUrl': r['sourceUrl'],
-                     'fetchedAt': r['fetchedAt'].isoformat()} for r in conn.execute('''
-                SELECT "courseId", "sourceUrl", evidence, "fetchedAt" FROM "UniversitySectionRecord"
-                WHERE "termId"=%s ORDER BY "classNumber"
+                     'fetchedAt': r['fetchedAt'].isoformat(),
+                     **{key: r[key].isoformat() if r[key] else None
+                        for key in ('sourceUpdatedOn', 'checkedAt', 'lastImportedAt')}} for r in conn.execute('''
+                SELECT s."courseId",s."sourceUrl",s.evidence,t."fetchedAt",t."sourceUpdatedOn",t."checkedAt",t."lastImportedAt"
+                FROM "UniversitySectionRecord" s JOIN "Term" t ON t.id=s."termId"
+                WHERE s."termId"=%s AND (t."lastImportedAt" IS NULL OR s.evidence->>'sourceKind'='ischool'
+                                       OR s."lastSeenAt">=t."lastImportedAt")
+                ORDER BY s."classNumber"
             ''', (term,)).fetchall()]
 
     def prerequisite_rules(self, program):

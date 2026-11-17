@@ -39,7 +39,8 @@ def _code(value):
 
 def _metadata(rows):
     return {'source_url': next((r.get('sourceUrl') for r in rows if r.get('sourceUrl')), None),
-            'fetched_at': min((str(r['fetchedAt']) for r in rows if r.get('fetchedAt')), default=None)}
+            'fetched_at': min((str(r['fetchedAt']) for r in rows if r.get('fetchedAt')), default=None),
+            **{key: rows[0].get(key) if rows else None for key in ('sourceUpdatedOn', 'checkedAt', 'lastImportedAt')}}
 
 
 class Availability:
@@ -95,11 +96,13 @@ class Availability:
             if data.get('status') != 'available':
                 raise ValueError(data.get('message') or 'Official schedule unavailable')
             rows = data.get('offerings', [])
-            metadata = {'source_url': data.get('sourceUrl'), 'fetched_at': data.get('fetchedAt')}
+            metadata = {'source_url': data.get('sourceUrl'), 'fetched_at': data.get('fetchedAt'),
+                        'sourceUpdatedOn': data.get('sourceUpdatedOn')}
         else:
             rows = self.repository.section_records(term)
             metadata = _metadata(rows)
-        same = [r for r in rows if _code(r['courseCode']) == _code(code)]
+        same = [r for r in rows if _code(r['courseCode']) == _code(code)
+                and not re.search(r'\bcancel(?:led|ed)\b', r.get('notes') or '', re.I)]
         result = []
         for row in same:
             seats = row.get('openSeats')
