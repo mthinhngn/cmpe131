@@ -124,6 +124,9 @@ class TranscriptStore:
 
 
 class TranscriptIndex:
+    def initialize(self):
+        vector_store('kimi_transcripts', setup=True).get_nodes(node_ids=['__readiness_check__'])
+
     def ensure_ready(self):
         vector_store('kimi_transcripts').get_nodes(node_ids=['__readiness_check__'])
 
@@ -159,6 +162,10 @@ class TranscriptService:
         self.index = index if index is not None else TranscriptIndex()
         self.reader = reader or read_pdf
         self.lock = RLock()
+
+    def initialize(self):
+        self.store.initialize()
+        self.index.initialize()
 
     @staticmethod
     def public(record):

@@ -41,6 +41,12 @@ class TranscriptTests(unittest.TestCase):
         self.service = TranscriptService(self.repository, self.store, extractor=lambda _: self.parsed,
                                          reader=lambda _: 'MATH 30 Calculus I 3 A\nNOPE 99 Transfer Course 4 CR', index=self.index)
 
+    def test_initialize_prepares_store_and_index(self):
+        store, index = Mock(), Mock()
+        TranscriptService(self.repository, store=store, index=index).initialize()
+        store.initialize.assert_called_once_with()
+        index.initialize.assert_called_once_with()
+
     def workspace(self):
         return {'program': 'computer-engineering', 'completed': ['math-30'], 'startingTerms': {'computer-engineering': 'fall-2025'},
                 'plans': {'computer-engineering': {'math-30': {'semester': 1, 'status': 'planned'}}}}
