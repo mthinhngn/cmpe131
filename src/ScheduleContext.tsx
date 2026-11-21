@@ -102,8 +102,6 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       const active = latest.current.catalog;
       const id = kind === "agentAction" ? args.action.course_id : args.id, course = active.courseById.get(id);
       if (!course) return failure("The course is not in the active program.");
-      const removing = kind === "removePlan" || kind === "agentAction" && args.action.kind === "remove_course_from_plan";
-      if (!removing && active.takenCourseIds.has(id)) return failure("This course is marked completed. Update its completion status before scheduling it.");
       try {
         const result = await save("syncPlan", { baseKind: kind, baseArgs: args, selected: [] });
         setNotice(`${course.code}: ${result.message}`);

@@ -108,7 +108,7 @@ export default function Overview() {
   const root = useRef<HTMLDivElement>(null);
 
   const roadmapCodes = useMemo(() => new Set(catalog.courses.map(c => c.code)), [catalog.courses]);
-  const subjectOf = (course: Course) => course.plannerCategory ?? courseSubject(course.code, roadmapCodes.has(course.code), program);
+  const subjectOf = (course: Course) => course.plannerCategory ?? courseSubject(course.code, roadmapCodes.has(course.code));
   const courses = useMemo(() => allCourses.filter(c => summary.required.some(r => r.id === c.id) || plans[c.id] || takenCourseIds.has(c.id)), [allCourses, summary.required, plans, takenCourseIds]);
   const slotOf = (c: Course): PlanSlot => plans[c.id]?.semester ?? c.recommendedSemester;
   const statusOf = (c: Course): Status => takenCourseIds.has(c.id) ? "complete"
