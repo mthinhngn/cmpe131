@@ -1,5 +1,6 @@
 import { PlanningStore, type ActionResult, type Edit, type Plan, type Proposal, type State, type PlanSlot } from "./planning";
 import { computerEngineeringCatalog } from "./data";
+import { emptyCatalog } from "../api/src/empty-catalog";
 import { apiEndpoint } from "./api";
 import { staticPreview } from "./static-preview";
 type ViewState = State & { storageStatus: "loading" | "saved" | "saving" | "error"; storageError: string; hydrated: boolean };
@@ -22,7 +23,9 @@ function previewChange(store: PlanningStore, { kind, args, preview }: QueuedChan
 }
 export class PersistentPlanningStore {
   constructor(private readonly account: string | null = null) {}
-  private engine = new PlanningStore("computer-engineering", computerEngineeringCatalog);
+  private engine = staticPreview
+    ? new PlanningStore("computer-engineering", computerEngineeringCatalog)
+    : new PlanningStore("", emptyCatalog());
   private state: ViewState = { ...this.engine.getState(), storageStatus: "loading", storageError: "", hydrated: false };
   private listeners = new Set<() => void>();
   private version = 0;

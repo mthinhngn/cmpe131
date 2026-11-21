@@ -9,6 +9,7 @@ import { applyAgentAction } from "./agent-action";
 import { applyAgentSections } from "./agent-sections";
 import { importTranscript } from "./transcript-import";
 import type { ProgramCatalog } from "./course-types";
+import { emptyCatalog } from "./empty-catalog";
 import { syncPlan, termFor, type CalendarData, type SectionData } from "./schedule-sync";
 
 const CATALOG_CACHE_MS = 5 * 60_000;
@@ -80,6 +81,7 @@ export class WorkspaceService {
   // Catalog data only changes on import, so reuse each composed catalog briefly instead of re-querying on every save.
   private static catalogCache = new Map<string, { expires: number; value: Promise<ProgramCatalog> }>();
   private async catalog(program: string, additional: unknown = []) {
+    if (program === "") return emptyCatalog();
     const key = JSON.stringify([program, additional]), now = Date.now();
     let entry = WorkspaceService.catalogCache.get(key);
     if (!entry || entry.expires <= now) {
@@ -92,7 +94,7 @@ export class WorkspaceService {
     return structuredClone(await entry.value);
   }
   private async guestStore(value: any) {
-    if (!object(value) || typeof value.program !== "string" || !/^[a-z0-9-]{1,120}$/.test(value.program) ||
+    if (!object(value) || typeof value.program !== "string" || (value.program !== "" && !/^[a-z0-9-]{1,120}$/.test(value.program)) ||
         !Number.isSafeInteger(value.revision) || value.revision < 0 || !Array.isArray(value.completed) ||
         !["plans", "counts", "terms", "views", "schedules"].every(key => object(value[key])) || JSON.stringify(value).length > 500000) fail("Invalid guest workspace.");
     const catalog = await this.catalog(value.program, value.additionalPrograms?.[value.program]);
@@ -102,8 +104,7 @@ export class WorkspaceService {
   }
   async guest(draft?: unknown) {
     if (draft !== undefined) return { state: (await this.guestStore(draft)).getState(), version: 0 };
-    const catalog = await this.catalog("computer-engineering");
-    return { state: new PlanningStore("computer-engineering", catalog).getState(), version: 0 };
+    return { state: new PlanningStore("", emptyCatalog()).getState(), version: 0 };
   }
   // Guest state travels with the request and is never written to either database.
   async executeGuest(input: unknown) {
