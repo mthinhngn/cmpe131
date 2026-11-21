@@ -2,6 +2,7 @@
 
 import os
 import re
+from datetime import timezone
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import psycopg
 from psycopg.rows import dict_row
@@ -15,7 +16,33 @@ def database_url() -> str:
     return urlunsplit(parts._replace(query=urlencode([(k, v) for k, v in parse_qsl(parts.query) if k != "schema"])))
 
 
+def utc_timestamp(value):
+    return value.replace(tzinfo=timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z') if value else None
+
+
 class CatalogRepository:
+    def data_versions(self):
+        with psycopg.connect(database_url(), connect_timeout=5, row_factory=dict_row,
+                             options='-c default_transaction_read_only=on -c statement_timeout=5000') as conn:
+            versions = conn.execute('''
+                WITH eligibility AS (
+                  SELECT v."catalogYear", md5(string_agg(to_jsonb(e)::text, ',' ORDER BY e.id)) AS version
+                  FROM "CatalogCourseEligibility" e JOIN "CatalogVersion" v ON v.id=e."catalogVersionId"
+                  GROUP BY v."catalogYear"
+                )
+                SELECT v."catalogYear", count(*)::int AS "programCount",
+                    md5(string_agg(json_build_array(v."programId", v."dataVersion")::text, ',' ORDER BY v."programId")) AS version,
+                    COALESCE(e.version, md5('')) AS "eligibilityVersion"
+                FROM "CatalogVersion" v LEFT JOIN eligibility e ON e."catalogYear"=v."catalogYear"
+                GROUP BY v."catalogYear", e.version ORDER BY v."catalogYear"
+            ''').fetchall()
+            terms = conn.execute('''
+                SELECT id AS term, "sourceUpdatedOn", "lastImportedAt" FROM "Term" ORDER BY id
+            ''').fetchall()
+        schedule_terms = [{**term, 'sourceUpdatedOn': term['sourceUpdatedOn'].isoformat() if term['sourceUpdatedOn'] else None,
+                           'lastImportedAt': utc_timestamp(term['lastImportedAt'])} for term in terms]
+        return {'programDataVersion': versions, 'scheduleTerms': schedule_terms}
+
     def catalog_courses(self):
         with psycopg.connect(database_url(), connect_timeout=5, row_factory=dict_row,
                              options='-c default_transaction_read_only=on -c statement_timeout=5000') as conn:
@@ -23,7 +50,7 @@ class CatalogRepository:
                 SELECT c.id AS course_id, c.code, r.title, r.units, r.description,
                        r."prerequisiteText" AS prerequisite_text, r."prerequisiteCodes" AS prerequisite_codes,
                        r."corequisiteText" AS corequisite_text, r."corequisiteCodes" AS corequisite_codes,
-                       r."sourceUrl" AS catalog_url, r."fetchedAt" AS fetched_at
+                       r."sourceUrl" AS catalog_url, r."catalogStatus" AS catalog_status, r."fetchedAt" AS fetched_at
                 FROM "UniversityCourseRecord" r JOIN "Course" c ON c.id=r."courseId"
                 WHERE r."catalogYear"=%s ORDER BY c.code
             ''', ('2026-2027',)).fetchall()]
@@ -33,20 +60,41 @@ class CatalogRepository:
         return next((r for r in self.catalog_courses() if re.sub(r'[^A-Z0-9]', '', r['code'].upper()) == normalized), None)
 
     def section_records(self, term):
+        return self.schedule_snapshot(term)[0]
+
+    def schedule_snapshot(self, term):
         from .web_contracts import parse_term
         term = parse_term(term).id
         with psycopg.connect(database_url(), connect_timeout=5, row_factory=dict_row,
                              options='-c default_transaction_read_only=on -c statement_timeout=5000') as conn:
-            return [{**r['evidence'], 'course_id': r['courseId'], 'sourceUrl': r['sourceUrl'],
-                     'fetchedAt': r['fetchedAt'].isoformat(),
-                     **{key: r[key].isoformat() if r[key] else None
-                        for key in ('sourceUpdatedOn', 'checkedAt', 'lastImportedAt')}} for r in conn.execute('''
-                SELECT s."courseId",s."sourceUrl",s.evidence,t."fetchedAt",t."sourceUpdatedOn",t."checkedAt",t."lastImportedAt"
-                FROM "UniversitySectionRecord" s JOIN "Term" t ON t.id=s."termId"
-                WHERE s."termId"=%s AND (t."lastImportedAt" IS NULL OR s.evidence->>'sourceKind'='ischool'
-                                       OR s."lastSeenAt">=t."lastImportedAt")
+            rows = conn.execute('''
+                SELECT s."courseId",s."sourceUrl",s.evidence,t."sourceUrl" AS term_url,
+                       t."fetchedAt",t."sourceUpdatedOn",t."checkedAt",t."lastImportedAt"
+                FROM "Term" t LEFT JOIN "UniversitySectionRecord" s ON s."termId"=t.id
+                    AND (t."lastImportedAt" IS NULL OR s.evidence->>'sourceKind'='ischool' OR s."lastSeenAt">=t."lastImportedAt")
+                WHERE t.id=%s
                 ORDER BY s."classNumber"
-            ''', (term,)).fetchall()]
+            ''', (term,)).fetchall()
+        if not rows:
+            return [], {}
+        first = rows[0]
+        dates = {'sourceUpdatedOn': first['sourceUpdatedOn'].isoformat() if first['sourceUpdatedOn'] else None,
+                 'checkedAt': utc_timestamp(first['checkedAt']), 'lastImportedAt': utc_timestamp(first['lastImportedAt'])}
+        fetched_at = utc_timestamp(first['fetchedAt'])
+        sections = [{**r['evidence'], 'course_id': r['courseId'], 'sourceUrl': r['sourceUrl'],
+                     'fetchedAt': fetched_at, **dates} for r in rows if r['evidence'] is not None]
+        source = {'source_url': first['term_url'], 'fetched_at': fetched_at, **dates} if dates['lastImportedAt'] else {}
+        return sections, source
+
+    def has_imported_schedule(self, term):
+        with psycopg.connect(database_url(), connect_timeout=5,
+                             options='-c default_transaction_read_only=on -c statement_timeout=5000') as conn:
+            return conn.execute('''SELECT EXISTS (
+                SELECT 1 FROM "Term" t WHERE t.id=%s AND
+                (t."lastImportedAt" IS NOT NULL OR EXISTS (
+                    SELECT 1 FROM "UniversitySectionRecord" s WHERE s."termId"=t.id
+                ))
+            )''', (term,)).fetchone()[0]
 
     def prerequisite_rules(self, program):
         with psycopg.connect(database_url(), connect_timeout=5, row_factory=dict_row, options='-c default_transaction_read_only=on -c statement_timeout=5000') as conn:

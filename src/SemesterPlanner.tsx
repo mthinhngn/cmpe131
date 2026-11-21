@@ -44,7 +44,7 @@ export default function SemesterPlanner() {
   const takenCourseIds = savedTakenCourseIds;
   const changedCourses = useRef(new Set<string>());
   const roadmapIds = useMemo(() => new Set(catalog.courses.map(c => c.id)), [catalog.courses]);
-  const subjectOf = (c: Course) => subjects.find(s => s.key === (c.plannerCategory ?? courseSubject(c.code, roadmapIds.has(c.id), program)))!;
+  const subjectOf = (c: Course) => subjects.find(s => s.key === (c.plannerCategory ?? courseSubject(c.code, roadmapIds.has(c.id))))!;
   const tone = (c: Course): CSSProperties => ({ "--c": `var(--s-${subjectOf(c).key})`, "--c-ink": subjectOf(c).key === "writing" ? "#fff" : "#000", "--u": c.units } as CSSProperties);
   const [semester, setSemester] = useState<PlanSlot>(5);
   const [query, setQuery] = useState("");
@@ -120,9 +120,7 @@ export default function SemesterPlanner() {
     if (busy) return false;
     setError("");
     changedCourses.current.add(course.id);
-    const result = savedTakenCourseIds.has(course.id)
-      ? await planningStore.moveCompletedCourse(course.id, slot)
-      : await planningStore.setPlan(course.id, slot, savedPlans[course.id]?.status);
+    const result = await planningStore.setPlan(course.id, slot, savedPlans[course.id]?.status);
     if (result.status === "error") { notifyError(Error(result.message || "Could not save the course. Please try again.")); return false; }
     return true;
   };

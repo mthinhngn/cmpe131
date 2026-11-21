@@ -309,7 +309,7 @@ export function ChatWidget() {
     setItems(previous => [...previous, { query: message, request: { request_id: requestId, status: "running", reply: "", action: null, events: [], trace_id: "" } }]);
     setQuery("");
     const epoch = generation.current;
-    const history = items.flatMap(item => [{ role: "user", content: item.query }, ...(["completed", "failed"].includes(item.request.status) ? [{ role: "assistant", content: item.request.reply }] : [])]).slice(-24);
+    const history = items.flatMap(item => [{ role: "user", content: item.query }, ...(["completed", "failed"].includes(item.request.status) ? [{ role: "assistant", content: item.request.reply.slice(0, 6000) }] : [])]).slice(-24);
     try {
       const request = await agentFetch<AgentRequest>("/messages", { thread_id: threadId, request_id: requestId, message, context: snapshot.current, history, preferences: preferences.current });
       if (epoch === generation.current) update(request);

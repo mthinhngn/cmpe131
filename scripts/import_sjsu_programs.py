@@ -14,7 +14,7 @@ from functools import lru_cache
 from concurrent.futures import ProcessPoolExecutor
 import re
 import unicodedata
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit, urlencode
 from bs4 import BeautifulSoup
@@ -55,6 +55,47 @@ def conditional_dependency(value):
     condition = re.sub(r"\bor\s+(?:better|higher|above)\b", "", value or "", flags=re.I)
     return bool(re.search(r"\bor\b|\beither\b|consent|permission|placement|eligib", condition, re.I))
 
+_EXCLUSION = re.compile(
+    r"\b(?:except(?:ing)?|excluding|other\s+than|not(?!\s+(?:only\b|limited\s+to\b|(?:\w+\s+){0,2}both\b)))\b",
+    re.I,
+)
+_CLAUSE = re.compile(r"[.!?](?=\s|$)|[;()\[\]\n]")
+_NEGATED_COURSE = re.compile(
+    r"^\s+(?:(?:is|are|does|do|will|may|can|must)\s+)?"
+    r"(?:not\s+(?!only\b|limited\s+to\b|(?:\w+\s+){0,2}both\b)|excluded\b|ineligible\b)",
+    re.I,
+)
+
+
+def course_quote_roles(code, quote):
+    """Classify occurrences, preserving exclusion scope across commas and conjunctions.
+
+    "Do not take both" limits a pair of listed choices; it does not exclude either course.
+    """
+    quote = re.sub(r"\b(?:e\.g\.|i\.e\.)", "for example", quote, flags=re.I)
+    code_pattern = r"\s+".join(re.escape(part) for part in code.split())
+    roles = set()
+    for match in re.finditer(rf"(?<![\w-]){code_pattern}(?!\w)", quote, re.I):
+        inherited_exclusion = [False]
+        clause_start = 0
+        for boundary in _CLAUSE.finditer(quote, 0, match.start()):
+            marker = boundary.group()
+            if marker in "([":
+                inherited_exclusion.append(
+                    inherited_exclusion[-1] or bool(_EXCLUSION.search(quote, clause_start, boundary.start()))
+                )
+            elif marker in ")]" and len(inherited_exclusion) > 1:
+                inherited_exclusion.pop()
+            else:
+                inherited_exclusion[-1] = False
+            clause_start = boundary.end()
+        clause_end = _CLAUSE.search(quote, match.end())
+        after = quote[match.end():clause_end.start() if clause_end else len(quote)]
+        negated = inherited_exclusion[-1] or _EXCLUSION.search(quote, clause_start, match.start()) or _NEGATED_COURSE.match(after)
+        roles.add("excluded" if negated else "positive")
+    return roles
+
+
 def course_links(node):
     result = {}
     for a in node.select('a[onclick*="showCourse"],a[href*="preview_course"],a[onclick*="showCatalogData"]'):
@@ -65,6 +106,9 @@ def course_links(node):
         coid = re.search(r"showCourse\(['\"]\d+['\"],\s*['\"](\d+)", a.get("onclick", ""))
         course_id = coid[1] if coid else parse_qs(urlsplit(a.get("href", "")).query).get("coid", [None])[0]
         row = a.find_parent("li") or a.parent
+        scope = a.find_parent(["li", "p", "td"]) or row
+        if course_quote_roles(code, text(scope)) != {"positive"}:
+            continue
         result[code] = {"code": code, "title": match[2] if match else code, "units": units(text(row)), "coid": course_id}
     return list(result.values())
 
@@ -89,9 +133,10 @@ def sections(soup):
         heading = core.find(["h2", "h3", "h4", "h5"], recursive=False)
         if not heading: continue
         title = text(heading)
-        courses = course_links(core)
+        summary = bool(re.match(r"^(?:summary of (?:degree )?units|total units)\b", title, re.I))
+        courses = [] if summary else course_links(core)
         intro = " ".join(text(p) for p in core.find_all("p", recursive=False))
-        own_choice = bool(re.search(r"\b(?:choose|select|one of|either|alternative|substitution|complete (?:one|two|three|four|\d+))\b|electives?|\boption\s+[A-Z]\b|\bplan\s+[AB]\b", title + " " + intro, re.I))
+        own_choice = not summary and bool(re.search(r"\b(?:choose|select|one of|either|alternative|substitution|complete (?:one|two|three|four|\d+))\b|electives?|\boption\s+[A-Z]\b|\bplan\s+[AB]\b", title + " " + intro, re.I))
         level = int(heading.name[1])
         ancestors = {depth:index for depth,index in ancestors.items() if depth < level}
         if ancestors: records[max(ancestors.values())]["hasChildren"] = True
@@ -103,7 +148,7 @@ def sections(soup):
             rows = [{"text": text(p), "courses": course_links(p)} for p in core.find_all("p", recursive=False) if course_links(p)]
         records.append({"title": title, "text": text(core), "courses": courses,
                         **({"narrative": True} if core.get("data-narrative") else {}),
-                        "units": units(title), "choice": own_choice or inherited is not None, "choiceRoot": root, "hasChildren": False, "rows": rows})
+                        "units": units(title), "choice": not summary and (own_choice or inherited is not None), "choiceRoot": root, "hasChildren": False, "rows": [] if summary else rows})
     for i, record in enumerate(records):
         root = record["choiceRoot"]
         if record["choice"] and root != i:
@@ -251,11 +296,14 @@ def normalize():
     (DIRECTORY / "normalized.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return result
 
-def publish(result):
+def database_url():
     load_dotenv(ROOT / "api/.env")
     parts = urlsplit(os.environ["DATABASE_URL"])
-    url = parts._replace(query=urlencode({k:v[-1] for k,v in parse_qs(parts.query).items() if k != "schema"})).geturl()
-    with psycopg.connect(url) as conn:
+    return parts._replace(query=urlencode({k:v[-1] for k,v in parse_qs(parts.query).items() if k != "schema"})).geturl()
+
+
+def publish(result):
+    with psycopg.connect(database_url()) as conn:
         conn.execute("SELECT pg_advisory_xact_lock(hashtext('sjsu-program-import'))")
         known = {}
         for course_id, code in conn.execute('SELECT id,code FROM "Course" ORDER BY CASE WHEN id LIKE \'ce-%\' THEN 0 WHEN id LIKE \'se-%\' THEN 1 ELSE 2 END,id'):
@@ -308,9 +356,105 @@ def publish(result):
                     conn.execute('INSERT INTO "ProgramRequirement" (id,"sourceKey","requirementGroupId","itemType","courseVersionId",label,description,"recommendedSemester","sortOrder") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',(f"{gid}:{i}",item["id"],gid,"COURSE" if item.get("code") else "PLACEHOLDER",versions.get(item.get("code")),item.get("label"),item.get("description"),index+1,i))
     print(f"Published {len(result['programs'])} programs; existing personal plans preserved.")
 
+
+def read_elective_source(path):
+    """Accept complete reviewed department captures, never a partial scrape."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if data["catalogYear"] != YEAR or set(data["programs"]) != {"computer-engineering", "software-engineering"}:
+        raise ValueError("Expected both department lists for " + YEAR)
+    for program, source in data["programs"].items():
+        url = urlsplit(source["sourceUrl"])
+        if url.scheme != "https" or url.netloc != "www.sjsu.edu" or not url.path.startswith("/cmpe/undergraduate_programs/"):
+            raise ValueError(f"Invalid department source for {program}")
+        source["checkedOn"] = date.fromisoformat(source["checkedOn"])
+        if (source["status"] != "complete" or not isinstance(source["courses"], list) or not source["courses"]
+                or type(source["expectedCount"]) is not int or len(source["courses"]) != source["expectedCount"]):
+            raise ValueError(f"Incomplete department list for {program}")
+        courses, seen = [], set()
+        for item in source["courses"]:
+            entry = {"code": item} if isinstance(item, str) else item
+            code = entry["code"]
+            sections = entry.get("sections", [])
+            term = entry.get("term")
+            if (not re.fullmatch(r"[A-Z]{2,5} \d{1,3}[A-Z]?", code)
+                    or set(entry) - {"code", "sections", "term", "topic", "condition"}
+                    or not isinstance(sections, list) or any(not re.fullmatch(r"[\dA-Z]{1,5}", s) for s in sections)
+                    or (term and not re.fullmatch(r"(?:fall|spring|summer|winter)-\d{4}", term))
+                    or any(not isinstance(entry[k], str) or not entry[k].strip() for k in ("term", "topic", "condition") if k in entry)):
+                raise ValueError(f"Invalid elective entry for {program}: {code}")
+            sections = sorted(set(sections))
+            rule = (code, term, tuple(sections), entry.get("topic"), entry.get("condition"))
+            if rule in seen:
+                raise ValueError(f"Duplicate elective rule for {program}: {code}")
+            seen.add(rule)
+            courses.append({**entry, "sections": sections})
+        source["courses"] = courses
+    return data["programs"]
+
+
+def publish_electives(programs):
+    with psycopg.connect(database_url()) as conn:
+        conn.execute("SELECT pg_advisory_xact_lock(hashtext('sjsu-program-import'))")
+        for program, source in programs.items():
+            version = conn.execute('''SELECT v.id FROM "CatalogVersion" v JOIN "Program" p ON p.id=v."programId"
+                                      WHERE p.slug=%s AND v."catalogYear"=%s''', (program, YEAR)).fetchone()
+            if not version:
+                raise ValueError(f"Missing {program} catalog for {YEAR}")
+            scope = (version[0], "technical-electives", "department_list")
+            latest = conn.execute('''SELECT max("checkedOn") FROM "CatalogCourseEligibility"
+                                    WHERE "catalogVersionId"=%s AND "requirementKey"=%s AND "sourceKind"=%s''', scope).fetchone()[0]
+            if latest and latest > source["checkedOn"]:
+                raise ValueError(f"Source for {program} is older than the last published list")
+            retained = []
+            for entry in source["courses"]:
+                code = entry["code"]
+                existing = conn.execute('''SELECT id FROM "Course" WHERE code=%s
+                                           ORDER BY CASE WHEN id LIKE 'ce-%%' THEN 0 WHEN id LIKE 'se-%%' THEN 1 ELSE 2 END,id LIMIT 1''', (code,)).fetchone()
+                course_id = existing[0] if existing else "sjsu-" + slug(code)
+                if not existing:
+                    conn.execute('INSERT INTO "Course" (id,code) VALUES (%s,%s)', (course_id, code))
+                key = (*scope, course_id, source["sourceUrl"], entry.get("term", ""), entry["sections"],
+                       entry.get("topic", ""), entry.get("condition", ""))
+                existing = conn.execute('''SELECT id, "checkedOn" FROM "CatalogCourseEligibility"
+                    WHERE "catalogVersionId"=%s AND "requirementKey"=%s AND "sourceKind"=%s
+                    AND "courseId"=%s AND "sourceUrl"=%s AND "termId"=%s
+                    AND "sectionNumbers"=%s AND "topic"=%s AND "conditionText"=%s''',
+                    key).fetchone()
+                if existing:
+                    rule_id, checked_on = existing
+                    if checked_on != source["checkedOn"]:
+                        conn.execute('UPDATE "CatalogCourseEligibility" SET "checkedOn"=%s WHERE id=%s',
+                                     (source["checkedOn"], rule_id))
+                else:
+                    rule_id = conn.execute('''INSERT INTO "CatalogCourseEligibility"
+                        ("catalogVersionId","requirementKey","sourceKind","courseId","sourceUrl","termId",
+                         "sectionNumbers","topic","conditionText","checkedOn")
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
+                        (*key, source["checkedOn"])).fetchone()[0]
+                retained.append(rule_id)
+            conn.execute('''DELETE FROM "CatalogCourseEligibility" WHERE "catalogVersionId"=%s AND "requirementKey"=%s
+                            AND "sourceKind"=%s AND NOT (id=ANY(%s))''', (*scope, retained))
+
+
 if __name__ == "__main__":
-    parser=argparse.ArgumentParser();parser.add_argument("--write-db",action="store_true");args=parser.parse_args()
-    data=normalize();print(json.dumps({"programs":len(data["programs"]),"missing":len(data["missing"]),"official":sum(p["sequenceKind"]=="official" for p in data["programs"])}))
-    if args.write_db:
-        if data["missing"]: raise SystemExit("Incomplete source coverage; publication stopped.")
-        publish(data)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--write-db", action="store_true")
+    parser.add_argument("--elective-source", type=Path, help="Validate or publish a complete reviewed department capture")
+    args = parser.parse_args()
+    if args.elective_source:
+        try:
+            programs = read_elective_source(args.elective_source)
+            if args.write_db:
+                publish_electives(programs)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            raise SystemExit(f"Elective publication stopped: {error}") from error
+        print(json.dumps({"status": "published" if args.write_db else "validated",
+                          "coverage": {key: len(source["courses"]) for key, source in programs.items()}}))
+    else:
+        data = normalize()
+        print(json.dumps({"programs": len(data["programs"]), "missing": len(data["missing"]),
+                          "official": sum(p["sequenceKind"] == "official" for p in data["programs"])}))
+        if args.write_db:
+            if data["missing"]:
+                raise SystemExit("Incomplete source coverage; publication stopped.")
+            publish(data)
