@@ -104,16 +104,15 @@ export class PlanningStore {
   }
   setPlan(id: string, semester: PlanSlot, status: Plan["status"] = "planned") {
     if (!this.state.catalog.courses.some(c => c.id === id) || !this.validSlot(semester) || !["planned", "in-progress"].includes(status)) throw new Error("Invalid course or semester.");
-    this.update({ namedTerms: isNamedSlot(semester) ? { ...this.state.namedTerms, [this.state.program]: [...new Set([...(this.state.namedTerms?.[this.state.program] ?? []), semester])] } : this.state.namedTerms, plans: { ...this.state.plans, [this.state.program]: { ...this.plans, [id]: { semester, status } } }, completed: this.state.completed.filter(courseId => courseId !== id) });
+    this.update({ namedTerms: isNamedSlot(semester) ? { ...this.state.namedTerms, [this.state.program]: [...new Set([...(this.state.namedTerms?.[this.state.program] ?? []), semester])] } : this.state.namedTerms, plans: { ...this.state.plans, [this.state.program]: { ...this.plans, [id]: { semester, status } } } });
   }
   removePlan(id: string) {
     const plans = { ...this.plans }; delete plans[id];
     this.update({ plans: { ...this.state.plans, [this.state.program]: plans } });
   }
   moveCompletedCourse(id: string, semester: PlanSlot) {
-    if (!this.state.completed.includes(id) || !this.state.catalog.courses.some(c => c.id === id) || !this.validSlot(semester)) throw new Error("Invalid completed course or semester.");
-    this.update({ plans: { ...this.state.plans, [this.state.program]: { ...this.plans, [id]: { semester, status: "planned" } } },
-      namedTerms: isNamedSlot(semester) ? { ...this.state.namedTerms, [this.state.program]: [...new Set([...(this.state.namedTerms?.[this.state.program] ?? []), semester])] } : this.state.namedTerms });
+    if (!this.state.completed.includes(id)) throw new Error("Invalid completed course.");
+    this.setPlan(id, semester, this.plans[id]?.status);
   }
   moveSemester(from: PlanSlot, to: PlanSlot, startingTerm?: string | null) {
     const order = this.termOrder;
@@ -215,7 +214,7 @@ export class PlanningStore {
       const course = matches[0];
       if (seen.has(course.id)) throw new Error("Use one action per course in a proposal.");
       seen.add(course.id);
-      if (this.state.completed.includes(course.id)) throw new Error(`${course.code} is completed. Planning actions cannot change completion status.`);
+      if (action.operation !== "move" && this.state.completed.includes(course.id)) throw new Error(`${course.code} is completed. Planning actions cannot change completion status.`);
       const before = this.plans[course.id];
       if (action.operation === "remove") return { courseId: course.id, before };
       const numbered = /^semester\s+(\d+)$/i.exec(action.target!.trim());
