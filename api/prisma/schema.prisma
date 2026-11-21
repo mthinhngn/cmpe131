@@ -37,6 +37,7 @@ model CatalogVersion {
   program           Program            @relation(fields: [programId], references: [id], onDelete: Cascade)
   courseVersions    CourseVersion[]
   requirementGroups RequirementGroup[]
+  courseEligibility CatalogCourseEligibility[]
   sourceSnapshots   SourceSnapshot[]
 
   @@unique([programId, catalogYear])
@@ -50,8 +51,30 @@ model Course {
   sections        Section[]
   universityRecords UniversityCourseRecord[]
   importedSections UniversitySectionRecord[]
+  catalogEligibility CatalogCourseEligibility[]
 
   @@unique([code, id])
+}
+
+// Eligibility is scoped to a catalog version; section restrictions use the source's
+// published section numbers, which are matched against the schedule for the requested term.
+model CatalogCourseEligibility {
+  id               Int      @id @default(autoincrement())
+  catalogVersionId String
+  requirementKey   String
+  courseId         String
+  sourceKind       String
+  sourceUrl        String
+  checkedOn        DateTime @db.Date
+  termId           String   @default("")
+  sectionNumbers   String[] @default([])
+  topic            String   @default("")
+  conditionText    String   @default("")
+  catalogVersion   CatalogVersion @relation(fields: [catalogVersionId], references: [id], onDelete: Cascade)
+  course           Course @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  @@unique([catalogVersionId, requirementKey, sourceKind, courseId, sourceUrl, termId, sectionNumbers, topic, conditionText], map: "CatalogCourseEligibility_rule_key")
+  @@index([catalogVersionId, requirementKey, sourceKind], map: "CatalogCourseEligibility_source_scope_idx")
 }
 
 // University course facts are independent of the two degree requirement sets.

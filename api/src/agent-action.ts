@@ -51,10 +51,11 @@ export function applyAgentAction(store: PlanningStore, input: Record<string, any
     return;
   }
   if (action.kind !== "remove_course_from_plan") {
-    if (!store.validSlot(action.semester_slot) || state.completed.includes(action.course_id)) fail("Invalid destination or completed course.");
+    if (!store.validSlot(action.semester_slot)) fail("Invalid destination.");
     if (isNamedSlot(action.semester_slot) && action.semester_slot !== `${action.target_term?.season}-${action.target_term?.year}`) fail("The optional slot does not match the verified term.");
   }
   if (action.kind === "add_course_to_plan") {
+    if (state.completed.includes(action.course_id)) fail("This course is already completed.");
     if (previous && previous.semester !== action.semester_slot) fail("This course is already planned in another semester. Use move instead.");
     if (!previous) store.setPlan(action.course_id, action.semester_slot);
   } else {
