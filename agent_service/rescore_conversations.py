@@ -14,7 +14,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage, SystemMessage
-from .evaluate_conversations import (ANSWER_RULE, SEAT_RULE, Usage, eval_model, model_names, expected_endings, rubric_failures, write_report)
+from .evaluate_conversations import (ANSWER_RULE, SEAT_RULE, Usage, eval_model, model_names, expected_endings, rubric_failures, write_report,
+                                     audit_turn, claim_scores)
 
 
 class ReplyReview(BaseModel):
@@ -123,6 +124,40 @@ def rescore_rows(rows, cases, reviews, *, rubric_scored=True):
     return result
 
 
+def rescore_claims(rows, cases, judge, human):
+    result = copy.deepcopy(rows)
+    agreement = []
+    for row in result:
+        case = cases[row['id']]
+        prior = [issue for turn in row['turns'] for issue in turn['failures']]
+        extras = [issue for issue in row['failures'] if issue not in prior]
+        for i, turn in enumerate(row['turns']):
+            if 'evidence' not in turn:
+                raise ValueError('Claim rescoring requires a saved evidence ledger.')
+            expect = case['turns'][i]['expect']
+            if not human or 'claim_rows' not in turn:
+                turn['claim_rows'] = audit_turn(turn['reply'], turn['evidence'], case['turns'][i]['user'],
+                                                case.get('context', {}).get('program_id', 'computer-engineering'), judge)
+            labels = human.get(key(row, i), {})
+            for claim in turn['claim_rows']:
+                gold = labels.get(claim['text'])
+                measured = claim.get('judge_label') or (claim['label'] if claim['labeled_by'] == 'judge' else None)
+                if gold and measured:
+                    agreement.append(gold == measured)
+                if gold in {'fact', 'unverified', 'wrong', 'advice'}:
+                    claim.update(automated_label=claim['label'], label=gold, human_label=gold)
+            turn['claim_scores'] = claim_scores(turn['claim_rows'])
+            turn['failures'] = [issue for issue in turn['failures'] if issue not in ('wrong claim', 'unverified requirement claim')]
+            if turn['claim_scores']['wrong']:
+                turn['failures'].append('wrong claim')
+            if expect.get('requirement_checkpoint') and turn['claim_scores']['unverified']:
+                turn['failures'].append('unverified requirement claim')
+        row['failures'] = extras + [issue for turn in row['turns'] for issue in turn['failures']]
+        row['passed'] = not row['failures']
+    return result, {'matches': sum(agreement), 'overlap': len(agreement),
+                    'agreement': sum(agreement) / len(agreement) if agreement else None}
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--report', type=Path, required=True)
@@ -132,6 +167,8 @@ def main():
     p.add_argument('--calibration-output', type=Path, default=Path('tmp/judge-calibration-v2.json'))
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--calibration-only', action='store_true')
+    p.add_argument('--claims', action='store_true', help='Rescore saved replies with the shared claim verifier.')
+    p.add_argument('--human-claims', type=Path, help='Optional map of case:repeat:turn to reviewed claim text and human label.')
     p.add_argument('--no-rubric', action='store_true')
     p.add_argument('--workers', type=int, default=2)
     args = p.parse_args()
@@ -146,6 +183,15 @@ def main():
     cases = {c['id']: c for c in json.loads(args.cases.read_text(encoding='utf-8'))}
     rows = source['cases']
     replay_models = {**model_names(), **source.get('models', {}), 'judge': model_names()['judge']}
+    if args.claims:
+        from .verifier import ClaimLabels
+        human = json.loads(args.human_claims.read_text(encoding='utf-8')) if args.human_claims else {}
+        judge = None if args.no_rubric or human else eval_model(Usage(), replay_models['judge']).with_structured_output(ClaimLabels, method='function_calling')
+        rows, agreement = rescore_claims(rows, cases, judge, human)
+        metadata = {k: v for k, v in source.items() if k not in ('cases', 'summary', 'targets')}
+        write_report(args.output, {**metadata, 'source_report': str(args.report), 'judge_human_agreement': agreement},
+                     rows, complete=source['complete'])
+        return int(any(not row['passed'] for row in rows))
     if args.no_rubric:
         metadata = {k:v for k,v in source.items() if k not in ('cases','summary','targets','complete','completed_cases')}
         metadata.update(models=replay_models, rubric_scored=False, source_report=str(args.report),

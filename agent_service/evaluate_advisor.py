@@ -75,6 +75,18 @@ class CatalogFixture:
                              'score': 0.9, 'catalog_url': 'https://catalog.sjsu.edu/fixture'}]}
 
 
+class RequirementFixture:
+    def named(self, question):
+        return None
+
+    def get(self, program, requirement):
+        return {'programName': 'Software Engineering', 'catalogYear': '2026-2027',
+                'requirement': requirement, 'label': requirement, 'courses': [],
+                'status': 'partial' if requirement == 'US1' else 'unknown_requirement',
+                'attributes': ['US1'] if requirement == 'US1' else [],
+                'coverage': 'section_designations'}
+
+
 class TranscriptFixture:
     def facts(self, owner, question):
         return {'status': 'none'}
@@ -119,7 +131,7 @@ def run_case(case):
         web = fixture_agent(today=lambda: TODAY)
     else:
         web = WebFixture()
-    availability = Availability(repository, sections=lambda term: {'status': 'unavailable', 'message': 'Recorded section refresh failure.'})
+    availability = Availability(repository, requirements=RequirementFixture(), sections=lambda term: {'status': 'unavailable', 'message': 'Recorded section refresh failure.'})
     advisor = AdvisorLoop(model, availability, web, catalog=CatalogFixture(), transcript=TranscriptFixture(), reviews=ReviewFixture(),
                           judge=VerdictFixture(case.get('rejected_claims', [])),
                           intent_judge=IntentFixture() if case.get('must_mutate') else None, today=lambda: TODAY)
