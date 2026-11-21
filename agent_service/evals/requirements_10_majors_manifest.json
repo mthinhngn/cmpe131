@@ -1,0 +1,289 @@
+{
+ "eval": "requirements_10_majors",
+ "frozen_at": "2026-11-20T20:48:23+00:00",
+ "files": {
+  "practice": {
+   "path": "agent_service/evals/requirements_10_majors_practice.json",
+   "sha256": "e403e88cef1d4eda3f13624a97e6a995cd97a909775624e4f67508e515b10e83",
+   "cases": 155
+  },
+  "held_out": {
+   "path": "tmp/phase-d-private/requirements_10_majors_held_out_round1.json",
+   "sha256": "152adfc0095c067f835db10b21d4d652d1f6d64a9fbe09e8e9efb7622ddf090c",
+   "cases": 156
+  }
+ },
+ "generator_sha256": "907c74811896bd78bba33504b88de21567a0082f3ff1385148a6b3cb26aa9565",
+ "req10_data_sha256": "ddd1a08652ebc58e6be8d6ce2e7af7a5a16d492e18ed1eb3f976dcd1a2e2c742",
+ "record_snapshot_sha256": "0cd36ea28450ad036cd8dd132a2aa5f3080ca6ddbce2025640153205daebf875",
+ "term_stamps": {
+  "fall-2026": {
+   "sourceUpdatedOn": "2026-11-10",
+   "lastImportedAt": "2026-11-17T20:31:08.015000",
+   "sourceUrl": "https://www.sjsu.edu/classes/schedules/fall-2026.php"
+  },
+  "spring-2027": {
+   "sourceUpdatedOn": "2026-11-17",
+   "lastImportedAt": "2026-11-17T20:32:24.176000",
+   "sourceUrl": "https://www.sjsu.edu/classes/schedules/spring-2027.php"
+  },
+  "winter-2027": {
+   "sourceUpdatedOn": "2026-11-17",
+   "lastImportedAt": "2026-11-17T20:31:14.523000",
+   "sourceUrl": "https://www.sjsu.edu/classes/schedules/winter-2027.php"
+  }
+ },
+ "split": "stratified 50/50 by major x case_type, odd strata alternate",
+ "counts": {
+  "practice": {
+   "aerospace-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "business-administration-accounting-concentration-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "business-administration-finance-concentration-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "business-administration-general-business-concentration-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "civil-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "computer-engineering": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "electrical-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 2,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "mechanical-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 2,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "nursing-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 2,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "software-engineering": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   }
+  },
+  "held_out": {
+   "aerospace-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "business-administration-accounting-concentration-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "business-administration-finance-concentration-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "business-administration-general-business-concentration-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 4,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "civil-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "computer-engineering": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 2,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "electrical-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 2,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "mechanical-engineering-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "nursing-bs": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 1,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 2,
+    "single_course": 2,
+    "term_gap": 1
+   },
+   "software-engineering": {
+    "campus_alias": 3,
+    "campus_combo": 1,
+    "campus_term_list": 2,
+    "cross_major": 1,
+    "filter": 2,
+    "program_effect": 1,
+    "program_list": 3,
+    "single_course": 2,
+    "term_gap": 1
+   }
+  }
+ },
+ "data_gaps": [],
+ "round_1_refreeze": {
+  "frozen_at": "2026-11-20T22:12:42+00:00",
+  "model": "gpt-5.4-nano-2026-03-17",
+  "previous_held_out_sha256": "d22a095500bba4e2a0002d718a6279ce3297004235025ee9b1ddc1212b66a71b",
+  "pairs": 24180,
+  "normalized_exact_matches": 0,
+  "near_duplicate_matches": 0,
+  "rejected_candidates": {
+   "character_ratio": 44,
+   "exact": 24,
+   "trigram_jaccard": 2
+  },
+  "near_duplicate_checks": [
+   "slot-masked exact",
+   "character ratio >= 0.86 on normalized and masked",
+   "masked token trigram Jaccard >= 0.65"
+  ],
+  "requests": 9,
+  "usage": {
+   "prompt_tokens": 8557,
+   "completion_tokens": 10807,
+   "cached_tokens": 0
+  },
+  "actual_usd": 0.01522015
+ }
+}
