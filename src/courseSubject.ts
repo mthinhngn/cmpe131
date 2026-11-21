@@ -3,11 +3,11 @@ import { courseCategory, type CourseCategory } from "../api/src/course-category.
 
 export type CourseSubject = CourseCategory;
 
-export function courseSubject(code: string, inRoadmap = true, program = "computer-engineering"): CourseSubject {
-  return courseCategory(code, inRoadmap, program);
+export function courseSubject(code: string, inRoadmap = true): CourseSubject {
+  return courseCategory(code, inRoadmap);
 }
 
-export function subjectTone(code: string, inRoadmap = true, program = "computer-engineering"): CSSProperties {
-  const subject = courseSubject(code, inRoadmap, program);
+export function subjectTone(code: string, inRoadmap = true): CSSProperties {
+  const subject = courseSubject(code, inRoadmap);
   return { "--c": `var(--s-${subject})`, "--c-ink": subject === "writing" ? "#fff" : "#000" } as CSSProperties;
 }
