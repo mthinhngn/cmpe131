@@ -57,7 +57,10 @@ export default function Prerequisites() {
       <main>
         <section className="prereq-full-page" id="map-workspace">
           <ProductPageHeading title="Roadmap" />
-          <Reveal className="prereq-map-frame" delay={90}>
+          {!program ? <div className="prereq-empty" role="status">
+            <p>No program selected.</p>
+            <a href="/account">Choose your program to view its roadmap</a>
+          </div> : <Reveal className="prereq-map-frame" delay={90}>
             <div className="prereq-map-frame-topline">
               <span className="map-live-dot" />
               <span>{catalog.requirementGroups.length}-SEMESTER COURSE MAP</span>
@@ -66,7 +69,7 @@ export default function Prerequisites() {
             <div className="prereq-product-frame">
               <CourseNetwork key={`${program}:${catalog.dataVersion}`} density="compact" source="computer-engineering-plan" stepper />
             </div>
-          </Reveal>
+          </Reveal>}
         </section>
       </main>
 
