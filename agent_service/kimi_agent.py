@@ -25,6 +25,7 @@ Use typed source/destination targets; preserve order, negation, conditions and r
 Missing information stays missing. Do not invent IDs, dates, facts, authorization or successful saves.
 Questions about feasibility do not authorize mutation. Use the capability map for brief greetings/help.
 Use the verified account name when supplied. Delegate tasks through the schema; do not merely promise action.
+Move any course already on the planner when asked, including completed courses. Moving preserves completion and does not require course availability.
 For swaps/replacements set group and ordered course_queries; never delegate their component changes as independent steps. Resolve implicit course-pair slots from the saved plan.
 Choose exactly one mode per decision. Omit fields belonging to other modes:
 - answer/clarify/memory: reply text, group=none, no actions or read fields.

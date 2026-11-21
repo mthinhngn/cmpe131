@@ -124,14 +124,22 @@ class ProfessorRatings:
         return result
 
 
-def rating_summary(evidence):
-    """Code-written ratings table from ok evidence; values are copied, never generated."""
-    from .verifier import readable_date, source_chip
+def mentioned(name, text):
+    """A professor counts as discussed when the answer names them; surnames are how answers usually refer to people."""
+    surname = words(name)[-1:] if words(name) else []
+    return bool(surname) and len(surname[0]) > 1 and surname[0] in words(text)
+
+
+def rating_summary(evidence, about=None):
+    """Code-written ratings table from ok evidence; values are copied, never generated.
+    With `about` (the answer text), only professors the answer discusses get a row."""
+    from .verifier import readable_date
     rows = {}
     for e in evidence:
         if e['status'] == 'ok':
             for row in e['data'].get('professor_ratings', []):
-                rows.setdefault(row['name'], row)
+                if about is None or mentioned(row['name'], about):
+                    rows.setdefault(row['name'], row)
     if not rows:
         return None
 
@@ -154,21 +162,25 @@ def rating_summary(evidence):
             'Higher difficulty means harder. These are student opinions, not grade guarantees.')
     if checked:
         note += ' Checked ' + ', '.join(checked) + '.'
-    chip = source_chip([{'url': r['source_url'], 'title': r['name']} for r in rows.values() if r.get('source_url')])
-    return '\n'.join([*table, '', '*' + note + '*' + (' ' + chip if chip else '')])
+    # Professor names link to their profiles; the answer footer carries the source chips.
+    return '\n'.join([*table, '', '*' + note + '*'])
 
 
-def with_rating_summary(rendered, evidence, follow_up=None):
-    """Join rendered claims with the ratings table before the first advice block (else at the end)."""
-    summary = rating_summary(evidence)
-    if summary:
+def with_rating_summary(rendered, evidence, follow_up=None, note=None):
+    """Compose the answer with the code-written ratings table after the supporting facts."""
+    from .verifier import compose
+    if rating_summary(evidence):
         # Code owns the ratings table; drop a model-written duplicate (a table with a Rating/Difficulty column).
         rendered = [c for c in rendered if not ratings_table(c['text'])]
-    blocks = [c['text'] for c in rendered]
-    if summary:
-        at = next((i for i, c in enumerate(rendered) if c.get('kind') == 'advice'), len(blocks))
-        blocks.insert(at, summary)
-    return '\n\n'.join([*blocks, *([follow_up] if follow_up else [])])
+    # Rows only for professors the answer discusses: a course list does not need every instructor's ratings.
+    summary = rating_summary(evidence, about='\n'.join(c['text'] for c in rendered))
+    from .requirement_answer import requirement_table, requirement_table_block
+    listing = requirement_table(evidence)
+    if listing:
+        # Code owns the complete requirement list; a model-written copy would duplicate or truncate it.
+        rendered = [c for c in rendered if not requirement_table_block(c['text'])]
+    extra = '\n\n'.join(block for block in (listing, summary) if block) or None
+    return compose(rendered, evidence, follow_up, extra=extra, note=note)
 
 
 def ratings_table(text):
