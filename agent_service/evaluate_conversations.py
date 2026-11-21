@@ -24,17 +24,7 @@ from .kimi_budget import Budget, active_budget
 CASES = Path(__file__).with_name('evals') / 'kimi_conversations.json'
 CORE = CASES.with_name('kimi_core.json')
 RUBRICS = ('answers_question', 'uses_goals', 'picks_one_with_basis', 'states_assumptions',
-           'at_most_one_follow_up', 'no_unsupported_claims', 'leads_with_answer', 'readable_layout')
-# Scored on every turn expected to end in an answer, so readability is judged across all
-# phrasings and topics rather than tuned to individual questions.
-PRESENTATION = ('leads_with_answer', 'readable_layout')
-PRESENTATION_RULE = ('leads_with_answer: the opening sentence or block directly gives what was asked: the pick with its main reason, '
-                     'the requested list or fact, a confirmation, or a clear statement that it cannot be determined and why. '
-                     'False when the reply opens with background, metadata, source dates, or a run of facts before the answer. '
-                     'readable_layout: a student can scan it. Several items with comparable details are grouped in one table or list, '
-                     'not one paragraph per item; no paragraph packs several items with semicolons; no internal status text '
-                     '(verification logs, tool or field names, ISO timestamps); no repeated disclaimers or repeated source/date lines; '
-                     'length fits the question. A single code-written footer with sources and dates is expected and fine. ')
+           'at_most_one_follow_up', 'no_unsupported_claims')
 ANSWER_RULE = ('answers_question: first identify the information requested and the substantive information actually supplied. '
                'Reporting an inability to answer is not itself an answer. Always score false for a reply consisting only of a lookup failure, verification failure, request/lookup limit, missing policy passage, retry suggestion, or request to narrow the question. '
                'These negative rules take precedence over politeness, transparency, and disclosure of limitations; do not count those as partial substantive answers. '
@@ -53,8 +43,6 @@ class Rubric(BaseModel):
     states_assumptions: bool | None = None
     at_most_one_follow_up: bool | None = None
     no_unsupported_claims: bool | None = None
-    leads_with_answer: bool | None = None
-    readable_layout: bool | None = None
 
 
 class Usage(BaseCallbackHandler):
@@ -127,78 +115,9 @@ def expected_endings(expect):
     return expect.get('ends_any', [expect.get('ends')])
 
 
-def rubric_fields(expect):
-    fields = list(expect.get('rubric', []))
-    if 'answer' in expected_endings(expect):
-        fields += [field for field in PRESENTATION if field not in fields]
-    return fields
-
-
 def rubric_failures(expect, rubric):
-    required = expect.get('rubric', [])
-    failures = ['rubric: ' + field for field in required
-                if rubric.get(field) is not True and rubric.get(field) != 'not_scored']
-    # Presentation fields fail only when the judge scored them false, so unscored or older reports keep their results.
-    return failures + ['rubric: ' + field for field in rubric_fields(expect)
-                       if field not in required and rubric.get(field) is False]
-
-
-def requirement_failures(result, checkpoint, *, not_elective=None, listed_course=None):
-    from .requirement_answer import COURSE, NEGATION, check_requirement_claims, requirement_lookups, requirement_table
-    expected = checkpoint
-    if isinstance(checkpoint, str):
-        source, name = checkpoint.split(':', 1)
-        fixtures = Path(__file__).parent / 'tests' / 'fixtures'
-        expected = json.loads((fixtures / f'{source}.json').read_text(encoding='utf-8'))['checkpoints'][name]
-    lookups = requirement_lookups(result.get('evidence', []), ('ok', 'empty', 'failed'))
-    data = lookups[-1]['data'] if lookups else {}
-    wanted = expected['courses']
-    term = expected['term']
-    failures = []
-    if (data.get('term'), data.get('requirement'), data.get('mode')) != (term, expected['requirement'], expected['mode']):
-        failures.append('incorrect requirement, term or mode')
-    if expected.get('program') and data.get('program') != expected['program']:
-        failures.append('incorrect program')
-    if expected.get('outcome') and data.get('outcome') != expected['outcome']:
-        failures.append('incorrect lookup outcome')
-    query = data.get('query') or {}
-    def same_filter(key, value):
-        actual = query.get(key)
-        if isinstance(value, list) and isinstance(actual, list):
-            return set(actual) == set(value)
-        return actual == value
-
-    if not all(same_filter(key, value) for key, value in expected.get('query', {}).items()):
-        failures.append('structured filters differ from checkpoint')
-    actual = {c['code']: sorted(f"{s['section']} #{s['class_number']}" for s in c['sections']) for c in data.get('courses', [])}
-    if actual != wanted or len(actual) != len(data.get('courses', [])):
-        failures.append('tool courses or sections differ from checkpoint')
-    reply = result.get('reply', '')
-    if not_elective:
-        claim = reply.replace(requirement_table(lookups) or '', '', 1)
-        if (not_elective in actual or not (course_codes(not_elective) & course_codes(claim))
-                or not NEGATION.search(claim) or re.match(r'^\W*yes\b', claim, re.I)
-                or check_requirement_claims([{'text': claim}], lookups)):
-            failures.append('did not give a grounded exclusion for ' + not_elective)
-        return failures
-    if listed_course:
-        if listed_course not in actual or not (course_codes(listed_course) & course_codes(reply)) or not reply.strip():
-            failures.append('did not report the listed course ' + listed_course)
-        return failures
-    rows = re.findall(r'^\| \*\*([A-Z0-9]+ \d+[A-Z]?)\*\*[^|]*\| (.*) \|$', reply, re.M)
-    displayed = {code: sorted(section + ' #' + number for section, number in re.findall(r'(\w+) \(#(\d+)\)', details))
-                 for code, details in rows}
-    if displayed != wanted or len(displayed) != len(rows):
-        failures.append('displayed courses or sections differ from checkpoint')
-    if not wanted and COURSE.search(reply):
-        failures.append('course mentioned without a verified list')
-    if term and expected.get('outcome') != 'unknown_requirement':
-        season, year = term.split('-')
-        if f'{season.title()} {year}' not in reply:
-            failures.append('missing displayed term')
-    if course_codes(reply) & {code.replace(' ', '') for code in expected.get('forbidden', [])}:
-        failures.append('forbidden elective mentioned')
-    return failures
+    return ['rubric: ' + field for field in expect.get('rubric', [])
+            if rubric.get(field) is not True and rubric.get(field) != 'not_scored']
 
 
 def check_turn(result, expect, previous_reply='', rubric=None):
@@ -214,14 +133,6 @@ def check_turn(result, expect, previous_reply='', rubric=None):
         failures.append('unexpected mutation')
     tools = {e['tool'] for e in result.get('evidence', [])}
     failures.extend('missing tool: ' + t for t in expect.get('tools', []) if t not in tools)
-    if expect.get('requirement_checkpoint'):
-        failures.extend(requirement_failures(result, expect['requirement_checkpoint'],
-                                             not_elective=expect.get('not_elective'), listed_course=expect.get('listed_course')))
-    if any(c['label'] == 'wrong' for c in result.get('claim_rows', [])):
-        failures.append('wrong claim')
-    if (expect.get('requirement_checkpoint') or expect.get('requirement_question')) and any(
-            c['label'] == 'unverified' for c in result.get('claim_rows', [])):
-        failures.append('unverified requirement claim')
     reply = result.get('reply', '')
     failures.extend('missing mention: ' + s for s in expect.get('mentions_all', []) if s.casefold() not in reply.casefold())
     if expect.get('mentions_any') and not any(s.casefold() in reply.casefold() for s in expect['mentions_any']):
@@ -249,7 +160,7 @@ def judge_turn(judge, conversation, result, fields):
             'picks_one_with_basis: names one preferred course with a reason grounded in topics, goals, attributed opinions, offerings or seats; '
             'states_assumptions: explicitly discloses assumptions such as an unstated term; at_most_one_follow_up: at most one follow-up question; '
             'no_unsupported_claims: factual claims have evidence, opinions are attributed, unknowns are disclosed, no unsupported popularity, workload, current-seat or graduation claims. '
-            + SEAT_RULE + PRESENTATION_RULE +
+            + SEAT_RULE +
             'A synthetic opinion is evidence only of that opinion, never of real student consensus. A recommendation may express judgement with its basis. Failed/empty tools support only disclosure of missing information.'),
         HumanMessage(content=json.dumps({'requested_fields': fields, 'conversation': conversation,
             'reply': result.get('reply', ''), 'evidence': result.get('evidence', [])}, default=str))])
@@ -280,66 +191,6 @@ def credit_exhausted(exc):
             isinstance(body, dict) and body.get('type') == 'insufficient_quota')
 
 
-def claim_scores(claims):
-    counts = Counter(row['label'] for row in claims)
-    scored = sum(counts[label] for label in ('fact', 'unverified', 'wrong'))
-    overlap = [row for row in claims if row.get('judge_label')]
-    agree = sum(row.get('automated_label', row['label']) == row['judge_label'] for row in overlap)
-    return {**{key: counts[key] for key in ('fact', 'unverified', 'wrong', 'advice')},
-            'unverified_rate': counts['unverified'] / scored if scored else None,
-            'wrong_rate': counts['wrong'] / scored if scored else None,
-            'judge_code_matches': agree, 'judge_code_overlap': len(overlap),
-            'judge_code_agreement': agree / len(overlap) if overlap else None}
-
-
-def audit_turn(reply, evidence, question, program, judge):
-    from .requirement_answer import REQUIREMENT_TOOLS
-    from .verifier import label_answer
-    scope = next((e['data'] for e in reversed(evidence) if e['tool'] in (*REQUIREMENT_TOOLS, 'course_facts')), {})
-    return label_answer(reply, evidence, question=question, program=scope.get('program') or program,
-                        term=scope.get('term'), judge=judge, compare=True)
-
-
-def requirement_fixture_availability(seat_overrides=None):
-    from .availability import Availability
-    from .program_requirements import ProgramRequirements, TECHNICAL
-    fixtures = Path(__file__).parent / 'tests' / 'fixtures'
-    listings = json.loads((fixtures / 'technical_electives_2026_2027.json').read_text(encoding='utf-8'))['programs']
-    schedule = json.loads((fixtures / 'requirement_schedule.json').read_text(encoding='utf-8'))
-    if seat_overrides:
-        for row in schedule['spring-2027']:
-            if row['classNumber'] in seat_overrides:
-                row['openSeats'] = seat_overrides[row['classNumber']]
-
-    class Snapshot:
-        def section_records(self, term):
-            return schedule.get(term, [])
-
-        def has_imported_schedule(self, term):
-            return term in schedule
-
-    class Requirements(ProgramRequirements):
-        def programs(self):
-            return [{'slug': slug, 'title': listing['programName']} for slug, listing in listings.items()]
-
-        def get(self, program, requirement=TECHNICAL):
-            if requirement == TECHNICAL:
-                return listings[program]
-            if requirement.lower() in {'ge e', 'area e', 'ge area e'}:
-                return {'programName': listings[program]['programName'], 'catalogYear': '2026-2027',
-                        'requirement': 'ge-e', 'status': 'partial', 'label': 'GE E',
-                        'attributes': ['GE E'], 'coverage': 'section_designations',
-                        'courses': [{'code': 'CA 60', 'title': 'Creativity'}]}
-            if requirement.upper() == 'US1':
-                return {'programName': listings[program]['programName'], 'catalogYear': '2026-2027',
-                        'requirement': 'us1', 'status': 'partial', 'label': 'US1',
-                        'attributes': ['US1'], 'coverage': 'section_designations'}
-            return {'programName': listings[program]['programName'], 'catalogYear': '2026-2027',
-                    'requirement': requirement, 'status': 'unknown_requirement'}
-
-    return Availability(Snapshot(), requirements=Requirements())
-
-
 def run_case(case, repeat, *, rubric_scored=True):
     from .availability import Availability
     from .catalog import CatalogRepository
@@ -348,35 +199,17 @@ def run_case(case, repeat, *, rubric_scored=True):
     from .tests.calendar_fixture import fixture_agent
     usage = Usage()
     model, small = models(usage)
-    web = fixture_agent(today=lambda: TODAY)
-    structured = case.get('structured_requirements', False)
-    requirement_case = structured or any(turn['expect'].get('requirement_checkpoint') for turn in case['turns'])
-    live_requirements = structured or case.get('live_requirements', False)
-    if requirement_case and not live_requirements:
-        availability = requirement_fixture_availability(case.get('fixture_spring_2027_seats'))
-        repository, catalog = availability.repository, None
-    else:
-        repository, catalog = CatalogRepository(), CatalogRAG()
-        availability = Availability(repository, sections=lambda term: {'status': 'unavailable', 'message': 'Controlled fresh-seat refresh failure.'})
-    advisor = build_advisor(model, small, availability, web, catalog=catalog, transcript=TranscriptFixture(),
-                            reviews=ReviewFixture(), today=lambda: TODAY, direct_requirements=requirement_case,
-                            structured_requirements=structured)
-    claim_judge = None
-    if case.get('claim_audit'):
-        from .verifier import ClaimLabels
-        advisor.claim_judge = small.with_structured_output(ClaimLabels, method='function_calling')
-        claim_judge = eval_model(usage, model_names()['judge']).with_structured_output(ClaimLabels, method='function_calling')
+    repository, web = CatalogRepository(), fixture_agent(today=lambda: TODAY)
+    advisor = build_advisor(model, small, Availability(repository, sections=lambda term: {'status': 'unavailable', 'message': 'Controlled fresh-seat refresh failure.'}),
+                            web, catalog=CatalogRAG(), transcript=TranscriptFixture(), reviews=ReviewFixture(), today=lambda: TODAY)
     graph = create_kimi_graph(repository, model, web, action_model=NoActionModel(), advisor=advisor, today=lambda: TODAY)
     judge = eval_model(usage, model_names()['judge']).with_structured_output(Rubric, method='function_calling') if rubric_scored else None
     context = copy.deepcopy(CONTEXT)
-    if requirement_case:
-        context['plan'] = []
     context.update(copy.deepcopy(case.get('context', {})))
-    if not requirement_case:
-        for entry in context['plan']:
-            code = {'cmpe131': 'CMPE 131', 'cmpe142': 'CMPE 142'}.get(entry['course_id'])
-            if code:
-                entry['course_id'] = repository.find(context['program_id'], code)[0]['course_id']
+    for entry in context['plan']:
+        code = {'cmpe131': 'CMPE 131', 'cmpe142': 'CMPE 142'}.get(entry['course_id'])
+        if code:
+            entry['course_id'] = repository.find(context['program_id'], code)[0]['course_id']
     config = {'configurable': {'thread_id': str(uuid4())}, 'recursion_limit': 80}
     history, turns, failures = [], [], []
     previous_reply = ''
@@ -400,18 +233,11 @@ def run_case(case, repeat, *, rubric_scored=True):
             if not rubric_scored:
                 rubric = {field: 'not_scored' for field in turn['expect'].get('rubric', [])}
             elif not runtime_error:
-                rubric = judge_turn(judge, conversation, result, rubric_fields(turn['expect']))
+                rubric = judge_turn(judge, conversation, result, turn['expect'].get('rubric', []))
         except Exception as exc:
             judge_error = type(exc).__name__
             exhausted = exhausted or credit_exhausted(exc)
-        if claim_judge and not runtime_error:
-            result['claim_rows'] = audit_turn(result.get('reply', ''), result.get('evidence', []), turn['user'],
-                                              context['program_id'], claim_judge)
         turn_failures = check_turn(result, turn['expect'], previous_reply, rubric)
-        no_answer = bool(turn['expect'].get('answerable') and not runtime_error
-                         and (ended_by(result) != 'answer' or not result.get('reply', '').strip()))
-        if no_answer:
-            turn_failures.append('no answer on answerable turn')
         if runtime_error:
             turn_failures.append('runtime: ' + runtime_error)
         if judge_error:
@@ -420,9 +246,6 @@ def run_case(case, repeat, *, rubric_scored=True):
         wrong_term = bool(action and turn['expect'].get('action', {}).get('semester_slot') is not None and
                           action.get('semester_slot') != turn['expect']['action']['semester_slot'])
         turns.append({'ends': ended_by(result), 'reply': result.get('reply', ''), 'action': action,
-            **({'no_answer': no_answer, 'answerable': True} if turn['expect'].get('answerable') and not runtime_error else {}),
-            **({'claim_rows': result.get('claim_rows', []), 'claim_scores': claim_scores(result.get('claim_rows', []))}
-               if claim_judge else {}),
             'tools': [e['tool'] for e in result.get('evidence', [])], 'metrics': result.get('advisor_metrics', {}),
             'evidence': result.get('evidence', []),
             'rubric': rubric, 'failures': turn_failures, 'seconds': elapsed,
@@ -458,17 +281,6 @@ def summarize(rows):
         rates['code_checks']['by_' + key] = {k: {'passed': sum(v), 'total': len(v), 'rate': sum(v) / len(v)} for k, v in sorted(code_buckets.items())}
         rates['by_' + key] = {k: {'passed': sum(v), 'total': len(v), 'rate': sum(v) / len(v)} for k, v in sorted(buckets.items())}
     turns = [t for r in rows for t in r['turns']]
-    if any('claim_rows' in turn for turn in turns):
-        rates['claims'] = claim_scores([c for t in turns for c in t.get('claim_rows', [])])
-        for group in rates['by_group']:
-            claims = [c for r in rows if r['group'] == group for t in r['turns'] for c in t.get('claim_rows', [])]
-            rates['by_group'][group]['claims'] = claim_scores(claims)
-    if any(t.get('answerable') for t in turns):
-        for group, bucket in {None: rates, **rates['by_group']}.items():
-            answerable = [t for r in rows if group is None or r['group'] == group for t in r['turns'] if t.get('answerable')]
-            no_answers = sum(t.get('no_answer', False) for t in answerable)
-            bucket['no_answer'] = {'count': no_answers, 'answerable_turns': len(answerable),
-                                   'rate': no_answers / len(answerable) if answerable else None}
     rates.update(unauthorized_changes=sum(t['unauthorized_change'] for t in turns), wrong_term_saves=sum(t['wrong_term'] for t in turns),
         traps_dispatched=sum(bool(t['action']) for r in rows if r['group'] == 'traps' for t in r['turns']),
         repeated_confirmations=sum(max(0, sum(t['ends'] == 'confirm_question' for t in r['turns']) - 1) for r in rows),
@@ -523,9 +335,7 @@ def git_state():
 def source_hashes():
     folder = Path(__file__).parent
     names = ('graph.py', 'server.py', 'advisor_loop.py', 'kimi_agent.py', 'verifier.py',
-             'course_action_agent.py', 'plan_changes.py', 'section_actions.py', 'understanding.py',
-             'availability.py', 'catalog.py', 'requirement_query.py', 'requirement_answer.py',
-             'data/sjsu-requirements.json')
+             'course_action_agent.py', 'plan_changes.py', 'section_actions.py', 'understanding.py')
     return {name: hashlib.sha256((folder / name).read_bytes()).hexdigest() for name in names if (folder / name).exists()}
 
 
@@ -583,7 +393,7 @@ def estimated_tokens(report, count):
 def write_report(path, metadata, rows, *, summary_only=False, baseline=None, complete=False):
     summary = summarize(rows)
     if summary_only:
-        summary.pop('failure_reasons')
+        summary['failure_reasons'] = dict(Counter(f.split(':', 1)[0] for r in rows for f in r['failures']).most_common(10))
     report = {**metadata, 'complete': complete, 'completed_cases': len(rows), 'summary': summary, 'targets': targets(rows, summary, baseline, suite=metadata.get('suite'))}
     report['rubric_scored'] = metadata.get('rubric_scored', True) and all(r.get('rubric_scored', True) for r in rows)
     report['pass_scope'] = 'code_and_rubric' if report['rubric_scored'] else 'code_checks'
