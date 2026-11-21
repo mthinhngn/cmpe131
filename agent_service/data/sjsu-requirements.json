@@ -1,0 +1,401 @@
+{
+  "catalog_year": "2026-2027",
+  "requirements": [
+    {
+      "id": "ge-1",
+      "label": "GE Area 1 - English Language Communication and Critical Thinking",
+      "attributes": [
+        "GE 1",
+        "GE 1A",
+        "GE 1B",
+        "GE 1C",
+        "GE A",
+        "GE A1",
+        "GE A2",
+        "GE A3"
+      ],
+      "former_names": [
+        "Area A"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/lower-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-1a",
+      "label": "GE Area 1A - English Composition",
+      "attributes": [
+        "GE 1A",
+        "GE A2"
+      ],
+      "former_names": [
+        "Area A2"
+      ],
+      "aliases": [
+        "Written Communication I"
+      ],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-1b",
+      "label": "GE Area 1B - Critical Thinking and Writing",
+      "attributes": [
+        "GE 1B",
+        "GE A3"
+      ],
+      "former_names": [
+        "Area A3"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-1c",
+      "label": "GE Area 1C - Oral Communication",
+      "attributes": [
+        "GE 1C",
+        "GE A1"
+      ],
+      "former_names": [
+        "Area A1"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-2",
+      "label": "GE Area 2 - Mathematical Concepts and Quantitative Reasoning",
+      "attributes": [
+        "GE 2",
+        "GE B4"
+      ],
+      "former_names": [
+        "Area B4"
+      ],
+      "aliases": [
+        "Math GE"
+      ],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-3",
+      "label": "GE Area 3 - Arts and Humanities",
+      "attributes": [
+        "GE 3",
+        "GE 3A",
+        "GE 3B",
+        "GE C",
+        "GE C1",
+        "GE C2"
+      ],
+      "former_names": [
+        "Area C"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/lower-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-3a",
+      "label": "GE Area 3A - Arts",
+      "attributes": [
+        "GE 3A",
+        "GE C1"
+      ],
+      "former_names": [
+        "Area C1"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-3b",
+      "label": "GE Area 3B - Humanities",
+      "attributes": [
+        "GE 3B",
+        "GE C2"
+      ],
+      "former_names": [
+        "Area C2"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-4",
+      "label": "GE Area 4 - Social and Behavioral Sciences",
+      "attributes": [
+        "GE 4",
+        "GE D"
+      ],
+      "former_names": [
+        "Area D"
+      ],
+      "aliases": [
+        "Social Sciences"
+      ],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-5",
+      "label": "GE Area 5 - Physical and Biological Sciences",
+      "attributes": [
+        "GE 5",
+        "GE 5A",
+        "GE 5B",
+        "GE 5C",
+        "GE B",
+        "GE B1",
+        "GE B2",
+        "GE B3"
+      ],
+      "former_names": [
+        "Area B"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/lower-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-5a",
+      "label": "GE Area 5A - Physical Science",
+      "attributes": [
+        "GE 5A",
+        "GE B1"
+      ],
+      "former_names": [
+        "Area B1"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-5b",
+      "label": "GE Area 5B - Biological Science",
+      "attributes": [
+        "GE 5B",
+        "GE B2"
+      ],
+      "former_names": [
+        "Area B2"
+      ],
+      "aliases": [
+        "Life Science"
+      ],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-5c",
+      "label": "GE Area 5C - Laboratory Activity",
+      "attributes": [
+        "GE 5C",
+        "GE B3"
+      ],
+      "former_names": [
+        "Area B3"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-6",
+      "label": "GE Area 6 - Ethnic Studies",
+      "attributes": [
+        "GE 6",
+        "GE F"
+      ],
+      "former_names": [
+        "Area F"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/overview/area.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ge-e",
+      "label": "Legacy GE Area E - Lifelong Learning and Self-Development",
+      "attributes": [
+        "GE E"
+      ],
+      "former_names": [],
+      "aliases": [
+        "Lifelong Learning"
+      ],
+      "source_url": "https://www.sjsu.edu/senate/docs/F24-1.pdf",
+      "checked_on": "2026-11-20",
+      "legacy": true
+    },
+    {
+      "id": "ud-2-5",
+      "label": "UD Area 2 or 5 - Earth, Environment, and Sustainability",
+      "attributes": [
+        "UD 2/5",
+        "UD 2",
+        "UD 5"
+      ],
+      "former_names": [
+        "Area R"
+      ],
+      "aliases": [
+        "UD 2",
+        "UD 5",
+        "UD 2/5"
+      ],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/upper-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ud-3",
+      "label": "UD Area 3 - Cultures and Global Understanding",
+      "attributes": [
+        "UD 3"
+      ],
+      "former_names": [
+        "Area V"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/upper-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ud-4",
+      "label": "UD Area 4 - Self, Society, and Equality in the U.S.",
+      "attributes": [
+        "UD 4"
+      ],
+      "former_names": [
+        "Area S"
+      ],
+      "aliases": [],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/upper-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "ud-ge",
+      "label": "Upper-Division GE",
+      "attributes": [
+        "UD 2/5",
+        "UD 2",
+        "UD 5",
+        "UD 3",
+        "UD 4"
+      ],
+      "former_names": [],
+      "aliases": [
+        "SJSU Studies"
+      ],
+      "source_url": "https://www.sjsu.edu/general-education/ge-requirements/upper-division.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "us1",
+      "label": "US1 - United States History",
+      "attributes": [
+        "US1"
+      ],
+      "former_names": [],
+      "aliases": [],
+      "source_url": "https://gs.sjsu.edu/general-education/students/which-ge/fall25-and-beyond.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "us2",
+      "label": "US2 - United States Constitution",
+      "attributes": [
+        "US2"
+      ],
+      "former_names": [],
+      "aliases": [],
+      "source_url": "https://gs.sjsu.edu/general-education/students/which-ge/fall25-and-beyond.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "us3",
+      "label": "US3 - California Government",
+      "attributes": [
+        "US3"
+      ],
+      "former_names": [],
+      "aliases": [],
+      "source_url": "https://gs.sjsu.edu/general-education/students/which-ge/fall25-and-beyond.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "wid",
+      "label": "Writing in the Disciplines",
+      "attributes": [
+        "WID"
+      ],
+      "former_names": [
+        "Area Z"
+      ],
+      "aliases": [
+        "WID",
+        "100W"
+      ],
+      "source_url": "https://www.sjsu.edu/kinesiology/Students/activity-and-gen-ed-classes/gen-ed-courses.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "gwar",
+      "label": "Graduation Writing Assessment Requirement",
+      "attributes": [
+        "GWAR"
+      ],
+      "former_names": [],
+      "aliases": [
+        "GWAR"
+      ],
+      "source_url": "https://www2.sjsu.edu/general-education/docs/GE%20Guidelines_Updated_May2026.pdf",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    },
+    {
+      "id": "pe",
+      "label": "Physical Education",
+      "attributes": [
+        "PE"
+      ],
+      "former_names": [],
+      "aliases": [
+        "PE",
+        "PhysEd"
+      ],
+      "source_url": "https://gs.sjsu.edu/general-education/students/which-ge/fall25-and-beyond.php",
+      "checked_on": "2026-11-20",
+      "legacy": false
+    }
+  ]
+}

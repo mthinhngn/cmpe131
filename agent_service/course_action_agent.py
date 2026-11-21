@@ -89,7 +89,7 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
             try: term = parse_term(raw)
             except ValueError:
                 return {"reply": "Specify a numbered semester or a term such as Fall 2026.", "decision": "respond"}
-        needs_start = (term is not None and term.season in {"fall", "spring"}) or (slot is not None and step["kind"] in {"add_course_to_plan", "move_course_in_plan"})
+        needs_start = (term is not None and term.season in {"fall", "spring"}) or (slot is not None and step["kind"] == "add_course_to_plan")
         if needs_start and not context.get("starting_term"):
             return ask_profile()
         if term:
@@ -97,7 +97,7 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
             if slot is not None and slot != calculated:
                 return {**updates, "reply": "The explicit term and numbered semester disagree with your saved starting term. Please clarify.", "decision": "respond"}
             slot = calculated
-        elif slot is not None and step["kind"] in {"add_course_to_plan", "move_course_in_plan"}:
+        elif slot is not None and context.get("starting_term") and step["kind"] in {"add_course_to_plan", "move_course_in_plan"}:
             term = slot_term(context["starting_term"], slot)
         if type(slot) is int and not valid_slot(slot, context):
             return {**updates, "reply": "That term is outside your existing numbered planner range. Extend the planner or correct the starting term first.", "decision": "respond"}
@@ -131,7 +131,7 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
 
     def verify_offering(state):
         step = state["steps"][state["action_index"]]
-        if step["kind"] not in {"add_course_to_plan", "move_course_in_plan"}: return {"decision": "continue"}
+        if step["kind"] != "add_course_to_plan": return {"decision": "continue"}
         course = state["course_matches"][0]
         term = Term.model_validate(state["target_term"])
         updates = {}
@@ -228,8 +228,16 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
             call_id = item["tool_call_id"]
             try:
                 if name in {"find_course", "get_course"}:
-                    selected = context["selected_course_id"] if step["course_query"].lower() == "selected" else None
-                    matches = repository.find(context["program_id"], step["course_query"], selected)
+                    query, program = step["course_query"], context["program_id"]
+                    selected = context["selected_course_id"] if query.lower() == "selected" else None
+                    number = query.strip().casefold()
+                    matches = []
+                    if step["kind"] == "move_course_in_plan" and re.fullmatch(r"\d+[a-z]*", number) and hasattr(repository, "planned_courses"):
+                        ids = [p["course_id"] for p in context["plan"]]
+                        matches = [{**course, "program_id": program} for course in repository.planned_courses(program, ids)
+                                   if course["code"].split()[-1].casefold() == number]
+                    if not matches:
+                        matches = repository.find(program, query, selected)
                     updates["course_matches"] = matches
                     value = matches
                 elif name == "get_plan":
@@ -261,7 +269,8 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
             return {"reply": "Which course do you mean? Open a course or tell me its code before I add it.", "decision": "respond", "pending_clarification": {"kind": "course", "program_id": state["app_context"]["program_id"], "steps": state["steps"][state["action_index"]:]}, "events": event(state, "inspect_results", "No selected course; ask the user.")}
         matches = state["course_matches"]
         if len(matches) != 1:
-            text = "No matching course was found in the selected program." if not matches else "Which course do you mean? " + "; ".join(f'{c["code"]}: {c["title"]}' for c in matches)
+            options = [f'{c["code"]} ({c["title"]})' if c.get("title") else c["code"] for c in matches]
+            text = "No matching course was found in the selected program." if not matches else "Which course do you mean? " + ", ".join(options)
             return {"reply": text, "decision": "respond", "pending_clarification": {"kind": "course", "program_id": state["app_context"]["program_id"], "steps": state["steps"][state["action_index"]:]}, "events": event(state, "inspect_results", "Course lookup requires clarification.")}
         step, course = state["steps"][state["action_index"]], matches[0]
         if step["kind"] == "find_course":
@@ -290,7 +299,7 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
         if action.get("semester_slot") != state.get("resolved_slot") and action["kind"] != "open_course":
             return {"error": "The action disagrees with the resolved destination.", "decision": "respond"}
         needs_sections = state.get("target_term") and (state["target_term"]["season"] in {"winter", "summer"} or monitored(state))
-        if action["kind"] in {"add_course_to_plan", "move_course_in_plan"} and needs_sections:
+        if action["kind"] == "add_course_to_plan" and needs_sections:
             evidence = WebResult.model_validate(state.get("offering_evidence") or {})
             allowed = {"verified", "failed", "not_verified", "not_offered"} if monitored(state) else {"verified"}
             if evidence.kind != "offering" or evidence.status not in allowed or evidence.course_code != action["course_code"] or not evidence.target_term or evidence.target_term.model_dump() != state["target_term"]:
@@ -328,8 +337,6 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
                     return {"reply": "Which planner semester should I move the course to? Specify a destination such as Semester 5.", "decision": "respond"}
                 if slot == previous["semester_slot"]:
                     return {"reply": f'{action["course_code"]} is already in {slot_label(slot)}. No change was needed.', "decision": "respond"}
-                if action["course_id"] in state["app_context"]["completed_course_ids"]:
-                    return {"reply": "This course is marked completed. I have not changed your completion record or plan.", "decision": "respond"}
         return {"decision": "execute_action", "events": event(state, "validate_action", "All required reads and action arguments validated.")}
 
     def execute_action(state):
@@ -370,33 +377,50 @@ def create_course_action_agent(repository, model, web_agent, checkpointer=None, 
         return {"action_result": outcome, "app_context": result["context"], "outcomes": [*state["outcomes"], outcome], "action_index": state["action_index"] + 1, "pending_action": None, "read_requirements": [], "error": error, "messages": [ToolMessage(content=json.dumps({k: v for k, v in outcome.items() if k != "context"}), tool_call_id=action["tool_call_id"])], "events": event(state, "receive_action_result", f'{action["course_code"]}: {outcome["status"]}.')}
 
     def respond(state):
-        lines = []
+        # Completion wording is deterministic so the model cannot invent success. Changes that share a
+        # verb and destination become one list, so any number of courses stays readable.
+        groups, warnings = {}, []
         for outcome in state["outcomes"]:
-            if outcome["status"] == "succeeded":
-                if outcome["kind"] == "open_course":
-                    lines.append(f'Opened {outcome["course_code"]}.')
-                elif outcome["kind"] == "remove_course_from_plan":
-                    lines.append(f'Removed {outcome["course_code"]} from {slot_label(outcome["previous_semester_slot"])}.')
-                elif outcome["kind"] == "move_course_in_plan":
-                    lines.append(f'Moved {outcome["course_code"]} from {slot_label(outcome["previous_semester_slot"])} to {slot_label(outcome["semester_slot"])}.')
-                else:
-                    term = outcome["target_term"]
-                    destination = f'{term["season"].title()} {term["year"]} ({slot_label(outcome["semester_slot"])})' if term and type(outcome["semester_slot"]) is int else slot_label(outcome["semester_slot"])
-                    lines.append(f'Added {outcome["course_code"]} to {destination}.')
-                if outcome.get("warning"): lines.append(outcome["warning"])
+            if outcome["status"] != "succeeded":
+                continue
+            code = outcome["course_code"]
+            if outcome["kind"] == "open_course":
+                key = ("Opened", "")
+            elif outcome["kind"] == "remove_course_from_plan":
+                key = ("Removed", f'from {slot_label(outcome["previous_semester_slot"])}')
+            elif outcome["kind"] == "move_course_in_plan":
+                key = ("Moved", f'from {slot_label(outcome["previous_semester_slot"])} to {slot_label(outcome["semester_slot"])}')
+            else:
+                term = outcome["target_term"]
+                destination = f'{term["season"].title()} {term["year"]} ({slot_label(outcome["semester_slot"])})' if term and type(outcome["semester_slot"]) is int else slot_label(outcome["semester_slot"])
+                key = ("Added", f'to {destination}')
+            groups.setdefault(key, []).append(code)
+            if outcome.get("warning"):
+                warnings.append(outcome["warning"])
+        blocks = []
+        for (verb, where), codes in groups.items():
+            where = f' {where}' if where else ''
+            if len(codes) == 1:
+                blocks.append(f'{verb} {codes[0]}{where}.')
+            else:
+                blocks.append(f'{verb} {len(codes)} courses{where}:\n\n' + '\n'.join(f'- {code}' for code in codes))
+        blocks += list(dict.fromkeys(warnings))
+        finished = bool(groups) and state["action_index"] >= len(state["steps"])
+        if state["error"]:
+            blocks.append(state["error"])
+            if state["action_index"] < len(state["steps"]):
+                blocks.append("Remaining actions were not attempted.")
+        elif state["reply"] and not finished:
+            # A clarification or explanation; confirmed changes already say everything.
+            blocks.append(state["reply"])
+        text = "\n\n".join(blocks) or "What course would you like to find, open, add, remove, or move in your plan?"
+        detail = "Returned confirmed outcomes or clarification."
         calendar = (state.get("web_handoff") or {}).get("calendar")
         if calendar and calendar["status"] == "verified":
+            # Internal provenance for run details; the student asked for a plan change, not the calendar.
             current, following = calendar["current_term"], calendar["next_term"]
-            lines.insert(0, f"Calendar verified as of {calendar['as_of']} (America/Los_Angeles): current {current['season'].title()} {current['year']}; next {following['season'].title()} {following['year']}.")
-        if state["error"]:
-            lines.append(state["error"])
-            if state["action_index"] < len(state["steps"]):
-                lines.append("Remaining actions were not attempted.")
-        elif state["reply"]:
-            lines.append(state["reply"])
-        text = "\n".join(lines) or "What course would you like to find, open, add, remove, or move in your plan?"
-        # Completion wording is deterministic so the model cannot invent success.
-        return {"reply": text, "messages": [AIMessage(content=text)], "decision": "respond", "events": event(state, "respond", "Returned confirmed outcomes or clarification.")}
+            detail += f" Calendar verified as of {calendar['as_of']}: current {current['season'].title()} {current['year']}; next {following['season'].title()} {following['year']}."
+        return {"reply": text, "messages": [AIMessage(content=text)], "decision": "respond", "events": event(state, "respond", detail)}
 
     def route_after_selection(state):
         if state["error"] or state["step_count"] > 8:

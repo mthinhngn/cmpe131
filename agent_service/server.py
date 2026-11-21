@@ -3,14 +3,19 @@
 import hashlib
 import logging
 import os
+import subprocess
 import time
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext, asynccontextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from threading import RLock
 from uuid import uuid4
 from dotenv import load_dotenv
+from langchain_core.callbacks import BaseCallbackHandler
+
+PROCESS_STARTED_AT = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
 load_dotenv(Path(__file__).resolve().parents[1] / '.env', encoding='utf-8-sig')
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from langgraph.types import Command
@@ -29,6 +34,33 @@ from .evidence import progress_callback
 transcript_service = TranscriptService(CatalogRepository())
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", encoding="utf-8-sig")
+
+
+class RequestUsage(BaseCallbackHandler):
+    """Summarize billable calls without retaining prompts, completions or provider payloads."""
+
+    def __init__(self):
+        self.by_model = {}
+        self.billing_error = None
+        self.lock = RLock()
+
+    def on_llm_end(self, response, **kwargs):
+        output = response.llm_output or {}
+        usage = output.get('token_usage') or {}
+        model = output.get('model_name')
+        if not model or not usage:
+            return
+        with self.lock:
+            total = self.by_model.setdefault(model, {'input_tokens': 0, 'output_tokens': 0, 'cached_input_tokens': 0})
+            total['input_tokens'] += usage.get('prompt_tokens', 0)
+            total['output_tokens'] += usage.get('completion_tokens', 0)
+            total['cached_input_tokens'] += (usage.get('prompt_tokens_details') or {}).get('cached_tokens', 0)
+
+    def on_llm_error(self, error, **kwargs):
+        code = getattr(error, 'code', None)
+        if code in {'insufficient_quota', 'credit_balance_exhausted', 'project_spend_limit_exceeded',
+                    'organization_spend_limit_exceeded', 'organization_usage_limit_exceeded'}:
+            self.billing_error = code
 log = logging.getLogger("course-radar-agent")
 
 
@@ -136,6 +168,8 @@ class RequestManager:
         started = time.monotonic()
         output = {}
         config = {"configurable": {"thread_id": record["thread_id"]}, "recursion_limit": 100, "metadata": {"request_id": record["request_id"], "langfuse_session_id": record["thread_id"]}}
+        usage = RequestUsage()
+        config['callbacks'] = [usage]
         if isinstance(value, Command):
             config["metadata"]["action_id"] = value.resume["action_id"]
         scope = nullcontext()
@@ -147,7 +181,6 @@ class RequestManager:
                 scope = get_client().start_as_current_observation(name="course-radar-request", trace_context={"trace_id": record["trace_id"]}, metadata={"request_id": record["request_id"], "thread_id": record["thread_id"]})
             except Exception:
                 log.warning("Tracing configuration unavailable; execution will continue without it.")
-                config.pop("callbacks", None)
                 scope = nullcontext()
         # Telemetry scope failures must never re-execute the graph.
         try:
@@ -155,13 +188,17 @@ class RequestManager:
         except Exception:
             scope = nullcontext()
             scope.__enter__()
-            config.pop("callbacks", None)
         try:
             output = self.graph.invoke(value, config=config)
             with self.lock:
                 record["events"] = output.get("events", [])
                 record['citations'] = output.get('citations', [])
-                record['advisor_metrics'] = output.get('advisor_metrics', {})
+                record['advisor_metrics'] = {**output.get('advisor_metrics', {}), 'provider_usage': usage.by_model}
+                if usage.billing_error:
+                    record['advisor_metrics']['billing_error'] = usage.billing_error
+                    record.update(status='failed', reply='The AI provider reported a billing limit.', action=None)
+                    self.next_request(record)
+                    return
                 record["web_handoff"] = output.get("web_handoff")
                 record["clarification"] = (output.get("pending_clarification") or {}).get("kind")
                 interrupted = output.get("__interrupt__")
@@ -190,6 +227,10 @@ class RequestManager:
             # Do not expose model/provider error payloads or database credentials.
             log.warning("Agent run failed (%s).", type(exc).__name__)
             with self.lock:
+                record['advisor_metrics'] = {'provider_usage': usage.by_model}
+                usage.on_llm_error(exc)
+                if usage.billing_error:
+                    record['advisor_metrics']['billing_error'] = usage.billing_error
                 message = "The AI provider's rate limit was reached. Please wait a minute, then send the request again. No automatic retry was made." if type(exc).__name__ == "RateLimitError" else f"The agent could not complete this request ({type(exc).__name__}). Check the local service connection and try again."
                 record.update(status="failed", reply=message, action=None)
                 self.next_request(record)
@@ -314,10 +355,25 @@ def schedule_sections(term: str = Query(pattern=r"^(fall|spring)-(19|20|21)\d{2}
 
 @app.get("/agent/health")
 def health():
-    return {"status": "ok", "provider": "openai", "model": OPENAI_MODEL_ID, "openai_configured": bool(os.getenv("OPENAI_API_KEY")), "groq_configured": bool(os.getenv("GROQ_API_KEY")), "web_search_configured": bool(os.getenv("TAVILY_API_KEY")), "agents": ["kimi", "web_search", "course_action"], "account_memory_configured": bool(os.getenv('KIMI_AUTH_URL')), "tracing": "configured" if manager.tracing else "not_configured", "instance_id": INSTANCE_ID}
+    return {"status": "ok", "provider": "openai", "model": OPENAI_MODEL_ID, "openai_configured": bool(os.getenv("OPENAI_API_KEY")), "groq_configured": bool(os.getenv("GROQ_API_KEY")), "web_search_configured": bool(os.getenv("TAVILY_API_KEY")), "agents": ["kimi", "web_search", "course_action"], "account_memory_configured": bool(os.getenv('KIMI_AUTH_URL')), "tracing": "configured" if manager.tracing else "not_configured", "instance_id": INSTANCE_ID,
+            'git': CHECKOUT, 'processStartedAt': PROCESS_STARTED_AT, 'pid': os.getpid(), **CatalogRepository().data_versions()}
+
+
+def checkout():
+    root = Path(__file__).resolve().parents[1]
+    if (root / '.git').exists():
+        def git(*args):
+            return subprocess.check_output(['git', '-C', str(root), *args], stderr=subprocess.DEVNULL,
+                                           text=True, timeout=3).strip()
+        try:
+            return {'commit': git('rev-parse', 'HEAD'), 'dirty': bool(git('status', '--porcelain'))}
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return {'commit': None, 'dirty': None}
 
 
 INSTANCE_ID = str(uuid4())
+CHECKOUT = checkout()
 
 
 @app.post("/agent/messages", status_code=202)
