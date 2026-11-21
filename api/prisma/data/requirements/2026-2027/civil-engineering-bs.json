@@ -1,0 +1,1184 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-preparation",
+    "title": "2. Major Preparation (32 units)",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "2. Major Preparation (32 units) CHEM 1A - General Chemistry 5 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.) GEOL 2 - Geology for Engineers 3 unit(s) MATH 30 - Calculus I 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 31 - Calculus II 4 unit(s) (GE Area 2 / Formerly Area B4) MATH 32 - Calculus III 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 33A - Ordinary Differential Equations for SCI & ENGR 3 unit(s) PHYS 50 - General Physics I: Mechanics 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) PHYS 51 - General Physics II: Electricity and Magnetism 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "2. Major Preparation (32 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "catalog-ge-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B; 3 units of 1B waived) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4 Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 2or5, 3) Physical Education: 0 (waived) GWAR / WID: 3 (Required: ENGR 100W ) Major Preparation: 32 Major Requirements: 64 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "Summary of Degree Units",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "ld-ge-major-coursework",
+        "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+        "source_refs": [
+          "catalog-ge-summary"
+        ]
+      },
+      {
+        "key": "ud-ge-major-coursework",
+        "text": "6 units may be satisfied by major coursework: UD Areas 2or5, 3",
+        "source_refs": [
+          "catalog-ge-summary"
+        ]
+      },
+      {
+        "key": "applicable-area-4-courses",
+        "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+        "source_refs": [
+          "catalog-ge-summary"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5a",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5b",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5c",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-2",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-3b",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-2-or-5",
+          "effect": "covered_by_major",
+          "text": "6 units may be satisfied by major coursework: UD Areas 2or5, 3",
+          "condition_refs": [
+            "ud-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-3",
+          "effect": "covered_by_major",
+          "text": "6 units may be satisfied by major coursework: UD Areas 2or5, 3",
+          "condition_refs": [
+            "ud-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-1b",
+          "effect": "waived",
+          "text": "3 units of 1B waived",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:physical-education",
+          "effect": "waived",
+          "text": "Physical Education: 0 (waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": null,
+          "effect": "modified",
+          "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+          "condition_refs": [
+            "applicable-area-4-courses"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:gwar",
+          "effect": "modified",
+          "text": "GWAR / WID: 3 (Required: ENGR 100W )",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "civil-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:writing-in-the-disciplines",
+          "effect": "modified",
+          "text": "GWAR / WID: 3 (Required: ENGR 100W )",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "root",
+      "kind": "all_of",
+      "text": "2. Major Preparation (32 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [],
+      "children": [
+        {
+          "key": "named-major-preparation",
+          "kind": "required_all",
+          "text": "2. Major Preparation (32 units)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "includes": [
+            {
+              "code": "CHEM 1A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "GEOL 2",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 30",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 31",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 32",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 33A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "PHYS 50",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "PHYS 51",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "english-composition",
+          "kind": "any_of",
+          "text": "(or equivalent second semester composition course.)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "children": [
+            {
+              "key": "engl-1b",
+              "kind": "required_all",
+              "text": "ENGL 1B",
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "condition_refs": [],
+              "includes": [
+                {
+                  "code": "ENGL 1B",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "equivalent-composition",
+              "kind": "open_rule",
+              "text": "(or equivalent second semester composition course.)",
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "condition_refs": [],
+              "includes": [],
+              "exclusions": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-foundation",
+    "title": "Major Requirements: CE 95 and ENGR 10",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "3. Major Requirements (64 units) Students must earn at least a 2.0 GPA in each Core: Mechanics Core, Foundational Core, Disciplinary Core and Breadth Core. CE 95 - Theory and Application of Statics 3 unit(s) ENGR 10 - Introduction to Engineering 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "3. Major Requirements (64 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "required_all",
+      "text": "3. Major Requirements (64 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [],
+      "includes": [
+        {
+          "code": "CE 95",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ENGR 10",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "mechanics-core",
+    "title": "Mechanics Core (9 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Mechanics Core (9 units) Students must earn at least a 2.0 GPA. CE 112 - Mechanics of Materials 3 unit(s) ME 101 - Dynamics 3 unit(s) ME 111 - Fluid Mechanics 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "Mechanics Core (9 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "Students must earn at least a 2.0 GPA.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "required_all",
+      "text": "Mechanics Core (9 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "includes": [
+        {
+          "code": "CE 112",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 101",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 111",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "foundational-core",
+    "title": "Foundational Core (13 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Foundational Core (13 units) Students must earn at least a 2.0 GPA. CE 8 - Plane Surveying 3 unit(s) CE 20 - Engineering Graphics, CAD and Programming 3 unit(s) (Taking both ME 20 and ME 30 can be used to satisfy CE 20.) CE 120 - Construction Materials Laboratory 1 unit(s) CE 130 - Civil Engineering Economic Analysis 2 unit(s) CE 190 - Numerical Solutions of Civil Engineering Problems 2 unit(s) CE 192 - Probabilistic Models for Civil Engineering Decisions 2 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "Foundational Core (13 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "Students must earn at least a 2.0 GPA.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "all_of",
+      "text": "Foundational Core (13 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "children": [
+        {
+          "key": "named-required-courses",
+          "kind": "required_all",
+          "text": "Foundational Core (13 units)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "includes": [
+            {
+              "code": "CE 8",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "CE 120",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "CE 130",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "CE 190",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "CE 192",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "engineering-graphics-path",
+          "kind": "any_of",
+          "text": "(Taking both ME 20 and ME 30 can be used to satisfy CE 20.)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "children": [
+            {
+              "key": "ce-20",
+              "kind": "required_all",
+              "text": "CE 20",
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "condition_refs": [],
+              "includes": [
+                {
+                  "code": "CE 20",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "me-20-and-me-30",
+              "kind": "required_all",
+              "text": "Taking both ME 20 and ME 30",
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "condition_refs": [],
+              "includes": [
+                {
+                  "code": "ME 20",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                },
+                {
+                  "code": "ME 30",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "disciplinary-core",
+    "title": "Disciplinary Core (18 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Disciplinary Core (18 units) Students must earn at least a 2.0 GPA. CE 121 - Transportation Engineering 3 unit(s) CE 131 - Introduction to Construction Engineering 3 unit(s) CE 140 - Geotechnical Engineering 3 unit(s) CE 150 - Introduction to Hydrology and Hydraulics 3 unit(s) CE 160 - Structural Analysis 3 unit(s) CE 170 - Principles of Environmental Engineering 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "Disciplinary Core (18 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "Students must earn at least a 2.0 GPA.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "required_all",
+      "text": "Disciplinary Core (18 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "includes": [
+        {
+          "code": "CE 121",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 131",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 140",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 150",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 160",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 170",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "breadth-core",
+    "title": "Breadth Core: Listed Courses",
+    "catalog_list_coverage": "partial",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Breadth Core (18 units) Students must earn at least a 2.0 GPA. CE 162 - Structural Concrete Design 3 unit(s) CE 165 - Earthquake Resistant Design 3 unit(s) CE 181 - Civil Engineering Systems 3 unit(s) CE 182 - Engineering Failures and Social Vulnerability (GE UD Area 4 / Formerly Area S) Two Civil Engineering Technical Electives approved by a major advisor. One of the two Technical Electives must be a designated design course.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "Breadth Core (18 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "Students must earn at least a 2.0 GPA.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "required_all",
+      "text": "Breadth Core (18 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "includes": [
+        {
+          "code": "CE 162",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 165",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "CE 181",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "civil-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "technical-electives",
+    "title": "Civil Engineering Technical Electives",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog-rule",
+      "department-electives",
+      "department-design-note"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Breadth Core (18 units) Students must earn at least a 2.0 GPA. CE 162 - Structural Concrete Design 3 unit(s) CE 165 - Earthquake Resistant Design 3 unit(s) CE 181 - Civil Engineering Systems 3 unit(s) CE 182 - Engineering Failures and Social Vulnerability (GE UD Area 4 / Formerly Area S) Two Civil Engineering Technical Electives approved by a major advisor. One of the two Technical Electives must be a designated design course.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18766&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "a34d7ff0df6f2bc08eb09c42c554b94d77117c5797d2a62f96f4528ace649bbb",
+        "locator": "Breadth Core (18 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "department-electives",
+        "quote": "Area of Study Elective Structures CE 163 - Design of Steel Structures* CE 164 - Timber Design* CE 165 - Earthquake Resistant Design Construction CE 132 - Construction Methods and Equipment CE 134 - Project Management for Construction Environmental CE 172 - Solid Waste Management Engineering CE 174 - Design of Water Distribution and Wastewater Collection Systems* Geotechnical CE 144 - Transport in Porous Media CE 145 - Foundation Engineering* Hydraulics and Hydrology CE 152 - Engineering Hydrology CE 154 - Hydraulic Design* Transportation CE 122 - Traffic Engineering CE 123 - Street and Highway Design* Multidisciplinary CE 104 - Introduction to GIS in Civil Engineering",
+        "url": "https://www.sjsu.edu/cee/programs/bs-civil-engineering/electives.php",
+        "document_date": "2024-09-03",
+        "retrieved_at": "2026-11-20T20:14:54.940434+00:00",
+        "sha256": "c3ed3518205e000ef8c6fa6b8841925e6079b8b54baf35006d1a045ea6e66618",
+        "locator": "Technical Electives > Area of Study / Elective table",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "department-design-note",
+        "quote": "Courses with an asterisk (*) are designated design electives. All students must take at least one design elective. The second elective may be either design or non-design.",
+        "url": "https://www.sjsu.edu/cee/programs/bs-civil-engineering/electives.php",
+        "document_date": "2024-09-03",
+        "retrieved_at": "2026-11-20T20:14:54.940434+00:00",
+        "sha256": "c3ed3518205e000ef8c6fa6b8841925e6079b8b54baf35006d1a045ea6e66618",
+        "locator": "Technical Electives > Note, second bullet",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "major-advisor-approval",
+        "text": "Two Civil Engineering Technical Electives approved by a major advisor.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      },
+      {
+        "key": "must-include-design-elective",
+        "text": "One of the two Technical Electives must be a designated design course.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "choose_courses",
+      "text": "Two Civil Engineering Technical Electives approved by a major advisor.",
+      "source_refs": [
+        "catalog-rule",
+        "department-electives",
+        "department-design-note"
+      ],
+      "condition_refs": [
+        "major-advisor-approval",
+        "must-include-design-elective"
+      ],
+      "includes": [
+        {
+          "code": "CE 163",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 164",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 132",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 134",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 172",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 174",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 144",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 145",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 152",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 154",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 122",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 123",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        },
+        {
+          "code": "CE 104",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-electives"
+          ]
+        }
+      ],
+      "exclusions": [],
+      "count": 2
+    },
+    "needs_review": true,
+    "review_conflicts": [
+      {
+        "field": "ce_165_elective_status",
+        "alternatives": [
+          {
+            "value": "Named separately from the elective slots in Breadth Core",
+            "source_ref": "catalog-rule"
+          },
+          {
+            "value": "Listed as a Structures elective",
+            "source_ref": "department-electives"
+          }
+        ]
+      }
+    ]
+  }
+]

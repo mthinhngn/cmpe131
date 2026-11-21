@@ -3,3 +3,4 @@ requests>=2.32,<3
 psycopg[binary]>=3.3,<4
 python-dotenv>=1,<2
 lxml>=5,<7
+jsonschema>=4.26,<5

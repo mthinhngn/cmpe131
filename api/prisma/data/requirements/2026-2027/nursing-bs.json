@@ -1,0 +1,912 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "nursing-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-preparation",
+    "title": "Major Preparation (36 units)",
+    "catalog_list_coverage": "partial",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "2. Major Preparation (36 units) ENGL 1A - First Year Writing 3 unit(s) (GE Area 1A / Formerly Area A2) COMM 20 - Public Speaking 3 unit(s) (GE Area 1C / Formerly Area A1) CHEM 30A - Introductory Chemistry 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) BIOL 65 - Human Anatomy 4 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) BIOL 66 - Human Physiology 5 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) MICR 20 - General Bacteriology 5 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) NUFS 8 - Nutrition for the Health Professions 3 unit(s) STAT 95 - Elementary Statistics 3 unit(s) (GE Area 2 / Formerly Area B4) MATH/UNVS 15 may be used in lieu of the statistics course required by this major.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_219840",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "graduation-rules",
+        "quote": "All courses required in the major (preparation, major, and electives) require a grade of “C” (73%) or better or “Credit” ( see admission impaction supplemental criteria ). In addition, students must pass background and drug clearances. Policies are posted on The Valley Foundation School of Nursing website.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "Major-Specific Graduation Requirements",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4) 6 units of American Institutions/US 123 are required: 3 units may be satisfied from the LD GE by selecting GE course in Area 3B Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 2or5, 4) Physical Education: 0 (waived) GWAR / WID: 0 (3 units satisfied by NURS 100WE ) Major Preparation: 36 Major Requirements: 64 University Electives: 5 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_221608",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "All courses required in the major (preparation, major, and electives) require a grade of “C” (73%) or better or “Credit” ( see admission impaction supplemental criteria ). In addition, students must pass background and drug clearances. Policies are posted on The Valley Foundation School of Nursing website.",
+        "source_refs": [
+          "graduation-rules"
+        ]
+      },
+      {
+        "key": "statistics-substitution",
+        "text": "MATH/UNVS 15 may be used in lieu of the statistics course required by this major.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-1a",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-1c",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5a",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5b",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5c",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-2",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": null,
+          "effect": "modified",
+          "text": "6 units of American Institutions/US 123 are required: 3 units may be satisfied from the LD GE by selecting GE course in Area 3B",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "major-preparation",
+      "kind": "all_of",
+      "text": "2. Major Preparation (36 units) ENGL 1A - First Year Writing 3 unit(s) (GE Area 1A / Formerly Area A2) COMM 20 - Public Speaking 3 unit(s) (GE Area 1C / Formerly Area A1) CHEM 30A - Introductory Chemistry 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) BIOL 65 - Human Anatomy 4 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) BIOL 66 - Human Physiology 5 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) MICR 20 - General Bacteriology 5 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) NUFS 8 - Nutrition for the Health Professions 3 unit(s) STAT 95 - Elementary Statistics 3 unit(s) (GE Area 2 / Formerly Area B4) MATH/UNVS 15 may be used in lieu of the statistics course required by this major.",
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "children": [
+        {
+          "key": "preparation-courses",
+          "kind": "required_all",
+          "text": "2. Major Preparation (36 units) ENGL 1A - First Year Writing 3 unit(s) (GE Area 1A / Formerly Area A2) COMM 20 - Public Speaking 3 unit(s) (GE Area 1C / Formerly Area A1) CHEM 30A - Introductory Chemistry 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) BIOL 65 - Human Anatomy 4 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) BIOL 66 - Human Physiology 5 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) MICR 20 - General Bacteriology 5 unit(s) (GE Area 5B and 5C / Formerly Area B2 and B3) NUFS 8 - Nutrition for the Health Professions 3 unit(s) STAT 95 - Elementary Statistics 3 unit(s) (GE Area 2 / Formerly Area B4) MATH/UNVS 15 may be used in lieu of the statistics course required by this major.",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "ENGL 1A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "COMM 20",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "CHEM 30A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "BIOL 65",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "BIOL 66",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MICR 20",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NUFS 8",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "statistics-options",
+          "kind": "any_of",
+          "text": "MATH/UNVS 15 may be used in lieu of the statistics course required by this major.",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "children": [
+            {
+              "key": "elementary-statistics",
+              "kind": "required_all",
+              "text": "STAT 95 - Elementary Statistics 3 unit(s) (GE Area 2 / Formerly Area B4)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [
+                {
+                  "code": "STAT 95",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "statistics-substitution",
+              "kind": "open_rule",
+              "text": "MATH/UNVS 15 may be used in lieu of the statistics course required by this major.",
+              "condition_refs": [
+                "statistics-substitution"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [],
+              "exclusions": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "nursing-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "additional-major-support",
+    "title": "Additional Major Support (6 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Additional Major Support (6 units) CHAD 70 - Lifespan Development in a Global Context 3 unit(s) (GE Area 4 / Formerly Area D) PSYC 1 - Introduction to Psychology 3 unit(s) (GE Area 4 / Formerly Area D)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_219841",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "graduation-rules",
+        "quote": "All courses required in the major (preparation, major, and electives) require a grade of “C” (73%) or better or “Credit” ( see admission impaction supplemental criteria ). In addition, students must pass background and drug clearances. Policies are posted on The Valley Foundation School of Nursing website.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "Major-Specific Graduation Requirements",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4) 6 units of American Institutions/US 123 are required: 3 units may be satisfied from the LD GE by selecting GE course in Area 3B Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 2or5, 4) Physical Education: 0 (waived) GWAR / WID: 0 (3 units satisfied by NURS 100WE ) Major Preparation: 36 Major Requirements: 64 University Electives: 5 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_221608",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "All courses required in the major (preparation, major, and electives) require a grade of “C” (73%) or better or “Credit” ( see admission impaction supplemental criteria ). In addition, students must pass background and drug clearances. Policies are posted on The Valley Foundation School of Nursing website.",
+        "source_refs": [
+          "graduation-rules"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-4",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "additional-major-support",
+      "kind": "required_all",
+      "text": "Additional Major Support (6 units) CHAD 70 - Lifespan Development in a Global Context 3 unit(s) (GE Area 4 / Formerly Area D) PSYC 1 - Introduction to Psychology 3 unit(s) (GE Area 4 / Formerly Area D)",
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [
+        {
+          "code": "CHAD 70",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "PSYC 1",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "nursing-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "required-courses",
+    "title": "Major Requirements (64 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "3. Major Requirements (64 units) Semester 1 NURS 10 - Leadership I 3 unit(s) NURS 11 - Introduction to Pharmacology 3 unit(s) NURS 12 - Health Assessment & Skills I 3 unit(s) NURS 23 - Pathophysiology 3 unit(s) NURS 100WE - Evidence Based Practice Writing Workshop 3 unit(s) (WID) Semester 2 NURS 20A - Adult Care Management I 3 unit(s) NURS 20B - Adult Care Clinical Practicum I 3 unit(s) NURS 22 - Health Assessment & Skills in Nursing II 2 unit(s) NURS 123A - Mental Health Theory 3 unit(s) NURS 123B - Mental Health Practicum 2 unit(s) Semester 3 NURS 32 - Health Assessment & Skills III 1 unit(s) NURS 165A - Child Health Theory 3 unit(s) NURS 165B - Child Health Practicum 2 unit(s) NURS 168A - Birthing Family Theory 3 unit(s) NURS 168B - Birthing Family Practicum 2 unit(s) NURS 171 - Theoretical Foundations 3 unit(s) Semester 4 NURS 164A - Community Health Theory 3 unit(s) (GE UD Area 2/5 / Formerly Area R) NURS 164B - Community Health Practicum 2 unit(s) NURS 167A - Adult Care Management II 4 unit(s) NURS 167B - Adult Care Clinical Practicum II 3 unit(s) NURS 169 - Healthcare Technologies 3 unit(s) Semester 5 NURS 177 - Senior Preceptorship 4 unit(s) NURS 178 - Leadership II 3 unit(s) (GE UD Area 4 / Formerly Area S)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_219842",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "graduation-rules",
+        "quote": "All courses required in the major (preparation, major, and electives) require a grade of “C” (73%) or better or “Credit” ( see admission impaction supplemental criteria ). In addition, students must pass background and drug clearances. Policies are posted on The Valley Foundation School of Nursing website.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "Major-Specific Graduation Requirements",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 9 (22 units may be satisfied by major coursework: Areas 1A, 1C, 5A, 5B, 5C, 2, 4) 6 units of American Institutions/US 123 are required: 3 units may be satisfied from the LD GE by selecting GE course in Area 3B Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 2or5, 4) Physical Education: 0 (waived) GWAR / WID: 0 (3 units satisfied by NURS 100WE ) Major Preparation: 36 Major Requirements: 64 University Electives: 5 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_221608",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "Required courses",
+        "kind": "common",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "All courses required in the major (preparation, major, and electives) require a grade of “C” (73%) or better or “Credit” ( see admission impaction supplemental criteria ). In addition, students must pass background and drug clearances. Policies are posted on The Valley Foundation School of Nursing website.",
+        "source_refs": [
+          "graduation-rules"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-2-or-5",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 2or5, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-4",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 2or5, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:writing-in-the-disciplines",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 0 (3 units satisfied by NURS 100WE )",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:gwar",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 0 (3 units satisfied by NURS 100WE )",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "nursing-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:physical-education",
+          "effect": "waived",
+          "text": "Physical Education: 0 (waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "required-courses",
+      "kind": "all_of",
+      "text": "3. Major Requirements (64 units) Semester 1 NURS 10 - Leadership I 3 unit(s) NURS 11 - Introduction to Pharmacology 3 unit(s) NURS 12 - Health Assessment & Skills I 3 unit(s) NURS 23 - Pathophysiology 3 unit(s) NURS 100WE - Evidence Based Practice Writing Workshop 3 unit(s) (WID) Semester 2 NURS 20A - Adult Care Management I 3 unit(s) NURS 20B - Adult Care Clinical Practicum I 3 unit(s) NURS 22 - Health Assessment & Skills in Nursing II 2 unit(s) NURS 123A - Mental Health Theory 3 unit(s) NURS 123B - Mental Health Practicum 2 unit(s) Semester 3 NURS 32 - Health Assessment & Skills III 1 unit(s) NURS 165A - Child Health Theory 3 unit(s) NURS 165B - Child Health Practicum 2 unit(s) NURS 168A - Birthing Family Theory 3 unit(s) NURS 168B - Birthing Family Practicum 2 unit(s) NURS 171 - Theoretical Foundations 3 unit(s) Semester 4 NURS 164A - Community Health Theory 3 unit(s) (GE UD Area 2/5 / Formerly Area R) NURS 164B - Community Health Practicum 2 unit(s) NURS 167A - Adult Care Management II 4 unit(s) NURS 167B - Adult Care Clinical Practicum II 3 unit(s) NURS 169 - Healthcare Technologies 3 unit(s) Semester 5 NURS 177 - Senior Preceptorship 4 unit(s) NURS 178 - Leadership II 3 unit(s) (GE UD Area 4 / Formerly Area S)",
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "children": [
+        {
+          "key": "semester-1",
+          "kind": "required_all",
+          "text": "Semester 1 NURS 10 - Leadership I 3 unit(s) NURS 11 - Introduction to Pharmacology 3 unit(s) NURS 12 - Health Assessment & Skills I 3 unit(s) NURS 23 - Pathophysiology 3 unit(s) NURS 100WE - Evidence Based Practice Writing Workshop 3 unit(s) (WID)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "NURS 10",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 11",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 12",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 23",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 100WE",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "semester-2",
+          "kind": "required_all",
+          "text": "Semester 2 NURS 20A - Adult Care Management I 3 unit(s) NURS 20B - Adult Care Clinical Practicum I 3 unit(s) NURS 22 - Health Assessment & Skills in Nursing II 2 unit(s) NURS 123A - Mental Health Theory 3 unit(s) NURS 123B - Mental Health Practicum 2 unit(s)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "NURS 20A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 20B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 22",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 123A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 123B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "semester-3",
+          "kind": "required_all",
+          "text": "Semester 3 NURS 32 - Health Assessment & Skills III 1 unit(s) NURS 165A - Child Health Theory 3 unit(s) NURS 165B - Child Health Practicum 2 unit(s) NURS 168A - Birthing Family Theory 3 unit(s) NURS 168B - Birthing Family Practicum 2 unit(s) NURS 171 - Theoretical Foundations 3 unit(s)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "NURS 32",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 165A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 165B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 168A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 168B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 171",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "semester-4",
+          "kind": "required_all",
+          "text": "Semester 4 NURS 164A - Community Health Theory 3 unit(s) (GE UD Area 2/5 / Formerly Area R) NURS 164B - Community Health Practicum 2 unit(s) NURS 167A - Adult Care Management II 4 unit(s) NURS 167B - Adult Care Clinical Practicum II 3 unit(s) NURS 169 - Healthcare Technologies 3 unit(s)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "NURS 164A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 164B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 167A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 167B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 169",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "semester-5",
+          "kind": "required_all",
+          "text": "Semester 5 NURS 177 - Senior Preceptorship 4 unit(s) NURS 178 - Leadership II 3 unit(s) (GE UD Area 4 / Formerly Area S)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "NURS 177",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "NURS 178",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "nursing-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "university-electives",
+    "title": "University Electives (5 units)",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "4. University Electives (5 units)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18956&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "54f8efd5e2c3fb230b8cac84c0c8703396927206afe24d7b724655ed5b38af7c",
+        "locator": "#core_221674",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "university-electives",
+      "kind": "open_rule",
+      "text": "4. University Electives (5 units)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [],
+      "exclusions": []
+    }
+  }
+]

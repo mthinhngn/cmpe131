@@ -1,0 +1,1288 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "computer-engineering",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-preparation",
+    "title": "Major Preparation",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog",
+        "quote": "2. Major Preparation (33 units) Students must complete the following courses with “C” or better to graduate: MATH 30 , MATH 31 , PHYS 50 , PHYS 51 . The remaining courses in Preparation for the Major must be completed with “C-” or better to graduate. GE Area 5B 3 unit(s) ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.) ISE 130 - Engineering Probability and Statistics 3 unit(s) MATH 30 - Calculus I 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 31 - Calculus II 4 unit(s) (GE Area 2 / Formerly Area B4) MATH 32 - Calculus III 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 42 - Discrete Mathematics 3 unit(s) MATH 33LA - Differential Equations and Linear Algebra 3 unit(s) PHYS 50 - General Physics I: Mechanics 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) PHYS 51 - General Physics II: Electricity and Magnetism 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "2. Major Preparation (33 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4 Upper Division GE: 0 (9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4) Physical Education: 0 (waived) GWAR / WID: 3 (Required: ENGR 100W ) Major Preparation: 33 Major Requirements: 60 University Electives: 6 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "Summary of Degree Units",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "2. Major Preparation (33 units)",
+        "kind": "official",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "key": "prep-c",
+        "text": "Students must complete the following courses with “C” or better to graduate: MATH 30 , MATH 31 , PHYS 50 , PHYS 51 . The remaining courses in Preparation for the Major must be completed with “C-” or better to graduate.",
+        "source_refs": [
+          "catalog"
+        ]
+      },
+      {
+        "key": "prep-c-minus",
+        "text": "Students must complete the following courses with “C” or better to graduate: MATH 30 , MATH 31 , PHYS 50 , PHYS 51 . The remaining courses in Preparation for the Major must be completed with “C-” or better to graduate.",
+        "source_refs": [
+          "catalog"
+        ]
+      },
+      {
+        "key": "equivalent-composition",
+        "text": "ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.)",
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5a",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5b",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5c",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-2",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-3b",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-1b",
+          "effect": "waived",
+          "text": "Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:physical-education",
+          "effect": "waived",
+          "text": "Physical Education: 0 (waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:us1",
+          "effect": "modified",
+          "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:us2",
+          "effect": "modified",
+          "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:us3",
+          "effect": "modified",
+          "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "major-preparation",
+      "kind": "all_of",
+      "text": "2. Major Preparation (33 units)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog"
+      ],
+      "children": [
+        {
+          "key": "fixed-prep-courses",
+          "kind": "required_all",
+          "text": "2. Major Preparation (33 units) Students must complete the following courses with “C” or better to graduate: MATH 30 , MATH 31 , PHYS 50 , PHYS 51 . The remaining courses in Preparation for the Major must be completed with “C-” or better to graduate. GE Area 5B 3 unit(s) ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.) ISE 130 - Engineering Probability and Statistics 3 unit(s) MATH 30 - Calculus I 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 31 - Calculus II 4 unit(s) (GE Area 2 / Formerly Area B4) MATH 32 - Calculus III 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 42 - Discrete Mathematics 3 unit(s) MATH 33LA - Differential Equations and Linear Algebra 3 unit(s) PHYS 50 - General Physics I: Mechanics 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) PHYS 51 - General Physics II: Electricity and Magnetism 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog"
+          ],
+          "includes": [
+            {
+              "code": "ISE 130",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c-minus"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "MATH 30",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "MATH 31",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "MATH 32",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c-minus"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "MATH 42",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c-minus"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "MATH 33LA",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c-minus"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "PHYS 50",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            },
+            {
+              "code": "PHYS 51",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "prep-c"
+              ],
+              "source_refs": [
+                "catalog"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "second-semester-composition",
+          "kind": "any_of",
+          "text": "ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog"
+          ],
+          "children": [
+            {
+              "key": "listed-composition-course",
+              "kind": "required_all",
+              "text": "ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog"
+              ],
+              "includes": [
+                {
+                  "code": "ENGL 1B",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [
+                    "prep-c-minus"
+                  ],
+                  "source_refs": [
+                    "catalog"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "equivalent-composition-course",
+              "kind": "open_rule",
+              "text": "ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.)",
+              "condition_refs": [
+                "equivalent-composition",
+                "prep-c-minus"
+              ],
+              "source_refs": [
+                "catalog"
+              ],
+              "includes": [],
+              "exclusions": []
+            }
+          ]
+        },
+        {
+          "key": "area-5b-course",
+          "kind": "open_rule",
+          "text": "GE Area 5B 3 unit(s)",
+          "condition_refs": [
+            "prep-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ],
+          "includes": [],
+          "exclusions": []
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "computer-engineering",
+    "catalog_year": "2026-2027",
+    "requirement_key": "core-courses",
+    "title": "Core Courses",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog",
+        "quote": "Core Courses (15 units) CMPE 30 - Programming Concepts and Methodology 4 unit(s) CMPE 50 - Intro to Data Structures and Object-Oriented Programming 4 unit(s) ENGR 10 - Introduction to Engineering 3 unit(s) EE 97 - Introductory Electrical Engineering Laboratory 1 unit(s) EE 98 - Introduction to Circuit Analysis 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "Core Courses (15 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "major-grades",
+        "quote": "3. Major Requirements (60 units) Students must complete all the courses in Core Courses, Required Courses and Approved Upper Division Electives sections with “C-” or better to graduate.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "3. Major Requirements (60 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "Core Courses (15 units)",
+        "kind": "official",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "key": "major-c-minus",
+        "text": "Students must complete all the courses in Core Courses, Required Courses and Approved Upper Division Electives sections with “C-” or better to graduate.",
+        "source_refs": [
+          "major-grades"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "core-courses",
+      "kind": "required_all",
+      "text": "Core Courses (15 units) CMPE 30 - Programming Concepts and Methodology 4 unit(s) CMPE 50 - Intro to Data Structures and Object-Oriented Programming 4 unit(s) ENGR 10 - Introduction to Engineering 3 unit(s) EE 97 - Introductory Electrical Engineering Laboratory 1 unit(s) EE 98 - Introduction to Circuit Analysis 3 unit(s)",
+      "condition_refs": [
+        "major-c-minus"
+      ],
+      "source_refs": [
+        "catalog"
+      ],
+      "includes": [
+        {
+          "code": "CMPE 30",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 50",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "ENGR 10",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "EE 97",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "EE 98",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "computer-engineering",
+    "catalog_year": "2026-2027",
+    "requirement_key": "required-courses",
+    "title": "Required Courses",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog",
+        "quote": "Required Courses (39 units) Note: Must complete CMPE 195A / CMPE 195B and ENGR 195A / ENGR 195B with C or Better to meet GE Area requirements. CMPE 70 - Assembly Language Programming 3 unit(s) CMPE 110 - Electronics for Computing Systems 4 unit(s) CMPE 125 - Digital Design 4 unit(s) CMPE 126 - Algorithms and Data Structure Design 3 unit(s) CMPE 127 - Microprocessor Design I 3 unit(s) CMPE 131 - Software Engineering I 3 unit(s) CMPE 140 - Computer Architecture and Design 3 unit(s) CMPE 142 - Operating Systems Design 3 unit(s) CMPE 146 - Real-Time Embedded System Co-Design 3 unit(s) CMPE 148 - Computer Networks I 3 unit(s) Senior Design: CMPE 195A - Senior Design Project I 2 unit(s) (GE UD Area 4 / Formerly Area S) CMPE 195B - Senior Design Project II 3 unit(s) (GE UD Area 3 / Formerly Area V) ENGR 195A - Global and Social Issues in Engineering 1 unit(s) (GE UD Area 4 / Formerly Area S) ENGR 195B - Global and Social Issues in Engineering 1 unit(s) (GE UD Area 3 / Formerly Area V)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "Required Courses (39 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B, 5C, 2, 3B; 3 units of 1B waived) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4 Upper Division GE: 0 (9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4) Physical Education: 0 (waived) GWAR / WID: 3 (Required: ENGR 100W ) Major Preparation: 33 Major Requirements: 60 University Electives: 6 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "Summary of Degree Units",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "major-grades",
+        "quote": "3. Major Requirements (60 units) Students must complete all the courses in Core Courses, Required Courses and Approved Upper Division Electives sections with “C-” or better to graduate.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "3. Major Requirements (60 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "Required Courses (39 units)",
+        "kind": "official",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "key": "major-c-minus",
+        "text": "Students must complete all the courses in Core Courses, Required Courses and Approved Upper Division Electives sections with “C-” or better to graduate.",
+        "source_refs": [
+          "major-grades"
+        ]
+      },
+      {
+        "key": "senior-design-c-for-ge",
+        "text": "Note: Must complete CMPE 195A / CMPE 195B and ENGR 195A / ENGR 195B with C or Better to meet GE Area requirements.",
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-2-or-5",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 0 (9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-3",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 0 (9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4)",
+          "condition_refs": [
+            "senior-design-c-for-ge"
+          ],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-4",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 0 (9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4)",
+          "condition_refs": [
+            "senior-design-c-for-ge"
+          ],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:gwar",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 3 (Required: ENGR 100W )",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "computer-engineering",
+          "target_requirement_id": "campus:sjsu:2026-2027:writing-in-the-disciplines",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 3 (Required: ENGR 100W )",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "required-courses",
+      "kind": "required_all",
+      "text": "Required Courses (39 units) Note: Must complete CMPE 195A / CMPE 195B and ENGR 195A / ENGR 195B with C or Better to meet GE Area requirements. CMPE 70 - Assembly Language Programming 3 unit(s) CMPE 110 - Electronics for Computing Systems 4 unit(s) CMPE 125 - Digital Design 4 unit(s) CMPE 126 - Algorithms and Data Structure Design 3 unit(s) CMPE 127 - Microprocessor Design I 3 unit(s) CMPE 131 - Software Engineering I 3 unit(s) CMPE 140 - Computer Architecture and Design 3 unit(s) CMPE 142 - Operating Systems Design 3 unit(s) CMPE 146 - Real-Time Embedded System Co-Design 3 unit(s) CMPE 148 - Computer Networks I 3 unit(s) Senior Design: CMPE 195A - Senior Design Project I 2 unit(s) (GE UD Area 4 / Formerly Area S) CMPE 195B - Senior Design Project II 3 unit(s) (GE UD Area 3 / Formerly Area V) ENGR 195A - Global and Social Issues in Engineering 1 unit(s) (GE UD Area 4 / Formerly Area S) ENGR 195B - Global and Social Issues in Engineering 1 unit(s) (GE UD Area 3 / Formerly Area V)",
+      "condition_refs": [
+        "major-c-minus"
+      ],
+      "source_refs": [
+        "catalog"
+      ],
+      "includes": [
+        {
+          "code": "CMPE 70",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 110",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 125",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 126",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 127",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 131",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 140",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 142",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 146",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 148",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 195A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "CMPE 195B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "ENGR 195A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        },
+        {
+          "code": "ENGR 195B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [
+            "major-c-minus"
+          ],
+          "source_refs": [
+            "catalog"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "computer-engineering",
+    "catalog_year": "2026-2027",
+    "requirement_key": "technical-electives",
+    "title": "Approved Upper Division Electives",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog",
+        "quote": "Approved Upper Division Electives (6 units) Selected in consultation with the student’s advisor",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "Approved Upper Division Electives (6 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "department-list",
+        "quote": "Department approved Technical Elective Courses: Course No Course Title CMPE 132 Information Security CMPE 133 Software Engineering II CMPE 135 Object-Oriented Analysis and Design CMPE 137 Wireless Mobile Software Engineering CMPE 138 Database Systems I CMPE 139 Fundamentals of Data Mining CMPE 143 Microcomputer Design CMPE 146 (Catalog prior to FALL 2012) Real-Time Embedded System Co-Design CMPE 147 Fundamentals of System on Chip (SoC) Design CMPE 149 Computer Networks II CMPE 150 System Architecture and Electronic Design for Robotics CMPE 163 Computer Graphics Program Design CMPE 164 Wireless Networks Architecture CMPE 165 Software Engineering Process Management CMPE 172 Enterprise Software Platforms CMPE 180-02 Individual Studies CMPE 181 Internet of Things Platforms CMPE 182 Internet of Things Security CMPE 183 Cryptocurrencies and Blockchains CMPE 185 Autonomous Mobile Robots CMPE 187 Software Quality Engineering CMPE 188 Machine Learning for Big Data CMPE 189 Special Topics in Computer Engineering CS 151 Object-Oriented Design CS 157B Database Management Systems II CS/SE 166 Information Security",
+        "url": "https://www.sjsu.edu/cmpe/undergraduate_programs/bscmpe/bcce-technical-electives.php",
+        "document_date": null,
+        "retrieved_at": "2026-11-20T20:08:37.469712+00:00",
+        "sha256": "ac2ebb9f649625b4eb94bd11c3c9d0e37f7a7f02a68312340b9193b52b0a9a5c",
+        "locator": "Department approved Technical Elective Courses table",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "major-grades",
+        "quote": "3. Major Requirements (60 units) Students must complete all the courses in Core Courses, Required Courses and Approved Upper Division Electives sections with “C-” or better to graduate.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "3. Major Requirements (60 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "Approved Upper Division Electives (6 units)",
+        "kind": "official",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog"
+        ]
+      },
+      {
+        "text": "Technical Electives",
+        "kind": "common",
+        "candidate_ids": [],
+        "source_refs": [
+          "department-list"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "key": "major-c-minus",
+        "text": "Students must complete all the courses in Core Courses, Required Courses and Approved Upper Division Electives sections with “C-” or better to graduate.",
+        "source_refs": [
+          "major-grades"
+        ]
+      },
+      {
+        "key": "consult-advisor",
+        "text": "Selected in consultation with the student’s advisor",
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "technical-electives",
+      "kind": "choose_units",
+      "text": "Approved Upper Division Electives (6 units) Selected in consultation with the student’s advisor",
+      "condition_refs": [
+        "major-c-minus",
+        "consult-advisor"
+      ],
+      "source_refs": [
+        "catalog",
+        "department-list",
+        "major-grades"
+      ],
+      "includes": [
+        {
+          "code": "CMPE 132",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 133",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 135",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 137",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 138",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 139",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 143",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 147",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 149",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 150",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 163",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 164",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 165",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 172",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 180",
+          "term_id": null,
+          "section_numbers": [
+            "02"
+          ],
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 181",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 182",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 183",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 185",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 187",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 188",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CMPE 189",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CS 151",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CS 157B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "CS 166",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        },
+        {
+          "code": "SE 166",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-list"
+          ]
+        }
+      ],
+      "exclusions": [],
+      "units": 6
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "computer-engineering",
+    "catalog_year": "2026-2027",
+    "requirement_key": "university-electives",
+    "title": "University Electives",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog",
+        "quote": "University Elective Lower or Upper Division (6 units)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18780&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "19deb63a35d1aab5293d64c5809d05411e75c6f2c13baa131a065c5dad73cf4e",
+        "locator": "University Elective Lower or Upper Division (6 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "University Elective Lower or Upper Division (6 units)",
+        "kind": "official",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog"
+        ]
+      }
+    ],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "university-electives",
+      "kind": "open_rule",
+      "text": "University Elective Lower or Upper Division (6 units)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog"
+      ],
+      "includes": [],
+      "exclusions": []
+    }
+  }
+]

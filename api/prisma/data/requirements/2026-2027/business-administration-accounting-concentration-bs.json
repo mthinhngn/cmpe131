@@ -1,0 +1,1270 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-preparation",
+    "title": "Major Preparation (15 units)",
+    "catalog_list_coverage": "partial",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "2. Major Preparation (15 units) ECON 1A - Principles of Economics: Macroeconomics 3 unit(s) ECON 1B - Principles of Economics: Microeconomics 3 unit(s) (GE Area 4/ Formerly Area D) ENGL 2 - Critical Thinking and Writing 3 unit(s) (GE Area 1B / Formerly Area A3) (or equivalent) MATH 70 - Mathematics for Business 3 unit(s) (GE Area Area 2 / Formerly Area B4) (Students who complete any of the following with a C or better may substitute it for MATH 70 : MATH 30 , MATH 31 , MATH 32 , or MATH 71 .)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218354",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "graduation-rules",
+        "quote": "All courses in the Concentration Requirements for the Accounting Foundation Courses must be completed with a grade of “C or better”. The following Preparation for the Major and Required for the Major courses must be completed with a grade of “C or better”: ENGL 2 , MATH 70 , BUS1 20 , BUS2 90 .",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "Major-Specific Graduation Requirements",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 19 (9 units may be satisfied by major coursework: Areas 1A, 2, 4) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Areas 3B and/or 4 Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 3, 4) Physical Education: 2 GWAR / WID: 0 (3 units satisfied by ENGL 100WB , COMM 100W , or LLD 100WB ) Major Preparation: 15 Major Requirements: 67 University Electives: 8 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_221511",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "All courses in the Concentration Requirements for the Accounting Foundation Courses must be completed with a grade of “C or better”. The following Preparation for the Major and Required for the Major courses must be completed with a grade of “C or better”: ENGL 2 , MATH 70 , BUS1 20 , BUS2 90 .",
+        "source_refs": [
+          "graduation-rules"
+        ]
+      },
+      {
+        "key": "math-substitution",
+        "text": "MATH 70 - Mathematics for Business 3 unit(s) (GE Area Area 2 / Formerly Area B4) (Students who complete any of the following with a C or better may substitute it for MATH 70 : MATH 30 , MATH 31 , MATH 32 , or MATH 71 .)",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-2",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 19 (9 units may be satisfied by major coursework: Areas 1A, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-4",
+          "effect": "covered_by_major",
+          "text": "Core Lower Division GE: 19 (9 units may be satisfied by major coursework: Areas 1A, 2, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": null,
+          "effect": "modified",
+          "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Areas 3B and/or 4",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "major-preparation",
+      "kind": "all_of",
+      "text": "2. Major Preparation (15 units) ECON 1A - Principles of Economics: Macroeconomics 3 unit(s) ECON 1B - Principles of Economics: Microeconomics 3 unit(s) (GE Area 4/ Formerly Area D) ENGL 2 - Critical Thinking and Writing 3 unit(s) (GE Area 1B / Formerly Area A3) (or equivalent) MATH 70 - Mathematics for Business 3 unit(s) (GE Area Area 2 / Formerly Area B4) (Students who complete any of the following with a C or better may substitute it for MATH 70 : MATH 30 , MATH 31 , MATH 32 , or MATH 71 .)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "children": [
+        {
+          "key": "economics",
+          "kind": "required_all",
+          "text": "2. Major Preparation (15 units) ECON 1A - Principles of Economics: Macroeconomics 3 unit(s) ECON 1B - Principles of Economics: Microeconomics 3 unit(s) (GE Area 4/ Formerly Area D) ENGL 2 - Critical Thinking and Writing 3 unit(s) (GE Area 1B / Formerly Area A3) (or equivalent) MATH 70 - Mathematics for Business 3 unit(s) (GE Area Area 2 / Formerly Area B4) (Students who complete any of the following with a C or better may substitute it for MATH 70 : MATH 30 , MATH 31 , MATH 32 , or MATH 71 .)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "ECON 1A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ECON 1B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "writing-options",
+          "kind": "any_of",
+          "text": "ENGL 2 - Critical Thinking and Writing 3 unit(s) (GE Area 1B / Formerly Area A3) (or equivalent)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "children": [
+            {
+              "key": "critical-thinking",
+              "kind": "required_all",
+              "text": "ENGL 2 - Critical Thinking and Writing 3 unit(s) (GE Area 1B / Formerly Area A3) (or equivalent)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [
+                {
+                  "code": "ENGL 2",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [
+                    "minimum-grade"
+                  ],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "writing-equivalent",
+              "kind": "open_rule",
+              "text": "ENGL 2 - Critical Thinking and Writing 3 unit(s) (GE Area 1B / Formerly Area A3) (or equivalent)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [],
+              "exclusions": []
+            }
+          ]
+        },
+        {
+          "key": "mathematics-options",
+          "kind": "choose_courses",
+          "text": "MATH 70 - Mathematics for Business 3 unit(s) (GE Area Area 2 / Formerly Area B4) (Students who complete any of the following with a C or better may substitute it for MATH 70 : MATH 30 , MATH 31 , MATH 32 , or MATH 71 .)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "MATH 70",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "minimum-grade"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 30",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "math-substitution"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 31",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "math-substitution"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 32",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "math-substitution"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 71",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "math-substitution"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": [],
+          "count": 1
+        }
+      ]
+    },
+    "needs_review": true,
+    "review_conflicts": [
+      {
+        "field": "applicability.program_effects",
+        "alternatives": [
+          {
+            "value": "Major coursework may satisfy GE Area 1A according to the degree summary.",
+            "source_ref": "degree-summary"
+          },
+          {
+            "value": "The listed Major Preparation writing course ENGL 2 is designated GE Area 1B; no listed preparation course is designated GE Area 1A.",
+            "source_ref": "catalog-rule"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "writing-in-the-disciplines",
+    "title": "Writing in the Disciplines (3 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Writing in the Disciplines (3 units) Complete one course from: ENGL 100WB - Written Communication: Business 3 unit(s) (WID) COMM 100W - Writing Workshop: Writing for Influence 3 unit(s) (WID) LLD 100WB - Writing Workshop for Business Students 3 unit(s) (WID)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218355",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 19 (9 units may be satisfied by major coursework: Areas 1A, 2, 4) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Areas 3B and/or 4 Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 3, 4) Physical Education: 2 GWAR / WID: 0 (3 units satisfied by ENGL 100WB , COMM 100W , or LLD 100WB ) Major Preparation: 15 Major Requirements: 67 University Electives: 8 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_221511",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "WID",
+        "kind": "official",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:writing-in-the-disciplines",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 0 (3 units satisfied by ENGL 100WB , COMM 100W , or LLD 100WB )",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:gwar",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 0 (3 units satisfied by ENGL 100WB , COMM 100W , or LLD 100WB )",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "writing-in-the-disciplines",
+      "kind": "choose_courses",
+      "text": "Writing in the Disciplines (3 units) Complete one course from: ENGL 100WB - Written Communication: Business 3 unit(s) (WID) COMM 100W - Writing Workshop: Writing for Influence 3 unit(s) (WID) LLD 100WB - Writing Workshop for Business Students 3 unit(s) (WID)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [
+        {
+          "code": "ENGL 100WB",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "COMM 100W",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "LLD 100WB",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": [],
+      "count": 1
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "lower-division-core-courses",
+    "title": "Lower Division Courses (13 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Lower Division Courses (13 units) BUS1 20 - Financial Accounting 3 unit(s) BUS3 80 - Legal Environment of Business 3 unit(s) BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .) BUS4 91L - Computer Tools for Business 1 unit(s) BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218358",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "graduation-rules",
+        "quote": "All courses in the Concentration Requirements for the Accounting Foundation Courses must be completed with a grade of “C or better”. The following Preparation for the Major and Required for the Major courses must be completed with a grade of “C or better”: ENGL 2 , MATH 70 , BUS1 20 , BUS2 90 .",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "Major-Specific Graduation Requirements",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "All courses in the Concentration Requirements for the Accounting Foundation Courses must be completed with a grade of “C or better”. The following Preparation for the Major and Required for the Major courses must be completed with a grade of “C or better”: ENGL 2 , MATH 70 , BUS1 20 , BUS2 90 .",
+        "source_refs": [
+          "graduation-rules"
+        ]
+      },
+      {
+        "key": "transfer-statistics",
+        "text": "BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .)",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      },
+      {
+        "key": "transfer-experience",
+        "text": "BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "lower-division-core-courses",
+      "kind": "all_of",
+      "text": "Lower Division Courses (13 units) BUS1 20 - Financial Accounting 3 unit(s) BUS3 80 - Legal Environment of Business 3 unit(s) BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .) BUS4 91L - Computer Tools for Business 1 unit(s) BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "children": [
+        {
+          "key": "required-business-courses",
+          "kind": "required_all",
+          "text": "Lower Division Courses (13 units) BUS1 20 - Financial Accounting 3 unit(s) BUS3 80 - Legal Environment of Business 3 unit(s) BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .) BUS4 91L - Computer Tools for Business 1 unit(s) BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "BUS1 20",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [
+                "minimum-grade"
+              ],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "BUS3 80",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "BUS4 91L",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "business-statistics-options",
+          "kind": "any_of",
+          "text": "BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "children": [
+            {
+              "key": "business-statistics",
+              "kind": "required_all",
+              "text": "BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [
+                {
+                  "code": "BUS2 90",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [
+                    "minimum-grade"
+                  ],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "transfer-statistics-substitution",
+              "kind": "required_all",
+              "text": "BUS2 90 - Business Statistics 3 unit(s) (Transfer students with STAT 95 (C or better) may use this in lieu of BUS2 90 .)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [
+                {
+                  "code": "STAT 95",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [
+                    "transfer-statistics"
+                  ],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            }
+          ]
+        },
+        {
+          "key": "business-experience-options",
+          "kind": "any_of",
+          "text": "BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "children": [
+            {
+              "key": "business-experience",
+              "kind": "required_all",
+              "text": "BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [
+                {
+                  "code": "BUS3 12",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "transfer-experience-substitution",
+              "kind": "required_all",
+              "text": "BUS3 12 - Business First Year Experience 3 unit(s) ( BUS3 10 can be substituted for Transfer Students)",
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "includes": [
+                {
+                  "code": "BUS3 10",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [
+                    "transfer-experience"
+                  ],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "upper-division-business-fundamentals",
+    "title": "Upper Division Business Fundamentals Courses (15 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Upper Division Business Fundamentals Courses (15 units) BUS2 130 - Introduction to Marketing 3 unit(s) BUS5 140 - Fundamentals of Operations Management 3 unit(s) BUS3 160 - Fundamentals of Management and Organizational Behavior 3 unit(s) BUS1 170 - Fundamentals of Finance 3 unit(s) BUS2 190 - Fundamentals of Business Analytics 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218359",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "upper-division-business-fundamentals",
+      "kind": "required_all",
+      "text": "Upper Division Business Fundamentals Courses (15 units) BUS2 130 - Introduction to Marketing 3 unit(s) BUS5 140 - Fundamentals of Operations Management 3 unit(s) BUS3 160 - Fundamentals of Management and Organizational Behavior 3 unit(s) BUS1 170 - Fundamentals of Finance 3 unit(s) BUS2 190 - Fundamentals of Business Analytics 3 unit(s)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [
+        {
+          "code": "BUS2 130",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS5 140",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS3 160",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 170",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS2 190",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "upper-division-business-integration-and-perspectives",
+    "title": "Upper Division Business Integration and Perspectives Courses (15 units)",
+    "catalog_list_coverage": "partial",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Upper Division Business Integration and Perspectives Courses (15 units) BUS3 187 - Global Dimensions of Business 3 unit(s) BUS4 188 - Business Systems and Policy 3 unit(s) BUS3 189 - Strategic Management 3 unit(s) PHIL 186 - Professional and Business Ethics 3 unit(s) (GE UD Area 4 / Formerly Area S) One non-business global perspectives course in GE UD Area 3 (Formerly Area V) 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218360",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "degree-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 19 (9 units may be satisfied by major coursework: Areas 1A, 2, 4) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Areas 3B and/or 4 Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 3, 4) Physical Education: 2 GWAR / WID: 0 (3 units satisfied by ENGL 100WB , COMM 100W , or LLD 100WB ) Major Preparation: 15 Major Requirements: 67 University Electives: 8 Total: 120",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_221511",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "non-business-global-perspectives",
+        "text": "One non-business global perspectives course in GE UD Area 3 (Formerly Area V) 3 unit(s)",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-3",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 3, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        },
+        {
+          "program": "business-administration-accounting-concentration-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-4",
+          "effect": "covered_by_major",
+          "text": "Upper Division GE: 3 (6 units may be satisfied by major coursework: UD Areas 3, 4)",
+          "condition_refs": [],
+          "source_refs": [
+            "degree-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "upper-division-business-integration-and-perspectives",
+      "kind": "all_of",
+      "text": "Upper Division Business Integration and Perspectives Courses (15 units) BUS3 187 - Global Dimensions of Business 3 unit(s) BUS4 188 - Business Systems and Policy 3 unit(s) BUS3 189 - Strategic Management 3 unit(s) PHIL 186 - Professional and Business Ethics 3 unit(s) (GE UD Area 4 / Formerly Area S) One non-business global perspectives course in GE UD Area 3 (Formerly Area V) 3 unit(s)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "children": [
+        {
+          "key": "listed-business-integration-courses",
+          "kind": "required_all",
+          "text": "Upper Division Business Integration and Perspectives Courses (15 units) BUS3 187 - Global Dimensions of Business 3 unit(s) BUS4 188 - Business Systems and Policy 3 unit(s) BUS3 189 - Strategic Management 3 unit(s) PHIL 186 - Professional and Business Ethics 3 unit(s) (GE UD Area 4 / Formerly Area S) One non-business global perspectives course in GE UD Area 3 (Formerly Area V) 3 unit(s)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [
+            {
+              "code": "BUS3 187",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "BUS4 188",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "BUS3 189",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "PHIL 186",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "non-business-global-perspectives",
+          "kind": "open_rule",
+          "text": "One non-business global perspectives course in GE UD Area 3 (Formerly Area V) 3 unit(s)",
+          "condition_refs": [
+            "non-business-global-perspectives"
+          ],
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "includes": [],
+          "exclusions": []
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "accounting-foundation-courses",
+    "title": "Accounting Foundation Courses (15 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Accounting Foundation Courses (15 units) BUS1 120A - Accounting Information Systems 3 unit(s) BUS1 121A - Intermediate Accounting I 3 unit(s) BUS1 121B - Intermediate Accounting II 3 unit(s) BUS1 122A - Management Accounting and Control Systems 3 unit(s) BUS1 123A - Taxation of Businesses and Investments 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218362",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "concentration",
+        "quote": "Concentration Requirements (24 units) Additionally, to qualify for a baccalaureate degree in business administration with an Accounting concentration, all courses in the Accounting foundation classes must be completed with a grade of “C” or better. A cumulative 2.0 GPA is required in all business classes.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218361",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "graduation-rules",
+        "quote": "All courses in the Concentration Requirements for the Accounting Foundation Courses must be completed with a grade of “C or better”. The following Preparation for the Major and Required for the Major courses must be completed with a grade of “C or better”: ENGL 2 , MATH 70 , BUS1 20 , BUS2 90 .",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "Major-Specific Graduation Requirements",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "minimum-grade",
+        "text": "Concentration Requirements (24 units) Additionally, to qualify for a baccalaureate degree in business administration with an Accounting concentration, all courses in the Accounting foundation classes must be completed with a grade of “C” or better. A cumulative 2.0 GPA is required in all business classes.",
+        "source_refs": [
+          "concentration"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "accounting-foundation-courses",
+      "kind": "required_all",
+      "text": "Accounting Foundation Courses (15 units) BUS1 120A - Accounting Information Systems 3 unit(s) BUS1 121A - Intermediate Accounting I 3 unit(s) BUS1 121B - Intermediate Accounting II 3 unit(s) BUS1 122A - Management Accounting and Control Systems 3 unit(s) BUS1 123A - Taxation of Businesses and Investments 3 unit(s)",
+      "condition_refs": [
+        "minimum-grade"
+      ],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [
+        {
+          "code": "BUS1 120A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 121A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 121B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 122A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 123A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "required-electives",
+    "title": "Required Electives (9 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Required Electives (9 units) Complete three courses from: BUS1 120B - Advanced AIS and IS Risk Assessment 3 unit(s) BUS1 120D - Accounting Topics in IT Audit 3 unit(s) BUS1 123C - Taxation of Individuals 3 unit(s) BUS1 124 - Forensic Accounting 3 unit(s) BUS1 126 - Advanced Accounting 3 unit(s) BUS1 127A - Honors Practicum in Corporate Financial Management 3 unit(s) BUS1 129A - Financial Auditing 3 unit(s) BUS1 129B - Operational Auditing 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218363",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "text": "Accounting electives",
+        "kind": "common",
+        "candidate_ids": [],
+        "source_refs": [
+          "catalog-rule"
+        ]
+      }
+    ],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "required-electives",
+      "kind": "choose_courses",
+      "text": "Required Electives (9 units) Complete three courses from: BUS1 120B - Advanced AIS and IS Risk Assessment 3 unit(s) BUS1 120D - Accounting Topics in IT Audit 3 unit(s) BUS1 123C - Taxation of Individuals 3 unit(s) BUS1 124 - Forensic Accounting 3 unit(s) BUS1 126 - Advanced Accounting 3 unit(s) BUS1 127A - Honors Practicum in Corporate Financial Management 3 unit(s) BUS1 129A - Financial Auditing 3 unit(s) BUS1 129B - Operational Auditing 3 unit(s)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [
+        {
+          "code": "BUS1 120B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 120D",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 123C",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 124",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 126",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 127A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 129A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "BUS1 129B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": [],
+      "count": 3
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "business-administration-accounting-concentration-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "university-electives",
+    "title": "University Electives (8 units)",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "4. University Electives (8 units)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=18733&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "580c9dadb9fc2901928499a1c39ba32d39f7ab72a428ffe2d1c8175fcbe57a13",
+        "locator": "#core_218364",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "university-electives",
+      "kind": "open_rule",
+      "text": "4. University Electives (8 units)",
+      "condition_refs": [],
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "includes": [],
+      "exclusions": []
+    }
+  }
+]
