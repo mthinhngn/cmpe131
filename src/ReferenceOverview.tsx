@@ -2,6 +2,7 @@ import { ProductPageHeading } from "./ProductPageHeading";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { useCatalog } from "./CatalogContext";
 import { ProductHeader } from "./ProductHeader";
+import { ProgramModeBar } from "./ProgramModeBar";
 import { overviewData } from "./overviewData";
 import { slotLabel, type PlanSlot } from "./academicProfile";
 import type { Course, RequirementItem } from "./types";
@@ -202,6 +203,7 @@ export default function Overview() {
 
   return <div className="bo-page" ref={root}>
     <ProductHeader activePath="/overview" />
+    <ProgramModeBar />
     <main className="bo-wrap">
       <ProductPageHeading title="Overview" />
       <ProgramRequirements />

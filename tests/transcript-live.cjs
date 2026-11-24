@@ -34,8 +34,8 @@ try { pw = require('playwright'); } catch { pw = require(path.join(os.homedir(),
     assert.equal(await progress.locator('input').isEnabled(), true);
     assert.equal(await progress.locator('input').isChecked(), true);
     await page.getByRole('button', { name: 'Continue to your details', exact: true }).click();
-    await page.getByRole('button', { name: 'Degree program', exact: true }).click();
-    await page.getByRole('combobox', { name: 'Search degree program', exact: true }).fill('Computer Engineering');
+    await page.getByRole('button', { name: 'Current major', exact: true }).click();
+    await page.getByRole('combobox', { name: 'Search current major', exact: true }).fill('Computer Engineering');
     await page.getByRole('option', { name: /^Computer Engineering/ }).first().click();
     await page.getByRole('radio', { name: 'Fall', exact: true }).check();
     await page.getByRole('button', { name: 'Year', exact: true }).click();

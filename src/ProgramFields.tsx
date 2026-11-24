@@ -18,8 +18,8 @@ function loadPrograms() {
 const groups: Record<string, string> = { bachelor: "Bachelor’s degrees", master: "Master’s degrees", doctoral: "Doctoral degrees", combined: "Combined degrees", minor: "Minors", certificate: "Certificates", credential: "Credentials and authorizations" };
 
 /** Guests, setup and signed-in settings share one cached program directory. */
-export function ProgramFields({ value, onChange, additional, onAdditional, disabled = false }: {
-  value: string; onChange: (slug: string) => void; additional: string[]; onAdditional: (slugs: string[]) => void; disabled?: boolean;
+export function ProgramFields({ value, onChange, additional, onAdditional, disabled = false, primaryLabel = "Current major", primaryHelp = "Your actual SJSU major or degree program. What-if previews do not change this selection." }: {
+  value: string; onChange: (slug: string) => void; additional: string[]; onAdditional: (slugs: string[]) => void; disabled?: boolean; primaryLabel?: string; primaryHelp?: string;
 }) {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [extra, setExtra] = useState("");
@@ -32,9 +32,10 @@ export function ProgramFields({ value, onChange, additional, onAdditional, disab
     return () => { active = false; };
   }, [attempt]);
   const ordered = useMemo(() => Object.keys(groups).flatMap(kind => programs.filter(p => p.kind === kind)), [programs]);
+  const primaryPrograms = useMemo(() => ordered.filter(p => ["bachelor", "master", "doctoral", "combined"].includes(p.kind)), [ordered]);
   const extras = useMemo(() => ordered.filter(p => ["minor", "certificate"].includes(p.kind) && p.slug !== value && !additional.includes(p.slug)), [ordered, value, additional]);
   return <div className="acct-program-fields">
-    <div className="acct-field"><span>Degree program</span><SelectionMenu searchable label="Degree program" options={ordered} groups={groups} value={value} onChange={slug => { onChange(slug); setExtra(""); }} placeholder="Select your program" disabled={disabled || !programs.length} /></div>
+    <div className="acct-field"><span>{primaryLabel}</span><SelectionMenu searchable label={primaryLabel} options={primaryPrograms} groups={groups} value={value} onChange={slug => { onChange(slug); setExtra(""); }} placeholder="Select your major" disabled={disabled || !programs.length} />{primaryHelp && <small className="acct-field-help">{primaryHelp}</small>}</div>
     {!programs.length && !error && <p role="status" className="acct-muted">Loading SJSU programs…</p>}
     {error && <p role="alert" className="acct-error">{error} <button type="button" className="acct-btn acct-btn-ghost" onClick={() => setAttempt(n => n + 1)}>Retry</button></p>}
     <fieldset className="acct-fieldset" disabled={disabled || !programs.length}><legend className="acct-legend">Minors and certificates (optional)</legend>

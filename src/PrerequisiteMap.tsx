@@ -1,5 +1,6 @@
 import { ProductPageHeading } from "./ProductPageHeading";
 import { ProductHeader } from "./ProductHeader";
+import { ProgramModeBar } from "./ProgramModeBar";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import CourseNetwork from "./LandingCourseNetwork";
 import { useCatalog } from "./CatalogContext";
@@ -53,6 +54,7 @@ export default function Prerequisites() {
   return (
     <div className="site-shell prereq-shell is-stepper" id="top" >
       <ProductHeader activePath="/roadmap" />
+      <ProgramModeBar />
 
       <main>
         <section className="prereq-full-page" id="map-workspace">

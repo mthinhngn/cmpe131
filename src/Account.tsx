@@ -152,7 +152,7 @@ function ProfileSetup({ user }: { user: AccountUser }) {
     {back}
     {steps(2)}
     <h1>Your details</h1>
-    <p className="acct-lede">Your major sets the degree roadmap. Your first semester numbers your plan.</p>
+    <p className="acct-lede">Choose the SJSU major you are actually enrolled in. This becomes your saved current major; What-if Major previews will not replace it. Your first semester numbers your plan.</p>
     <form onSubmit={save}>
       <label className="acct-field"><span>Name</span><input className="acct-input" name="name" autoComplete="name" value={name} onChange={e => setName(e.target.value)} maxLength={100} required disabled={busy} /></label>
       <label className="acct-field"><span>Email</span><input className="acct-input" type="email" value={user.email} readOnly /></label>
@@ -210,7 +210,7 @@ function DegreeSection({ user }: { user: AccountUser }) {
   const [year, setYear] = useState(initial.year);
   const changed = JSON.stringify(additional) !== JSON.stringify(additionalPrograms) || major !== user.major || `${term} ${year}` !== user.startingSemester;
   const save = (e: FormEvent) => { e.preventDefault(); void run(async () => { const result = await authRequest("profile", { name: user.name, major, additionalPrograms: additional, startingSemester: `${term} ${year}` }); update(result.user); await planningStore.load(); return "Degree saved."; }); };
-  return <Section title="Degree" sub="Sets your roadmap and numbers your semesters.">
+  return <Section title="Degree" sub="Your saved current major and starting semester. Previewing another major elsewhere does not change these settings.">
     <form onSubmit={save}>
       <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} />
       <fieldset className="acct-fieldset" disabled={busy}><legend className="acct-legend">First semester at SJSU</legend><div className="acct-row2">
@@ -322,7 +322,7 @@ function GuestWorkspace() {
     <h2 id="acct-guest-heading">Guest workspace</h2>
     <p className="acct-muted">Temporary in this tab · Close the tab to discard · {catalog.catalogYear} catalog · {catalog.currentTerm.name} sections</p>
     <form onSubmit={save}>
-      <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} />
+      <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} primaryHelp="Current major for this guest tab. What-if previews do not replace it." />
       <div className="acct-field"><span>First semester</span><SelectionMenu label="First semester" value={start} onChange={setStart} disabled={busy} options={[{ slug:"", title:"Not set" }, ...Array.from({ length:21 }, (_,i) => thisYear - 10 + i).flatMap(y => ["spring", "summer", "fall", "winter"].map(t => ({ slug:`${t}-${y}`, title:`${t[0].toUpperCase() + t.slice(1)} ${y}` })))]} /></div>
       <button className="acct-btn acct-btn-line" disabled={busy}>{busy ? "Updating…" : "Apply guest settings"}</button>
     </form>
