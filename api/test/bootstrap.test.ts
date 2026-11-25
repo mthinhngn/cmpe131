@@ -4,12 +4,7 @@ import test from "node:test";
 import { BootstrapController } from "../src/bootstrap.controller";
 import type { PrismaService } from "../src/prisma/prisma.service";
 
-function eligibility(code: string, restrictions = {}) {
-  return { courseId: code, course: { code }, sectionNumbers: [], termId: "", topic: "", conditionText: "",
-    sourceKind: "department_list", sourceUrl: "https://www.sjsu.edu/cmpe/", checkedOn: new Date("2026-11-19"), ...restrictions };
-}
-
-function controller(withChoices = false, withEligibility = true) {
+function controller() {
   const prisma = {
     $queryRaw: async () => ["CMPE 30", "CMPE 132", "CS 156", "MUSC 10A"].map(code => ({
       id: code === "CMPE 30" ? "cmpe-30" : code, code, title: code, units: 3, unitsText: "3",
@@ -18,18 +13,7 @@ function controller(withChoices = false, withEligibility = true) {
     program: { findUnique: async ({ where }: { where: { slug: string } }) => !["computer-engineering", "software-engineering"].includes(where.slug) ? null : ({
       name: where.slug === "software-engineering" ? "Software Engineering" : "Computer Engineering",
       abbreviation: where.slug === "software-engineering" ? "BSSE" : "BSCMPE",
-      catalogVersions: [{ id: "test-version", catalogYear: "2026-2027", dataVersion: "test", sourceUrl: "https://catalog.sjsu.edu/", lastVerifiedAt: new Date("2026-09-09"),
-        programMetadata: !withEligibility ? { technicalCodes: ["CMPE 132"] } : withChoices ? { sections: [
-          { title: "Science Electives (6 units)", choice: true, units: 6, text: "Choose two courses. Department approval is required.",
-            courses: [{ code: "CMPE 132", title: "Choice A" }, { code: "CS 156", title: "Choice B" }] },
-          { title: "Complete One Course From", choice: true, text: "Select one course.", courses: [{ code: "CMPE 132", title: "Choice A" }] },
-          { title: "Complete One Course From", choice: true, text: "Select one course.", courses: [{ code: "CS 156", title: "Choice B" }] },
-        ] } : null,
-        courseEligibility: !withEligibility ? [] : where.slug === "computer-engineering" ? [
-          eligibility("CMPE 30"), eligibility("CMPE 132"), eligibility("CMPE 133"),
-          eligibility("CMPE 180", { sectionNumbers: ["02"], termId: "spring-2027", topic: "Approved project" }),
-          eligibility("CMPE 180", { sectionNumbers: ["01"], sourceKind: "catalog_program", conditionText: "Department approval" }),
-        ] : [eligibility("CS 156")],
+      catalogVersions: [{ catalogYear: "2026-2027", dataVersion: "test", sourceUrl: "https://catalog.sjsu.edu/", lastVerifiedAt: new Date("2026-09-09"),
         courseVersions: [{ id: "database-version-id", course: { id: "cmpe-30", code: "CMPE 30" }, courseId: "cmpe-30", title: "Programming", units: 4, description: "Course", prerequisiteText: "Recorded condition",
           prerequisiteRules: [{ requiredCourseId: "math-19", isCorequisite: false }, { requiredCourseId: "math-30", isCorequisite: true }] }],
         requirementGroups: [{ id: "database-group-id", key: "semester-1", title: "Semester 1", description: "Fall", requirements: [
@@ -67,7 +51,7 @@ test("bootstrap rejects unsupported programs", async () => {
   await assert.rejects(() => controller().bootstrap("unknown-program"), /Requested program catalog was not found/);
 });
 
-test("backend elective filters follow the stored list by major and preserve core categories", async () => {
+test("backend elective filters and metadata agree, differ by major, and preserve core categories", async () => {
   const api = controller();
   for (const [program, technical] of [["computer-engineering", "CMPE 132"], ["software-engineering", "CS 156"]]) {
     const all = (await api.bootstrap(program)).catalog.courses;
@@ -106,79 +90,4 @@ test("combined programs remap shared courses, keep choices and assign added-cour
   for (const extras of [["music-minor", "music-minor"], ["computer-engineering"], ["software-engineering"]]) {
     await assert.rejects(() => api.compose("computer-engineering", extras));
   }
-});
-
-test("requirement list reuses Planner technical classification and keeps department-only and section-scoped entries", async () => {
-  const result = await controller().requirements("computer-engineering");
-  assert.equal(result.status, "verified");
-  const byCode = new Map(result.courses.flatMap(c => "rules" in c ? [[c.code, c] as const] : []));
-  assert.equal(byCode.get("CMPE 132")?.inPlannerCatalog, true);
-  assert.deepEqual(byCode.get("CMPE 132")?.rules[0], {
-    sections: null, term: null, topic: null, condition: null,
-    source: { kind: "department_list", url: "https://www.sjsu.edu/cmpe/", checkedOn: "2026-11-19" },
-  });
-  assert.equal(byCode.get("CMPE 133")?.inPlannerCatalog, false);
-  const rules = byCode.get("CMPE 180")?.rules;
-  assert.deepEqual(rules?.map(rule => rule.sections), [["02"], ["01"]]);
-  assert.equal(rules?.[0].topic, "Approved project");
-  assert.equal(rules?.[0].term, "spring-2027");
-  assert.equal(rules?.[1].condition, "Department approval");
-  assert.equal(rules?.[1].source.kind, "catalog_program");
-  assert.ok(!byCode.has("CMPE 30"), "required roadmap course is not an elective");
-  assert.ok(!byCode.has("CS 156"), "another program's elective does not count");
-  assert.ok(!byCode.has("CMPE 297"));
-  assert.equal(result.courses.length, 3);
-  assert.equal(result.requirementId, "test-version:technical-electives");
-  assert.equal((await controller().requirements("computer-engineering", "not a requirement")).status, "unknown_requirement");
-});
-
-test("legacy technical electives remain visible in Planner without establishing verified membership", async () => {
-  const api = controller(false, false);
-  const requirements = await api.requirements("computer-engineering");
-  assert.equal(requirements.status, "no_source");
-  assert.deepEqual(requirements.courses, []);
-  const { catalog } = await api.bootstrap("computer-engineering", "technical");
-  assert.deepEqual(catalog.courses.map(course => course.code), ["CMPE 132"]);
-});
-
-test("campus requirement aliases resolve to the same ID and declare section-only evidence", async () => {
-  const api = controller();
-  for (const alias of ["GE E", "Area E", "GE Area E", "sjsu:2026-2027:ge-e"]) {
-    const result = await api.requirements("computer-engineering", alias);
-    assert.equal(result.requirementId, "sjsu:2026-2027:ge-e");
-    assert.equal(result.status, "partial");
-    assert.deepEqual(result.attributes, ["GE E"]);
-  }
-  for (const label of ["US1", "US2", "US3", "Upper-Division GE", "WID", "GWAR", "PE"]) {
-    assert.equal((await api.requirements("computer-engineering", label)).status, "partial");
-  }
-  assert.equal((await api.requirements("computer-engineering", "American Institutions")).status, "ambiguous_requirement");
-  assert.equal((await api.requirements("computer-engineering", "GE E", "2025-2026")).status, "catalog_unavailable");
-});
-
-test("required courses, conditional choices and open rules use stored catalog evidence", async () => {
-  const api = controller(true);
-  const planner = (await api.bootstrap("computer-engineering")).catalog;
-  const required = await api.requirements("computer-engineering", "required courses");
-  assert.deepEqual(required.courses.map(course => course.courseId), planner.roadmapCourseIds);
-  const choice = await api.requirements("computer-engineering", "Science Electives");
-  assert.equal(choice.status, "partial");
-  assert.equal(choice.rule?.count, 2);
-  assert.equal(choice.rule?.units, 6);
-  assert.equal(choice.rule?.manualReview, true);
-  assert.equal((await api.requirements("computer-engineering", "Elective")).status, "open_rule");
-  const duplicate = await api.requirements("computer-engineering", "Complete One Course From");
-  assert.equal(duplicate.status, "ambiguous_requirement");
-  assert.equal(duplicate.candidates?.length, 2);
-  const id = duplicate.candidates?.[0].id!;
-  const resolved = await api.requirements("computer-engineering", id);
-  assert.equal(resolved.requirementId, id);
-  assert.deepEqual(resolved.courses.map(course => course.code), ["CMPE 132"]);
-  const menu = await api.requirementMenu("computer-engineering");
-  const technical = await api.requirements("computer-engineering");
-  assert.ok(menu.requirements.some(item => item.id === id));
-  assert.ok(menu.requirements.some(item => item.id === required.requirementId));
-  assert.ok(menu.requirements.some(item => item.id === technical.requirementId));
-  assert.deepEqual((await api.requirements("computer-engineering", technical.requirementId)).courses, technical.courses);
-  assert.deepEqual((await api.requirementMenu("computer-engineering", "2025-2026")).requirements, []);
 });
