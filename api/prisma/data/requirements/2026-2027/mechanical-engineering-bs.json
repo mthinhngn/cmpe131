@@ -1,0 +1,1185 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "mechanical-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-preparation",
+    "title": "2. Major Preparation (33 units)",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "2. Major Preparation (33 units) CHEM 1A - General Chemistry 5 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) ENGL 1B - Argument and Analysis 3 unit(s) (GE Area 3B / Formerly Area C2) (or equivalent second semester composition course.) MATH 30 - Calculus I 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 31 - Calculus II 4 unit(s) (GE Area 2 / Formerly Area B4) MATH 32 - Calculus III 3 unit(s) (GE Area 2 / Formerly Area B4) MATH 33A - Ordinary Differential Equations for SCI & ENGR 3 unit(s) PHYS 50 - General Physics I: Mechanics 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) PHYS 51 - General Physics II: Electricity and Magnetism 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3) PHYS 52 - General Physics III: Waves, Light, Heat 4 unit(s) (GE Area 5A and 5C / Formerly Area B1 and B3)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19028&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "e47eaca6b75be4d1fc7f0b8571cdb82d82c505f6db14b70bd7c9ad77f71e17e3",
+        "locator": "2. Major Preparation (33 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "catalog-ge-summary",
+        "quote": "Summary of Degree Units Core Lower Division GE: 12 (13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B; 3 units of 1B waived) 6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4 Upper Division GE: 0 (9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4) Physical Education: 0 (waived) GWAR / WID: 0 (3 units satisfied by ENGR 100W ) Major Preparation: 33 Major Requirements: 74 Total: 125",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19028&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "e47eaca6b75be4d1fc7f0b8571cdb82d82c505f6db14b70bd7c9ad77f71e17e3",
+        "locator": "Summary of Degree Units",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "ld-ge-major-coursework",
+        "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+        "source_refs": [
+          "catalog-ge-summary"
+        ]
+      },
+      {
+        "key": "ud-ge-major-coursework",
+        "text": "9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4",
+        "source_refs": [
+          "catalog-ge-summary"
+        ]
+      },
+      {
+        "key": "applicable-area-4-courses",
+        "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+        "source_refs": [
+          "catalog-ge-summary"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": [
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5a",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5b",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-5c",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-2",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-3b",
+          "effect": "covered_by_major",
+          "text": "13 units may be satisfied by major coursework: Areas 5A, 5B (Intensive Science), 5C, 2, 3B",
+          "condition_refs": [
+            "ld-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-2-or-5",
+          "effect": "covered_by_major",
+          "text": "9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4",
+          "condition_refs": [
+            "ud-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-3",
+          "effect": "covered_by_major",
+          "text": "9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4",
+          "condition_refs": [
+            "ud-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ud-area-4",
+          "effect": "covered_by_major",
+          "text": "9 units may be satisfied by major coursework: UD Areas 2or5, 3, 4",
+          "condition_refs": [
+            "ud-ge-major-coursework"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:ge-area-1b",
+          "effect": "waived",
+          "text": "3 units of 1B waived",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:physical-education",
+          "effect": "waived",
+          "text": "Physical Education: 0 (waived)",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": null,
+          "effect": "modified",
+          "text": "6 required units of American Institutions/US123 may be satisfied by selecting applicable GE courses in Area 4",
+          "condition_refs": [
+            "applicable-area-4-courses"
+          ],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:gwar",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 0 (3 units satisfied by ENGR 100W )",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        },
+        {
+          "program": "mechanical-engineering-bs",
+          "target_requirement_id": "campus:sjsu:2026-2027:writing-in-the-disciplines",
+          "effect": "covered_by_major",
+          "text": "GWAR / WID: 0 (3 units satisfied by ENGR 100W )",
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-ge-summary"
+          ]
+        }
+      ]
+    },
+    "rule": {
+      "key": "root",
+      "kind": "all_of",
+      "text": "2. Major Preparation (33 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [],
+      "children": [
+        {
+          "key": "named-major-preparation",
+          "kind": "required_all",
+          "text": "2. Major Preparation (33 units)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "includes": [
+            {
+              "code": "CHEM 1A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 30",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 31",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 32",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "MATH 33A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "PHYS 50",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "PHYS 51",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "PHYS 52",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "english-composition",
+          "kind": "any_of",
+          "text": "(or equivalent second semester composition course.)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "children": [
+            {
+              "key": "engl-1b",
+              "kind": "required_all",
+              "text": "ENGL 1B",
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "condition_refs": [],
+              "includes": [
+                {
+                  "code": "ENGL 1B",
+                  "term_id": null,
+                  "section_numbers": null,
+                  "topic": null,
+                  "condition_refs": [],
+                  "source_refs": [
+                    "catalog-rule"
+                  ]
+                }
+              ],
+              "exclusions": []
+            },
+            {
+              "key": "equivalent-composition",
+              "kind": "open_rule",
+              "text": "(or equivalent second semester composition course.)",
+              "source_refs": [
+                "catalog-rule"
+              ],
+              "condition_refs": [],
+              "includes": [],
+              "exclusions": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "mechanical-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-core",
+    "title": "Core Courses (18 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Core Courses (18 units) CE 95 - Theory and Application of Statics 3 unit(s) EE 98 - Introduction to Circuit Analysis 3 unit(s) ENGR 10 - Introduction to Engineering 3 unit(s) MATE 25 - Introduction to Materials 3 unit(s) ME 20 - Design and Graphics 2 unit(s) ME 30 - Computer Applications 3 unit(s) ME 41 - Machine Shop Operations and Safety 1 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19028&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "e47eaca6b75be4d1fc7f0b8571cdb82d82c505f6db14b70bd7c9ad77f71e17e3",
+        "locator": "Core Courses (18 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "required_all",
+      "text": "Core Courses (18 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [],
+      "includes": [
+        {
+          "code": "CE 95",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "EE 98",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ENGR 10",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "MATE 25",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 20",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 30",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 41",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": []
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "mechanical-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "major-courses",
+    "title": "Major Courses (47 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Major Courses (47 units) CE 112 - Mechanics of Materials 3 unit(s) ENGR 100W - Engineering Reports 3 unit(s) [WID + (GE UD Area 2/5 / Formerly Area R)] ENGR 195A - Global and Social Issues in Engineering 1 unit(s) (GE UD Area 4 / Formerly Area S) ENGR 195B - Global and Social Issues in Engineering 1 unit(s) (GE UD Area 3 / Formerly Area V) ME 101 - Dynamics OR ME 101H - Honors Dynamics 3 unit(s) ME 106 - Fundamentals of Mechatronics Engineering 4 unit(s) ME 111 - Fluid Mechanics 3 unit(s) ME 113 - Thermodynamics 4 unit(s) ME 114 - Heat Transfer 3 unit(s) ME 115 - Thermal Engineering Laboratory 1 unit(s) ME 120 - Experimental Methods 2 unit(s) ME 130 - Applied Engineering Analysis 3 unit(s) ME 131 - Artificial Intelligence in Mechanical Engineering 3 unit(s) ME 147 - Dynamic Systems Vibration and Control 3 unit(s) ME 154 - Mechanical Engineering Design 4 unit(s) ME 195A - Senior Design Project I 3 unit(s) (GE UD Area 4 / Formerly Area S) ME 195B - Senior Design Project II 3 unit(s) (GE UD Area 3 / Formerly Area V)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19028&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "e47eaca6b75be4d1fc7f0b8571cdb82d82c505f6db14b70bd7c9ad77f71e17e3",
+        "locator": "Major Courses (47 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "all_of",
+      "text": "Major Courses (47 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [],
+      "children": [
+        {
+          "key": "named-required-courses",
+          "kind": "required_all",
+          "text": "Major Courses (47 units)",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "includes": [
+            {
+              "code": "CE 112",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ENGR 100W",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ENGR 195A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ENGR 195B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 106",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 111",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 113",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 114",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 115",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 120",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 130",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 131",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 147",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 154",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 195A",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 195B",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": []
+        },
+        {
+          "key": "dynamics",
+          "kind": "choose_courses",
+          "text": "ME 101 OR ME 101H",
+          "source_refs": [
+            "catalog-rule"
+          ],
+          "condition_refs": [],
+          "includes": [
+            {
+              "code": "ME 101",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            },
+            {
+              "code": "ME 101H",
+              "term_id": null,
+              "section_numbers": null,
+              "topic": null,
+              "condition_refs": [],
+              "source_refs": [
+                "catalog-rule"
+              ]
+            }
+          ],
+          "exclusions": [],
+          "count": 1
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "mechanical-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "required-capstone-courses",
+    "title": "Required Capstone Courses (3 units)",
+    "catalog_list_coverage": "complete",
+    "coverage_source_refs": [
+      "catalog-rule"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Required Capstone Courses (3 units) Complete one course from: ME 157 - Mechanical Systems Design 3 unit(s) ME 182 - Thermal Systems Design 3 unit(s) ME 190 - Mechatronics System Design 3 unit(s)",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19028&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "e47eaca6b75be4d1fc7f0b8571cdb82d82c505f6db14b70bd7c9ad77f71e17e3",
+        "locator": "Required Capstone Courses (3 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "choose_courses",
+      "text": "Required Capstone Courses (3 units)",
+      "source_refs": [
+        "catalog-rule"
+      ],
+      "condition_refs": [],
+      "includes": [
+        {
+          "code": "ME 157",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 182",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        },
+        {
+          "code": "ME 190",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "catalog-rule"
+          ]
+        }
+      ],
+      "exclusions": [],
+      "count": 1
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "record_revision": 1,
+    "scope": "program",
+    "program": "mechanical-engineering-bs",
+    "catalog_year": "2026-2027",
+    "requirement_key": "technical-electives",
+    "title": "Technical Electives (6 units)",
+    "catalog_list_coverage": "open",
+    "coverage_source_refs": [
+      "catalog-rule",
+      "department-me-rules",
+      "department-non-me"
+    ],
+    "verification": {
+      "status": "extracted",
+      "checked_at": null,
+      "checked_by": null
+    },
+    "sources": [
+      {
+        "key": "catalog-rule",
+        "quote": "Technical Electives (6 units) Technical electives can be chosen from designated courses for breadth or focus in one of the three areas of mechanical design, mechatronics, or thermal/fluids, with advisor approval.",
+        "url": "https://catalog.sjsu.edu/preview_program.php?catoid=23&poid=19028&returnto=8470",
+        "document_date": null,
+        "retrieved_at": "2026-11-08T14:23:30.686Z",
+        "sha256": "e47eaca6b75be4d1fc7f0b8571cdb82d82c505f6db14b70bd7c9ad77f71e17e3",
+        "locator": "Technical Electives (6 units)",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "department-me-rules",
+        "quote": "Most upper level non-required ME courses are eligible. Undergrad students can also take ME graduate courses as electives. Co-op or research experience via ME180 can be counted towards electives up to 3 units.",
+        "url": "https://www.sjsu.edu/me/undergraduate/current-students-bsme/advising/technical-electives.php",
+        "document_date": "2026-08-13",
+        "retrieved_at": "2026-11-20T20:14:55.190618+00:00",
+        "sha256": "014a1f1361f8b1874ee2d8ad92467eda1db6860f09613b0bd412ec10ecfbc2e8",
+        "locator": "Technical Electives and Capstone, introductory paragraph",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      },
+      {
+        "key": "department-non-me",
+        "quote": "Pre-Approved Technical Electives for BSME Students Below are courses from other departments that have been pre-approved as technical electives for BSME students. However, any other non-ME courses not listed here must be approved by an undergraduate program coordinator (Dr. Vimal Viswanathan for AY26-27) in order to count toward ME technical electives. Note, lower-division courses cannot count toward technical electives and at least one of the technical electives you take must be an ME course. Those who are interested in SAGE should not take the course from this list. AE 114 - Aerospace Structures AE 167 - Aerospace Propulsion BME 165 - Applied Engineering Biomechanics CE 150 - Introduction to Hydrology and Hydraulics CE 170 - Principles of Environmental Engineering CHE 162 - Engineering Statistics and Analysis CMPE 102 - Fundamentals of Embedded Software CMPE 120 - Computer Organization and Architecture CMPE 124 - Digital Design I CMPE 125 - Digital Design II CMPE 126 - Algorithms and Data Structure Design EE/MATE 129 - Introduction to Integrated Circuits Processing and Design ENGR 197 - Co-operative Education Project ISE 102 - Engineering Economic Systems ISE 130 - Engineering Probability and Statistics ISE 151 - Managing Engineering MATE 131 - Fundamentals of Additive Manufacturing MATE 153 - Electric, Optical, and Magnetic Properties MATE 175 - Biomaterials MATH 133B - Partial Differential Equations MATH 161A - Probability and Statistics MATH 178 - Mathematical Modeling",
+        "url": "https://www.sjsu.edu/me/undergraduate/current-students-bsme/advising/technical-electives.php",
+        "document_date": "2026-08-13",
+        "retrieved_at": "2026-11-20T20:14:55.190618+00:00",
+        "sha256": "014a1f1361f8b1874ee2d8ad92467eda1db6860f09613b0bd412ec10ecfbc2e8",
+        "locator": "Technical Electives and Capstone > Pre-Approved Technical Electives for BSME Students",
+        "verification": {
+          "status": "extracted",
+          "checked_at": null,
+          "checked_by": null
+        }
+      }
+    ],
+    "aliases": [],
+    "conditions": [
+      {
+        "key": "advisor-approval",
+        "text": "Technical electives can be chosen from designated courses for breadth or focus in one of the three areas of mechanical design, mechatronics, or thermal/fluids, with advisor approval.",
+        "source_refs": [
+          "catalog-rule"
+        ]
+      },
+      {
+        "key": "me-eligibility-rule",
+        "text": "Most upper level non-required ME courses are eligible. Undergrad students can also take ME graduate courses as electives. Co-op or research experience via ME180 can be counted towards electives up to 3 units.",
+        "source_refs": [
+          "department-me-rules"
+        ]
+      },
+      {
+        "key": "other-non-me-coordinator-approval",
+        "text": "However, any other non-ME courses not listed here must be approved by an undergraduate program coordinator (Dr. Vimal Viswanathan for AY26-27) in order to count toward ME technical electives.",
+        "source_refs": [
+          "department-non-me"
+        ]
+      },
+      {
+        "key": "upper-division-and-me-course",
+        "text": "Note, lower-division courses cannot count toward technical electives and at least one of the technical electives you take must be an ME course.",
+        "source_refs": [
+          "department-non-me"
+        ]
+      },
+      {
+        "key": "sage-advisory",
+        "text": "Those who are interested in SAGE should not take the course from this list.",
+        "source_refs": [
+          "department-non-me"
+        ]
+      },
+      {
+        "key": "cross-listed-designation",
+        "text": "EE/MATE 129 - Introduction to Integrated Circuits Processing and Design",
+        "source_refs": [
+          "department-non-me"
+        ]
+      }
+    ],
+    "applicability": {
+      "pattern": "unspecified",
+      "condition_refs": [],
+      "program_effects": []
+    },
+    "rule": {
+      "key": "root",
+      "kind": "choose_units",
+      "text": "Technical electives can be chosen from designated courses for breadth or focus in one of the three areas of mechanical design, mechatronics, or thermal/fluids, with advisor approval.",
+      "source_refs": [
+        "catalog-rule",
+        "department-me-rules",
+        "department-non-me"
+      ],
+      "condition_refs": [
+        "advisor-approval",
+        "me-eligibility-rule",
+        "other-non-me-coordinator-approval",
+        "upper-division-and-me-course",
+        "sage-advisory",
+        "cross-listed-designation"
+      ],
+      "includes": [
+        {
+          "code": "AE 114",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "AE 167",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "BME 165",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CE 150",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CE 170",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CHE 162",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CMPE 102",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CMPE 120",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CMPE 124",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CMPE 125",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "CMPE 126",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "ENGR 197",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "ISE 102",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "ISE 130",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "ISE 151",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "MATE 131",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "MATE 153",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "MATE 175",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "MATH 133B",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "MATH 161A",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        },
+        {
+          "code": "MATH 178",
+          "term_id": null,
+          "section_numbers": null,
+          "topic": null,
+          "condition_refs": [],
+          "source_refs": [
+            "department-non-me"
+          ]
+        }
+      ],
+      "exclusions": [],
+      "units": 6
+    }
+  }
+]

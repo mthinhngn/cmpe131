@@ -20,4 +20,6 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/generated ./generated
 COPY --from=build /app/dist ./dist
+# Requirement records are read at runtime from prisma/data (api/src/requirement-records.ts).
+COPY --from=build /app/prisma/data ./prisma/data
 CMD ["node", "dist/main.js"]
