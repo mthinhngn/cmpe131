@@ -56,7 +56,7 @@ export function ChatWidget() {
   const snapshot = useRef<AgentContext>(null!);
   const latest = useRef({ catalog, items, threadId, schedule });
   latest.current = { catalog, items, threadId, schedule };
-  const context = { program_id: catalog.program, additional_program_ids: catalog.additionalPrograms, page: location.pathname, selected_course_id: catalog.selectedCourseId, completed_course_ids: [...catalog.takenCourseIds], plan: Object.entries(catalog.plans).map(([course_id, value]) => ({ course_id, semester_slot: value.semester, status: value.status })), term_to_slot: catalog.termToSlot, semester_count: catalog.semesterCount, semester_slots: catalog.semesterSlots, starting_term: catalog.startingTerm, named_terms: catalog.namedTerms, capabilities: ["apply_plan_changes", "set_course_sections"] as AgentContext["capabilities"], selected_sections: schedule.selectionsByTerm };
+  const context = { program_id: catalog.program, additional_program_ids: catalog.additionalPrograms, page: location.pathname, selected_course_id: catalog.selectedCourseId, completed_course_ids: [...catalog.takenCourseIds], plan: Object.entries(catalog.plans).map(([course_id, value]) => ({ course_id, semester_slot: value.semester, status: value.status })), term_to_slot: catalog.termToSlot, semester_count: catalog.semesterCount, semester_slots: catalog.semesterSlots, starting_term: catalog.startingTerm, named_terms: catalog.namedTerms, capabilities: (catalog.isWhatIf ? [] : ["apply_plan_changes", "set_course_sections"]) as AgentContext["capabilities"], selected_sections: schedule.selectionsByTerm };
   snapshot.current = { ...context, revision: contextRevision({ ...context, workspace_revision: catalog.planningStore.getState().revision }) };
 
   useEffect(() => {
@@ -205,7 +205,9 @@ export function ChatWidget() {
       return receipt;
     };
     let result: Receipt;
-    if (snapshot.current.revision !== action.expected_revision || active.program !== action.program_id || identity?.namespace !== session.current?.namespace) {
+    if (active.isWhatIf) {
+      result = failure("What-if Major is read-only. Exit What-if before applying plan changes.");
+    } else if (snapshot.current.revision !== action.expected_revision || active.program !== action.program_id || identity?.namespace !== session.current?.namespace) {
       result = failure("The page or plan changed while the agent was working. No action was applied; send the request again.");
     } else {
       try {

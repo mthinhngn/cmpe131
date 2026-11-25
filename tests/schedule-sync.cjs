@@ -34,7 +34,7 @@ const askMode = async page => { const ask = page.getByRole('button', { name: 'As
  async function choose() {await page.getByLabel('Choose course sections').waitFor();await page.locator('.cr-chat-section-choice fieldset').first().waitFor();for(const group of await page.locator('.cr-chat-section-choice fieldset').all()) await group.locator('input').first().check();await page.getByRole('button',{name:'Confirm sections',exact:true}).click();await page.getByLabel('Choose course sections').waitFor({state:'detached'});}
  async function minimize(){if(await page.getByLabel('Minimize chat').isVisible()) await page.getByLabel('Minimize chat').click();}
  try {
-  await page.goto('http://127.0.0.1:5173/planner');
+  await page.goto('http://127.0.0.1:5175/planner');
   await add('CMPE 131',6); await page.getByRole('button',{name:'In Semester 6',exact:true}).click();
   assert.equal(await page.getByLabel('Remove CMPE 131 from plan',{exact:true}).count(),1); assert.equal(await page.getByLabel('Choose course sections').count(),0);
   await page.getByLabel('Remove CMPE 131 from plan',{exact:true}).click();
@@ -94,7 +94,7 @@ const askMode = async page => { const ask = page.getByRole('button', { name: 'As
   await page.reload();delayed=true;await add('CMPE 131',3);await page.getByRole('button',{name:'Cancel change'}).click();await page.waitForTimeout(1000);await minimize();
   assert.equal(await page.getByLabel('Add CMPE 131 to Semester 3',{exact:true}).count(),1);
   // A stale choice cannot apply to another degree program.
-  delayed=false;await add('CMPE 131',3);await page.locator('.cr-chat-section-choice fieldset').first().waitFor();await page.goto('http://localhost:5175/account');await page.getByRole('button',{name:'Degree program',exact:true}).click();await page.getByRole('combobox',{name:'Search degree program',exact:true}).fill('Software Engineering');await page.getByRole('option',{name:/Software Engineering/}).click();await page.getByRole('button',{name:'Save guest settings',exact:true}).click();await page.getByText('Guest workspace saved.',{exact:true}).waitFor();await page.goto('http://localhost:5175/planner');
+  delayed=false;await add('CMPE 131',3);await page.locator('.cr-chat-section-choice fieldset').first().waitFor();await page.goto('http://localhost:5175/account');await page.getByRole('button',{name:'Current major',exact:true}).click();await page.getByRole('combobox',{name:'Search current major',exact:true}).fill('Software Engineering');await page.getByRole('option',{name:/Software Engineering/}).click();await page.getByRole('button',{name:'Apply guest settings',exact:true}).click();await page.getByText('Guest settings updated for this tab.',{exact:true}).waitFor();await page.goto('http://localhost:5175/planner');
   await page.getByLabel('Choose course sections').waitFor({state:'detached'});await minimize();assert.equal(await page.getByLabel('Remove CMPE 131 from plan',{exact:true}).count(),0);
   await page.setViewportSize({width:390,height:844});await askMode(page); await page.getByLabel('Message Course Radar').focus();await page.screenshot({path:'tmp/schedule-sync-mobile.png'});
   assert.deepEqual(errors,[]);console.log('PASS: long-range planner-only, cancel, manual add, term switching, move, reverse remove, agent acknowledgement, unavailable/retry.');

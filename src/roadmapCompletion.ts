@@ -15,9 +15,10 @@ export const clearRoadmapCompletionError = () => setLastError("");
 export const reportRoadmapError = (message: string) => setLastError(message);
 
 export function useToggleRoadmapCompletion() {
-  const { planningStore } = useCatalog();
+  const { planningStore, isWhatIf } = useCatalog();
   return (id: string) => {
     setLastError("");
+    if (isWhatIf) { setLastError("What-if Major is read-only. Exit What-if to change course completion."); return; }
     void planningStore.toggleTakenCourse(id).then(result => { if (result.status === "error") setLastError(result.message || "Could not save. Try again."); });
   };
 }

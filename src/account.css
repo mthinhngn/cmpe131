@@ -30,6 +30,7 @@ body.account-document{margin:0}
 /* Fields */
 .acct-field{display:grid;gap:7px;margin:0 0 18px}
 .acct-field>span,.acct-legend{font-size:13px;font-weight:500;line-height:1.4}
+.acct-field-help{display:block;margin-top:-2px;color:var(--acct-soft);font-size:12px;line-height:1.45}
 .acct-fieldset{min-width:0;margin:0 0 18px;padding:0;border:0}
 .acct-legend{padding:0;margin-bottom:7px}
 .acct-input{box-sizing:border-box;width:100%;min-height:42px;padding:9px 12px;border:1px solid var(--acct-line);border-radius:8px;background:#fff;font-size:14.5px;transition:border-color .15s}

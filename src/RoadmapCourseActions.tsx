@@ -11,7 +11,7 @@ import "./roadmap-course-actions.css";
 export function RoadmapCourseActions({ courseId, requirementId, onClose, onChoose }: {
   courseId: string; requirementId?: string; onClose: () => void; onChoose: () => void;
 }) {
-  const { courseById, storageStatus } = useCatalog();
+  const { courseById, storageStatus, isWhatIf } = useCatalog();
   const takenIds = useRoadmapTakenIds();
   const toggle = useToggleRoadmapCompletion();
   const course = courseById.get(courseId);
@@ -24,14 +24,14 @@ export function RoadmapCourseActions({ courseId, requirementId, onClose, onChoos
   }}>
     <header><div><strong>{course.code}</strong><h3>{course.title}</h3></div><button type="button" aria-label="Close course actions" onClick={onClose}><X size={16}/></button></header>
     <p>{course.units} units{completed ? " · Completed" : " · Not completed"}</p>
-    <button ref={first} className="rm-primary rm-completion" type="button" aria-pressed={completed} disabled={["loading", "error"].includes(storageStatus)} onClick={() => { toggle(courseId); onClose(); }}><Check size={16}/>{completed ? "Mark incomplete" : "Mark completed"}</button>
-    {requirementId && <button className="rm-secondary" type="button" onClick={onChoose}>Change elective</button>}
+    <button ref={first} className="rm-primary rm-completion" type="button" aria-pressed={completed} disabled={isWhatIf || ["loading", "error"].includes(storageStatus)} onClick={() => { toggle(courseId); onClose(); }}><Check size={16}/>{completed ? "Mark incomplete" : "Mark completed"}</button>
+    {requirementId && <button className="rm-secondary" type="button" disabled={isWhatIf} onClick={onChoose}>Change elective</button>}
+    {isWhatIf && <small>What-if Major is read-only. Exit the preview to edit your saved plan.</small>}
   </section>;
 }
 
 export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: { requirementId: string; onClose: () => void; onChosen: (courseId: string) => void }) {
-  const { allCourses, planningStore, requirementChoices, takenCourseIds, storageStatus } = useCatalog();
-  const catalog = planningStore.getState().catalog;
+  const { allCourses, catalog, planningStore, requirementChoices, takenCourseIds, storageStatus, isWhatIf } = useCatalog();
   const requirement = catalog.requirementGroups.flatMap(group => group.items).find(item => item.id === requirementId);
   const dialog = useRef<HTMLDialogElement>(null);
   const [query, setQuery] = useState("");
@@ -56,7 +56,7 @@ export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: {
   if (!requirement) return null;
   const category = requirementCategory(requirement);
   const slotDone = takenIds.has(requirementId);
-  const unavailable = ["loading", "error"].includes(storageStatus);
+  const unavailable = isWhatIf || ["loading", "error"].includes(storageStatus);
   return createPortal(<dialog ref={dialog} className="rm-picker" aria-labelledby="rm-picker-title" onCancel={event => { event.preventDefault(); if (!busy) onClose(); }}>
     <header><div><h2 id="rm-picker-title">Choose {requirement.label ?? "an elective"}</h2></div><button type="button" aria-label="Close course picker" disabled={!!busy} onClick={onClose}><X size={20}/></button></header>
     <div className="rm-picker-summary"><p>{requirement.description}{slotDone ? " · Completed" : ""}</p>
@@ -65,7 +65,7 @@ export function RoadmapRequirementPicker({ requirementId, onClose, onChosen }: {
       <div className="rm-picker-field"><span>Subject</span><SelectionMenu label="Subject" value={subject} onChange={value => { setSubject(value); setLimit(40); }} options={[{ slug: "", title: "All subjects" }, ...subjects.map(value => ({ slug: value, title: value }))]}/></div>
     </div>
     <div className="rm-picker-caption"><span>{category === "ge" || category === "review" ? requirement.label : category === "technical" ? "Technical electives" : "University electives"}</span><span>{filtered.length} {filtered.length === 1 ? "course" : "courses"}</span></div>
-    <p className="rm-picker-note">{category === "ge" ? "Matches recorded GE satisfaction statements. " : "Verify your program’s credit and elective restrictions. "}Choosing a course saves it to your plan. This is a personal selection, not a degree audit.</p>
+    <p className="rm-picker-note">{isWhatIf ? "What-if Major is read-only. Exit the preview to choose electives or change completion. " : category === "ge" ? "Matches recorded GE satisfaction statements. Choosing a course saves it to your plan. " : "Verify your program’s credit and elective restrictions. Choosing a course saves it to your plan. "}This is a personal planning aid, not a degree audit.</p>
     {error && <p role="alert">{error}</p>}
     {storageStatus === "error" && <button className="rm-secondary" type="button" disabled={!!busy} onClick={async () => {
       setBusy(attempted.current); setError("");
