@@ -184,6 +184,28 @@ class TranscriptTests(unittest.TestCase):
         fetch.assert_called_once_with('http://127.0.0.1:3004/api/v1/workspace',
             headers={'Cookie': 'cr_session=secret', 'X-Workspace-User': 'one'}, timeout=15, follow_redirects=False)
 
+    def test_confirmation_returns_503_when_workspace_response_is_malformed(self):
+        service = Mock()
+        app = FastAPI()
+        app.include_router(transcript_router(service))
+        client = TestClient(app, headers={'Origin': 'http://localhost:5175'})
+        body = {'document_id': 'a' * 36, 'row_ids': ['0'], 'completed_course_ids': []}
+        with patch.dict('os.environ', {'KIMI_AUTH_URL': 'http://localhost/auth/me', 'WEB_ORIGIN': 'http://localhost:5175'}), \
+             patch('agent_service.transcript_routes.resolve_owner', return_value='account:one'), \
+             patch('agent_service.transcript_routes.httpx.get') as fetch:
+            fetch.return_value.status_code = 200
+            for payload in (None, [], {}, {'state': None}, {'state': []}, {'state': {'completed': 'bad'}}):
+                with self.subTest(payload=payload):
+                    fetch.return_value.json.return_value = payload
+                    response = client.post('/agent/transcript/confirm', json=body)
+                    self.assertEqual(response.status_code, 503)
+                    self.assertIn('Retry confirmation', response.json()['detail'])
+            service.confirm.assert_not_called()
+            fetch.return_value.json.return_value = {'state': {'completed': []}}
+            service.confirm.return_value = {'status': 'ready'}
+            self.assertEqual(client.post('/agent/transcript/confirm', json=body).status_code, 200)
+            service.confirm.assert_called_once_with('account:one', body['document_id'], ['0'], {'completed': []})
+
 
 if __name__ == '__main__':
     unittest.main()

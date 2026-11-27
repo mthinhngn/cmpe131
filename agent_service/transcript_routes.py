@@ -28,7 +28,12 @@ def saved_workspace(request, owner):
     try:
         response = httpx.get(endpoint, headers={'Cookie': 'cr_session=' + token, 'X-Workspace-User': owner[8:]},
                              timeout=15, follow_redirects=False)
-        state = response.json().get('state', {}) if response.status_code == 200 else {}
+        if response.status_code != 200:
+            raise ValueError()
+        payload = response.json()
+        state = payload.get('state') if isinstance(payload, dict) else None
+        if not isinstance(state, dict):
+            raise ValueError()
         completed = state.get('completed')
         if not isinstance(completed, list) or any(not isinstance(value, str) for value in completed):
             raise ValueError()
