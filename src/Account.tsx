@@ -305,7 +305,12 @@ function TranscriptManager({ user, setup = false, onSelection }: { user: Account
       <label className="acct-hint"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> I agree to send this PDF to OpenAI for transcript extraction and search indexing.</label>
       <div className="acct-actions"><button type="button" className="acct-btn acct-btn-line" disabled={!file || !consent || transcript.status !== "none"} onClick={upload}>{busy ? "Processing…" : "Process transcript"}</button></div>
       {transcript.status !== "none" && <>
-        <p className="acct-muted">{transcript.courses.length} rows found. Review them before importing.</p>
+        <p className="acct-muted">
+          CourseRadar extracted {transcript.courses.length} course rows from the
+          unofficial PDF you uploaded. SJSU has not verified these records.
+          Review the courses, terms, and statuses before importing.
+          Existing placements are preserved. Unmatched rows stay available for review.
+        </p>
         <div className="acct-transcript-rows">{transcript.courses.map(row => <label key={row.row_id} className="acct-transcript-row">
           <input type="checkbox" checked={importable.includes(row.row_id)} disabled={!!issue(row)} onChange={event => choose(event.target.checked ? [...selected, row.row_id] : selected.filter(id => id !== row.row_id))} />
           <span><b>{row.code || "Unmatched course"}</b> {row.title}<small>{row.term || "Unknown term"} / {row.grade || "No grade"} / {row.units ?? "Unknown"} units / {row.status === "in_progress" ? "in progress" : row.status}{issue(row) ? ` / ${issue(row)}` : ""}</small></span>
