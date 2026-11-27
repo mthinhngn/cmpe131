@@ -12,41 +12,41 @@ from .kimi_budget import active_budget
 from .web_tools import https_bytes
 
 log = logging.getLogger("course-radar-agent")
-# The deployed container is built from agent_service/ alone, so the bundled copy comes first.
-DIRECTORY_PATHS = (Path(__file__).resolve().parent / 'data/sjsu-professor-directory.json',
-                   Path(__file__).resolve().parents[1] / 'data/ratemyprofessors/sjsu-directory.json')
+# Schedule imports this same file. Keep it in the agent container's build context.
+PROFILE_PATH = Path(__file__).resolve().parent / 'data/professor-profiles.json'
 SCHOOL = 'U2Nob29sLTg4MQ=='
-# Tie-break only: used when several exact-name SJSU profiles exist, never to identify a person.
-DEPARTMENTS = {'CMPE': 'Computer Engineering', 'CS': 'Computer Science', 'EE': 'Electrical Engineering',
-               'ME': 'Mechanical Engineering', 'CE': 'Civil Engineering', 'ISE': 'Industrial Engineering',
-               'MATE': 'Materials Engineering', 'MATH': 'Mathematics', 'PHYS': 'Physics', 'CHEM': 'Chemistry',
-               'BIOL': 'Biology', 'ENGR': 'Engineering', 'TECH': 'Technology', 'AE': 'Aviation'}
 UNASSIGNED = {'staff', 'tba', 'tbd', 'to be announced', 'instructor tba'}
-QUERY = 'query($id:ID!){node(id:$id){... on Teacher{legacyId firstName lastName avgRating avgDifficulty numRatings school{legacyId name}}}}'
+QUERY = 'query($id:ID!){node(id:$id){... on Teacher{legacyId firstName lastName avgRating avgDifficulty wouldTakeAgainPercent numRatings school{legacyId name}}}}'
 
 
 def words(name):
     return re.findall(r'[a-z]+', unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode().lower())
 
 
-def load_directory():
-    """Ratings are optional; a missing directory must never stop the advisor from starting."""
-    for path in DIRECTORY_PATHS:
-        if path.is_file():
-            try:
-                return json.loads(path.read_text(encoding='utf8'))['directory']
-            except (ValueError, KeyError, OSError):
-                log.warning('Professor directory at %s is unreadable; ratings unavailable.', path)
-                return []
-    log.warning('Professor directory not found; ratings unavailable.')
-    return []
+def load_profiles():
+    """Ratings are optional when the shared identity snapshot is unavailable."""
+    try:
+        snapshot = json.loads(PROFILE_PATH.read_text(encoding='utf8'))
+        if (isinstance(snapshot, dict) and snapshot.get('schoolId') == SCHOOL
+                and isinstance(snapshot.get('profiles'), dict) and isinstance(snapshot.get('unresolved'), dict)):
+            return snapshot
+    except (ValueError, OSError):
+        pass
+    log.warning('Professor identity snapshot at %s is unavailable.', PROFILE_PATH)
+    return {'profiles': {}, 'unresolved': {}}
 
 
 class ProfessorRatings:
-    def __init__(self, fetch=None, directory=None):
+    def __init__(self, fetch=None, snapshot=None):
         self.fetch = fetch or self._fetch
-        self.directory = directory if directory is not None else load_directory()
-        self.cache, self.lock = {}, RLock()
+        self.snapshot = snapshot if snapshot is not None else load_profiles()
+        self.profiles_by_id = {p['id']: p for p in self.snapshot['profiles'].values()}
+        self.cache = {}
+        self.locks = {profile_id: RLock() for profile_id in self.profiles_by_id}
+
+    def resolve_profile(self, name):
+        profile = self.snapshot['profiles'].get(name)
+        return profile if profile is not None else {'reason': self.snapshot['unresolved'].get(name, 'unmatched')}
 
     def _fetch(self, profile_id):
         # A small fixed lookup, kept off the shared review-search fetch budget.
@@ -64,9 +64,50 @@ class ProfessorRatings:
             raise ValueError('Invalid rating response')
         return result['data']['node']
 
-    def lookup(self, names, *, enabled=True, course_code=None):
+    def _metrics(self, profile):
+        profile_id = profile['id']
+        # Calls for one profile share a refresh. Other instructors can load independently.
+        with self.locks[profile_id]:
+            cached = self.cache.get(profile_id)
+            if cached and time.monotonic() - cached[0] < 900:
+                return cached[1]
+            raw = self.fetch(profile_id)
+            if (raw.get('legacyId') != profile_id or raw.get('school', {}).get('legacyId') != 881
+                    or words(raw.get('firstName', '') + ' ' + raw.get('lastName', '')) != words(profile['name'])):
+                raise ValueError('Profile identity mismatch')
+            count = raw.get('numRatings')
+            if type(count) is not int or count < 0:
+                raise ValueError('Invalid rating count')
+            metrics = {'rating': None, 'difficulty': None, 'would_take_again_percent': None, 'review_count': count,
+                       'fetched_at': datetime.now(timezone.utc).isoformat(), 'status': 'ok' if count else 'not_available'}
+            if count:
+                for source, target in [('avgRating', 'rating'), ('avgDifficulty', 'difficulty')]:
+                    value = raw.get(source)
+                    if isinstance(value, bool) or not isinstance(value, (float, int)) or not 1 <= value <= 5:
+                        raise ValueError('Invalid metric')
+                    metrics[target] = value
+                percent = raw.get('wouldTakeAgainPercent')
+                if type(percent) in (int, float) and 0 <= percent <= 100:
+                    metrics['would_take_again_percent'] = percent
+            else:
+                metrics['reason'] = 'Profile has no ratings yet.'
+            self.cache[profile_id] = (time.monotonic(), metrics)
+            return metrics
+
+    def section_metrics(self, profile_id):
+        profile = self.profiles_by_id.get(profile_id)
+        if profile is None:
+            return None
+        try:
+            metrics = self._metrics(profile)
+        except Exception:
+            return {'status': 'unavailable'}
+        return {'status': 'ok' if metrics['status'] == 'ok' else 'no_reviews',
+                'rating': metrics['rating'], 'difficulty': metrics['difficulty'],
+                'would_take_again_percent': metrics['would_take_again_percent'], 'fetched_at': metrics['fetched_at']}
+
+    def lookup(self, names, *, enabled=True):
         result = []
-        department = DEPARTMENTS.get(re.sub(r'[^A-Z]', '', str(course_code or '').upper().split(' ')[0]))
         assigned = [n for n in dict.fromkeys(names) if isinstance(n, str) and n.strip().lower() not in UNASSIGNED]
         for name in assigned[:8]:
             row = {'name': name, 'rating': None, 'review_count': None, 'difficulty': None,
@@ -74,54 +115,23 @@ class ProfessorRatings:
             if not enabled:
                 result.append({**row, 'reason': 'Rate My Professors excluded by source preference.'})
                 continue
-            tokens = words(name)
-            if len(tokens) < 2 or any(c in name for c in '\n\r:<>'):
-                result.append({**row, 'reason': 'No assigned or identifiable professor.'})
+            profile = self.resolve_profile(name)
+            if 'reason' in profile:
+                reason = 'Ambiguous SJSU profiles.' if profile['reason'] == 'ambiguous' else 'No matched SJSU profile.'
+                result.append({**row, 'reason': reason})
                 continue
-            eligible = [p for p in self.directory if p.get('schoolId') == SCHOOL and type(p.get('id')) is int and p['id'] > 0]
-            exact = [p for p in eligible if words(p['firstName'] + ' ' + p['lastName']) == tokens]
-            # A unique full-name subset supports an extra given name, never initials or fuzzy spelling.
-            matches = exact or [p for p in eligible if len(words(p['firstName'] + ' ' + p['lastName'])) >= 2
-                               and set(words(p['firstName'] + ' ' + p['lastName'])).issubset(tokens)
-                               and words(p['lastName']) == tokens[-len(words(p['lastName'])):]]
-            if len(matches) > 1 and department:
-                matches = [p for p in matches if p.get('department') == department] or matches
-            if len(matches) != 1:
-                result.append({**row, 'reason': 'Ambiguous SJSU profiles.' if matches else 'No matched SJSU profile.'})
-                continue
-            profile = matches[0]
-            row.update(profile_name=profile['firstName'] + ' ' + profile['lastName'],
+            row.update(profile_id=profile['id'], profile_name=profile['name'],
                        source_url=f"https://www.ratemyprofessors.com/professor/{profile['id']}",
                        title=name + ' ratings')
             try:
-                with self.lock:
-                    cached = self.cache.get(profile['id'])
-                    if cached and time.monotonic() - cached[0] < 900:
-                        metrics = cached[1]
-                    else:
-                        raw = self.fetch(profile['id'])
-                        if (raw.get('legacyId') != profile['id'] or raw.get('school', {}).get('legacyId') != 881
-                                or words(raw.get('firstName', '') + ' ' + raw.get('lastName', '')) != words(row['profile_name'])):
-                            raise ValueError('Profile identity mismatch')
-                        count = raw.get('numRatings')
-                        if type(count) is not int or count < 0:
-                            raise ValueError('Invalid rating count')
-                        metrics = {'rating': None, 'difficulty': None, 'review_count': count,
-                                   'fetched_at': datetime.now(timezone.utc).isoformat(), 'status': 'ok' if count else 'not_available'}
-                        if count:
-                            for source, target in [('avgRating', 'rating'), ('avgDifficulty', 'difficulty')]:
-                                value = raw.get(source)
-                                if isinstance(value, bool) or not isinstance(value, (float, int)) or not 1 <= value <= 5:
-                                    raise ValueError('Invalid metric')
-                                metrics[target] = value
-                        else:
-                            metrics['reason'] = 'Profile has no ratings yet.'
-                        self.cache[profile['id']] = (time.monotonic(), metrics)
-                row.update(metrics)
+                row.update({key: value for key, value in self._metrics(profile).items() if key != 'would_take_again_percent'})
             except Exception:
                 row['reason'] = 'Rating source could not be verified.'
             result.append(row)
         return result
+
+
+professor_ratings = ProfessorRatings()
 
 
 def mentioned(name, text):

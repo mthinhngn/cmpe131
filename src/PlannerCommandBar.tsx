@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUp, ChevronDown, LayoutGrid, Search } from "lucide-react";
+import { ChevronDown, LayoutGrid, Search } from "lucide-react";
+import { SendArrow } from "./SendArrow";
 import { TypingPlaceholder } from "./TypingPlaceholder";
 import { useChatPrompts } from "./chat-prompts";
 
@@ -49,6 +50,7 @@ export function PlannerCommandBar(props: Props) {
   const field = useRef<HTMLInputElement>(null);
   const group = useRef<HTMLSpanElement>(null);
   const sheet = useRef<HTMLDivElement>(null);
+  const strip = useRef<HTMLDivElement>(null);
   const toastTimer = useRef(0);
   const swapTimer = useRef(0);
   const enterTimer = useRef(0);
@@ -102,6 +104,50 @@ export function PlannerCommandBar(props: Props) {
   };
   const deactivate = (viaKeyboard = false) => { if (viaKeyboard) instant(); setActive(false); if (modeRef.current === "ask") chat("close"); };
 
+  // Subject chips sit on one row: a vertical wheel scrolls it sideways (pixel, line or page
+  // deltas), and a mouse can drag it. A drag never also clicks the chip it started on.
+  useEffect(() => {
+    const el = strip.current; if (!el) return;
+    const wheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const max = el.scrollWidth - el.clientWidth; if (max <= 0) return;
+      const unit = event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? el.clientWidth : 1;
+      const next = Math.max(0, Math.min(max, el.scrollLeft + event.deltaY * unit));
+      if (next === el.scrollLeft) return;
+      event.preventDefault();
+      el.scrollLeft = next;
+    };
+    let drag: { id: number; x: number; left: number; moved: boolean } | null = null;
+    let suppressClick = 0;
+    const down = (event: PointerEvent) => { if (event.pointerType === "mouse" && event.button === 0) drag = { id: event.pointerId, x: event.clientX, left: el.scrollLeft, moved: false }; };
+    const move = (event: PointerEvent) => {
+      if (!drag || event.pointerId !== drag.id) return;
+      const dx = event.clientX - drag.x;
+      if (!drag.moved) { if (Math.abs(dx) < 5) return; drag.moved = true; el.setPointerCapture(event.pointerId); el.dataset.dragging = ""; }
+      el.scrollLeft = drag.left - dx;
+    };
+    const up = (event: PointerEvent) => {
+      if (!drag || event.pointerId !== drag.id) return;
+      if (drag.moved) suppressClick = performance.now() + 80;
+      drag = null; delete el.dataset.dragging;
+    };
+    const click = (event: MouseEvent) => { if (performance.now() < suppressClick) { event.preventDefault(); event.stopPropagation(); } };
+    el.addEventListener("wheel", wheel, { passive: false });
+    el.addEventListener("pointerdown", down);
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+    el.addEventListener("click", click, true);
+    return () => {
+      el.removeEventListener("wheel", wheel);
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", up);
+      el.removeEventListener("click", click, true);
+    };
+  }, []);
+
   useEffect(() => {
     const slash = (event: KeyboardEvent) => {
       const typing = (event.target as Element | null)?.closest?.("input, textarea, select, [contenteditable], dialog");
@@ -145,7 +191,7 @@ export function PlannerCommandBar(props: Props) {
           <button type="button" className="pb-cmd-icon" aria-label="Hide course library" title="Hide (Esc)" onClick={() => deactivate()}><ChevronDown size={19} aria-hidden="true" /></button>
         </header>
         <div className="pb-cmd-filters">
-          <div className="pb-subjects" role="group" aria-label="Filter by subject">
+          <div ref={strip} className="pb-subjects" role="group" aria-label="Filter by subject">
             <button type="button" aria-pressed={props.subject === null} onClick={() => { props.onSubject(null); field.current?.focus(); }}>All</button>
             {props.subjects.map(s => <button type="button" key={s.key} aria-pressed={props.subject === s.key} title={props.subjectTitle?.(s.key)} onClick={() => { props.onSubject(s.key); field.current?.focus(); }}><i style={{ background: `var(--s-${s.key})` }} />{s.label}</button>)}
           </div>
@@ -155,7 +201,7 @@ export function PlannerCommandBar(props: Props) {
           {props.pills}
           {!props.resultCount && <small className="pb-cmd-empty">{props.emptyText}</small>}
         </div>
-        <p className="pb-cmd-foot">Adding to {props.target} · {props.unplanned} unplanned. Drag a course onto the chart, press +, or Enter for the top match.</p>
+        <p className="pb-cmd-foot">Adding to {props.target} · {props.unplanned} unplanned</p>
       </div>
     </section>
     <div className="pb-cmd-bar">
@@ -185,7 +231,7 @@ export function PlannerCommandBar(props: Props) {
         {!value && <TypingPlaceholder text={placeholder} loop={!active} phrases={prompts} />}
         </span>
       </span>
-      <button type="button" className={`pb-cmd-go${ready ? " ready" : ""}`} disabled={!ready} aria-label={mode === "courses" ? "Add top match" : "Send message"} onClick={() => void submit()}><ArrowUp size={18} aria-hidden="true" /></button>
+      <button type="button" className="pb-cmd-go" disabled={!ready} aria-label={mode === "courses" ? "Add top match" : "Send message"} onClick={() => void submit()}><SendArrow /></button>
     </div>
     <p className={`pb-cmd-toast${toast ? " show" : ""}`} role="status">{toast}</p>
   </div>;

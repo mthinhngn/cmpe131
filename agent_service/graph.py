@@ -53,14 +53,14 @@ def create_runtime_graph(repository, transcript=None):
     from .availability import Availability
     from .catalog_rag import CatalogRAG
     from .research_agent import ResearchAgent
-    from .professor_ratings import ProfessorRatings
+    from .professor_ratings import professor_ratings
     from .verifier import ClaimLabels
     model = ChatOpenAI(model=OPENAI_MODEL_ID, temperature=0, max_retries=0, timeout=35, max_tokens=2500, api_key=os.getenv('OPENAI_API_KEY'), base_url='https://api.openai.com/v1')
     action_model = ChatGroq(model=MODEL_ID, temperature=0, max_retries=0, timeout=35, max_tokens=1500)
     small = ChatOpenAI(model=os.getenv('KIMI_SMALL_MODEL', 'gpt-4.1-mini'), temperature=0, max_retries=0, timeout=25, max_tokens=2000, api_key=os.getenv('OPENAI_API_KEY'), base_url='https://api.openai.com/v1')
     web = CachedWebAgent(create_web_search_agent())
     advisor = build_advisor(model, small, Availability(repository), web, catalog=CatalogRAG(),
-                            transcript=transcript, reviews=ResearchAgent(model=small), ratings=ProfessorRatings(),
+                            transcript=transcript, reviews=ResearchAgent(model=small), ratings=professor_ratings,
                             direct_requirements=True, structured_requirements=True)
     advisor.claim_judge = small.with_structured_output(ClaimLabels, method='function_calling')
     return create_kimi_graph(repository, model, web, action_model=action_model, advisor=advisor)

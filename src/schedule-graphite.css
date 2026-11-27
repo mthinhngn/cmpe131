@@ -1,3 +1,4 @@
+@font-face { font-family: "Radar Mono"; src: url("/fonts/jetbrains-mono.ttf") format("truetype"); font-weight: 100 800; font-display: swap; }
 
 /* Selected N1 Graphite reference, applied to the existing connected Schedule. */
 .workspace.workspace-explorer[class] {
@@ -69,6 +70,8 @@
 .workspace-explorer[class] .cx-section-instructor a:hover { color: #f0dfc0; }
 .workspace-explorer[class] .cx-section-instructor a:focus-visible { outline: 2px solid var(--sg-sand); outline-offset: 3px; border-radius: 2px; }
 .professor-profile-unmatched { color: inherit; font-size: 12px; }
+.workspace-explorer[class] .cx-professor-metrics { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 2px 12px; color: #bcbec8; font-size: 12px; }
+.workspace-explorer[class] .cx-professor-metrics strong { color: #f0f0f3; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .workspace-explorer[class] .cx-section .cx-section-time { font: 500 12px/1.5 ExplorerInter,Inter,sans-serif; color: #f0f0f3; }
 .workspace-explorer[class] .cx-section .cx-fit { color: #9bc3a7; font-size: 12px; }
 .workspace-explorer[class] .cx-section .cx-fit-warning { color: #e59a7a; }
@@ -89,7 +92,7 @@
 .workspace-explorer[class] .cx-week-title p { font-size: 13px; color: var(--sg-faint); }
 .cx-week-stats { display: flex; gap: 22px; margin-left: auto; }
 .cx-week-stats div { display: grid; text-align: right; }
-.cx-week-stats b { font: 600 20px/1.2 ExplorerInter,Inter,sans-serif; letter-spacing: -.02em; }
+.cx-week-stats b { font: 500 20px/1.2 "Radar Mono", "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
 .cx-week-stats span { color: var(--sg-faint); font-size: 12px; }
 .workspace-explorer[class] .cx-week .cx-view-switch { padding: 3px; border: 0; background: #edeef1; border-radius: 10px; }
 .workspace-explorer[class] .cx-week .cx-view-switch button { width: 34px; height: 30px; border-radius: 8px; color: var(--sg-faint); }
@@ -111,7 +114,7 @@
 .workspace-explorer[class] .cx-week .cx-calendar-body { background: var(--sg-stage); }
 .workspace-explorer[class] .cx-week .cx-day { border-color: var(--sg-grid); }
 .workspace-explorer[class] .cx-week .cx-hour-line { border-color: var(--sg-grid); }
-.workspace-explorer[class] .cx-week .cx-hour-rail span { font: 400 12px/1.5 ExplorerInter,Inter,sans-serif; color: var(--sg-faint); }
+.workspace-explorer[class] .cx-week .cx-hour-rail span { font: 400 11px/1.5 "Radar Mono", "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; letter-spacing: .01em; color: var(--sg-faint); }
 .workspace-explorer[class] .cx-free-day { color: var(--sg-faint); font: 400 12px/1.5 ExplorerInter,Inter,sans-serif; text-transform: none; letter-spacing: normal; }
 .workspace-explorer[class] .cx-page .cx-week-empty h3 { font: 600 18px/1.4 ExplorerInter,Inter,sans-serif; letter-spacing: -.02em; }
 .workspace-explorer[class] .cx-page .cx-week-empty p { font: 400 14px/1.5 ExplorerInter,Inter,sans-serif; }
@@ -146,7 +149,6 @@
 .workspace-explorer[class] .cx-source-note { padding: 18px 0 32px; margin: 0; color: var(--sg-faint); font-size: 13px; }
 .workspace-explorer[class] .cx-source-note a { color: #8a6424; }
 .workspace-explorer[class] .cx-source-note span { font-size: 12px; }
-.workspace.workspace-explorer[class] .workspace-footer { display: none; }
 @keyframes sg-slide { from { opacity: 0; transform: translateX(-14px); } }
 @keyframes sg-fall { from { opacity: 0; transform: translateY(-18px); filter: blur(6px); } }
 @keyframes sg-drop { from { opacity: 0; transform: translateY(-10px); } }

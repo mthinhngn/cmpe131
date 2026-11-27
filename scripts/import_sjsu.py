@@ -1,4 +1,4 @@
-"""Import public SJSU schedules without an AI service. See docs/SJSU_IMPORT.md."""
+"""Import public SJSU schedules without an AI service."""
 from __future__ import annotations
 
 import argparse

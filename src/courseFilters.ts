@@ -137,7 +137,7 @@ export function filterGroups(f: CourseFilters): { key: keyof CourseFilters; labe
   if (f.offered) add("offered", "Offered this term");
   if (f.availability !== "any") add("availability", { open: "Open seats", full: "No open seats", unknown: "Seats not listed" }[f.availability]);
   if (f.modes.length) add("modes", f.modes.map(mode => MODE_LABELS[mode]).join(", "));
-  if (f.days.length) add("days", `Days: ${f.days.join(" · ")}`);
+  if (f.days.length) add("days", `Days: ${f.days.join(", ")}`);
   if (f.after) add("after", `From ${f.after}`);
   if (f.before) add("before", `Until ${f.before}`);
   if (f.meeting !== "any") add("meeting", { scheduled: "Scheduled meetings", unscheduled: "No scheduled meetings", review: "Needs review" }[f.meeting]);

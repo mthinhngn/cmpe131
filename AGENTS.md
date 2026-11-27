@@ -2,7 +2,7 @@
 
 ## UI component source
 
-For UI component work, consult [docs/UI_COMPONENTS.md](docs/UI_COMPONENTS.md). The official shadcn/ui source is available in `.references/shadcn-ui/`; run `npm run ui:sync` if it is missing.
+For UI component work, follow the project ui-flow skill. The official shadcn/ui source is available in `.references/shadcn-ui/`; run `npm run ui:sync` if it is missing.
 
 Search that source for useful component behavior, examples, and required dependencies before writing a new primitive. Adopt only the components needed by the task into `src/components/ui/`, and adapt their styling to the project's `DESIGN.md`. Preserve the current catalog, planner, schedule, and assistant data flows.
 

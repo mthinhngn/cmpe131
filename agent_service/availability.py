@@ -350,7 +350,8 @@ class Availability:
                     outcome, rows = issue
                     names = ' · '.join(_menu_choice(r) for r in rows)
                     text = ('Which requirement do you mean? ' + names if outcome == 'ambiguous_requirement' else
-                            f'I could not match that to a requirement in this program\'s {year} catalog. Which requirement do you mean? Closest: {names}')
+                            f'I could not match that to a requirement in this program\'s {year} catalog. Which requirement do you mean?'
+                            + (f' Closest: {names}' if names else ''))
                     return gap(outcome, text, candidates=[{key: r.get(key) for key in ('id', 'label', 'scope', 'pattern')} for r in rows])
                 if row:
                     kind = base['requirement'] = row['id']

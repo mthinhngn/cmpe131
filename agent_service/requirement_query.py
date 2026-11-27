@@ -17,7 +17,8 @@ MENU_PROMPT = '\n'.join(' | '.join([key, row['label'], *row['former_names'], *ro
     'Program requirements (program_list only, never requirements_all or requirements_any): a requirement of a major '
     '(for example its technical electives, major preparation, core or required courses) rather than a campus designation above. '
     'Put the requirement name exactly as the student wrote it, or a program list ID from list_requirements, in program_list; '
-    'code checks it against that program\'s catalog requirement menu.')
+    'code checks it against that program\'s catalog requirement menu. A campus designation above is never a program list: '
+    'for "US2 and US3" use requirements_all ["us2", "us3"] with program_list null, not both.')
 Day = Literal['M', 'T', 'W', 'R', 'F', 'S', 'U']
 CourseCode = Annotated[str, Field(pattern=r'^[A-Za-z]{2,8}[0-9]?\s*[0-9]{1,3}[A-Za-z]{0,3}$', max_length=16)]
 
@@ -60,27 +61,53 @@ def exact_campus_id(name):
     return matches[0] if len(matches) == 1 else None
 
 
+def _campus_phrases(row):
+    """Normalized names a student may use for a designation row."""
+    label = row['label'].split(' - ', 1)[0].removeprefix('Legacy ')
+    names = [label, *row['former_names'], *row['aliases']]
+    names += [re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', alias) for alias in row['aliases']]
+    names += [re.sub(r'(?<=[A-Z])(?=\d)', ' ', name) for name in names if re.search(r'[A-Z]\d', name)]
+    if ' - ' in row['label']:
+        names.append(row['label'].split(' - ', 1)[1])
+    if label.startswith('GE Area '):
+        names += [label.replace('GE Area ', 'GE '), label.removeprefix('GE ')]
+    return {phrase for name in names if (phrase := re.sub(r'[^a-z0-9]+', ' ', name.casefold()).strip())}
+
+
+def campus_phrase(message, key):
+    """The student's own wording for one designation, such as "GE E" for ge-e, or None when the message does not name it."""
+    text = ' ' + re.sub(r'[^a-z0-9]+', ' ', (message or '').casefold()).strip() + ' '
+    said = [phrase for phrase in _campus_phrases(CAMPUS[key]) if f' {phrase} ' in text] if key in CAMPUS else []
+    if not said:
+        return None
+    words = max(said, key=len).split()
+    match = re.search(r'(?<![a-z0-9])' + r'[^a-z0-9]+'.join(map(re.escape, words)) + r'(?![a-z0-9])', message, re.I)
+    return match[0] if match else ' '.join(words)
+
+
 def campus_mentions(message):
     """Recognize verbatim designation names from the menu, preserving ambiguity."""
     text = ' ' + re.sub(r'[^a-z0-9]+', ' ', message.casefold()).strip() + ' '
     hits = {}
     for key, row in CAMPUS.items():
-        label = row['label'].split(' - ', 1)[0].removeprefix('Legacy ')
-        names = [label, *row['former_names'], *row['aliases']]
-        names += [re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', alias) for alias in row['aliases']]
-        names += [re.sub(r'(?<=[A-Z])(?=\d)', ' ', name) for name in names if re.search(r'[A-Z]\d', name)]
-        if ' - ' in row['label']:
-            names.append(row['label'].split(' - ', 1)[1])
-        if label.startswith('GE Area '):
-            names += [label.replace('GE Area ', 'GE '), label.removeprefix('GE ')]
-        for name in names:
-            phrase = re.sub(r'[^a-z0-9]+', ' ', name.casefold()).strip()
-            if phrase and f' {phrase} ' in text:
+        for phrase in _campus_phrases(row):
+            if f' {phrase} ' in text:
                 hits.setdefault(key, set()).add(phrase)
     return sorted(key for key, names in hits.items() if any(
         not any(name != other and f' {name} ' in f' {other} '
                 for other_key, phrases in hits.items() if other_key != key for other in phrases)
         for name in names))
+
+
+def campus_selectors(name, question=''):
+    """Campus selectors for a requirement phrase that names designations, such as "US2 and US3"; None otherwise."""
+    exact = exact_campus_id(name)
+    if exact:
+        return {'requirements_all': [exact]}
+    ids = campus_mentions(name or '')
+    if len(ids) > 1 and re.search(r'\b(?:or|either)\b', f'{name} {question}', re.I):
+        return {'requirements_any': ids}
+    return {'requirements_all': ids} if ids else None
 
 
 def campus_effect_id(message):
@@ -139,8 +166,8 @@ def menu_mentions(message, rows):
 def closest_menu(message, rows, limit=5):
     words = set(normalized_words(message).split()) - _MENU_STOP
     scored = [(len(words & set(' '.join(menu_names(row)).split())), index, row) for index, row in enumerate(rows)]
-    ranked = [row for score, _, row in sorted(scored, key=lambda item: (-item[0], item[1])) if score]
-    return (ranked or rows)[:limit]
+    # No overlap means no closest entry; listing the menu's first rows would present unrelated requirements as matches.
+    return [row for score, _, row in sorted(scored, key=lambda item: (-item[0], item[1])) if score][:limit]
 
 
 def select_program_requirement(value, messages, rows):
@@ -310,10 +337,12 @@ def bind_section_scope(query, question, rows, *, scope_required=False):
             return query, ('ambiguous_requirement', [])
     if program_rows:
         choice, issue = select_program_requirement(query.program_list, [question], program_rows)
+        proposed = set(campus_mentions(query.program_list or '')) | {exact_campus_id(query.program_list)} - {None}
         if choice:
             query = query.model_copy(update={'program_list': choice['id']})
-        elif query.program_list and len(campus) == 1 and (exact_campus_id(query.program_list) == campus[0] or
-                mentions_phrase(question, query.program_list)):
+        elif query.program_list and campus and ((proposed and proposed <= set(campus)) or
+                (len(campus) == 1 and mentions_phrase(question, query.program_list))):
+            # Campus designations proposed as a program list are checked as the designations the question names.
             query = query.model_copy(update={'program_list': None})
         elif query.program_list or issue[0] == 'ambiguous_requirement':
             return query, issue

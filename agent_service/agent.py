@@ -1,6 +1,5 @@
 """Typed state shared by the Course Radar graph and browser action protocol.
 
-Runtime contracts: docs/COURSE_ACTION_INTERPRETATION.md.
 Required reads must finish successfully before a dependent website action.
 """
 

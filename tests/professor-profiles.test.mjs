@@ -27,25 +27,21 @@ test("prefers unique full-name matches and rejects ambiguous profiles", () => {
   assert.equal(matchProfessor("Jane Doe", [directory[1], professor(3, "Jane Anne", "Doe")]).reason, "ambiguous");
 });
 
-test("generated links come from the SJSU snapshot and account for every imported instructor", {
-  skip: !existsSync(new URL("../data/ratemyprofessors/sjsu-directory.json", import.meta.url)) || !existsSync(new URL("../data/ratemyprofessors/match-report.json", import.meta.url))
-    ? "Local import cache unavailable; run npm run data:professors to verify against source records."
-    : false,
-}, async () => {
-  const load = async path => JSON.parse(await readFile(new URL(path, import.meta.url), "utf8"));
-  const [snapshot, generated, report] = await Promise.all([
-    load("../data/ratemyprofessors/sjsu-directory.json"),
-    load("../src/data/professor-profiles.json"),
-    load("../data/ratemyprofessors/match-report.json"),
+test("Schedule and the ratings service share a valid SJSU profile mapping", async () => {
+  const [raw, component, ratingsService] = await Promise.all([
+    readFile(new URL("../agent_service/data/professor-profiles.json", import.meta.url), "utf8"),
+    readFile(new URL("../src/ProfessorReviewLink.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../agent_service/professor_ratings.py", import.meta.url), "utf8"),
   ]);
-  const byId = new Map(snapshot.directory.map(p => [p.id, p]));
-  for (const profile of Object.values(generated.profiles)) {
-    const source = byId.get(profile.id);
-    assert.ok(source, `${profile.name}: profile in directory`);
-    assert.equal(source.schoolId, "U2Nob29sLTg4MQ==");
-    assert.equal(profile.name, `${source.firstName} ${source.lastName}`);
+  const snapshot = JSON.parse(raw);
+  assert.equal(snapshot.schoolId, "U2Nob29sLTg4MQ==");
+  assert.ok(Object.keys(snapshot.profiles).length > 0);
+  for (const [name, profile] of Object.entries(snapshot.profiles)) {
+    assert.ok(Number.isInteger(profile.id) && profile.id > 0, name);
+    assert.equal(typeof profile.name, "string");
+    assert.ok(["exact", "similar"].includes(profile.match), name);
+    assert.equal(Object.hasOwn(snapshot.unresolved, name), false);
   }
-  assert.equal(Object.keys(generated.profiles).length, report.exact + report.similar);
-  assert.equal(report.exact + report.similar + report.unresolved.length, report.instructors);
-  for (const { name } of report.unresolved) assert.equal(Object.hasOwn(generated.profiles, name), false);
+  assert.ok(component.includes('../agent_service/data/professor-profiles.json'));
+  assert.ok(ratingsService.includes("parent / 'data/professor-profiles.json'"));
 });

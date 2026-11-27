@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiEndpoint } from "./api";
 import { useCatalog } from "./CatalogContext";
+import { SelectionMenu } from "./components/ui/selection-menu";
 import "./program-mode.css";
 
 type Program = { slug: string; title: string; kind: string };
@@ -28,25 +29,25 @@ export function ProgramModeBar() {
   const previewTitle = titleFor(previewProgram);
   const alternatives = majors.filter(program => program.slug !== currentMajor);
   const error = whatIfError || directoryError;
+  const loadingPreview = whatIfStatus === "loading";
 
   return <section className={`program-mode${isWhatIf ? " is-what-if" : ""}`} aria-label="Major and What-if mode">
     <div className="program-mode-copy">
       <span className="program-mode-kicker">{isWhatIf ? "WHAT-IF MAJOR" : "CURRENT MAJOR"}</span>
       {isWhatIf ? <>
         <strong>Previewing {previewTitle}</strong>
-        <small>Your saved current major is still {currentTitle}. This read-only preview does not replace it.</small>
+        <small>Read-only. Your major is still {currentTitle}.</small>
       </> : <>
         <strong>{currentTitle}</strong>
-        <small>This is your actual/current major. Use What-if Major to preview another program without changing it.</small>
       </>}
     </div>
 
     <div className="program-mode-actions">
       {isWhatIf ? <button type="button" className="program-mode-exit" onClick={exitWhatIf}>Exit What-if</button>
-        : <label className="program-mode-select"><span>What-if Major</span><select value="" disabled={whatIfStatus === "loading" || !alternatives.length} onChange={event => { if (event.target.value) void startWhatIf(event.target.value); }}>
-          <option value="">{whatIfStatus === "loading" ? "Loading preview…" : alternatives.length ? "Preview another major…" : "No other majors available"}</option>
-          {alternatives.map(program => <option key={program.slug} value={program.slug}>{program.title}</option>)}
-        </select></label>}
+        : <SelectionMenu searchable className="program-mode-select" label="What-if major"
+          options={alternatives} value="" onChange={slug => void startWhatIf(slug)}
+          placeholder={loadingPreview ? "Loading preview…" : alternatives.length ? "Preview another major…" : "No other majors available"}
+          disabled={loadingPreview || !alternatives.length} />}
     </div>
     {error && <p className="program-mode-error" role="alert">{error}</p>}
   </section>;
