@@ -45,7 +45,7 @@ try {
   git(["sparse-checkout", "set", ...sourceDirectories], referenceRoot);
   console.log(`shadcn/ui reference ready: ${referenceRoot}`);
   console.log(`Revision: ${git(["rev-parse", "HEAD"], referenceRoot, true)}`);
-  console.log("Source only. Follow docs/UI_COMPONENTS.md when adopting a component.");
+  console.log("Source only. Follow the project ui-flow skill when adopting a component.");
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
   process.exitCode = 1;

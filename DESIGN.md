@@ -26,4 +26,4 @@ Preserve the current approved animation timing, interruption behavior, and reduc
 
 ## Sources
 
-Current specifications: [Home](docs/surfaces/landing-map-b.md), [Overview](docs/surfaces/overview.md), [Schedule](docs/surfaces/schedule.md), [Planner](docs/surfaces/planner.md), and [Roadmap](docs/surfaces/prerequisite-map.md). Product behavior is defined in [PRODUCT.md](PRODUCT.md).
+The active screen specifications are described above. Product behavior is defined in [PRODUCT.md](PRODUCT.md).
