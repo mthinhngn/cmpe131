@@ -1,3 +1,4 @@
+import { FeedbackController } from "./feedback.controller"; 
 import { AuthService } from "./auth/auth.service";
 import { AuthController, AuthOriginGuard } from "./auth/auth.controller";
 import { UsersService } from "./auth/users.service";
@@ -13,6 +14,6 @@ import { BootstrapController } from "./bootstrap.controller";
 @Module({
   imports: [PrismaModule],
   providers: [WorkspaceService, UsersService, AuthService, GoogleAuthService, AuthOriginGuard],
-  controllers: [UniversityController, HealthController, BootstrapController, WorkspaceController, AuthController],
+    controllers: [UniversityController, HealthController, BootstrapController, WorkspaceController, AuthController, FeedbackController],
 })
 export class AppModule {}
