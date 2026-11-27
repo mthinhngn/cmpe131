@@ -1,3 +1,4 @@
+import { professorDataAsOf } from "./ProfessorReviewLink";
 import { ProductPageHeading } from "./ProductPageHeading";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -246,7 +247,7 @@ export function Courses() {
       </section>} week={
       <ExplorerWeek preview={preview} onCancelPreview={cancelPreview} onReturnToSections={returnToSections} onConfirmPreview={confirmPreview} saving={saving} onRemove={remove} onBrowse={browse} onInspect={inspectOffering} notice={choiceNotice || notice} />
     } />
-    <p className="cx-source-note">Section times and seats reflect the published snapshot. <a href={sourceUrl ?? catalog.currentTerm.sourceUrl} target="_blank" rel="noreferrer">Verify with SJSU <ArrowRight size={12} /></a><span>{storageStatus === "saved" ? "Changes saved to your workspace." : "Changes use your shared planning workspace."}</span></p>
+    <p className="cx-source-note">Section times and seats reflect the published snapshot. Professor review links are matched from Rate My Professors as of {professorDataAsOf}. <a href={sourceUrl ?? catalog.currentTerm.sourceUrl} target="_blank" rel="noreferrer">Verify with SJSU <ArrowRight size={12} /></a><span>{storageStatus === "saved" ? "Changes saved to your workspace." : "Changes use your shared planning workspace."}</span></p>
     {detail && <CourseDetail variant="roadmap" animateEntry={detailPointer} course={detail} onClose={() => setDetail(null)} />}
   </main>;
 }
