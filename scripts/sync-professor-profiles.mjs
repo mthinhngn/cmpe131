@@ -2,11 +2,13 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 
 const SCHOOL_ID = "U2Nob29sLTg4MQ==";
+const UNASSIGNED = new Set(["staff", "tba", "tbd", "to be announced", "instructor tba"]);
 const root = new URL("../", import.meta.url);
 export const normalizeName = value => value.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^a-z\s]/g, " ").replace(/\s+/g, " ").trim();
 
 export function matchProfessor(name, directory) {
   const normalized = normalizeName(name);
+  if (!normalized.includes(" ") || UNASSIGNED.has(normalized)) return { reason: "unmatched" };
   const eligible = directory.filter(p => p.schoolId === SCHOOL_ID && Number.isSafeInteger(p.id) && p.id > 0);
   const exact = eligible.filter(p => normalizeName(`${p.firstName} ${p.lastName}`) === normalized);
   if (exact.length === 1) return { profile: exact[0], match: "exact" };
@@ -44,7 +46,7 @@ async function sync() {
     sections += data.offerings.length;
     data.offerings.forEach(section => section.instructors.forEach(name => names.add(name)));
   }
-  const cache = new URL("data/ratemyprofessors/sjsu-directory.json", root);
+  const cache = new URL("agent_service/data/sjsu-professor-directory.json", root);
   let snapshot;
   if (process.argv.includes("--cached")) snapshot = JSON.parse(await readFile(cache, "utf8"));
   else {
@@ -69,9 +71,9 @@ async function sync() {
     }
     if (directory.size < resultCount * .98) throw Error("Directory incomplete; preserving the previous snapshot");
     snapshot = { school: "San Jose State University", schoolId: SCHOOL_ID, sourceUrl: "https://www.ratemyprofessors.com/search/professors/881", fetchedAt: new Date().toISOString(), directory: [...directory.values()] };
-    await mkdir(new URL("data/ratemyprofessors/", root), { recursive: true });
     await writeFile(cache, JSON.stringify(snapshot, null, 2) + "\n");
   }
+  if (snapshot.schoolId !== SCHOOL_ID || !Array.isArray(snapshot.directory)) throw Error("Invalid SJSU directory snapshot");
   const profiles = {}, unresolved = [];
   let exact = 0, similar = 0;
   for (const name of [...names].sort()) {
@@ -82,8 +84,10 @@ async function sync() {
     if (result.match === "exact") exact++; else similar++;
   }
   const report = { fetchedAt: snapshot.fetchedAt, programs: programs.programs.length, terms, sections, instructors: names.size, exact, similar, unresolved };
-  await mkdir(new URL("src/data/", root), { recursive: true });
-  await writeFile(new URL("src/data/professor-profiles.json", root), JSON.stringify({ schoolId: SCHOOL_ID, fetchedAt: snapshot.fetchedAt, profiles }, null, 2) + "\n");
+  const decisions = { schoolId: SCHOOL_ID, fetchedAt: snapshot.fetchedAt, profiles,
+    unresolved: Object.fromEntries(unresolved.map(({ name, reason }) => [name, reason])) };
+  await mkdir(new URL("data/ratemyprofessors/", root), { recursive: true });
+  await writeFile(new URL("agent_service/data/professor-profiles.json", root), JSON.stringify(decisions, null, 2) + "\n");
   await writeFile(new URL("data/ratemyprofessors/match-report.json", root), JSON.stringify(report, null, 2) + "\n");
   console.log(JSON.stringify({ ...report, unresolved: unresolved.length }));
 }

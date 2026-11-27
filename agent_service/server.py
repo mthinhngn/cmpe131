@@ -30,6 +30,7 @@ from .telemetry import trace_event, enable
 from .transcripts import TranscriptService
 from .transcript_routes import transcript_router
 from .evidence import progress_callback
+from .professor_ratings import professor_ratings
 
 transcript_service = TranscriptService(CatalogRepository())
 
@@ -351,6 +352,14 @@ def schedule_terms():
 def schedule_sections(term: str = Query(pattern=r"^(fall|spring)-(19|20|21)\d{2}$")):
     from .schedule_data import read_sections
     return read_sections(term)
+
+
+@app.get('/agent/professor-ratings/{profile_id}')
+def professor_section_ratings(profile_id: int):
+    result = professor_ratings.section_metrics(profile_id)
+    if result is None:
+        raise HTTPException(404, 'No matched SJSU profile.')
+    return result
 
 
 @app.get("/agent/health")

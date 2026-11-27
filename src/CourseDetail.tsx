@@ -128,14 +128,14 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
           <section className="taken-control" aria-label="Course completion">
             <button type="button" aria-pressed={isTaken} onClick={() => { toggleTakenCourse(course.id); }}>
               <CheckCircle size={19} weight={isTaken ? "fill" : "regular"} />
-              {isRoadmap ? isTaken ? "Completed · Undo" : "Mark complete" : isTaken ? "Already taken · Undo" : "Mark as already taken"}
+              {isTaken ? "Undo completion" : isRoadmap ? "Mark complete" : "Mark as already taken"}
             </button>
             <p role="status">{isRoadmap ? isTaken ? "This course is marked complete on your roadmap." : "Track this course in your degree plan." : <>{isTaken ? "Marked with a red line on your chart." : "Mark this course to cross it out on your chart."} Marks save with your workspace.</>}</p>
           </section>
           <section className="plan-controls" aria-label="Plan this course">
             <label>Plan semester<select value={plans[course.id]?.semester ?? ""} onChange={event => { if (event.target.value) setPlan(course.id, parseSlot(event.target.value), plans[course.id]?.status); else removePlan(course.id); }}><option value="">Not planned</option>{termOrder.map(slot => <option key={slot} value={slot}>{slotLabel(slot)}</option>)}</select></label>
             {plans[course.id] && <label>Course status<select value={plans[course.id].status} onChange={event => setPlan(course.id, plans[course.id].semester, event.target.value as "planned" | "in-progress")}><option value="planned">Planned</option><option value="in-progress">In progress</option></select></label>}
-            {!isRoadmap && <p>Session draft · Changes reset on refresh. Planning does not enroll you.</p>}
+            {!isRoadmap && <p>Draft changes reset on refresh. Planning does not enroll you.</p>}
           </section>
           {!isRoadmap && <><div className="course-facts">
             <span><BookOpen size={17} />{course.units} {course.units === 1 ? "unit" : "units"}</span>
@@ -176,7 +176,7 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
               </div>
               {!isRoadmap && <span>{hasTermData ? `${listedCount} listed` : "Data pending"}</span>}
             </header>
-            {hasTermData && <p className="offerings-note">Open seats from SJSU’s public schedule{sourceDate && ` · SJSU updated ${scheduleSourceDate(sourceDate)}`}.</p>}
+            {hasTermData && <p className="offerings-note">Open seats from SJSU’s public schedule{sourceDate && `, updated ${scheduleSourceDate(sourceDate)}`}.</p>}
             {offerings.length ? <div className="offering-list">
               {offerings.map((offering) => {
                 const isOpen = offering.openSeats > 0;
@@ -189,12 +189,12 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                   if (details) details.open = !details.open;
                 }}>
                   <header>
-                    <div><strong>Section {offering.sectionNumber}</strong><span>Class #{offering.classNumber} · {offering.component}</span></div>
+                    <div><strong>Section {offering.sectionNumber}</strong><span>Class #{offering.classNumber} ({offering.component})</span></div>
                     {offering.listed !== false && <span className={`seat-status ${isOpen ? "open" : "full"}`}>{offering.seatsKnown === false ? "Seats unpublished" : isOpen ? `${offering.openSeats} open` : "0 open seats"}</span>}
                   </header>
                   <dl>
-                    <div><dt><Clock size={15} />Meeting</dt><dd>{offering.days || "TBA"} · {offering.times || "TBA"}</dd></div>
-                    <div><dt><MapPin size={15} />Mode</dt><dd>{offering.mode}{offering.location ? ` · ${offering.location}` : ""}</dd></div>
+                    <div><dt><Clock size={15} />Meeting</dt><dd>{offering.days || "TBA"}, {offering.times || "TBA"}</dd></div>
+                    <div><dt><MapPin size={15} />Mode</dt><dd>{offering.mode}{offering.location ? `, ${offering.location}` : ""}</dd></div>
                     <div><dt><CalendarBlank size={15} />Dates</dt><dd>{offering.dates}</dd></div>
                     <div><dt><UsersThree size={15} />Professor</dt><dd>{offering.instructors?.join(", ") || "Not announced"}</dd></div>
                   </dl>
@@ -207,9 +207,9 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
                     {sectionFeedback?.id === offering.classNumber && <p className="detail-schedule-feedback" role={sectionFeedback.error ? "alert" : "status"}>{sectionFeedback.message}{sectionFeedback.error && !startingTerm && <> <a href="/account">Set your first semester in Account</a>.</>}</p>}
                   </div>
                   <details className="professor-links">
-                    <summary>{isRoadmap ? "Professor reviews" : `Section ${offering.sectionNumber} · Rate My Professors`}</summary>
+                    <summary>{isRoadmap ? "Professor reviews" : `Rate My Professors for section ${offering.sectionNumber}`}</summary>
                     {offering.instructors?.length ? offering.instructors.map((name) => (
-                      <div key={name}><span>{name} · </span><ProfessorReviewLink name={name} /></div>
+                      <div key={name}><span>{name}</span>{" "}<ProfessorReviewLink name={name} /></div>
                     )) : <p>SJSU has not announced a professor for this section.</p>}
                   </details>
                 </article>;
@@ -218,7 +218,7 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
           </section>
         </div>
         <footer className="drawer-footer">
-          {isRoadmap && <span className="detail-draft-note">Session draft · Resets on refresh. Planning does not enroll you.</span>}
+          {isRoadmap && <span className="detail-draft-note">Draft changes reset on refresh. Planning does not enroll you.</span>}
           {hasTermData && scheduleUrl ? <a href={scheduleUrl} target="_blank" rel="noreferrer">Open {termLabel} schedule <ArrowSquareOut size={16} /></a> : <a href={course.sourceUrl} target="_blank" rel="noreferrer">Open course catalog <ArrowSquareOut size={16} /></a>}
         </footer>
       </aside>
