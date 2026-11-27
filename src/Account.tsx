@@ -243,6 +243,8 @@ function TranscriptManager({ user, setup = false, onSelection }: { user: Account
   const [file, setFile] = useState<File | null>(null);
   const [consent, setConsent] = useState(false);
   const [transcript, setTranscript] = useState<Transcript>({ status: "none", courses: [] });
+  const [loadStatus, setLoadStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [workspace, setWorkspace] = useState<State>();
   const start = user.startingSemester.trim().toLowerCase().replace(/\s+/, "-");
@@ -252,7 +254,20 @@ function TranscriptManager({ user, setup = false, onSelection }: { user: Account
     setTranscript(value);
     choose(value.courses.filter(row => !transcriptRowIssue(row, value)).map(row => row.row_id));
   };
-  useEffect(() => { let active = true; void transcriptRequest().then(value => { if (active) accept(value); }).catch(() => {}); return () => { active = false; }; }, [user.id]);
+  useEffect(() => {
+    let active = true;
+    setLoadStatus("loading");
+    void transcriptRequest()
+      .then(value => {
+        if (!active) return;
+        accept(value);
+        setLoadStatus("ready");
+      })
+      .catch(() => {
+        if (active) setLoadStatus("error");
+      });
+    return () => { active = false; };
+  }, [user.id, loadAttempt]);
   useEffect(() => {
     if (setup) return;
     const store = new PersistentPlanningStore(user.id);
@@ -272,6 +287,19 @@ function TranscriptManager({ user, setup = false, onSelection }: { user: Account
     window.location.assign("/planner");
     return "Transcript courses saved to Planner.";
   });
+  if (loadStatus === "loading") {
+    return <p role="status">Checking for a saved transcript…</p>;
+  }
+  if (loadStatus === "error") {
+    return (
+      <>
+        <p role="alert">We couldn’t load your transcript. Check your connection and try again.</p>
+        <button type="button" className="acct-btn acct-btn-line" onClick={() => setLoadAttempt(attempt => attempt + 1)}>
+          Retry
+        </button>
+      </>
+    );
+  }
   return <>
     <fieldset className="acct-fieldset" disabled={busy}>
       <TranscriptDrop file={file} onFile={setFile} />
