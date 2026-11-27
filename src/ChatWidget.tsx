@@ -4,10 +4,11 @@ import { ChatSectionChoice } from "./ChatSectionChoice";
 import { TypingPlaceholder } from "./TypingPlaceholder";
 import { useChatPrompts } from "./chat-prompts";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { flushSync } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowUp, BookOpen, CalendarMinus, CalendarPlus, ChevronDown, SquarePen } from "lucide-react";
+import { ArrowRight, ChevronDown, Plus } from "lucide-react";
+import { SendArrow } from "./SendArrow";
 import { useCatalog } from "./CatalogContext";
 import { useAuth } from "./AuthContext";
 import { CourseDetail } from "./CourseDetail";
@@ -17,6 +18,19 @@ import { staticPreview } from "./static-preview";
 import { readConversation, saveConversation, readReceipt, reserveAction, saveReceipt, restoredItems, accountItems } from "./kimi-memory";
 import type { Course } from "./types";
 import "./chat-widget.css";
+
+/** A conversation set aside this session. The switcher lists these until saved threads come from the backend. */
+type PastConversation = { threadId: string; title: string; items: ConversationItem[]; updatedAt: number };
+
+function timeAgo(time: number, now: number) {
+  const minutes = Math.floor((now - time) / 60000);
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  return days < 7 ? `${days}d` : `${Math.floor(days / 7)}w`;
+}
 
 /** The single assistant surface; both agents use the same browser action transport. */
 export function ChatWidget() {
@@ -42,6 +56,13 @@ export function ChatWidget() {
   const writes = useRef(Promise.resolve());
   const [openedCourse, setOpenedCourse] = useState<Course | null>(null);
   const [threadId, setThreadId] = useState<string>(() => crypto.randomUUID());
+  const [earlier, setEarlier] = useState<PastConversation[]>([]);
+  const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [switcherNow, setSwitcherNow] = useState(() => Date.now());
+  const switcherOpenRef = useRef(false);
+  switcherOpenRef.current = switcherOpen;
+  const titleButton = useRef<HTMLButtonElement>(null);
+  const switcher = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const widget = useRef<HTMLElement>(null);
   const suppressFocusOpen = useRef(false);
@@ -78,7 +99,7 @@ export function ChatWidget() {
         if (session.current?.namespace === identity.namespace) { setMemoryReady(true); return; }
         session.current = identity;
         receipts.current.clear(); preferences.current = {};
-        setItems([]); setOpenedCourse(null); setThreadId(crypto.randomUUID());
+        setItems([]); setEarlier([]); setOpenedCourse(null); setThreadId(crypto.randomUUID());
         let saved;
         try { saved = await readConversation(identity); }
         catch { setError("Browser memory is unavailable. Chat will work, but actions need storage to prevent repeats."); }
@@ -101,11 +122,11 @@ export function ChatWidget() {
       } catch (cause) {
         if (stopped || attempt !== generation.current) return;
         if (cause instanceof AgentError && cause.status === 404) return;
-        session.current = null; preferences.current = {}; receipts.current.clear(); setItems([]); setThreadId(crypto.randomUUID());
+        session.current = null; preferences.current = {}; receipts.current.clear(); setItems([]); setEarlier([]); setThreadId(crypto.randomUUID());
         setError(cause instanceof Error ? cause.message : "Conversation memory is unavailable.");
       } finally { if (!stopped && attempt === generation.current) setMemoryReady(true); }
     };
-    const changed = () => { session.current = null; setItems([]); preferences.current = {}; receipts.current.clear(); void restore(true); };
+    const changed = () => { session.current = null; setItems([]); setEarlier([]); preferences.current = {}; receipts.current.clear(); void restore(true); };
     const focused = () => { void restore(); };
     void restore();
     window.addEventListener("focus", focused);
@@ -136,12 +157,52 @@ export function ChatWidget() {
   const openFromComposer = () => {
     if (!suppressFocusOpen.current) setState("conversation");
   };
+  // Set the open conversation aside so the switcher can return to it.
+  const archiveCurrent = () => {
+    const { items: current, threadId: id } = latest.current;
+    if (!current.length) return;
+    current.forEach(item => fresh.current.delete(item.request.request_id));
+    setEarlier(previous => [{ threadId: id, title: current[0].query, items: current, updatedAt: Date.now() }, ...previous.filter(entry => entry.threadId !== id)].slice(0, 30));
+  };
   const newConversation = () => {
+    archiveCurrent(); setSwitcherOpen(false);
     setThreadId(crypto.randomUUID()); setItems([]); receipts.current.clear(); setError("");
     input.current?.focus();
   };
+  const switchConversation = (entry: PastConversation) => {
+    setSwitcherOpen(false);
+    archiveCurrent();
+    setEarlier(previous => previous.filter(other => other.threadId !== entry.threadId));
+    setThreadId(entry.threadId); setItems(entry.items); receipts.current.clear(); setError("");
+    input.current?.focus();
+  };
+  const toggleSwitcher = () => {
+    if (!switcherOpen) setSwitcherNow(Date.now());
+    setSwitcherOpen(!switcherOpen);
+  };
+  // Open on the current conversation (or the first row) so arrow keys start where the student is.
+  useEffect(() => {
+    if (!switcherOpen) return;
+    const rows = switcher.current?.querySelectorAll<HTMLButtonElement>("[role=menuitem]:not(:disabled)");
+    (switcher.current?.querySelector<HTMLButtonElement>("[aria-current=true]") ?? rows?.[0])?.focus();
+  }, [switcherOpen]);
+  useEffect(() => { if (!open) setSwitcherOpen(false); }, [open]);
+  const moveInSwitcher = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const rows = [...(switcher.current?.querySelectorAll<HTMLButtonElement>("[role=menuitem]:not(:disabled)") ?? [])];
+    const at = rows.indexOf(document.activeElement as HTMLButtonElement);
+    const next = event.key === "ArrowDown" ? at + 1 : event.key === "ArrowUp" ? at - 1 : event.key === "Home" ? 0 : event.key === "End" ? rows.length - 1 : null;
+    if (next === null || !rows.length) return;
+    event.preventDefault();
+    rows[(next + rows.length) % rows.length].focus();
+  };
   useEffect(() => {
     const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && switcherOpenRef.current) {
+        event.preventDefault();
+        setSwitcherOpen(false);
+        titleButton.current?.focus();
+        return;
+      }
       if (event.key === "Escape" && widget.current?.contains(document.activeElement)) {
         event.preventDefault();
         setKeyboard(true);
@@ -150,6 +211,8 @@ export function ChatWidget() {
     };
     // Reading, scrolling, or choosing inside the chat keeps it open; anywhere else hides the conversation.
     const outside = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (switcherOpenRef.current && !switcher.current?.contains(target) && !titleButton.current?.contains(target)) setSwitcherOpen(false);
       if (latest.current.schedule.pending) return;
       if ((event.target as Element | null)?.closest?.("[data-chat-companion]")) return;
       if (!widget.current?.contains(event.target as Node)) setState("compact");
@@ -321,36 +384,49 @@ export function ChatWidget() {
   }
 
   const pending = items.filter(item => !["completed", "failed"].includes(item.request.status)).length;
-  const suggestions = [
-    { text: prompts[0], detail: "See its record and recorded prerequisites", Icon: BookOpen },
-    { text: prompts[1], detail: "Place it in your personal plan", Icon: CalendarPlus },
-    { text: prompts[2], detail: "Take it out of your personal plan", Icon: CalendarMinus },
-  ];
+  const firstName = user?.name.trim().split(/\s+/)[0];
+  const title = items[0]?.query ?? "New conversation";
+  const locked = sending || !!schedule.pending;
   const working = (status: AgentRequest["status"]) => status === "queued" ? "Queued behind your previous request" : status === "needs_context" ? "Refreshing your plan" : status === "awaiting_action" ? "Updating your plan" : "Checking your request";
   return <>
-    {!openedCourse && <aside ref={widget} className="cr-chat-widget" data-state={state} data-keyboard={keyboard} data-companion={companion || undefined} aria-label="Course Radar assistant"
+    {!openedCourse && <aside ref={widget} className="cr-chat-widget" data-state={state} data-keyboard={keyboard} data-companion={companion || undefined} data-empty={(!items.length && !schedule.pending) || undefined} aria-label="Course Radar assistant"
       onKeyDownCapture={() => setKeyboard(true)} onPointerDownCapture={() => { setKeyboard(false); pressedInsideAt.current = performance.now(); }} onBlur={focusLeft}>
-      <section ref={windowRef} id="cr-chat-window" className="cr-chat-window" role="dialog" aria-modal="false" aria-labelledby="cr-chat-title" aria-hidden={!open} inert={!open} onPointerMove={followPointer}>
+      <section ref={windowRef} id="cr-chat-window" className="cr-chat-window" role="dialog" aria-modal="false" aria-label="Course Radar assistant" aria-hidden={!open} inert={!open} onPointerMove={followPointer}>
         <header className="cr-chat-header">
-          <span className="cr-chat-mark" data-busy={pending > 0 || sending} aria-hidden="true"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="13.5"/><circle cx="18" cy="18" r="7.2"/><path d="M18 18 28.4 7.6"/><circle className="cr-chat-mark-dot" cx="28.5" cy="7.4" r="3.1"/><circle className="cr-chat-mark-center" cx="18" cy="18" r="2"/></svg></span>
-          <h2 id="cr-chat-title">Course Radar assistant</h2>
-          <button className="cr-chat-icon-button" type="button" aria-label="New conversation" title="New conversation" onClick={newConversation}><SquarePen size={17} aria-hidden="true"/></button>
+          <h2 id="cr-chat-title"><button ref={titleButton} className="cr-chat-title-button" type="button" aria-haspopup="menu" aria-expanded={switcherOpen} aria-controls="cr-chat-switcher" title="Switch conversation" onClick={toggleSwitcher}>
+            <span>{title}</span><ChevronDown size={16} aria-hidden="true"/>
+          </button></h2>
           <button className="cr-chat-icon-button" type="button" aria-label="Minimize chat" disabled={!!schedule.pending} title={schedule.pending ? "Confirm or cancel the section choice first" : "Hide (Esc)"} onClick={minimize}><ChevronDown size={19} aria-hidden="true"/></button>
         </header>
-        <div className="cr-chat-messages" role="log" aria-label="Course Radar conversation" aria-live="polite" aria-relevant="additions text">
-          <div className="cr-chat-message cr-chat-message-assistant"><p>Hi there. Explore course records, review recorded prerequisites, and compare listed sections in Course Radar.</p></div>
-          {!items.length && !error && !schedule.pending && <div className="cr-chat-suggestions" aria-label="Suggested questions">
-            {suggestions.map(({ text, detail, Icon }, index) => <button key={text} className="cr-chat-suggestion" type="button" style={{ "--i": index } as CSSProperties} onClick={() => { void sendMessage(text); }}>
-              <span className="cr-chat-suggestion-tile" aria-hidden="true"><Icon size={17}/></span>
-              <span className="cr-chat-suggestion-text"><strong>{text}</strong><span>{detail}</span></span>
+        {switcherOpen && <div ref={switcher} id="cr-chat-switcher" className="cr-chat-switcher" role="menu" aria-label="Conversations" onKeyDown={moveInSwitcher}
+          onBlur={event => { const next = event.relatedTarget as Node | null; if (next && !switcher.current?.contains(next) && !titleButton.current?.contains(next)) setSwitcherOpen(false); }}>
+          <div className="cr-chat-switcher-list">
+            {!!items.length && <button className="cr-chat-switcher-row" type="button" role="menuitem" aria-current="true" onClick={() => setSwitcherOpen(false)}><span>{title}</span><time>Just now</time></button>}
+            {earlier.map(entry => <button key={entry.threadId} className="cr-chat-switcher-row" type="button" role="menuitem" disabled={locked} onClick={() => switchConversation(entry)}>
+              <span>{entry.title}</span><time dateTime={new Date(entry.updatedAt).toISOString()}>{timeAgo(entry.updatedAt, switcherNow)}</time>
             </button>)}
+            {!items.length && !earlier.length && <p className="cr-chat-switcher-empty">Earlier conversations from this visit will show here.</p>}
+          </div>
+          <div className="cr-chat-switcher-foot">
+            <button className="cr-chat-switcher-row cr-chat-switcher-new" type="button" role="menuitem" disabled={locked} onClick={newConversation}><Plus size={17} aria-hidden="true"/><span>New conversation</span></button>
+          </div>
+        </div>}
+        <div className="cr-chat-messages" role="log" aria-label="Course Radar conversation" aria-live="polite" aria-relevant="additions text">
+          {!items.length && !schedule.pending && <div className="cr-chat-intro">
+            <h3 className="cr-chat-greeting">Hi {firstName || "there"},</h3>
+            <p className="cr-chat-intro-line">Let’s get the next four years sorted.</p>
+            {!error && <div className="cr-chat-suggestions" aria-label="Suggested questions">
+              {prompts.map(text => <button key={text} className="cr-chat-suggestion" type="button" onClick={() => { void sendMessage(text); }}>
+                <span>{text}</span><ArrowRight size={16} aria-hidden="true"/>
+              </button>)}
+            </div>}
           </div>}
           {items.map(({ query: text, request }) => <div className="cr-chat-turn" key={request.request_id}>
             <p className="cr-chat-message-user">{text}</p>
             <div className="cr-chat-message cr-chat-message-assistant">
               {request.reply
                 ? <ChatReply text={request.reply} failed={request.status === "failed"} animate={fresh.current.has(request.request_id)}/>
-                : <p className="cr-chat-working" role="status"><span className="cr-chat-dots" aria-hidden="true"><i/><i/><i/></span>{request.events.at(-1)?.detail || working(request.status)}</p>}
+                : <p className="cr-chat-working" role="status"><span className="cr-chat-loader" aria-hidden="true"><svg viewBox="0 0 100 100"><g><ellipse cx="50" cy="50" rx="37" ry="37" transform="rotate(45 50 50)"/><ellipse cx="50" cy="50" rx="37" ry="37" transform="rotate(-45 50 50)"/></g></svg></span><span className="cr-chat-working-text">{request.events.at(-1)?.detail || working(request.status)}</span></p>}
               {!!request.citations?.length && <details className="cr-chat-source-details"><summary>Source details</summary><ul className="cr-chat-sources" aria-label="Answer sources">{request.citations.filter(source => /^https:\/\//i.test(source.url)).map(source => <li key={`${source.evidence_id}-${source.url}`}><a href={source.url} target="_blank" rel="noreferrer">{source.title || "Source"}</a>{source.fetched_at && <small> · {new Date(source.fetched_at).toLocaleString()}</small>}</li>)}</ul></details>}
               {!!request.web_handoff?.citations.length && <ul className="cr-chat-sources" aria-label="Official sources">{request.web_handoff.citations.map(source => <li key={source.source_id}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a></li>)}</ul>}
               {request.events.length > 0 && <details className="cr-chat-run"><summary>Run details · {request.events.length} events</summary><ol>{request.events.map((entry, i) => <li key={i}><strong>{entry.node}</strong><span>{entry.detail}</span></li>)}</ol></details>}
@@ -380,7 +456,7 @@ export function ChatWidget() {
         {!query && <TypingPlaceholder text="Ask about your courses..." loop={!open} phrases={prompts} />}
         </div>
         <button type="submit" disabled={!query.trim() || sending || !memoryReady || catalog.storageStatus !== "saved"} aria-label="Send message">
-          <ArrowUp key={sent} className={sent ? "cr-chat-send-fly" : undefined} size={20} aria-hidden="true"/>
+          <SendArrow key={sent} className={sent ? "cr-chat-send-fly" : undefined} />
         </button>
       </form>}
     </aside>}

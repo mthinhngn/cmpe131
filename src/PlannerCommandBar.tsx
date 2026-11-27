@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUp, ChevronDown, LayoutGrid, Search } from "lucide-react";
+import { ChevronDown, LayoutGrid, Search } from "lucide-react";
+import { SendArrow } from "./SendArrow";
 import { TypingPlaceholder } from "./TypingPlaceholder";
 import { useChatPrompts } from "./chat-prompts";
 
@@ -185,7 +186,7 @@ export function PlannerCommandBar(props: Props) {
         {!value && <TypingPlaceholder text={placeholder} loop={!active} phrases={prompts} />}
         </span>
       </span>
-      <button type="button" className={`pb-cmd-go${ready ? " ready" : ""}`} disabled={!ready} aria-label={mode === "courses" ? "Add top match" : "Send message"} onClick={() => void submit()}><ArrowUp size={18} aria-hidden="true" /></button>
+      <button type="button" className="pb-cmd-go" disabled={!ready} aria-label={mode === "courses" ? "Add top match" : "Send message"} onClick={() => void submit()}><SendArrow /></button>
     </div>
     <p className={`pb-cmd-toast${toast ? " show" : ""}`} role="status">{toast}</p>
   </div>;
