@@ -9,6 +9,8 @@ export function ProductHeader({ activePath }: { activePath: string }) {
     <nav aria-label="Product navigation">
       {productNavigation.map(({ to, label }) => <a key={to} href={to} aria-current={to === activePath ? "page" : undefined}>{label}</a>)}
     </nav>
-    <a className="cr-product-account" href="/account" aria-current={activePath === "/account" ? "page" : undefined}>Account</a>
+    <div className="cr-product-account-slot">
+      <a className="cr-product-account" href="/account" aria-current={activePath === "/account" ? "page" : undefined}>Account</a>
+    </div>
   </header>;
 }

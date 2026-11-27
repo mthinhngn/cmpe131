@@ -9,7 +9,6 @@
   }
 
   .workspace[class] .workspace-content,
-  .workspace[class] .workspace-footer,
   .workspace[class] .data-message,
   .sp-page[class] .sp-main {
     box-sizing: border-box;

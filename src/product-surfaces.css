@@ -30,10 +30,6 @@ html body .bo-page .cr-product-header[class], html body .cr-product-header[class
   padding-inline: max(var(--product-gutter), calc((100% - var(--product-max)) / 2));
   font-family: var(--product-font);
 }
-html body .cr-product-header[class] .cr-product-account {
-  border-radius: var(--product-control-radius);
-  font-family: var(--product-font);
-}
 html body .cr-page-heading {
   display: flex;
   align-items: center;
@@ -108,6 +104,9 @@ html body :is(.bo-page, .pb-page, .workspace, .prereq-shell, .account-page) :foc
 html body :is(.bo-search, .pb-search, .cx-search):focus-within { border-color: #168873; }
 @media (min-width: 1000px) {
   :root { --product-gutter: 44px; }
+  html body :is(.bo-wrap, .pb-page main.pb-wrap, .workspace.workspace-explorer[class] .workspace-content, .prereq-shell.is-stepper .prereq-full-page) {
+    padding-bottom: 96px;
+  }
   html body :is(.bo-wrap, .pb-wrap, .workspace.workspace-explorer[class] .workspace-content, .prereq-full-page > .cr-page-heading) {
     box-sizing: border-box;
     width: min(calc(100% - 88px), 1380px);
