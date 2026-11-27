@@ -19,8 +19,9 @@ from .understanding import NEEDS, RequestUnderstanding
 from .verifier import Claim, verify, render_claims, verify_action_request, label_answer, filter_answer
 from .professor_ratings import with_rating_summary
 from .requirement_answer import check_term_reply, course_facts_answer, is_record, record_conditions, requirement_fallback, requirement_lookups
-from .requirement_query import (CourseCode, MAJOR_EFFECT_QUESTION, MENU_PROMPT, RequirementFilters, SectionSearch,
-                                broad_group, campus_effect_id, campus_mentions, condition_topics, exact_campus_id, question_terms)
+from .requirement_query import (CAMPUS, CourseCode, MAJOR_EFFECT_QUESTION, MENU_PROMPT, RequirementFilters, SectionSearch,
+                                broad_group, campus_effect_id, campus_mentions, campus_phrase, campus_selectors, condition_topics, exact_campus_id,
+                                question_terms)
 from .program_requirements import requirement_question
 
 
@@ -387,7 +388,7 @@ class AdvisorLoop:
         explicit = args.get('sources')
         enabled = not avoided and (not explicit or 'ratemyprofessors' in explicit)
         try:
-            rows = self.ratings.lookup(names, enabled=enabled, course_code=data.get('code') or args.get('code'))
+            rows = self.ratings.lookup(names, enabled=enabled)
         except Exception:
             return data
         return {'professor_ratings': rows, **data} if rows else data
@@ -427,6 +428,10 @@ class AdvisorLoop:
             understanding = RequestUnderstanding.model_validate(understanding) if understanding is not None else None
         except Exception:
             understanding = None
+        said = campus_phrase(latest, understanding.requirement) if understanding and understanding.requirement in CAMPUS else None
+        if said:
+            # The requirement field holds the student's words; a menu ID such as "ge-e" in its place matches no lookup.
+            understanding = understanding.model_copy(update={'requirement': said})
         needs = understanding.needs if understanding else []
         state['requirement_scope_required'] = bool({'requirement_options', 'eligibility'} & set(needs)
                                                    and understanding and (understanding.requirement or 'requirement_options' in needs))
@@ -471,8 +476,7 @@ class AdvisorLoop:
                     filters = understanding.requirement_filters
                     if self.structured_requirements and filters and not (filters.program_list or filters.requirements_all or filters.requirements_any):
                         if understanding.requirement:
-                            exact = exact_campus_id(understanding.requirement)
-                            filters = filters.model_copy(update={'requirements_all': [exact]} if exact else
+                            filters = filters.model_copy(update=campus_selectors(understanding.requirement, latest) or
                                                          {'program_list': understanding.requirement[:200]})
                     named = [code.upper() for code in understanding.courses if COURSE.fullmatch(code.upper())]
                     member_question = (len(named) == 1 and (filters or understanding.requirement)
@@ -484,11 +488,11 @@ class AdvisorLoop:
                         # Keep the student's requirement words for code to check against the program menu, rather than
                         # leaving the request to free-form research; a broad group asks which component is meant.
                         group = None if campus_mentions(latest) else broad_group(latest)
-                        exact = exact_campus_id(understanding.requirement) if understanding.requirement else None
+                        campus = campus_selectors(understanding.requirement, latest) if understanding.requirement else None
                         if group:
                             filters = RequirementFilters(requirements_any=group[1])
-                        elif exact:
-                            filters = RequirementFilters(requirements_all=[exact])
+                        elif campus:
+                            filters = RequirementFilters(**campus)
                         elif understanding.requirement:
                             filters = RequirementFilters(program_list=understanding.requirement[:200])
                     effect_id = None

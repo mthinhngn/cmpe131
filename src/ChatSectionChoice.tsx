@@ -17,11 +17,11 @@ export function ChatSectionChoice() {
     {choice.stage === "sections" && <>
       {components.map(component => <fieldset key={component}><legend>{component} section</legend>{choice.offerings.filter(o => o.component === component).map(o => <label key={o.classNumber} className="cr-chat-section-option">
         <input type="radio" name={`${choice.id}-${component}`} checked={choice.selected.includes(o.classNumber)} onChange={() => schedule.chooseSection(o.classNumber)} />
-        <span><strong>Section {o.sectionNumber}</strong><span>{o.days || "TBA"} · {o.times || "Time TBA"}</span><span>{o.instructors.join(", ") || "Instructor TBA"}</span><span>{o.location || "Location TBA"} · {o.seatsKnown === false ? "Seats unpublished" : o.openSeats > 0 ? `${o.openSeats} open seats` : "No open seats"}</span></span>
+        <span><strong>Section {o.sectionNumber}</strong><span>{o.days || "TBA"}, {o.times || "Time TBA"}</span><span>{o.instructors.join(", ") || "Instructor TBA"}</span><span>{o.location || "Location TBA"}, {o.seatsKnown === false ? "Seats unpublished" : o.openSeats > 0 ? `${o.openSeats} open seats` : "No open seats"}</span></span>
       </label>)}</fieldset>)}
       {conflicts.length > 0 && <p role="status">Time conflict with {[...new Set(conflicts.flatMap(c => [c.left.courseCode, c.right.courseCode]))].join(", ")}. You can choose another section or keep this overlap.</p>}
       {selected.some(o => parseMeeting(o).status !== "scheduled") && <p>Some meeting times are unconfirmed. Review them before enrolling.</p>}
-      <p>Open seats from SJSU’s public schedule{choice.sourceUpdatedOn && ` · SJSU updated ${scheduleSourceDate(choice.sourceUpdatedOn)}`}. Selecting a section does not enroll you.</p>
+      <p>Open seats from SJSU’s public schedule{choice.sourceUpdatedOn && `, updated ${scheduleSourceDate(choice.sourceUpdatedOn)}`}. Selecting a section does not enroll you.</p>
     </>}
     <div className="cr-chat-section-actions"><button type="button" onClick={schedule.cancelSections}>Cancel change</button>{choice.stage === "sections" && <button type="button" disabled={!complete} onClick={schedule.confirmSections}>Confirm sections</button>}</div>
   </div>;

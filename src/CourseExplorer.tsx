@@ -1,4 +1,3 @@
-import { professorDataAsOf } from "./ProfessorReviewLink";
 import { ProductPageHeading } from "./ProductPageHeading";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -229,11 +228,11 @@ export function Courses() {
                   const isPreview = preview?.classNumber === offering.classNumber;
                   const { conflicts, meeting } = sectionDetails.get(offering.classNumber)!;
                   const meetingKnown = meeting.status === "scheduled";
-                  const meetingLabel = meetingKnown ? meeting.patterns.map(pattern => `${pattern.days.map(day => dayLabel(day).slice(0, 3)).join(" / ")} · ${formatMinute(pattern.startMinute)}–${formatMinute(pattern.endMinute)}`).join("; ") : `${offering.days || "TBA"} · ${offering.times || "Time to be announced"}`;
+                  const meetingLabel = meetingKnown ? meeting.patterns.map(pattern => `${pattern.days.map(day => dayLabel(day).slice(0, 3)).join(" / ")} ${formatMinute(pattern.startMinute)}–${formatMinute(pattern.endMinute)}`).join("; ") : `${offering.days || "TBA"}, ${offering.times || "Time to be announced"}`;
                   return <div className={`cx-section${selected ? " cx-section-selected" : ""}${isPreview ? " cx-section-preview" : ""}`} key={offering.classNumber}>
                     <div className="cx-section-top"><strong>Section {offering.sectionNumber} <span>{offering.component}</span></strong><span className={offering.openSeats > 0 ? "cx-seats" : "cx-seats cx-seats-full"}>{offering.seatsKnown === false ? "Seats not listed" : offering.openSeats > 0 ? `${offering.openSeats} open seats` : "No open seats"}</span></div>
                     {offering.scheduleReview && <p className="cx-fit cx-fit-warning">Section details need review with SJSU before selection.</p>}{offering.notes && <p>{offering.notes}</p>}<p className="cx-section-time">{meetingLabel}</p>
-                    <p className="cx-section-instructors">{offering.instructors?.length ? offering.instructors.map(name => <span className="cx-section-instructor" key={name}><span>{name}</span><ProfessorReviewLink name={name} /></span>) : "Instructor to be announced"}</p><p>{offering.mode}{offering.location ? ` · ${offering.location}` : ""}</p>
+                    <p className="cx-section-instructors">{offering.instructors?.length ? offering.instructors.map(name => <span className="cx-section-instructor" key={name}><span>{name}</span><ProfessorReviewLink name={name} showRatings /></span>) : "Instructor to be announced"}</p><p>{offering.mode}{offering.location ? `, ${offering.location}` : ""}</p>
                     <p className={`cx-fit${conflicts.length || !meetingKnown ? " cx-fit-warning" : ""}`}>{conflicts.length ? `Overlaps ${[...new Set(conflicts.map(conflict => conflict.left.classNumber === offering.classNumber ? conflict.right.courseCode : conflict.left.courseCode))].join(", ")}` : !meetingKnown ? "Meeting time needs review" : "No overlap with your selected sections"}</p>
                     <div className="cx-section-actions"><button type="button" aria-pressed={isPreview} disabled={selected || saving} onClick={event => trySection(offering, event.currentTarget)}>{isPreview ? "Cancel preview" : selected ? "In your week" : "Preview section"}</button><button className="cx-add" type="button" disabled={saving || offering.scheduleReview} aria-pressed={selected} onClick={() => choose(offering)}>{selected ? <Check size={14} /> : <Plus size={14} />}{selected ? "Remove" : hasSelectedComponent(offering) ? "Replace section" : "Add to week"}</button></div>
                   </div>;
@@ -247,7 +246,7 @@ export function Courses() {
       </section>} week={
       <ExplorerWeek preview={preview} onCancelPreview={cancelPreview} onReturnToSections={returnToSections} onConfirmPreview={confirmPreview} saving={saving} onRemove={remove} onBrowse={browse} onInspect={inspectOffering} notice={choiceNotice || notice} />
     } />
-    <p className="cx-source-note">Section times and seats reflect the published snapshot. Professor review links are matched from Rate My Professors as of {professorDataAsOf}. <a href={sourceUrl ?? catalog.currentTerm.sourceUrl} target="_blank" rel="noreferrer">Verify with SJSU <ArrowRight size={12} /></a><span>{storageStatus === "saved" ? "Changes saved to your workspace." : "Changes use your shared planning workspace."}</span></p>
+    <p className="cx-source-note">Section times and seats reflect the published snapshot. <a href={sourceUrl ?? catalog.currentTerm.sourceUrl} target="_blank" rel="noreferrer">Verify with SJSU <ArrowRight size={12} /></a><span>{storageStatus === "saved" ? "Changes saved to your workspace." : "Changes use your shared planning workspace."}</span></p>
     {detail && <CourseDetail variant="roadmap" animateEntry={detailPointer} course={detail} onClose={() => setDetail(null)} />}
   </main>;
 }

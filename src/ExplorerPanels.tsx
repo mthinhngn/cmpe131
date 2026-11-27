@@ -67,7 +67,7 @@ export function ExplorerPanels({ view, onViewChange, catalog, week }: {
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(requested)); } catch { /* Optional preference. */ }
       }}>
         <ResizablePanel id="catalog" minSize={0} className="cx-resizable-panel" style={{ overflow: "hidden" }}><div hidden={visibleView === "week"}>{catalog}</div></ResizablePanel>
-        <ResizableHandle disableDoubleClick aria-label="Resize catalog and schedule" title="Drag to either edge · Arrow keys to adjust · Double-click to reset" onDoubleClick={resetSplit} />
+        <ResizableHandle disableDoubleClick aria-label="Resize catalog and schedule" title="Drag to either edge, use arrow keys to adjust, or double-click to reset" onDoubleClick={resetSplit} />
         <ResizablePanel id="week" minSize={0} className="cx-resizable-panel" style={{ overflow: "hidden" }}><div hidden={visibleView === "catalog"}><div className="cx-week-frame">{week}</div></div></ResizablePanel>
       </ResizablePanelGroup>
 
