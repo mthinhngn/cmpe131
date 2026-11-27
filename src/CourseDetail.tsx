@@ -16,6 +16,7 @@ import type { Course, CourseOffering } from "./types";
 import { useSchedule } from "./ScheduleContext";
 import { scheduleSourceDate, termName } from "./scheduleTerms";
 import { ProfessorReviewLink } from "./ProfessorReviewLink";
+import { CourseFeedback } from "./CourseFeedback";
 
 export function CourseDetail({ course, onClose, variant, animateEntry = true }: { course: Course; onClose: () => void; variant?: "roadmap"; animateEntry?: boolean }) {
   const isRoadmap = variant === "roadmap";
@@ -155,6 +156,7 @@ export function CourseDetail({ course, onClose, variant, animateEntry = true }: 
             {course.prerequisiteText && <p>{course.prerequisiteText}</p>}
           </section>
           {corequisites.length > 0 && <section className="prerequisite-section"><h3>Corequisites</h3><div className="prerequisite-list">{corequisites.map((item) => <div key={item.id}><strong>{item.code}</strong><span>{item.title}</span></div>)}</div></section>}
+          <CourseFeedback courseCode={course.code} />
           <section className="offerings-section">
             {isRoadmap && <div className="detail-section-heading"><h3>Listed sections</h3><span>{hasTermData ? `${listedCount} ${listedCount === 1 ? "section" : "sections"}` : "Data unavailable"}</span></div>}
             <header className="offerings-header">
