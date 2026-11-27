@@ -73,7 +73,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .session-label svg { color: var(--accent); }
 .data-message { max-width: 1504px; min-height: 24px; margin: auto; padding: 3px 48px; border-top: 1px solid var(--line); color: var(--quiet); font-size: 11px; }
 .workspace-content { max-width: 1504px; padding: 36px 48px 110px; }
-.workspace-footer { padding: 25px max(48px,calc((100vw - 1408px)/2)); border-color: var(--line); color: var(--quiet); font-size: 12px; }
 .section-eyebrow, .workspace .page-intro .eyebrow, .workspace .chart-title-block .eyebrow { color: var(--gold); font-family: "DM Sans",sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .13em; }
 .workspace-heading { max-width: 850px; margin-bottom: 42px; }
 .workspace-heading h1 { margin: 11px 0 18px; font-size: clamp(52px, 4.8vw, 72px); line-height: .98; }

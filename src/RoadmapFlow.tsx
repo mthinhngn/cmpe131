@@ -46,7 +46,7 @@ const CourseCard = memo(function CourseCard({ data }: NodeProps<CourseNode>) {
   && previous.data.shaded === next.data.shaded);
 
 const SemesterLabel = memo(function SemesterLabel({ data }: NodeProps<SemesterNode>) {
-  return <div className="rf-semester-label"><small>{data.row.year}</small><strong>{data.row.term} semester</strong><span>{data.row.count} requirements</span><span>{data.row.credits} units</span></div>;
+  return <div className="rf-semester-label"><small>{data.row.year}</small><strong>{data.row.term}</strong><span>{data.row.credits} units</span></div>;
 });
 
 const proOptions = { hideAttribution: true };
@@ -159,7 +159,7 @@ export default function RoadmapFlow({ courses, rows, selectedId, query, onSelect
     if (course) { event.preventDefault(); event.stopPropagation(); openCourse(course); }
   }} onKeyDown={event => { if (event.key === "Escape") clearFocus(); }}>
     {completionError && <div className="rf-map-error" role="alert"><span>{completionError}</span><button type="button" aria-label="Dismiss error" onClick={clearRoadmapCompletionError}>×</button></div>}
-    <div className="rf-map-help">Drag to rearrange · Hover to follow a path · Click to mark completion or choose an elective</div>
+    <div className="rf-map-help">Drag to rearrange · Click a course for options</div>
     <ReactFlow<RoadmapNode> nodes={displayedNodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange}
       onNodeMouseEnter={onNodeMouseEnter}
       onNodeMouseLeave={onNodeMouseLeave}

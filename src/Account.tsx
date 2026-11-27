@@ -171,7 +171,6 @@ function ProfileSetup({ user }: { user: AccountUser }) {
 function AccountSettings({ user }: { user: AccountUser }) {
   return <main className="acct-set">
     <h1>Account settings</h1>
-    <p className="acct-lede">Your courses, plans and schedule are saved to this account.</p>
     <ProfileSection user={user} />
     <CatalogProvider key={user.id}><PageReady><DegreeSection user={user} /></PageReady></CatalogProvider>
     <TranscriptSection user={user} />
@@ -179,9 +178,9 @@ function AccountSettings({ user }: { user: AccountUser }) {
   </main>;
 }
 
-function Section({ title, sub, children }: { title: string; sub: string; children: ReactNode }) {
+function Section({ title, sub, children }: { title: string; sub?: string; children: ReactNode }) {
   const id = `acct-${title.toLowerCase()}`;
-  return <section className="acct-sec" aria-labelledby={id}><div><h2 id={id}>{title}</h2><p>{sub}</p></div><div>{children}</div></section>;
+  return <section className="acct-sec" aria-labelledby={id}><div><h2 id={id}>{title}</h2>{sub && <p>{sub}</p>}</div><div>{children}</div></section>;
 }
 
 function ProfileSection({ user }: { user: AccountUser }) {
@@ -189,7 +188,7 @@ function ProfileSection({ user }: { user: AccountUser }) {
   const { busy, error, message, run } = useAction();
   const [name, setName] = useState(user.name);
   const save = (e: FormEvent) => { e.preventDefault(); void run(async () => { const result = await authRequest("profile", { name, major: user.major, startingSemester: user.startingSemester }); update(result.user); return "Profile saved."; }); };
-  return <Section title="Profile" sub="How you appear in Course Radar.">
+  return <Section title="Profile">
     <div className="acct-who"><span className="acct-avatar" aria-hidden="true">{(user.name.trim()[0] || user.email[0] || "?").toUpperCase()}</span><div><b>{user.name}</b><small>{user.email}</small></div></div>
     <form onSubmit={save}>
       <label className="acct-field"><span>Name</span><input className="acct-input" autoComplete="name" value={name} onChange={e => setName(e.target.value)} maxLength={100} required disabled={busy} /></label>
@@ -210,14 +209,14 @@ function DegreeSection({ user }: { user: AccountUser }) {
   const [year, setYear] = useState(initial.year);
   const changed = JSON.stringify(additional) !== JSON.stringify(additionalPrograms) || major !== user.major || `${term} ${year}` !== user.startingSemester;
   const save = (e: FormEvent) => { e.preventDefault(); void run(async () => { const result = await authRequest("profile", { name: user.name, major, additionalPrograms: additional, startingSemester: `${term} ${year}` }); update(result.user); await planningStore.load(); return "Degree saved."; }); };
-  return <Section title="Degree" sub="Your saved current major and starting semester. Previewing another major elsewhere does not change these settings.">
+  return <Section title="Degree" sub="What-if previews don’t change these.">
     <form onSubmit={save}>
       <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} />
       <fieldset className="acct-fieldset" disabled={busy}><legend className="acct-legend">First semester at SJSU</legend><div className="acct-row2">
         <SelectionMenu label="Term" value={term} onChange={setTerm} options={terms.map(t => ({ slug:t, title:t }))} disabled={busy} />
         <SelectionMenu label="Year" value={year} onChange={setYear} options={years(year).map(y => ({ slug:y, title:y }))} disabled={busy} />
       </div></fieldset>
-      <dl className="acct-dl"><div><dt>Catalog</dt><dd>{catalog.catalogYear}</dd></div><div><dt>Sections</dt><dd>{catalog.currentTerm.name} snapshot, not live enrollment</dd></div></dl>
+      <dl className="acct-dl"><div><dt>Catalog</dt><dd>{catalog.catalogYear}</dd></div><div><dt>Sections</dt><dd>{catalog.currentTerm.name} snapshot</dd></div></dl>
       <button className="acct-btn acct-btn-line" disabled={busy || !changed}>{busy ? "Saving…" : "Save degree"}</button>
     </form>
     <Feedback error={error} message={message} />
@@ -306,14 +305,14 @@ function TranscriptManager({ user, setup = false, onSelection }: { user: Account
       <label className="acct-hint"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> I agree to send this PDF to OpenAI for transcript extraction and search indexing.</label>
       <div className="acct-actions"><button type="button" className="acct-btn acct-btn-line" disabled={!file || !consent || transcript.status !== "none"} onClick={upload}>{busy ? "Processing…" : "Process transcript"}</button></div>
       {transcript.status !== "none" && <>
-        <p className="acct-muted">{transcript.courses.length} extracted rows. Review the courses, recorded terms and statuses before importing. Existing placements are preserved. Unmatched rows stay available for review.</p>
+        <p className="acct-muted">{transcript.courses.length} rows found. Review them before importing.</p>
         <div className="acct-transcript-rows">{transcript.courses.map(row => <label key={row.row_id} className="acct-transcript-row">
           <input type="checkbox" checked={importable.includes(row.row_id)} disabled={!!issue(row)} onChange={event => choose(event.target.checked ? [...selected, row.row_id] : selected.filter(id => id !== row.row_id))} />
           <span><b>{row.code || "Unmatched course"}</b> {row.title}<small>{row.term || "Unknown term"} / {row.grade || "No grade"} / {row.units ?? "Unknown"} units / {row.status === "in_progress" ? "in progress" : row.status}{issue(row) ? ` / ${issue(row)}` : ""}</small></span>
         </label>)}</div>
         {setup ? <p className="acct-hint">Your selected courses will be imported when you save your account details. Check that your first semester includes their recorded terms.</p> : <button type="button" className="acct-btn acct-btn-primary" disabled={!importable.length || !workspace} onClick={confirm}>Import to Planner</button>}
-        {transcript.status === "ready" && <p className="acct-status" role="status">Transcript search is ready. You can import these courses to Planner again without creating duplicates.</p>}
-        <p className="acct-hint">Deleting removes the PDF, extracted transcript and search index. Imported courses and their Planner placements stay in your workspace.</p>
+        {transcript.status === "ready" && <p className="acct-status" role="status">Importing again won’t create duplicates.</p>}
+        <p className="acct-hint">Deleting removes the PDF and its extracted data. Imported courses stay in your plan.</p>
         <button type="button" className="acct-btn acct-btn-ghost" onClick={() => void run(async () => { accept(await transcriptRequest("DELETE")); return "Transcript deleted."; })}>Delete transcript</button>
       </>}
     </fieldset>
@@ -324,8 +323,8 @@ function TranscriptManager({ user, setup = false, onSelection }: { user: Account
 function SessionSection() {
   const { logout } = useAuth();
   const { busy, error, message, run } = useAction();
-  return <Section title="Session" sub="Signed in on this browser.">
-    <p className="acct-muted">Signing out returns to guest mode. Your account plan stays saved.</p>
+  return <Section title="Session">
+    <p className="acct-muted">Your plan stays saved after you sign out.</p>
     <button className="acct-btn acct-btn-line" disabled={busy} onClick={() => void run(logout)}>{busy ? "Signing out…" : "Sign out"}</button>
     <Feedback error={error} message={message} />
   </Section>;
@@ -350,7 +349,7 @@ function GuestWorkspace() {
     <h2 id="acct-guest-heading">Guest workspace</h2>
     <p className="acct-muted">Temporary in this tab · Close the tab to discard · {catalog.catalogYear} catalog · {catalog.currentTerm.name} sections</p>
     <form onSubmit={save}>
-      <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} primaryHelp="Current major for this guest tab. What-if previews do not replace it." />
+      <ProgramFields value={major} onChange={slug => { setMajor(slug); setAdditional(planningStore.getState().additionalPrograms?.[slug] ?? []); }} additional={additional} onAdditional={setAdditional} disabled={busy} primaryHelp="Saved in this tab only." />
       <div className="acct-field"><span>First semester</span><SelectionMenu label="First semester" value={start} onChange={setStart} disabled={busy} options={[{ slug:"", title:"Not set" }, ...Array.from({ length:21 }, (_,i) => thisYear - 10 + i).flatMap(y => ["spring", "summer", "fall", "winter"].map(t => ({ slug:`${t}-${y}`, title:`${t[0].toUpperCase() + t.slice(1)} ${y}` })))]} /></div>
       <button className="acct-btn acct-btn-line" disabled={busy}>{busy ? "Updating…" : "Apply guest settings"}</button>
     </form>

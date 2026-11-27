@@ -5,9 +5,13 @@
   width: 100%; max-width: none; height: 72px; min-height: 72px;
   margin: 0 auto; padding: 0 max(32px, calc((100% - 1280px) / 2)); display: grid;
   grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); column-gap: 24px; align-items: center;
-  background: #fff; color: #16181d; border: 0; border-bottom: 1px solid #e7e5e0;
+  background: #fff; color: #16181d; border: 0;
   font: 400 14.5px/1.6 "Product Header Sans", Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+.cr-product-header[class]::before {
+  content: ""; position: absolute; inset: auto 0 0; height: 1px;
+  background: var(--product-line, #e7e5e0); pointer-events: none;
 }
 .cr-product-header[class] .cr-header-brand[class] {
   grid-column: 1; justify-self: start; font: 600 15px/1.5 "Product Header Sans", Inter, sans-serif;
@@ -17,28 +21,38 @@
   grid-column: 2; display: flex; align-self: stretch; align-items: stretch;
   gap: 28px; margin: 0; padding: 0; width: max-content; border: 0; background: transparent;
 }
-.cr-product-header[class] nav a {
-  position: relative; display: flex; align-items: center; padding: 0; margin: 0;
-  font: inherit; letter-spacing: normal; white-space: nowrap; color: #555a63;
-  text-decoration: none; background: transparent; border: 0; border-radius: 0;
+.cr-product-header[class] :is(nav a, .cr-product-account) {
+  font: inherit; letter-spacing: normal; white-space: nowrap;
+  color: var(--product-muted, #555a63); text-decoration: none;
   transition: color 150ms ease;
 }
-.cr-product-header[class] nav a:hover, .cr-product-header[class] nav a[aria-current="page"] { color: #16181d; }
-.cr-product-header[class] nav a[aria-current="page"]::after {
-  content: ""; display: block; position: absolute; bottom: 7px; left: 50%;
-  width: 22px; height: 1.5px; background: #16181d; transform: translateX(-50%);
+.cr-product-header[class] :is(nav a, .cr-product-account):is(:hover, [aria-current="page"]) {
+  color: var(--product-ink, #16181d);
+}
+.cr-product-header[class] nav a {
+  position: relative; display: flex; align-items: center; padding: 0; margin: 0;
+  background: transparent; border: 0; border-radius: 0;
+}
+.cr-product-header[class] :is(nav a[aria-current="page"], .cr-product-account-slot:has([aria-current="page"]))::after {
+  content: ""; position: absolute; bottom: 0; left: 50%;
+  width: 22px; height: 2px; background: #16181d; transform: translateX(-50%); pointer-events: none;
+}
+.cr-product-header[class] .cr-product-account-slot {
+  grid-column: 3; justify-self: end; align-self: stretch; position: relative;
+  display: grid; align-items: center;
 }
 .cr-product-header[class] .cr-product-account {
-  grid-column: 3; justify-self: end; display: inline-flex; align-items: center; justify-content: center;
-  box-sizing: border-box; min-width: 84px; height: 40px; margin: 0; padding: 0 12px;
-  font: 500 13px/1.5 "Product Header Sans", Inter, sans-serif; letter-spacing: normal;
-  color: #16181d; background: transparent; border: 1px solid #d5d8d4; border-radius: 4px; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; min-height: 36px; margin: 0; padding: 0 12px;
+  background: transparent; border: 1px solid var(--product-line, #dedfe5);
+  border-radius: var(--product-control-radius, 8px);
 }
-.cr-product-header[class] .cr-product-account:hover { background: #e4e3df; }
+.cr-product-header[class] .cr-product-account:hover { background: #f5f6f8; }
 .cr-product-header[class] a:focus-visible { outline: 2px solid #16181d; outline-offset: 4px; }
 @media (max-width: 760px) {
   .cr-product-header[class] { height: auto; grid-template-columns: 1fr auto; padding: 12px 16px 0; column-gap: 12px; }
-  .cr-product-header[class] .cr-product-account { grid-column: 2; }
+  .cr-product-header[class] .cr-product-account-slot { grid-column: 2; }
+  .cr-product-header[class] .cr-product-account-slot:has([aria-current="page"])::after { display: none; }
   .cr-product-header[class] nav { grid-column: 1 / -1; grid-row: 2; width: 100%; overflow-x: auto; gap: 24px; min-height: 52px; }
   .cr-product-header[class] nav a { flex-shrink: 0; }
 }

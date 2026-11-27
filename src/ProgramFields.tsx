@@ -18,7 +18,7 @@ function loadPrograms() {
 const groups: Record<string, string> = { bachelor: "Bachelor’s degrees", master: "Master’s degrees", doctoral: "Doctoral degrees", combined: "Combined degrees", minor: "Minors", certificate: "Certificates", credential: "Credentials and authorizations" };
 
 /** Guests, setup and signed-in settings share one cached program directory. */
-export function ProgramFields({ value, onChange, additional, onAdditional, disabled = false, primaryLabel = "Current major", primaryHelp = "Your actual SJSU major or degree program. What-if previews do not change this selection." }: {
+export function ProgramFields({ value, onChange, additional, onAdditional, disabled = false, primaryLabel = "Current major", primaryHelp = "" }: {
   value: string; onChange: (slug: string) => void; additional: string[]; onAdditional: (slugs: string[]) => void; disabled?: boolean; primaryLabel?: string; primaryHelp?: string;
 }) {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -41,7 +41,6 @@ export function ProgramFields({ value, onChange, additional, onAdditional, disab
     <fieldset className="acct-fieldset" disabled={disabled || !programs.length}><legend className="acct-legend">Minors and certificates (optional)</legend>
       <div className="acct-row2"><SelectionMenu searchable label="Additional minor or certificate" options={extras} groups={groups} value={extra} onChange={setExtra} placeholder="Choose an additional program" disabled={disabled || !programs.length} /><button type="button" className="acct-btn acct-btn-line" disabled={!extra || additional.length >= 10} onClick={() => { onAdditional([...additional, extra]); setExtra(""); }}>Add program</button></div>
       {!!additional.length && <ul className="acct-added-programs">{additional.map(key => <li key={key}><span>{programs.find(p => p.slug === key)?.title ?? key}</span><button type="button" className="acct-btn acct-btn-ghost" aria-label={`Remove ${programs.find(p => p.slug === key)?.title ?? key}`} onClick={() => onAdditional(additional.filter(p => p !== key))}>Remove</button></li>)}</ul>}
-      <p className="acct-muted">Requirements appear together in Roadmap and Overview. Each primary program keeps its own saved plan and schedule.</p>
     </fieldset>
   </div>;
 }

@@ -22,10 +22,8 @@ export function Workspace() {
     <a className="skip-link" href="#workspace-content">Skip to content</a>
     <ProductHeader activePath={location.pathname} />
     <div className="workspace-body">
-      {location.pathname !== "/schedule" && <div className={`data-message ${mode}`} role="status">{mode === "loading" ? "Checking for the latest catalog… Reviewed snapshot available below." : mode === "fixture" ? <>Showing the reviewed catalog snapshot. Live catalog unavailable. <button onClick={retry}>Retry connection</button></> : "Connected to catalog · Section availability is a dated snapshot, not live enrollment."}</div>}
+      {location.pathname !== "/schedule" && mode !== "database" && <div className={`data-message ${mode}`} role="status">{mode === "loading" ? "Checking for the latest catalog…" : <>Showing a saved catalog snapshot. <button onClick={retry}>Retry connection</button></>}</div>}
       <div id="workspace-content" className="workspace-content" ref={content} tabIndex={-1}><Outlet key={program} /></div>
-
-      <footer className="workspace-footer"><span>Built for the path ahead.</span><span>Planning reference · Official SJSU requirements take precedence.</span></footer>
     </div>
   </div>;
 }

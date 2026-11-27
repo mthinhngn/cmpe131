@@ -26,7 +26,7 @@
 .workspace.workspace-explorer[class] .workspace-header nav a,
 .workspace-explorer header .cr-header-brand.cr-header-brand { font-family: ExplorerInter, "Helvetica Neue", Helvetica, Arial, sans-serif; }
 .workspace-explorer .program-source { border: 0; background: #050505; color: #fff; border-radius: 4px; padding: 10px 13px; font: 400 11px ExplorerInter, Arial, sans-serif; }
-.workspace-explorer .workspace-context, .workspace-explorer .data-message, .workspace-explorer .workspace-content, .workspace-explorer .workspace-footer { width: min(1280px, calc(100% - 64px)); max-width: none; margin: 0 auto; }
+.workspace-explorer .workspace-context, .workspace-explorer .data-message, .workspace-explorer .workspace-content { width: min(1280px, calc(100% - 64px)); max-width: none; margin: 0 auto; }
 .workspace-explorer .workspace-context { min-height: 48px; padding: 10px 0; gap: 16px; background: #fff; border-bottom: 1px solid #ededed; font-family: ExplorerInter, Arial, sans-serif; }
 .workspace-explorer .workspace-context .breadcrumb { font-size: 14px; color: #656565; }
 .workspace-explorer .workspace-context .breadcrumb strong { font-weight: 400; color: #101010; }
@@ -38,7 +38,6 @@
 .workspace-explorer .data-message button { color: #183933; }
 .workspace-explorer .workspace-content { padding: 0; }
 .workspace-explorer .workspace-content:focus { outline: none; }
-.workspace-explorer .workspace-footer { padding: 24px 0; background: #fff; border-top: 1px solid #e3e3e3; color: #656565; font: 400 11px/1.6 ExplorerInter, Arial, sans-serif; }
 .cx-page { padding: 48px 0 0; }
 .cx-intro { display: flex; justify-content: space-between; align-items: end; gap: 40px; padding-bottom: 45px; }
 .cx-intro h1 { margin: 0; font: 500 clamp(48px, 5.4vw, 76px)/.99 ExplorerInter, "Helvetica Neue", Arial, sans-serif; letter-spacing: -.065em; }

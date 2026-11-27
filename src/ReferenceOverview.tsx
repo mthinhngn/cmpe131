@@ -81,7 +81,7 @@ function Segmented<T extends string>({ value, options, onChange, label: aria }: 
     const node = group.current; if (!node) return;
     const align = () => {
       const on = node.querySelector<HTMLButtonElement>('[aria-pressed="true"]'), thumb = node.querySelector<HTMLElement>(".bo-thumb");
-      if (on && thumb) { thumb.style.width = `${on.offsetWidth}px`; thumb.style.transform = `translateX(${on.offsetLeft - 2}px)`; }
+      if (on && thumb) { thumb.style.width = `${on.offsetWidth}px`; thumb.style.transform = `translateX(${on.offsetLeft}px)`; }
     };
     align();
     const observer = new ResizeObserver(align); observer.observe(node);
@@ -102,7 +102,6 @@ export default function Overview() {
   const summary = useMemo(() => overviewData(catalog, takenCourseIds, plans), [catalog, takenCourseIds, plans]);
   const currentSlot: PlanSlot | null = termToSlot[catalog.currentTerm.id] ?? null;
   const [selection, setSelection] = useState<string | null>(null);
-  const [subject, setSubject] = useState<SubjectKey | null>(null);
   const [semester, setSemester] = useState<PlanSlot | null>(null);
   const [colour, setColour] = useState<"subject" | "status">("subject");
   const [query, setQuery] = useState("");
@@ -186,19 +185,18 @@ export default function Overview() {
   let acc = 0;
   const arcs = ORDER.flatMap((k, n) => {
     if (!allUnits || !stats[k].total) return [];
-    const f = stats[k].total / allUnits, df = stats[k].done / allUnits, gap = 2.5, offset = -acc * C, dim = subject && subject !== k ? 0.2 : 1;
+    const f = stats[k].total / allUnits, df = stats[k].done / allUnits, gap = 2.5, offset = -acc * C;
     acc += f;
     return [
-      <circle key={`${k}-t`} cx="90" cy="90" r="72" stroke={sc(k)} strokeOpacity={dim} style={{ "--dash": `${Math.max(0, f * C - gap)} ${C}`, "--C": C, "--d": `${520 + n * 70}ms` } as CSSProperties} strokeDashoffset={offset} />,
-      ...(df > 0 ? [<circle key={`${k}-d`} cx="90" cy="90" r="72" stroke={sc(k)} opacity={dim} style={{ "--dash": `${Math.max(0, df * C - gap)} ${C}`, "--C": C, "--d": `${620 + n * 70}ms` } as CSSProperties} strokeDashoffset={offset} />] : []),
+      <circle key={`${k}-t`} cx="90" cy="90" r="72" stroke={sc(k)} style={{ "--dash": `${Math.max(0, f * C - gap)} ${C}`, "--C": C, "--d": `${520 + n * 70}ms` } as CSSProperties} strokeDashoffset={offset} />,
+      ...(df > 0 ? [<circle key={`${k}-d`} cx="90" cy="90" r="72" stroke={sc(k)} style={{ "--dash": `${Math.max(0, df * C - gap)} ${C}`, "--C": C, "--d": `${620 + n * 70}ms` } as CSSProperties} strokeDashoffset={offset} />] : []),
     ];
   });
 
   const maxColumn = Math.max(22, ...slots.map(s => chartIn(s).reduce((n, c) => n + Math.max(2, c.units), 0)));
   const q = query.trim().toLowerCase();
-  const rows = courseItems.filter(i => (!subject || i.subject === subject) && (semester === null || i.slot === semester) && (!q || `${i.code} ${i.title}`.toLowerCase().includes(q)))
+  const rows = courseItems.filter(i => (semester === null || i.slot === semester) && (!q || `${i.code} ${i.title}`.toLowerCase().includes(q)))
     .sort((a, b) => (typeof a.slot === "number" ? a.slot : 99) - (typeof b.slot === "number" ? b.slot : 99) || a.code.localeCompare(b.code));
-  const pickSubject = (k: SubjectKey) => setSubject(subject === k ? null : k);
   const chip = (c: Course) => <button type="button" key={c.id} className="bo-cchip" style={{ "--c": sc(subjectOf(c)) } as CSSProperties} onClick={() => setSelection(c.id)}><i />{c.code}</button>;
 
   return <div className="bo-page" ref={root}>
@@ -207,6 +205,9 @@ export default function Overview() {
     <main className="bo-wrap">
       <ProductPageHeading title="Overview" />
       <ProgramRequirements />
+      {mode !== "database" && <p className="bo-catalog-status" role="status">
+        {mode === "loading" ? "Connecting to catalog…" : <>Reviewed local snapshot <button type="button" className="bo-ghost" onClick={retry}>Retry connection</button></>}
+      </p>}
       <div className="bo-bento">
         <Tile className="bo-term t-term" order={0}>
           <div className="bo-th"><h2><Icon name="spark" />This term</h2><a className="bo-ghost" href="/schedule"><Icon name="calendar" />Schedule<Icon name="arrow" small /></a></div>
@@ -223,10 +224,10 @@ export default function Overview() {
         </Tile>
 
         <Tile className="t-ring" order={1}>
-          <div className="bo-th"><h2><Icon name="layers" />Units by subject</h2><span className="bo-hint">Select a subject</span></div>
+          <div className="bo-th"><h2><Icon name="layers" />Units by subject</h2></div>
           <div className="bo-ringbox">
             <div className="bo-ring"><svg viewBox="0 0 180 180" aria-hidden="true" key={program}>{arcs}</svg><div className="c"><b><CountUp value={percent} delay={650} /><small>%</small></b><span>of all units done</span></div></div>
-            <ul className={`bo-slist${subject ? " filtering" : ""}`}>{ORDER.filter(k => stats[k].total).map(k => <li key={k}><button type="button" style={{ "--c": sc(k) } as CSSProperties} aria-pressed={subject === k} onClick={() => pickSubject(k)}><i /><span>{label(k)}</span><small>{stats[k].done}/{stats[k].total}u</small></button></li>)}</ul>
+            <ul className="bo-slist">{ORDER.filter(k => stats[k].total).map(k => <li key={k} style={{ "--c": sc(k) } as CSSProperties}><i /><span>{label(k)}</span><small>{stats[k].done}/{stats[k].total}u</small></li>)}</ul>
           </div>
         </Tile>
 
@@ -238,11 +239,14 @@ export default function Overview() {
               {slots.map((s, si) => {
                 const list = chartIn(s);
                 return <button type="button" key={String(s)} className={`bo-col${s === currentSlot ? " is-now" : ""}`} aria-pressed={semester === s} aria-label={`${termLabel(s)}, ${sum(list.filter(i => i.status !== "complete"))} planned units, ${sum(list.filter(i => i.status === "complete"))} completed units: ${list.map(i => i.code).join(", ") || "nothing placed"}`} onClick={() => setSemester(semester === s ? null : s)}>
-                  {list.map((i, j) => <span key={i.id} title={`${i.code} · ${i.units}u · ${STATUS[i.status]}`} className={`bo-blk${i.status === "complete" ? " done" : i.status === "remaining" ? " remaining" : ""}${i.subject === "choice" && colour === "subject" ? " choice" : ""}${subject && subject !== i.subject ? " dim" : ""}`} style={{ "--u": i.units, "--c-ink": i.subject === "writing" ? "#fff" : "#000", "--c": colour === "subject" ? sc(i.subject) : STATUS_COLOR[i.status], "--d": `${420 + si * 90 + j * 45}ms` } as CSSProperties} data-small={i.units < 2 || undefined}><b>{i.code}</b><small>{i.units}</small></span>)}
+                  {list.map((i, j) => <span key={i.id} title={`${i.code} · ${i.units}u · ${STATUS[i.status]}`} className={`bo-blk${i.status === "complete" ? " done" : i.status === "remaining" ? " remaining" : ""}${i.subject === "choice" && colour === "subject" ? " choice" : ""}`} style={{ "--u": i.units, "--c-ink": i.subject === "writing" ? "#fff" : "#000", "--c": colour === "subject" ? sc(i.subject) : STATUS_COLOR[i.status], "--d": `${420 + si * 90 + j * 45}ms` } as CSSProperties} data-small={i.units < 2 || undefined}><b>{i.code}</b><small>{i.units}</small></span>)}
                 </button>;
               })}
             </div>
-            <div className="bo-xl" style={{ "--cols": slots.length } as CSSProperties}>{slots.map(s => <span key={String(s)}><b>{slotShort(s)}<em>{sum(chartIn(s).filter(i => i.status !== "complete"))}u</em></b><small>{termLabel(s)}</small></span>)}</div>
+            <div className="bo-xl" style={{ "--cols": slots.length } as CSSProperties}>{slots.map(s => {
+              const axisLabel = typeof s === "string" && s.startsWith("summer-") ? `SU${s.slice(-2)}` : slotShort(s);
+              return <span key={String(s)}><b>{axisLabel}<em>{sum(chartIn(s).filter(i => i.status !== "complete"))}u</em></b><small>{termLabel(s)}</small></span>;
+            })}</div>
           </div>
           <div className="bo-key"><span><i className="k-done" />Completed</span><span><i className="k-plan" />In progress or planned</span></div>
         </Tile>
@@ -280,22 +284,17 @@ export default function Overview() {
           <div className="bo-th"><h2><Icon name="layers" />Roadmap &amp; planned courses</h2>
             <div className="bo-filters">
               <label className="bo-search"><Icon name="search" /><input type="search" placeholder="Find a course" aria-label="Find a course" value={query} onChange={e => setQuery(e.target.value)} /></label>
-              {ORDER.filter(k => k !== "choice" && stats[k].total).map(k => <button type="button" key={k} className="bo-pill" aria-pressed={subject === k} onClick={() => pickSubject(k)}><span className="sw" style={{ background: sc(k) }} />{label(k)}</button>)}
               {semester !== null && <button type="button" className="bo-pill" aria-pressed="true" onClick={() => setSemester(null)}>{slotShort(semester)} ✕</button>}
             </div>
           </div>
           <div className="bo-scroll"><table className="bo-table"><thead><tr><th>Course</th><th className="hide-s">Title</th><th>Status</th><th>Sem</th><th>Units</th></tr></thead>
-            <tbody key={`${program}|${subject}|${semester}|${q}`}>{rows.length ? rows.map((i, n) => <tr key={i.id} tabIndex={0} className={i.id === selected?.id ? "sel" : ""} style={{ "--c": sc(i.subject), "--rd": `${Math.min(n, 14) * 32}ms` } as CSSProperties} onClick={() => setSelection(i.id)} onKeyDown={e => e.key === "Enter" && setSelection(i.id)}>
+            <tbody key={`${program}|${semester}|${q}`}>{rows.length ? rows.map((i, n) => <tr key={i.id} tabIndex={0} className={i.id === selected?.id ? "sel" : ""} style={{ "--c": sc(i.subject), "--rd": `${Math.min(n, 14) * 32}ms` } as CSSProperties} onClick={() => setSelection(i.id)} onKeyDown={e => e.key === "Enter" && setSelection(i.id)}>
               <td className="code"><i />{i.code}</td><td className="hide-s">{i.title}</td>
               <td><span className="bo-st">{i.status === "current" ? <i className="bo-live" style={{ color: "var(--st-current)" }} /> : <i className={`bo-dot ${i.status}`} />}{STATUS[i.status]}</span></td>
               <td className="m">{slotShort(i.slot)}</td><td className="m">{i.units}</td>
             </tr>) : <tr><td colSpan={5} className="m bo-none">No courses match. Clear a filter to see more.</td></tr>}</tbody></table></div>
         </Tile>
       </div>
-      <footer className="bo-foot" role="status">
-        <span>{mode === "loading" ? "Connecting to catalog…" : mode === "database" ? `${catalog.name}, ${catalog.catalogYear} catalog, verified ${catalog.lastVerifiedAt}` : <>Reviewed local snapshot <button type="button" onClick={retry}>Retry connection</button></>}</span>
-        <span><a href={catalog.programUrl || catalog.sourceUrl} target="_blank" rel="noopener noreferrer">Official program page</a> · A personal planning aid, not a degree audit</span>
-      </footer>
     </main>
 
   </div>;

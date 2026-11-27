@@ -42,7 +42,6 @@
 :where(.bo-page) button { font: inherit; color: inherit; }
 .bo-page :focus-visible { outline: 1.5px solid var(--acc); outline-offset: 3px; border-radius: 2px; }
 /* the shared header sits on the page canvas, as on the landing page */
-.bo-page .cr-product-header[class] { background: var(--canvas); border-bottom-color: color-mix(in srgb, var(--ink) 10%, var(--canvas)); }
 .bo-wrap { width: min(var(--page-max), 100% - 2 * clamp(20px, 5vw, 80px)); margin-inline: auto; padding: 30px 0 40px; }
 
 /* canvas texture */
@@ -185,12 +184,9 @@
 .bo-ring .c > span { margin-top: 4px; font-size: calc(12px * var(--fs)); color: var(--faint); }
 @keyframes bo-fade { from { opacity: 0; transform: translateY(8px); } }
 .bo-slist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.bo-slist button { width: 100%; display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; padding: 6px 8px; border: 0; border-radius: 7px; background: none; text-align: left; font-size: calc(13.5px * var(--fs)); cursor: pointer; transition: background-color calc(380ms * var(--spd)) var(--heavy), opacity calc(380ms * var(--spd)) var(--heavy); }
-.bo-slist button i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
-.bo-slist button small { font: 400 calc(11.5px * var(--fs)) var(--mono); color: var(--faint); }
-.bo-slist button[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 14%, white); }
-.bo-slist.filtering button[aria-pressed="false"] { opacity: 0.45; }
-@media (hover: hover) and (pointer: fine) { .bo-slist button:hover { background: color-mix(in srgb, var(--c) 9%, white); } }
+.bo-slist li { width: 100%; display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; padding: 6px 8px; border: 0; border-radius: 7px; background: none; text-align: left; font-size: calc(13.5px * var(--fs)); cursor: pointer; transition: background-color calc(380ms * var(--spd)) var(--heavy), opacity calc(380ms * var(--spd)) var(--heavy); }
+.bo-slist li i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+.bo-slist li small { font: 400 calc(11.5px * var(--fs)) var(--mono); color: var(--faint); }
 
 /* ---------- semester load (Planner course blocks) ---------- */
 .bo-chart-scroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
@@ -289,10 +285,7 @@
 .bo-none { padding: 24px !important; text-align: center; }
 .bo-st { display: inline-flex; align-items: center; gap: 6px; font-size: calc(12.5px * var(--fs)); color: var(--soft); }
 
-/* ---------- footer ---------- */
-.bo-foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-top: 26px; padding: 22px 0 6px; border-top: 1px solid var(--line); font-size: calc(13.5px * var(--fs)); color: var(--soft); }
-.bo-foot a { border-bottom: 1px solid color-mix(in srgb, var(--ink) 20%, var(--line)); }
-.bo-foot button { margin-left: 8px; padding: 2px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); cursor: pointer; }
+.bo-catalog-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; color: var(--soft); font-size: 13px; }
 
 @media (max-width: 1080px) { .bo-page .bo-tile { grid-column: span 12; } }
 @media (max-width: 620px) { .bo-now-grid { grid-template-columns: 1fr; } .bo-ringbox { grid-template-columns: 1fr; justify-items: center; } .bo-slist { width: 100%; } .hide-s { display: none; } }

@@ -20,8 +20,8 @@
 .program-mode-copy strong { font-size: 14px; font-weight: 600; }
 .program-mode-copy small { color: #666b70; font-size: 12px; }
 .program-mode-actions { display: flex; align-items: center; justify-content: flex-end; }
-.program-mode-select { display: grid; gap: 4px; color: #555b60; font-size: 11px; font-weight: 600; }
-.program-mode-select select,
+.program-mode-select { width: min(755px, 60vw); max-width: 100%; }
+.program-mode-select .ui-selection-trigger,
 .program-mode-exit {
   box-sizing: border-box;
   min-height: 38px;
@@ -31,14 +31,13 @@
   color: #17191d;
   font: 500 12px/1.4 Inter, Arial, sans-serif;
 }
-.program-mode-select select { min-width: 230px; padding: 7px 32px 7px 10px; }
+.program-mode-select .ui-selection-trigger { padding: 7px 8px 7px 10px; }
 .program-mode-exit { padding: 7px 12px; cursor: pointer; }
 .program-mode-exit:hover { background: #f2efe2; }
-.program-mode-select select:focus-visible,
 .program-mode-exit:focus-visible { outline: 2px solid #168873; outline-offset: 2px; }
 .program-mode-error { grid-column: 1 / -1; margin: -4px 0 0; color: #9a3324; font-size: 12px; }
 @media (max-width: 760px) {
   .program-mode { width: calc(100% - 32px); grid-template-columns: 1fr; margin-top: 12px; }
   .program-mode-actions { justify-content: stretch; }
-  .program-mode-select, .program-mode-select select, .program-mode-exit { width: 100%; }
+  .program-mode-select, .program-mode-exit { width: 100%; }
 }

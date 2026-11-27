@@ -187,14 +187,17 @@ export default function SemesterPlanner() {
   const maxUnits = Math.max(22, ...semesters.map(s => [...coursesIn(s), ...completedIn(s)].reduce((n, c) => n + Math.max(2, c.units), 0)));
   const warningCount = planned.filter(c => issues(c, plans[c.id].semester).length).length;
   const heavy = semesters.filter(s => units(coursesIn(s)) > 17);
+  const programUrl = catalog.programUrl || catalog.sourceUrl;
   return <div className="pb-page" onDragOver={e => { if (canRemoveDrop(e)) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; } }} onDrop={dropOutside}>
     <a className="pb-skip" href="#pb-main">Skip to planner</a>
     <ProductHeader activePath="/planner" />
     <main className="pb-wrap" id="pb-main">
-      <ProductPageHeading title="Planner" />
+      <ProductPageHeading title="Planner">
+        {programUrl && <a className="pb-ghost" href={programUrl} target="_blank" rel="noreferrer">Official program page <ArrowUpRight size={14} aria-hidden="true" /></a>}
+      </ProductPageHeading>
       {error && <p className="pb-error" role="alert">{error}</p>}
       <section className="pb-chart" aria-label="Semester workload overview" aria-busy={busy}>
-        <div className="pb-chart-head"><h2><Layers size={16}/>Units per semester · each block is one course</h2><div className="pb-legend">{subjects.map(s => <span key={s.key}><i style={{ background: `var(--s-${s.key})` }}/>{s.label}</span>)}<span><i className="pb-done-key"/>Completed</span></div></div>
+        <div className="pb-chart-head"><h2><Layers size={16}/>Units per semester</h2><div className="pb-legend">{subjects.map(s => <span key={s.key}><i style={{ background: `var(--s-${s.key})` }}/>{s.label}</span>)}<span><i className="pb-done-key"/>Completed</span></div></div>
         <div className="pb-plot" ref={chart} role="region" aria-label="Units per semester, course blocks" tabIndex={0} style={{ "--plot-units": maxUnits } as CSSProperties} onScroll={e => { if (labels.current) labels.current.scrollLeft = e.currentTarget.scrollLeft; }}>
           <div className="pb-target"><span>15u TYPICAL FULL LOAD</span></div>
           {semesters.map((s, ci) => <div key={s} className={`pb-column${dropOn === s ? " drop-on" : ""}`} aria-current={s === semester} onDragOver={e => { e.preventDefault(); setDropOn(s); }} onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDropOn(null); }} onDrop={e => drop(e, s)}>
@@ -210,10 +213,9 @@ export default function SemesterPlanner() {
         }} aria-pressed={s === semester} aria-label={`Edit ${slotLabel(s)}, ${termUnits(s)} units`} onClick={() => setSemester(s)}><b>{short(s)} · {termUnits(s)}u</b><small>{term(s).split(" \u00b7 ")[0].toUpperCase()}{units(coursesIn(s)) ? ` · ${units(coursesIn(s)) > 17 ? "HEAVY LOAD" : units(coursesIn(s)) >= 12 ? "TYPICAL LOAD" : "LIGHTER LOAD"}` : completedIn(s).length ? " · DONE" : ""}</small></button>)}</div>
         <div className="pb-tools"><button className="pb-ghost" disabled={busy || planningStore.nextSemester > 100} onClick={extend}><Plus size={16}/>Semester</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("summer")}><Plus size={16}/>Summer term</button><button className="pb-ghost" disabled={busy} onClick={() => addOptional("winter")}><Plus size={16}/>Winter term</button><button className="pb-ghost" disabled={busy || !semesters.length} aria-label={`Delete ${slotLabel(semester)}`} title="Returns planned courses to the library" onClick={removeSemester}><X size={16}/>Delete selected term</button></div>
         {!semesters.length && <p className="pb-note">Add a semester, Winter or Summer term to start planning.</p>}
-        <p className="pb-note">{heavy.length > 0 && <><b>{heavy.map(short).join(", ")}</b> above 17 units. </>}{warningCount > 0 && <><b>{warningCount}</b> course{warningCount !== 1 ? "s" : ""} may be out of prerequisite order. </>}Drag blocks between columns to rebalance, or outside the chart to remove. Drag term labels to move whole columns, or use Alt + Left/Right. Names and dates recalculate from their new position; later terms follow in sequence. Section choices for changed dates are cleared. Select a column, then find a course in the bar below (press /).{!planned.length && " Your plan is empty. Add a course from the bar below."}</p>
+        <p className="pb-note">{heavy.length > 0 && <><b>{heavy.map(short).join(", ")}</b> above 17 units. </>}{warningCount > 0 && <><b>{warningCount}</b> course{warningCount !== 1 ? "s" : ""} may be out of prerequisite order. </>}Drag courses or term labels to rearrange; moving a term clears its section choices. Press / to add a course.{!planned.length && " Your plan is empty."}</p>
       </section>
     </main>
-    <footer className="pb-footer"><div className="pb-wrap"><span>CourseRadar · {catalog.name}, {catalog.catalogYear} roadmap</span><span><a href={catalog.programUrl} target="_blank" rel="noreferrer">Official program page</a> · A planning aid, not a degree audit</span></div></footer>
     <PlannerCommandBar
       target={semesters.length ? slotLabel(semester) : "a new term"}
       unplanned={remaining.length}

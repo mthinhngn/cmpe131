@@ -153,7 +153,7 @@ export function RoadmapStepper({ stats }: { stats: SemesterStat[] }) {
         {stats.map((row, index) => {
           const ratio = row.count ? row.done / row.count : 0;
           return <li key={index} style={{ "--i": index } as CSSProperties}>
-            <button type="button" className={`rv-term${index === active ? " is-active" : ""}${ratio === 1 ? " is-done" : ""}`} aria-current={index === active ? "step" : undefined} aria-label={`Semester ${index + 1}, ${row.term}: ${row.count} requirements, ${row.credits} units`} onClick={() => onJump(index)}>
+            <button type="button" className={`rv-term${index === active ? " is-active" : ""}${ratio === 1 ? " is-done" : ""}`} aria-current={index === active ? "step" : undefined} aria-label={`Semester ${index + 1}, ${row.term}: ${row.done} of ${row.count} requirements completed, ${row.credits} units`} onClick={() => onJump(index)}>
               <span className="rv-term-index">S{index + 1}</span>
               <span className="rv-term-copy"><strong>{row.term}</strong></span>
               <span className="rv-term-units">{row.credits}u</span>

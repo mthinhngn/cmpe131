@@ -203,8 +203,7 @@
   --s-track: #f0f2f1; --s-search: #f6f8f7; --s-title-soft: #9aa3a0;
   --m-ease: cubic-bezier(.22, 1, .36, 1); --m-dur: 440ms; --m-rise: 10px; --m-stagger: 35ms; --m-enter: 560ms;
 }
-.prereq-shell.is-stepper .rv-terms > .rv-thumb::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 5px; height: 2px; border-radius: 2px; background: #3fbf94; }
-.prereq-shell.is-stepper .rv-term.is-active .rv-term-meter { opacity: 0; }
+.prereq-shell.is-stepper .rv-term.is-active .rv-term-meter i { background: #3fbf94; }
 
 .prereq-shell.is-stepper .rv-u { display: none; }
 
