@@ -250,3 +250,14 @@ model PersonalOperation {
   @@id([workspaceId, requestId])
   @@index([workspaceId, createdAt])
 }
+
+ model CourseFeedback {
+  id         Int      @id @default(autoincrement())
+  courseCode String
+  rating     Int
+  comment    String
+  authorName String   @default("Student")
+  createdAt  DateTime @default(now())
+
+  @@index([courseCode, createdAt])
+}
